@@ -27,13 +27,18 @@ This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http
 
 == Changelog ==
 
-= 2.2 =
+= 2.3 =
 * Initial public release on Wordpress.org
 
+= 2.2 =
+* Initial addition to svn
+* Changed screenshot title to Mac or iPhone depending on shortcode
 
 = 2.0 =
 * Fixed issues with CSS
 * Updated to use Affiliate links
+* Added separate support shortcode for Mac App Store
+* Added preference for Linkshare affiliate code
 
 = 1.7 =
 * Fixed icon sizing issue
