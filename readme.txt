@@ -3,7 +3,7 @@ Contributors: seali
 Tags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 2.2
+Stable tag: 2.3
 
 Adds a shortcodes to display atom feed or an app detail from Apple's App Store.
 
