@@ -27,6 +27,9 @@ This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http
 
 == Changelog ==
 
+= 2.5 =
+* 
+
 = 2.4 =
 * Fixed issue if Apple returned an invalid image link
 * Added additional CSS entries for customization
@@ -56,4 +59,4 @@ None.
 
 == Note ==
 
-The App Store Assistant can cache the data from your application in the Wordpress database for a preset number of hours. App icons and screenshots are cached on your server
+The App Store Assistant can cache the data from your application in the Wordpress database for a preset number of hours. App icons and screenshots are cached on your server.
