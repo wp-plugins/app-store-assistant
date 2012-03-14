@@ -3,7 +3,7 @@
 Plugin Name: App Store Assistant
 Version: 2.3
 Plugin URI: http://SEALsystems.net/
-Description: Adds shortcodes to display atom feed or individual app information from Apple's App Store.
+Description: Adds shortcodes to display ATOM feed or individual app information from Apple's App Store.
 Author: Scott Immerman
 Author URI: http://SEALsystems.net/
 */
