@@ -1,0 +1,93 @@
+.appStore-screenshots {
+	list-style-type: none !important;
+	margin: 0;
+	padding: 0;
+}
+.appStore-screenshots li {
+	float: left;
+	list-style-type: none !important;
+}
+.appStore-icon {
+	float: right;
+}
+.appStore-rating {
+	margin-bottom: 10px;
+}
+
+#appStore-icon-container {
+	float: right;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	overflow: hidden;
+	background-color: white;
+}
+div.asaf-entry img {
+	/* max-width: 150px;*/
+}
+.appStore-buyButton {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #FFFF66;
+	padding: 5px 20px 5px 20px;
+	background: -webkit-gradient( linear, left top, left bottom, from(#0cbbf0), color-stop(0.50, #2b5bd6), color-stop(0.50, #2f3870), to(#00a3fa));
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border: 1px solid #000000;
+	-moz-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(255,255,255,0.6);
+	-webkit-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(255,255,255,0.6);
+	text-shadow: 0px -1px 0px rgba(000,000,000,1), 0px 1px 0px rgba(255,255,255,0.2);
+	font-weight: bolder;
+}
+
+.appStore-buyButton:hover {
+	color: #6666FF;
+	background: -webkit-gradient( linear, left top, left bottom, from(#D0FCFF), color-stop(0.50, #E8FFFF), color-stop(0.50, #E8FFFF), to(#D0FCFF));
+	border: 1px solid #000000;
+	-moz-box-shadow: 0px 0px 0px;
+	-webkit-box-shadow: 0px 0px 0px;
+	text-shadow: 0px 0px 0px ;
+}
+.appStore-badge {
+	width: 100%;
+	margin: 5px auto 5px auto;
+	text-align: right;
+}
+
+.appStore-FullDescButton {
+	width: 100%;
+	margin: 5px auto 5px auto;
+	text-align: center;
+}
+
+.appStore-purchase {
+	width: 100%;
+	margin: 20px auto 20px auto;
+	text-align: right;
+}
+
+.appStore-purchase-center {
+	width: 100%;
+	margin: 20px auto 20px auto;
+	text-align: center;
+}
+
+.appStore-rating_bar {
+	display:inline-block;
+	/* 70 = 14*5; 14 is the width of the background picture */
+	width: 160px;
+	/* Otherwise layout might break*/
+	/* when inherited align is center or right: */
+	text-align:left;
+	/* This is the picture of a single empty star */
+	background: url(/rating-empty.png) 0 0 repeat-x;
+}
+
+.appStore-rating_bar span {
+	display:inherit;
+	/* 12 is the height of the background picture */
+	height: 32px;
+	/* This is the picture of a single full star */
+	background: url(/rating-full.png) 0 0 repeat-x;
+}
