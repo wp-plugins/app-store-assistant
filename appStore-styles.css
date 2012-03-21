@@ -10,6 +10,7 @@
 .appStore-icon {
 	float: right;
 }
+
 .appStore-rating {
 	margin-bottom: 10px;
 }
@@ -22,33 +23,65 @@
 	overflow: hidden;
 	background-color: white;
 }
+
+#appStore-icon-container img {
+	border: 0px;
+	margin: 0px;
+}
+
 div.asaf-entry img {
 	/* max-width: 150px;*/
 }
-.appStore-buyButton {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	color: #FFFF66;
+
+.appStore-Button {
 	padding: 5px 20px 5px 20px;
-	background: -webkit-gradient( linear, left top, left bottom, from(#0cbbf0), color-stop(0.50, #2b5bd6), color-stop(0.50, #2f3870), to(#00a3fa));
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border: 1px solid #000000;
-	-moz-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(255,255,255,0.6);
-	-webkit-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(255,255,255,0.6);
-	text-shadow: 0px -1px 0px rgba(000,000,000,1), 0px 1px 0px rgba(255,255,255,0.2);
-	font-weight: bolder;
+	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5) );
+	background:-moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5');
+	background-color:#79bbff;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #84bbf3;
+	display:inline-block;
+	color:#fcfc00;
+	font-family:Trebuchet MS;
+	font-size:16px;
+	font-weight:bold;
+	padding:4px 8px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #39618a;
+
 }
 
-.appStore-buyButton:hover {
-	color: #6666FF;
-	background: -webkit-gradient( linear, left top, left bottom, from(#D0FCFF), color-stop(0.50, #E8FFFF), color-stop(0.50, #E8FFFF), to(#D0FCFF));
-	border: 1px solid #000000;
-	-moz-box-shadow: 0px 0px 0px;
-	-webkit-box-shadow: 0px 0px 0px;
-	text-shadow: 0px 0px 0px ;
+.appStore-Button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #79bbff) );
+	background:-moz-linear-gradient( center top, #378de5 5%, #79bbff 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#79bbff');
+	background-color:#378de5;
+	color: #C9C9FF;
 }
+
+.appStore-Button:active {
+	position:relative;
+	top:1px;
+}
+
+.BuyButton {
+	color: #fcfc00;
+}
+
+.FullDescriptionButton {
+	font-size: 13px;
+	font-weight: normal;
+	padding: 4px 8px;
+}
+
+
+
 .appStore-badge {
 	width: 100%;
 	margin: 5px auto 5px auto;

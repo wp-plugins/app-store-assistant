@@ -3,7 +3,7 @@ Contributors: seali
 Tags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 2.4
+Stable tag: 2.6
 
 Adds a shortcodes to display atom feed or an app detail from Apple's App Store.
 
@@ -27,8 +27,15 @@ This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http
 
 == Changelog ==
 
+= 2.6 =
+* Fixed issue where Mac app icons were cut off in CSS
+* Fixed Button Margins
+* Made "Show Full Description" button smaller
+* Softened buttons
+* Made CSS easier to edit for buttons
+
 = 2.5 =
-* 
+* Bug Fix
 
 = 2.4 =
 * Fixed issue if Apple returned an invalid image link

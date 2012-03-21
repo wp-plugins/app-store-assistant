@@ -144,8 +144,10 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 			</span> by <?php echo $app->userRatingCount; ?> users.
 		</div>
 	<?php } ?>
+	<div style="clear:left;">&nbsp;</div>
+
 	<div class="appStore-purchase">
-		<a type="button" href="<? echo $appURL; ?>" value="" class="appStore-buyButton"><?PHP echo $TheAppPrice; ?> - View in App Store</a></br>
+		<a type="button" href="<? echo $appURL; ?>" value="" class="appStore-Button BuyButton"><?PHP echo $TheAppPrice; ?> - View in App Store</a></br>
 	</div>
 <?php
 	if (is_single()) {
@@ -207,7 +209,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 
 		echo '	<div style="clear:left;">&nbsp;</div>';
 		echo '	<div class="appStore-purchase-center">';
-		echo '		<a type="button" href="'.$appURL.'" value="" class="appStore-buyButton">'.$TheAppPrice.' - View in App Store</a></br>';
+		echo '		<a type="button" href="'.$appURL.'" value="" class="appStore-Button BuyButton">'.$TheAppPrice.' - View in App Store</a></br>';
 		echo '	</div>';
 		
 	} else {
@@ -217,7 +219,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		if($mode=="internal") {
 			echo ' - <a href="'.get_permalink().'" value="">continued&hellip;</a>';
 			echo '	<div style="clear:left;">&nbsp;</div>';
-			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-buyButton">Show Full Description & Screenshots</a></div>';
+			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">Show Full Description & Screenshots</a></div>';
 		} else {
 			echo ' - <a href="'.$appURL.'" value="">'.$more_info_text.'</a>';		
 		}
