@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 2.3
+Version: 2.5
 Plugin URI: http://SEALsystems.net/
 Description: Adds shortcodes to display ATOM feed or individual app information from Apple's App Store.
 Author: Scott Immerman
@@ -88,7 +88,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	// Start capturing output so the text in the post comes first.
 	ob_start();
 
-
 	//Check to see if the app is free, or under a dollar
 	if($app->price == 0) {
 		$TheAppPrice = "Free!";
@@ -99,8 +98,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		$TheAppPrice = "$".$app->price."";
 	}
 
-	
-	//$appURL = "http://click.linksynergy.com/fs-bin/stat?id=uiuOb3Yu7Hg&offerid=146261&type=3&subid=0&tmpid=1826&RD_PARM1=";
 	$appURL = appStore_setting('affiliatecode');
 	$appURL .= urlencode(urlencode($app->trackViewUrl.'&partnerId='.appStore_setting('affiliatepartnerid')));
 
@@ -147,8 +144,10 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 			</span> by <?php echo $app->userRatingCount; ?> users.
 		</div>
 	<?php } ?>
+	<div style="clear:left;">&nbsp;</div>
+
 	<div class="appStore-purchase">
-		<a type="button" href="<? echo $appURL; ?>" value="" class="appStore-buyButton"><?PHP echo $TheAppPrice; ?> - View in App Store</a></br>
+		<a type="button" href="<? echo $appURL; ?>" value="" class="appStore-Button BuyButton"><?PHP echo $TheAppPrice; ?> - View in App Store</a></br>
 	</div>
 <?php
 	if (is_single()) {
@@ -210,7 +209,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 
 		echo '	<div style="clear:left;">&nbsp;</div>';
 		echo '	<div class="appStore-purchase-center">';
-		echo '		<a type="button" href="'.$appURL.'" value="" class="appStore-buyButton">'.$TheAppPrice.' - View in App Store</a></br>';
+		echo '		<a type="button" href="'.$appURL.'" value="" class="appStore-Button BuyButton">'.$TheAppPrice.' - View in App Store</a></br>';
 		echo '	</div>';
 		
 	} else {
@@ -220,17 +219,12 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		if($mode=="internal") {
 			echo ' - <a href="'.get_permalink().'" value="">continued&hellip;</a>';
 			echo '	<div style="clear:left;">&nbsp;</div>';
-			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-buyButton">Show Full Description & Screenshots</a></div>';
-
-			
-			
+			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">Show Full Description & Screenshots</a></div>';
 		} else {
 			echo ' - <a href="'.$appURL.'" value="">'.$more_info_text.'</a>';		
 		}
 		echo '  </div>';
 	}		
-	
-	
 	echo '	<div style="clear:left;">&nbsp;</div>';
 	echo '	</div>';
 	//echo '	<div style="clear:left;">&nbsp;</div>';
@@ -355,12 +349,10 @@ function appStore_save_images_locally($app) {
 		foreach($urls_to_cache as $url) {
 			$content = appStore_fopen_or_curl($url);
 			
-			if($fp = fopen($upload_dir['basedir'] . '/appStore/' . $app->trackId . '/' . basename($url), "w+"))
-			{
+			if($fp = fopen($upload_dir['basedir'] . '/appStore/' . $app->trackId . '/' . basename($url), "w+")) {
 				fwrite($fp, $content);
 				fclose($fp);
-			}
-			else {
+			} else {
 				//Couldnt write the file. Permissions must be wrong.
 				appStore_set_setting('cache_images_locally', '0');
 				return;

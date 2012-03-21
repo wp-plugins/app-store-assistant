@@ -3,7 +3,7 @@ Contributors: seali
 Tags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 2.2
+Stable tag: 2.6
 
 Adds a shortcodes to display atom feed or an app detail from Apple's App Store.
 
@@ -27,13 +27,32 @@ This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http
 
 == Changelog ==
 
-= 2.2 =
+= 2.6 =
+* Fixed issue where Mac app icons were cut off in CSS
+* Fixed Button Margins
+* Made "Show Full Description" button smaller
+* Softened buttons
+* Made CSS easier to edit for buttons
+
+= 2.5 =
+* Bug Fix
+
+= 2.4 =
+* Fixed issue if Apple returned an invalid image link
+* Added additional CSS entries for customization
+
+= 2.3 =
 * Initial public release on Wordpress.org
 
+= 2.2 =
+* Initial addition to svn
+* Changed screenshot title to Mac or iPhone depending on shortcode
 
 = 2.0 =
 * Fixed issues with CSS
 * Updated to use Affiliate links
+* Added separate support shortcode for Mac App Store
+* Added preference for Linkshare affiliate code
 
 = 1.7 =
 * Fixed icon sizing issue
@@ -47,4 +66,4 @@ None.
 
 == Note ==
 
-The App Store Assistant can cache the data from your application in the Wordpress database for a preset number of hours. App icons and screenshots are cached on your server
+The App Store Assistant can cache the data from your application in the Wordpress database for a preset number of hours. App icons and screenshots are cached on your server.
