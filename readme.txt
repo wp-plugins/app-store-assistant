@@ -6,7 +6,7 @@ Requires at least: 3.3
 Tested up to: 3.3
 Stable tag: 3.0
 
-The App Store Assistent adds 3 shortcodes to display an ATOM feed or the detail of an app from Apple's App Store. It also has the ability to use an affiliate program to earn commissions on click-throughs.
+The App Store Assistent adds 3 shortcodes to display an ATOM feed or the detail of an app from Apple's App Store. Affiliate program ready.
 
 == Description ==
 
