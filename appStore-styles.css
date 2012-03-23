@@ -17,17 +17,23 @@
 
 #appStore-icon-container {
 	float: right;
-	border-radius: 20px;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	overflow: hidden;
-	background-color: white;
 }
 
 #appStore-icon-container img {
 	border: 0px;
 	margin: 0px;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	overflow: hidden;
+	background-color: green;
 }
+
+th.prefTableHeader {
+	background-color: #B3B3B3;
+	font-weight: bold;
+}
+
 
 div.asaf-entry img {
 	/* max-width: 150px;*/
@@ -54,6 +60,7 @@ div.asaf-entry img {
 	padding:4px 8px;
 	text-decoration:none;
 	text-shadow:1px 1px 0px #39618a;
+	margin-top: 5px;
 
 }
 

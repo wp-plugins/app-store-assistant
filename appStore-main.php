@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 2.5
+Version: 3.0
 Plugin URI: http://SEALsystems.net/
 Description: Adds shortcodes to display ATOM feed or individual app information from Apple's App Store.
 Author: Scott Immerman
@@ -98,8 +98,41 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		$TheAppPrice = "$".$app->price."";
 	}
 
-	$appURL = appStore_setting('affiliatecode');
-	$appURL .= urlencode(urlencode($app->trackViewUrl.'&partnerId='.appStore_setting('affiliatepartnerid')));
+	switch (appStore_setting('affiliatepartnerid')) {
+    case 30:
+        $appURL = appStore_setting('affiliatecode');
+		if (strpos($app->trackViewUrl, '?') !== false) {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'&partnerId=30'));
+		} else {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'?partnerId=30'));
+		}
+        break;
+    case 2003:
+          $appURL = "http://clk.tradedoubler.com/click?p=".appStore_setting('tdprogramID')."&a=".appStore_setting('tdwebsiteID')."&url=";
+		if (strpos($app->trackViewUrl, '?') !== false) {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'&partnerId=2003'));
+		} else {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'?partnerId=2003'));
+		}
+        break;
+    case 1002:
+        $appURL = appStore_setting('dgmwrapper');
+		if (strpos($app->trackViewUrl, '?') !== false) {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'&partnerId=1002'));
+		} else {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'?partnerId=1002'));
+		}
+       break;
+    default:
+        $appURL = "http://click.linksynergy.com/fs-bin/stat?id=uiuOb3Yu7Hg&offerid=146261&type=3&subid=0&tmpid=1826&RD_PARM1=";
+		if (strpos($app->trackViewUrl, '?') !== false) {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'&partnerId=30'));
+		} else {
+			$appURL .= urlencode(urlencode($app->trackViewUrl.'?partnerId=30'));
+		}
+	}
+
+
 
 	// App Artwork
 	$artwork_url = $app->artworkUrl100;
@@ -117,17 +150,57 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		$appRating = $app->averageUserRating * 20;
 	}else {
 		$appRating = 0;
-	}		
+	}
+	
+	$AppFeatures = $app->features;
 ?>
 <div class="appStore-wrapper">
 	<hr>
-	<div id="appStore-icon-container" style="width: <?php echo appStore_setting('icon_size'); ?>px;height: <?php echo appStore_setting('icon_size'); ?>px;">
+	<div id="appStore-icon-container">
 		<a href="<? echo $appURL; ?>" ><img class="appStore-icon" src="<?php echo $artwork_url; ?>" width="<?php echo appStore_setting('icon_size'); ?>" height="<?php echo appStore_setting('icon_size'); ?>" /></a>
+		<div class="appStore-purchase">
+			<a type="button" href="<? echo $appURL; ?>" value="" class="appStore-Button BuyButton"><?PHP echo $TheAppPrice; ?> - View in App Store</a></br>
+		</div>
+
 	</div>
-	<h1 class="appStore-title"><?php echo $app->trackName;?></h1>
-	<span class="appStore-version">Version: <?php echo $app->version; ?></span></br>
-	<span class="appStore-categories">
 	<?php
+	if ((appStore_setting('displayapptitle') == "yes" AND !empty($app->trackName)) OR $mode != "internal") {
+		echo '<h1 class="appStore-title">'.$app->trackName.'</h1>';
+	}
+	if (appStore_setting('displayversion') == "yes" AND !empty($app->version)) {
+		echo '<span class="appStore-version">Version: '.$app->version.'</span></br>';
+	}
+	
+	if ($app->artistName == $app->sellerName) {
+		if ((appStore_setting('displaydevelopername') == "yes" OR appStore_setting('displaysellername') == "yes") AND !empty($app->artistName)) {
+			echo '<span class="appStore-developername">Created &amp; Sold by: '.$app->artistName.'</span></br>';
+		}
+	} else {
+		if (appStore_setting('displaydevelopername') == "yes" AND !empty($app->artistName)) {
+			echo '<span class="appStore-developername">Created by: '.$app->artistName.'</span></br>';
+		}
+		if (appStore_setting('displaysellername') == "yes" AND !empty($app->sellerName)) {
+			echo '<span class="appStore-sellername">Sold by: '.$app->sellerName.'</span></br>';
+		}
+	}	
+	
+	
+	if (appStore_setting('displayreleasedate') == "yes" AND !empty($app->releaseDate)) {
+		echo '<span class="appStore-releasedate">Released: '.date( 'F j, Y', strtotime($app->releaseDate) ).'</span></br>';
+	}
+	if (appStore_setting('displayfilesize') == "yes" AND !empty($app->fileSizeBytes)) {
+		echo '<span class="appStore-filesize">File Size: '.filesizeinfo($app->fileSizeBytes).'</span></br>';
+	}
+
+	if (appStore_setting('displayuniversal') == "yes" AND $AppFeatures[0] == "iosUniversal") {
+		echo '<img src="'.plugins_url( 'images/fat-binary-badge-web.png' , __FILE__ ).'" width="14" height="14" alt="gamecenter" /> This app is designed for both iPhone and iPad<br>';
+	}
+
+	if (appStore_setting('displayadvisoryrating') == "yes" AND !empty($app->contentAdvisoryRating)) {
+		echo '<span class="appStore-advisoryrating">Rating: '.$app->contentAdvisoryRating.'</span></br>';
+	}
+	if (appStore_setting('displaycategories') == "yes" AND !empty($appCategory)) {
+		echo '<span class="appStore-categories">';
 		if(count($appCategory) == 1) {
 			echo "Category: ";
 			echo $appCategory[0];
@@ -135,20 +208,24 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 			echo "Categories: ";
 			echo $appCategoryList;
 		}
-	?>
-	</span>
-	<?php if(isset($app->userRatingCount)) { ?>
-		<div class="appStore-rating">
-			<span class="appStore-rating_bar" title="Rating <?PHP echo $app->averageUserRating; ?> stars">
-				<span style="width:<?PHP echo $appRating; ?>%"></span>
-			</span> by <?php echo $app->userRatingCount; ?> users.
-		</div>
-	<?php } ?>
+		echo '</span>';
+	}
+	if(isset($app->userRatingCount) AND appStore_setting('displaystarrating') == "yes") {
+		echo '<div class="appStore-rating">';
+		echo '	<span class="appStore-rating_bar" title="Rating '.$app->averageUserRating.' stars">';
+		echo '	<span style="width:'.$appRating.'%"></span>';
+		echo '	</span> by '.$app->userRatingCount.' users.';
+		echo '</div>';
+	}
+	
+	if (appStore_setting('displaygamecenterenabled') == "yes" AND $app->isGameCenterEnabled == 1) {
+		echo '<img src="'.plugins_url( 'images/gamecenter.jpg' , __FILE__ ).'" width="88" height="92" alt="gamecenter" />';
+	}
+
+	 ?>
 	<div style="clear:left;">&nbsp;</div>
 
-	<div class="appStore-purchase">
-		<a type="button" href="<? echo $appURL; ?>" value="" class="appStore-Button BuyButton"><?PHP echo $TheAppPrice; ?> - View in App Store</a></br>
-	</div>
+
 <?php
 	if (is_single()) {
 		echo '	<div class="appStore-description">';
@@ -226,6 +303,13 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		echo '  </div>';
 	}		
 	echo '	<div style="clear:left;">&nbsp;</div>';
+	
+	if (appStore_setting('displaysupporteddevices') == "yes" AND is_array($app->supportedDevices)) {
+		echo 'Supported Devices: '.implode(", ", $app->supportedDevices);;
+	}
+
+	
+	
 	echo '	</div>';
 	//echo '	<div style="clear:left;">&nbsp;</div>';
 	$return = ob_get_contents();
@@ -390,6 +474,19 @@ function shortenDescription($string){
      $string = substr($string,0,strrpos($string," "));
      return $string;
 }
+
+function filesizeinfo($fs) { 
+	$bytes = array('KB', 'KB', 'MB', 'GB', 'TB'); 
+	// values are always displayed in at least 1 kilobyte: 
+	if ($fs <= 999) $fs = 1; 
+	for ($i = 0; $fs > 999; $i++) { 
+		$fs /= 1024; 
+	}
+	
+	return ceil($fs)." ".$bytes[$i]; 
+} 
+
+
 
 // ------------ END OF FUNCTIONS-----------------
 
