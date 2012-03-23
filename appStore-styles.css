@@ -14,6 +14,33 @@
 .appStore-rating {
 	margin-bottom: 10px;
 }
+.appStore-version {
+	text-align: left;
+}
+.appStore-developername {
+	text-align: left;
+}
+.appStore-sellername {
+	text-align: left;
+}
+.appStore-releasedate {
+	text-align: left;
+}
+.appStore-filesize {
+	text-align: left;
+}
+.appStore-universal {
+	text-align: left;
+}
+.appStore-advisoryrating {
+	text-align: left;
+}
+.appStore-categories {
+	text-align: left;
+}
+.appStore-supporteddevices {
+	text-align: left;
+}
 
 #appStore-icon-container {
 	float: right;
@@ -59,7 +86,7 @@ div.asaf-entry img {
 	padding:4px 8px;
 	text-decoration:none;
 	text-shadow:1px 1px 0px #39618a;
-	margin-top: 5px;
+	margin-top: 8px;
 
 }
 

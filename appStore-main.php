@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 3.0.1
+Version: 3.0.2
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual app information from Apple's App Store.
 Author: Scott Immerman
@@ -22,7 +22,6 @@ add_shortcode('ios_app', 'appStore_app_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
 add_action('wp_print_styles', 'appStore_page_add_stylesheet');
 
-
 function appStore_app_handler( $atts,$content=null, $code="" ) {
 	// Get App ID and more_info_text from shortcode
 	extract( shortcode_atts( array(
@@ -40,8 +39,6 @@ function appStore_app_handler( $atts,$content=null, $code="" ) {
 	else
 		wp_die('No valid data for app id: ' . $id);
 }
-
-
 
 function appStore_atomfeed_handler($atts, $content = null, $code="") {
 	
@@ -80,7 +77,6 @@ function appStore_atomfeed_handler($atts, $content = null, $code="") {
 		}
 	return; 
 }
-
 
 // ------------START OF MAIN FUNCTIONS-----------------
 function appStore_page_output($app, $more_info_text,$mode="internal",$platform="ios_app") {
@@ -131,8 +127,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 			$appURL .= urlencode(urlencode($app->trackViewUrl.'?partnerId=30'));
 		}
 	}
-
-
 
 	// App Artwork
 	$artwork_url = $app->artworkUrl100;
@@ -193,7 +187,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	}
 
 	if (appStore_setting('displayuniversal') == "yes" AND $AppFeatures[0] == "iosUniversal") {
-		echo '<img src="'.plugins_url( 'images/fat-binary-badge-web.png' , __FILE__ ).'" width="14" height="14" alt="gamecenter" /> This app is designed for both iPhone and iPad<br>';
+		echo '<span class="appStore-universal"><img src="'.plugins_url( 'images/fat-binary-badge-web.png' , __FILE__ ).'" width="14" height="14" alt="gamecenter" /> This app is designed for both iPhone and iPad</span><br>';
 	}
 
 	if (appStore_setting('displayadvisoryrating') == "yes" AND !empty($app->contentAdvisoryRating)) {
@@ -224,8 +218,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 
 	 ?>
 	<div style="clear:left;">&nbsp;</div>
-
-
 <?php
 	if (is_single()) {
 		echo '	<div class="appStore-description">';
@@ -262,9 +254,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 			echo '	<div style="clear:left;">&nbsp;</div>';
 		}
 
-
 		// Display iPad Screenshots
-
 		if(count($app->ipadScreenshotUrls) > 0) {
 
 			echo '	<div class="appStore-screenshots-iPad">';
@@ -305,11 +295,8 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	echo '	<div style="clear:left;">&nbsp;</div>';
 	
 	if (appStore_setting('displaysupporteddevices') == "yes" AND is_array($app->supportedDevices)) {
-		echo 'Supported Devices: '.implode(", ", $app->supportedDevices);;
+		echo '<span class="appStore-supporteddevices">Supported Devices: '.implode(", ", $app->supportedDevices)."</span><br>";
 	}
-
-	
-	
 	echo '	</div>';
 	//echo '	<div style="clear:left;">&nbsp;</div>';
 	$return = ob_get_contents();
@@ -328,7 +315,6 @@ function appStore_get_data( $id ) {
 	}	
 	return $appStore_options['app_data'];
 }
-
 
 function appStore_getIDs_from_feed($atomurl) {
 	$last = $atomurl[strlen($atomurl)-1];
@@ -445,7 +431,6 @@ function appStore_save_images_locally($app) {
 	}
 }
 
-
 $appStore_settings = array();
 function appStore_setting($name) {
 	global $appStore_settings;
@@ -486,8 +471,5 @@ function filesizeinfo($fs) {
 	return ceil($fs)." ".$bytes[$i]; 
 } 
 
-
-
 // ------------ END OF FUNCTIONS-----------------
-
 ?>
