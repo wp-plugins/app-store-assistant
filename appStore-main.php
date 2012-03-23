@@ -1,8 +1,8 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 3.0
-Plugin URI: http://SEALsystems.net/
+Version: 3.0.1
+Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual app information from Apple's App Store.
 Author: Scott Immerman
 Author URI: http://SEALsystems.net/
@@ -197,7 +197,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	}
 
 	if (appStore_setting('displayadvisoryrating') == "yes" AND !empty($app->contentAdvisoryRating)) {
-		echo '<span class="appStore-advisoryrating">Rating: '.$app->contentAdvisoryRating.'</span></br>';
+		echo '<span class="appStore-advisoryrating">Age Rating: '.$app->contentAdvisoryRating.'</span></br>';
 	}
 	if (appStore_setting('displaycategories') == "yes" AND !empty($appCategory)) {
 		echo '<span class="appStore-categories">';
