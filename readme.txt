@@ -4,9 +4,9 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 3.0
+Stable tag: 3.0.1
 
-The App Store Assistent adds 3 shortcodes to display an ATOM feed or the detail of an app from Apple's App Store. Affiliate program ready.
+The App Store Assistent adds 3 shortcodes to display an ATOM feed or the detail of an app from Apple's App Store. It also has the ability to use an affiliate program to earn commissions on click-throughs.
 
 == Description ==
 
@@ -28,6 +28,9 @@ This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http
 
 
 == Changelog ==
+= 3.0.1 =
+* Change text "Rating" to "Age Rating" for Age Advisory
+* Change background color for app icons div to transparent
 
 = 3.0 =
 * Added Affiliate Network support for TradeDoubler and DGM
@@ -42,7 +45,7 @@ This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http
 	-Date Released
 	-File Size
 	-Universal App
-	-Advisory
+	-Age Advisory
 	-Categories
 	-Star Rating
 	-Game Center Enabled icon
