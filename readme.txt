@@ -6,7 +6,7 @@ Requires at least: 3.3
 Tested up to: 3.3.1
 Stable tag: 4.0
 
-The App Store Assistent adds 4 shortcodes to display an ATOM feed or the detail of an item from Apple's App or Music Stores. Affiliate program ready.
+The App Store Assistent adds 4 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
 == Description ==
 
