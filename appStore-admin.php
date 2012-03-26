@@ -56,7 +56,6 @@ function appStore_add_defaults() {
 	}
 }
 
-
 // Init plugin options to white list our options
 function appStore_init(){
 
@@ -170,7 +169,6 @@ function appStore_render_form() {
 <p><code>http://www.s2d6.com/x/?x=c&amp;z=s&amp;v=1530946&amp;t=http%3A%2F%2Fitunes.apple.com%2Fau%2Falbum%2Fthe-fixer%2Fid327780123%3Fi%3D327780135%26uo%3D6%26partnerId%3D1002</code></p>
 <p>3. From the actual link, you now need to cut out the "wrapper." This is the part of the affiliate link that stays the same. This can be identified as everything in the link up through the "<code>t=</code>". For example: </p>
 <p><code>http://www.s2d6.com/x/?x=c&amp;z=s&amp;v=1530946&amp;t=</code></p>
-
 					</td>
 				</tr>
 				<tr>
@@ -198,13 +196,6 @@ function appStore_render_form() {
 					<input type="checkbox" name="appStore_options[displayreleasedate]" value="yes" <?php if ($options['displayreleasedate'] == "yes") echo 'checked'; ?> /> Date Released<br>
 					</td>
 				</tr>
-
-
-
-
-
-
-
 				<tr>
 					<th scope="row">Max Short Description Length:<br /><small>For "My Picks" list pages.</small></th>
 					<td>
@@ -234,7 +225,6 @@ function appStore_render_form() {
 				<tr>
 					<th scope="row" colspan="2" style="background-color: #B3B3B3;font-weight: bold;">Cache Options</th>
 				</tr>
-
 				<tr>
 					<th scope="row">Data cache time:</th>
 					<td>
@@ -257,15 +247,12 @@ function appStore_render_form() {
 							
 							foreach ($cache_intervals as $key => $value) {
 								echo '<option value="' . $value . '" ' . selected($value, $options['cache_time_select_box']) . '>' . $key . '</option>';
-							}
-							
-							?>
-							
+							}						
+							?>							
 						</select>
 						<span style="color:#666666;margin-left:2px;">This option determines how long before the plugin requests new data from Apple's servers.</span>
 					</td>
 				</tr>
-
 				<tr valign="top">
 					<th scope="row">Cache images locally:</th>
 					<td>
@@ -274,7 +261,6 @@ function appStore_render_form() {
 						<span style="color:#666666;margin-left:2px;">Load icons, screenshots, etc. locally instead of using Apple's CDN server. Your wp-content/uploads/ directory MUST be writeable for this option to have any effect.</span>
 					</td>
 				</tr>
-
 			</table>
 			<p class="submit">
 			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
