@@ -45,9 +45,23 @@ function appStore_add_defaults() {
 						"displaysupporteddevices" => "yes",
 						"displayfilesize" => "yes",
 						"displayapptitle" => "yes",
+						"displayitunestitle" => "yes",
+						"displayitunestrackcount" => "yes",
+						"displayitunesartistname" => "yes",
+						"displayitunesfromalbum" => "yes",
+						"displayitunesgenre" => "yes",
+						"displayitunesreleasedate" => "yes",
+						"displayitunesdescription" => "yes",
+						"displayitunesexplicitwarning" => "yes",
+						"itunesicon_to_use" => "100",
+						"itunesicon_size_adjust" => "100",		
+						"itunesicon_iOS_size_adjust" => "50",		
+						"appstoreicon_to_use" => "512",
+						"appicon_size_adjust" => "25",
+						"appicon_iOS_size_adjust" => "12",
+						"smaller_buy_button_iOS" => "yes",
 						"max_description" => "300",
 						"qty_of_apps" => "10",
-						"icon_size" => "128",
 						"ss_size" => "120",
 						"cache_time_select_box" => (24*60*60),
 						"cache_images_locally" => "1"
@@ -84,11 +98,11 @@ function appStore_render_form() {
 
 			<table class="form-table">
 				<tr>
-					<th scope="row" colspan="2" style="background-color: #B3B3B3;font-weight: bold;">Affiliate Networks</th>
+					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">Affiliate Networks</th>
 				</tr>
 				<tr>
 					<th scope="row">Affiliate Network:<br /></th>
-					<td>
+					<td colspan="2">
 					<select name="appStore_options[affiliatepartnerid]">
 					<option value="999" <?php if ($options['affiliatepartnerid'] == "999") echo 'selected'; ?>>None</option>
 					<option value="30" <?php if ($options['affiliatepartnerid'] == "30") echo 'selected'; ?>>LinkShare</option>
@@ -98,11 +112,11 @@ function appStore_render_form() {
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" colspan="2" style="background-color: #B3B3B3;font-weight: bold;">LinkShare Settings</th>
+					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">LinkShare Settings</th>
 				</tr>
 
 				<tr>
-					<td scope="row"></td><td><p>1.  The easiest way to get your LinkShare Wrapper is to first get an example link to use as a guideline. You can do this by logging into your LinkShare dashboard and navigating to the Link Maker tool. Once there, make sure the country pop-up menu matches the affiliate program you just came through. Next, search for anything you like, click one of the results, and take the chunk of HTML that is given to you in step 3. It should look similar to this: </p>
+					<td scope="row"></td><td colspan="2"><p>1.  The easiest way to get your LinkShare Wrapper is to first get an example link to use as a guideline. You can do this by logging into your LinkShare dashboard and navigating to the Link Maker tool. Once there, make sure the country pop-up menu matches the affiliate program you just came through. Next, search for anything you like, click one of the results, and take the chunk of HTML that is given to you in step 3. It should look similar to this: </p>
 <p><code>&lt;a href=&quot;http://click.linksynergy.com/fs-bin/stat?id=CBIMl*gYY/8&amp;offerid=146261&amp;type=3&amp;subid=0&amp;tmpid=1826&amp;RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fus%252Falbum%252Fjust-breathe%252Fid329520595%253Fi%253D329520674%2526uo%253D6%2526partnerId%253D30&quot; target=&quot;itunes_store&quot;&gt;&lt;img height=&quot;15&quot; width=&quot;61&quot; alt=&quot;Pearl Jam - Backspacer - Just Breathe&quot; src=&quot;http://ax.phobos.apple.com.edgesuite.net/images/badgeitunes61x15dark.gif&quot; /&gt;&lt;/a&gt;</code></p>
 <p>2. From your chunk of HTML, grab the actual link in the HREF tag. For example: </p>
 <p><code>http://click.linksynergy.com/fs-bin/stat?id=CBIMl*gYY/8&amp;offerid=146261&amp;type=3&amp;subid=0&amp;tmpid=1826&amp;RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fus%252Falbum%252Fjust-breathe%252Fid329520595%253Fi%253D329520674%2526uo%253D6%2526partnerId%253D30</code></p>
@@ -115,31 +129,31 @@ function appStore_render_form() {
 				</tr>
 				<tr>
 					<th scope="row">LinkShare Wrapper:</th>
-					<td>
+					<td colspan="2">
 						<input type="text" size="80" name="appStore_options[affiliatecode]" value="<?php echo $options['affiliatecode']; ?>" />
 					</td>
 				</tr>
 				<th scope="row">LinkShare Affiliate Token:</th>
-					<td>
+					<td colspan="2">
 						<input type="text" size="11" name="appStore_options[affiliatetoken]" value="<?php echo $options['affiliatetoken']; ?>" maxlength="11" />
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" colspan="2" style="background-color: #B3B3B3;font-weight: bold;">TradeDoubler Settings</th>
+					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">TradeDoubler Settings</th>
 				</tr>
 				<tr>
-					<td scope="row"></td><td><p>TradeDoubler offers the iTunes and App Store Affiliate Program as separate programs in 14 different countries. You need to be accepted into at least one country to be able to link in Europe. If you need to link to several EU countries for which you don't yet have an affiliate account, you can enable this directly on the TradeDoubler portal (Settings -> Site Information -> My Countries).</p><p>To create an affiliate tracking link for TradeDoubler (Europe), you will need your program ID and website ID. These can be found on the TradeDoubler affiliate dashboard (Under "Settings" then "Site information").</p>
+					<td scope="row"></td><td colspan="2"><p>TradeDoubler offers the iTunes and App Store Affiliate Program as separate programs in 14 different countries. You need to be accepted into at least one country to be able to link in Europe. If you need to link to several EU countries for which you don't yet have an affiliate account, you can enable this directly on the TradeDoubler portal (Settings -> Site Information -> My Countries).</p><p>To create an affiliate tracking link for TradeDoubler (Europe), you will need your program ID and website ID. These can be found on the TradeDoubler affiliate dashboard (Under "Settings" then "Site information").</p>
 					</td>
 				</tr>
 				<tr>
 				<th scope="row">TradeDoubler websiteID:</th>
-					<td>
+					<td colspan="2">
 						<input type="text" size="20" name="appStore_options[tdwebsiteID]" value="<?php echo $options['tdwebsiteID']; ?>"/>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">TradeDoubler Program ID:<br /></th>
-					<td>
+					<td colspan="2">
 					<select name="appStore_options[tdprogramID]">
 					<option value="24380" <?php if ($options['tdprogramID'] == "24380") echo 'selected'; ?>>iTunes AT</option>
 					<option value="24379" <?php if ($options['tdprogramID'] == "24379") echo 'selected'; ?>>iTunes BE</option>
@@ -159,10 +173,10 @@ function appStore_render_form() {
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" colspan="2" style="background-color: #B3B3B3;font-weight: bold;">DGM Settings</th>
+					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">DGM Settings</th>
 				</tr>
 				<tr>
-					<td scope="row"></td><td><p>Following these steps will allow you to create an affiliate link for the Australia or New Zealand program. Before you begin, it is important to make sure you have been approved for these accounts and have access to them. </p>
+					<td scope="row"></td><td colspan="2"><p>Following these steps will allow you to create an affiliate link for the Australia or New Zealand program. Before you begin, it is important to make sure you have been approved for these accounts and have access to them. </p>
 <p>1.  The easiest way to start building your affiliate links is to first get an example. You can do this by logging into your DGM dashboard and navigating to the Link Maker tool. Once there, make sure the country pop-up menu matches the affiliate program you just came through. Next, search for anything you like, click one of the results, and take the chunk of HTML that is then given to you. It should look similar to this: </p>
 <p><code>&lt;a href=&quot;http://www.s2d6.com/x/?x=c&amp;z=s&amp;v=1530946&amp;t=http%3A%2F%2Fitunes.apple.com%2Fau%2Falbum%2Fthe-fixer%2Fid327780123%3Fi%3D327780135%26uo%3D6%26partnerId%3D1002&quot; target=&quot;itunes_store&quot;&gt;&lt;img height=&quot;15&quot; width=&quot;61&quot; alt=&quot;Pearl Jam - Backspacer - The Fixer&quot; src=&quot;http://ax.phobos.apple.com.edgesuite.net/images/badgeitunes61x15dark.gif&quot; /&gt;&lt;/a&gt;</code></p>
 <p>2. From your chunk of HTML, grab the actual link in the HREF tag. For example: </p>
@@ -173,16 +187,17 @@ function appStore_render_form() {
 				</tr>
 				<tr>
 				<th scope="row">DGM wrapper:</th>
-					<td>
+					<td colspan="2">
 						<input type="text" size="20" name="appStore_options[dgmwrapper]" value="<?php echo $options['dgmwrapper']; ?>"/>
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" colspan="2" style="background-color: #B3B3B3;font-weight: bold;">Display Options</th>
+					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">Display Options</th>
 				</tr>
 				<tr>
 					<th scope="row">Show in Post body:</th>
-					<td><input type="checkbox" name="appStore_options[displayapptitle]" value="yes" <?php if ($options['displayapptitle'] == "yes") echo 'checked'; ?> /> App Name<br>
+					<td valign="top"><h1>App Stores</h1><br>
+					<input type="checkbox" name="appStore_options[displayapptitle]" value="yes" <?php if ($options['displayapptitle'] == "yes") echo 'checked'; ?> /> App Name<br>
 					<input type="checkbox" name="appStore_options[displayversion]" value="yes" <?php if ($options['displayversion'] == "yes") echo 'checked'; ?> /> App Version<br>
 					<input type="checkbox" name="appStore_options[displayadvisoryrating]" value="yes" <?php if ($options['displayadvisoryrating'] == "yes") echo 'checked'; ?> /> Advisory Rating<br>
 					<input type="checkbox" name="appStore_options[displaycategories]" value="yes" <?php if ($options['displaycategories'] == "yes") echo 'checked'; ?> /> App Categories<br>
@@ -193,41 +208,61 @@ function appStore_render_form() {
 					<input type="checkbox" name="appStore_options[displaygamecenterenabled]" value="yes" <?php if ($options['displaygamecenterenabled'] == "yes") echo 'checked'; ?> /> Game Center Enabled icon<br>
 					<input type="checkbox" name="appStore_options[displayuniversal]" value="yes" <?php if ($options['displayuniversal'] == "yes") echo 'checked'; ?> /> Universal App icon<br>
 					<input type="checkbox" name="appStore_options[displaysupporteddevices]" value="yes" <?php if ($options['displaysupporteddevices'] == "yes") echo 'checked'; ?> /> Supported Devices list<br>
-					<input type="checkbox" name="appStore_options[displayreleasedate]" value="yes" <?php if ($options['displayreleasedate'] == "yes") echo 'checked'; ?> /> Date Released<br>
+					<input type="checkbox" name="appStore_options[displayreleasedate]" value="yes" <?php if ($options['displayreleasedate'] == "yes") echo 'checked'; ?> /> Date Released<br>					
+					Icon: <input type="radio" name="appStore_options[appstoreicon_to_use]" value="60" <?php if ($options['appstoreicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
+					<input type="radio" name="appStore_options[appstoreicon_to_use]" value="512" <?php if ($options['appstoreicon_to_use'] == "512") echo 'checked'; ?> /> 512px
+					<br>
+					<input type="text" size="3" name="appStore_options[appicon_size_adjust]" value="<?php echo $options['appicon_size_adjust']; ?>" />% Adjust Icon Size<br>
+					<input type="text" size="3" name="appStore_options[appicon_iOS_size_adjust]" value="<?php echo $options['appicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
 					</td>
+					<td valign="top"><h1>iTunes Store</h1><input type="checkbox" name="appStore_options[displayitunestitle]" value="yes" <?php if ($options['displayitunestitle'] == "yes") echo 'checked'; ?> /> Music Title<br>
+					<input type="checkbox" name="appStore_options[displayitunestrackcount]" value="yes" <?php if ($options['displayitunestrackcount'] == "yes") echo 'checked'; ?> /> Track count<br>
+					<input type="checkbox" name="appStore_options[displayitunesartistname]" value="yes" <?php if ($options['displayitunesartistname'] == "yes") echo 'checked'; ?> /> Artist<br>
+					<input type="checkbox" name="appStore_options[displayitunesfromalbum]" value="yes" <?php if ($options['displayitunesfromalbum'] == "yes") echo 'checked'; ?> /> From Album...<br>
+					<input type="checkbox" name="appStore_options[displayitunesgenre]" value="yes" <?php if ($options['displayitunesgenre'] == "yes") echo 'checked'; ?> /> Genre<br>
+					<input type="checkbox" name="appStore_options[displayitunesreleasedate]" value="yes" <?php if ($options['displayitunesreleasedate'] == "yes") echo 'checked'; ?> /> Release Date<br>
+					<input type="checkbox" name="appStore_options[displayitunesdescription]" value="yes" <?php if ($options['displayitunesdescription'] == "yes") echo 'checked'; ?> /> Description<br>
+					<input type="checkbox" name="appStore_options[displayitunesexplicitwarning]" value="yes" <?php if ($options['displayitunesexplicitwarning'] == "yes") echo 'checked'; ?> /> Explicit Lyrics Bagde<br>
+					Icon: <input type="radio" name="appStore_options[itunesicon_to_use]" value="30" <?php if ($options['itunesicon_to_use'] == "30") echo 'checked'; ?> /> 30px 
+					<input type="radio" name="appStore_options[itunesicon_to_use]" value="60" <?php if ($options['itunesicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
+					<input type="radio" name="appStore_options[itunesicon_to_use]" value="100" <?php if ($options['itunesicon_to_use'] == "100") echo 'checked'; ?> /> 100px
+					<br>
+					<input type="text" size="3" name="appStore_options[itunesicon_size_adjust]" value="<?php echo $options['itunesicon_size_adjust']; ?>" />% Adjust Icon Size<br>
+					<input type="text" size="3" name="appStore_options[itunesicon_iOS_size_adjust]" value="<?php echo $options['itunesicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
+					</td>
+
 				</tr>
 				<tr>
 					<th scope="row">Max Short Description Length:<br /><small>For "My Picks" list pages.</small></th>
-					<td>
+					<td colspan="2">
 						<input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />
 					</td>
 				</tr>
 				<tr>
+					<th scope="row">Smaller iOS Buy Button</th>
+					<td colspan="2">
+						<input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> />
+					</td>
+				</tr>
+				<tr>
 					<th scope="row">How many apps to display from ATOM feed:</th>
-					<td>
+					<td colspan="2">
 						<input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" />
 					</td>
 				</tr>
 
 				<tr>
-					<th scope="row">App Icon Width/Height:<br /><small>(in px.)</small></th>
-					<td>
-						<input type="text" size="10" name="appStore_options[icon_size]" value="<?php echo $options['icon_size']; ?>" />
-					</td>
-				</tr>
-
-				<tr>
 					<th scope="row">Screenshot Width:<br /><small>(in px. Height is automatic.)</small></th>
-					<td>
-						<input type="text" size="10" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />
+					<td colspan="2">
+						<input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />
 					</td>
 				</tr>
 				<tr>
-					<th scope="row" colspan="2" style="background-color: #B3B3B3;font-weight: bold;">Cache Options</th>
+					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">Cache Options</th>
 				</tr>
 				<tr>
 					<th scope="row">Data cache time:</th>
-					<td>
+					<td colspan="2">
 						<select name='appStore_options[cache_time_select_box]'>
 						
 							<?php $cache_intervals = array(
@@ -255,7 +290,7 @@ function appStore_render_form() {
 				</tr>
 				<tr valign="top">
 					<th scope="row">Cache images locally:</th>
-					<td>
+					<td colspan="2">
 						<!-- First checkbox button -->
 						<label><input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /> Yes</label><br />
 						<span style="color:#666666;margin-left:2px;">Load icons, screenshots, etc. locally instead of using Apple's CDN server. Your wp-content/uploads/ directory MUST be writeable for this option to have any effect.</span>
