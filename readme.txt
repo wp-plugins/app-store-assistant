@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 4.0
+Stable tag: 4.1
 
 The App Store Assistent adds 4 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -31,6 +31,12 @@ Works with the LinkShare/Linksynergy, TradeDoubler and DGM Affiliate Programs.
 [itunes_store id="123456789" more_info_text="open in iTunes..."] (where "123456789" is the iTunes Store ID) works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos
 
 == Changelog ==
+
+= 4.1 =
+* Added a button to insert shortcode for iTunes Store
+* Added a button to insert shortcode for App Store
+* Added a button to insert shortcode for Mac App Store
+* Added a button to insert shortcode for Apple ATOM feed
 
 = 4.0 =
 * Added a new shortcode for iTunes Store

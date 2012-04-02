@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.0
+Version: 4.1
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Store.
 Author: Scott Immerman
@@ -24,6 +24,38 @@ add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
 add_action('wp_print_styles', 'appStore_page_add_stylesheet');
+add_action('init', 'add_asa_mce_button');
+add_filter( 'tiny_mce_version', 'my_refresh_mce');
+
+// +++++ Add ios_app button to TinyMCE
+function add_asa_mce_button() {
+   if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
+     return;
+   if ( get_user_option('rich_editing') == 'true') {
+     add_filter('mce_external_plugins', 'add_asa_mce_tinymce_plugin');
+     add_filter('mce_buttons', 'register_asa_mce_button');
+   }
+}
+
+function register_asa_mce_button($buttons) {
+   array_push($buttons, "|", "ios_app", "itunes_store","mac_app", "asaf_atomfeed");
+   return $buttons;
+}
+
+function add_asa_mce_tinymce_plugin($plugin_array) {
+   $plugin_array['asa_mce'] = plugins_url( 'js_functions/editor_plugin.js', __FILE__ );
+   return $plugin_array;
+}
+
+function my_refresh_mce($ver) {
+  $ver += 3;
+  return $ver;
+}
+
+// ----- End of Add ASA buttons to TinyMCE
+
+
+
 
 function appStore_app_handler( $atts,$content=null, $code="" ) {
 	// Get App ID and more_info_text from shortcode
