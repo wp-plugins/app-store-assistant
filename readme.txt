@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 4.2
+Stable tag: 4.2.1
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -36,6 +36,9 @@ You can also add a shortcode to a Private page and have your own quick search fu
 [appStore_IDsearch] Add this short code to a Private page in Wordpress to have your own quick search function. Searches for iOS or Mac apps
 
 == Changelog ==
+
+= 4.2.1 =
+* Fixed Issue with search styles
 
 = 4.2 =
 * Added shortcode to have a private search page
