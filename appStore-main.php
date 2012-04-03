@@ -23,6 +23,7 @@ add_shortcode('ios_app', 'appStore_app_handler');
 add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
+add_shortcode('appStore_IDsearch', 'idsearch_app_handler');
 add_action('wp_print_styles', 'appStore_page_add_stylesheet');
 add_action('init', 'add_asa_mce_button');
 add_filter( 'tiny_mce_version', 'my_refresh_mce');
@@ -54,7 +55,58 @@ function my_refresh_mce($ver) {
 
 // ----- End of Add ASA buttons to TinyMCE
 
-
+function idsearch_app_handler($atts,$content=null, $code="") {
+	echo '<div id="searchForm" class="searchForm">';
+	echo '<form action="'.get_permalink( $post->ID ).'" method="POST">';
+	echo 'App Name: <input type="search" name="appname" id="appname" value="'.$_POST['appname'].'"><br>';
+	echo '<input type="radio" name="type" value="software" checked> iOS';
+	echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="macSoftware"> Mac';
+	echo '&nbsp;&nbsp;&nbsp;<button class="appStore-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
+	echo '</button>';
+	echo '</form>';
+	echo '</div>';
+	if (is_array($_POST)) {
+		$url="http://itunes.apple.com/search?term=".urlencode($_POST['appname'])."&country=us&entity=".$_POST['type']."";
+		$contents = file_get_contents($url); 
+		$contents = utf8_encode($contents); 
+		$foundApps = json_decode($contents);
+		$listOfApps = $foundApps->results;
+		//echo "<pre>";print_r($listOfApps);echo "</pre><hr>";
+		//echo "[$url]<hr>";
+		echo '<div id="appsList" class="appsList">';
+		foreach ($listOfApps as $appData) {
+			if($appData->price == 0) {
+				$TheAppPrice = "Free!";
+			} elseif($appData->price < 1)  {
+				$TheAppPrice = number_format($appData->price,2)*100;
+				$TheAppPrice .="&cent;";
+			} else {
+				$TheAppPrice = "$".$appData->price."";
+			}		
+			echo '<div class="appInfo">';
+				echo '<div class="appStore-search-icon-container">';
+					echo '<img class="appStore-icon" alt="'.$appData->artworkUrl60.'" src="'.$appData->artworkUrl60.'" width="60" height="60" align="middle">';
+				echo '</div>';
+				echo '<div class="appdetail">';
+				
+					echo $appData->trackName;
+					echo " (".$appData->version.")";
+					echo " [".$TheAppPrice."]<br>";
+					echo '<input id="id'.$appData->trackId.'" type="text" size="27" value="';
+					if ($_POST['type'] == "software") {
+						echo '[ios_app';
+					} else {
+						echo '[mac_app';
+					}
+					echo ' id=&quot;'.$appData->trackId.'&quot;]';
+					echo '">';
+				echo '</div>';
+		
+			echo "</div>";
+		}
+		echo "</div>";
+	}
+}
 
 
 function appStore_app_handler( $atts,$content=null, $code="" ) {

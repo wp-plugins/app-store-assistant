@@ -1,3 +1,32 @@
+.appStore-find {
+	margin: 0px;
+	border: 2px outset buttonface;
+	padding: 2px 6px 3px;
+}
+.appInfo {
+	background-color: #E6E6E6;
+	border-bottom: 2px #4C4C4C solid;
+	margin-bottom: 5px;
+}
+
+.appStore-search-icon-container {
+	float: none;
+	clear: none;
+	display: table-cell;
+}
+.appStore-search-icon-container img {
+	border: 0px;
+	background-color: Transparent;
+	margin-right: 10px;
+}
+
+
+.appdetail {
+	background-color: Transparent;
+	float: none;
+	clear: none;
+	display: table-cell;
+}
 .appStore-screenshots {
 	list-style-type: none !important;
 	margin: 0;
