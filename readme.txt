@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 4.2.1
+Stable tag: 4.2.2
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -16,12 +16,15 @@ Works with the LinkShare/Linksynergy, TradeDoubler and DGM Affiliate Programs.
 
 You can also add a shortcode to a Private page and have your own quick search function. Searches for iOS or Mac apps. Displays the shortcode already filled out.
 
+You can also Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
+
 
 == Installation ==
 
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Change your preferences under Settings
+4. Optional: Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
 
 == Available Shortcodes ==
 
@@ -36,6 +39,9 @@ You can also add a shortcode to a Private page and have your own quick search fu
 [appStore_IDsearch] Add this short code to a Private page in Wordpress to have your own quick search function. Searches for iOS or Mac apps
 
 == Changelog ==
+
+= 4.2.2 =
+* Added donation link to description
 
 = 4.2.1 =
 * Fixed Issue with search styles
