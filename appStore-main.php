@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.2.2
+Version: 4.2.3
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Store.
 Author: Scott Immerman
@@ -121,10 +121,12 @@ function appStore_app_handler( $atts,$content=null, $code="" ) {
 	
 	//Get the App Data
 	$app = appStore_get_data($id);
-	if($app)
+	if($app) {
 		return appStore_page_output($app,$more_info_text,"internal",$code);
-	else
-		wp_die('No valid data for app id: ' . $id);
+	} else {
+		echo "";
+		//wp_die('No valid data for app id: ' . $id);
+	}
 }
 
 function iTunesStore_handler( $atts,$content=null, $code="" ) {
@@ -190,11 +192,13 @@ function appStore_atomfeed_handler($atts, $content = null, $code="") {
 	foreach($appIDs as $appID) {
 		if($appID == "" || !is_numeric($appID)) return;
 		$app = appStore_get_data($appID);
-		if($app)
+		if($app) {
 			echo appStore_page_output($app,$more_info_text,"external",$code);
-		else
-			wp_die('No valid data for app id: ' . $id);
+		} else {
+			echo "";
+			//wp_die('No valid data for app id: ' . $id);
 		}
+	}
 	return; 
 }
 
@@ -681,7 +685,8 @@ function appStore_page_get_json($id) {
 	else
 		wp_die('<h1>You must have either file_get_contents() or curl_exec() enabled on your web server. Please contact your hosting provider.</h1>');		
 	if($json_data->resultCount == 0) {
-		wp_die('<h1>Apple returned no app with that app ID.<br />Please check your app ID.</h1>');
+		return null;
+		//wp_die('<h1>Apple returned no app with that app ID.<br />Please check your app ID.</h1>');
 	}
 	return $json_data->results[0];
 }
