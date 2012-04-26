@@ -1,3 +1,32 @@
+.appStore-find {
+	margin: 0px;
+	border: 2px outset buttonface;
+	padding: 2px 6px 3px;
+}
+.appInfo {
+	background-color: #E6E6E6;
+	border-bottom: 2px #666666 solid;
+	margin-bottom: 5px;
+}
+
+.appStore-search-icon-container {
+	float: none;
+	clear: none;
+	display: table-cell;
+}
+.appStore-search-icon-container img {
+	border: 0px;
+	background-color: Transparent;
+	margin-right: 10px;
+}
+
+
+.appdetail {
+	background-color: Transparent;
+	float: none;
+	clear: none;
+	display: table-cell;
+}
 .appStore-screenshots {
 	list-style-type: none !important;
 	margin: 0;
@@ -11,8 +40,39 @@
 	float: right;
 }
 
+.iTunesStore-icon {
+	float: right;
+}
+
 .appStore-rating {
 	margin-bottom: 10px;
+}
+.appStore-version {
+	text-align: left;
+}
+.appStore-developername {
+	text-align: left;
+}
+.appStore-sellername {
+	text-align: left;
+}
+.appStore-releasedate {
+	text-align: left;
+}
+.appStore-filesize {
+	text-align: left;
+}
+.appStore-universal {
+	text-align: left;
+}
+.appStore-advisoryrating {
+	text-align: left;
+}
+.appStore-categories {
+	text-align: left;
+}
+.appStore-supporteddevices {
+	text-align: left;
 }
 
 #appStore-icon-container {
@@ -26,17 +86,65 @@
 	-moz-border-radius: 20px;
 	-webkit-border-radius: 20px;
 	overflow: hidden;
-	background-color: green;
+	background-color: Transparent;
 }
+
+#iTunesStore-icon-container {
+	float: right;
+}
+
+#iTunesStore-icon-container img {
+	border: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: Transparent;
+}
+
 
 th.prefTableHeader {
 	background-color: #B3B3B3;
 	font-weight: bold;
 }
 
-
 div.asaf-entry img {
 	/* max-width: 150px;*/
+}
+.iTunesStore-Button {
+	padding: 5px 20px 5px 20px;
+	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5) );
+	background:-moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5');
+	background-color:#79bbff;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #84bbf3;
+	display:inline-block;
+	color:#fcfc00;
+	font-family:Trebuchet MS;
+	font-size:16px;
+	font-weight:bold;
+	padding:4px 8px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #39618a;
+	margin-top: 8px;
+
+}
+
+.iTunesStore-Button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #79bbff) );
+	background:-moz-linear-gradient( center top, #378de5 5%, #79bbff 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#79bbff');
+	background-color:#378de5;
+	color: #C9C9FF;
+}
+
+.iTunesStore-Button:active {
+	position:relative;
+	top:1px;
 }
 
 .appStore-Button {
@@ -60,7 +168,7 @@ div.asaf-entry img {
 	padding:4px 8px;
 	text-decoration:none;
 	text-shadow:1px 1px 0px #39618a;
-	margin-top: 5px;
+	margin-top: 8px;
 
 }
 
