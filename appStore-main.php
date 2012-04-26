@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.2.3
+Version: 4.2.4
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Store.
 Author: Scott Immerman
@@ -443,6 +443,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		</div>
 
 	</div>
+	<div class="appStore-addDetails">
 	<?php
 	if ((appStore_setting('displayapptitle') == "yes" AND !empty($app->trackName)) OR $mode != "internal") {
 		echo '<h1 class="appStore-title">'.$app->trackName.'</h1>';
@@ -503,6 +504,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	}
 
 	 ?>
+	</div>
 	<div style="clear:left;">&nbsp;</div>
 <?php
 	if (is_single()) {

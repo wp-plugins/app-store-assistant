@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 4.2.3
+Stable tag: 4.2.4
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -39,6 +39,9 @@ You can also Donate to fund the development of this plugin at <http://theiphonea
 [appStore_IDsearch] Add this short code to a Private page in Wordpress to have your own quick search function. Searches for iOS or Mac apps
 
 == Changelog ==
+
+= 4.2.4 =
+* Added CSS div to details section for compatibility with Google Fonts Plugin
 
 = 4.2.3 =
 * Fixed issue where if Apple RSS feed returned an invalid App ID, feed would not display fully.
