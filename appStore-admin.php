@@ -5,7 +5,9 @@ register_activation_hook(__FILE__, 'appStore_add_defaults');
 register_uninstall_hook(__FILE__, 'appStore_delete_plugin_options');
 add_action('admin_init', 'appStore_init' );
 add_action('admin_menu', 'appStore_add_options_page');
-add_filter( 'plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
+add_filter('plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
+add_action('admin_print_styles', 'appStore_admin_page_add_stylesheet');
+add_action('admin_print_scripts', 'load_js_files');
 
 // Delete options table entries ONLY when plugin deactivated AND deleted
 function appStore_delete_plugin_options() {
@@ -23,6 +25,9 @@ function appStore_delete_plugin_options() {
 // ------------------------------------------------------------------------------
 
 // Define default option settings
+
+
+
 function appStore_add_defaults() {
 	$tmp = get_option('appStore_options');
     if(!$tmp || !is_array($tmp)) {
@@ -86,17 +91,148 @@ function appStore_add_options_page() {
 
 // Render the Plugin options form
 function appStore_render_form() {
+
 	?>
 	<div class="wrap">
 		
 		<div class="icon32" id="icon-options-general"><br></div>
 		<h2>AppStore Assistant Page Options</h2>
-
 		<form method="post" action="options.php">
 			<?php settings_fields('appStore_plugin_options'); ?>
 			<?php $options = get_option('appStore_options'); ?>
 
-			<table class="form-table">
+
+
+
+<div id="tabs">
+    <ul>
+        <li><a href="#fragment-1"><span>General Options</span></a></li>
+        <li><a href="#fragment-2"><span>App Store Options</span></a></li>
+        <li><a href="#fragment-3"><span>iTunes Store Options</span></a></li>
+        <li><a href="#fragment-4"><span>Cache Options</span></a></li>
+        <li><a href="#fragment-5"><span>Affiliate Networks</span></a></li>
+    </ul>
+    <div id="fragment-1">
+        <table class="form-table">
+		<tr>
+		<th scope="row">Max Short Description Length:<br /><small>For "My Picks" list pages.</small></th>
+		<td colspan="2">
+			<input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Smaller iOS Buy Button</th>
+		<td colspan="2">
+			<input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> />
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">How many apps to display from ATOM feed:</th>
+		<td colspan="2">
+			<input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" />
+		</td>
+	</tr>
+
+	<tr>
+		<th scope="row">Screenshot Width:<br /><small>(in px. Height is automatic.)</small></th>
+		<td colspan="2">
+			<input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />
+		</td>
+	</tr>
+        </table>
+    </div>
+
+
+
+    <div id="fragment-2">
+		<h2>Show in Post body:</h2>
+		<input type="checkbox" name="appStore_options[displayapptitle]" value="yes" <?php if ($options['displayapptitle'] == "yes") echo 'checked'; ?> /> App Name<br>
+		<input type="checkbox" name="appStore_options[displayversion]" value="yes" <?php if ($options['displayversion'] == "yes") echo 'checked'; ?> /> App Version<br>
+		<input type="checkbox" name="appStore_options[displayadvisoryrating]" value="yes" <?php if ($options['displayadvisoryrating'] == "yes") echo 'checked'; ?> /> Advisory Rating<br>
+		<input type="checkbox" name="appStore_options[displaycategories]" value="yes" <?php if ($options['displaycategories'] == "yes") echo 'checked'; ?> /> App Categories<br>
+		<input type="checkbox" name="appStore_options[displayfilesize]" value="yes" <?php if ($options['displayfilesize'] == "yes") echo 'checked'; ?> /> File Size<br>
+		<input type="checkbox" name="appStore_options[displaystarrating]" value="yes" <?php if ($options['displaystarrating'] == "yes") echo 'checked'; ?> /> App Star Rating<br>
+		<input type="checkbox" name="appStore_options[displaydevelopername]" value="yes" <?php if ($options['displaydevelopername'] == "yes") echo 'checked'; ?> /> Developer Name<br>
+		<input type="checkbox" name="appStore_options[displaysellername]" value="yes" <?php if ($options['displaysellername'] == "yes") echo 'checked'; ?> /> Seller Name<br>
+		<input type="checkbox" name="appStore_options[displaygamecenterenabled]" value="yes" <?php if ($options['displaygamecenterenabled'] == "yes") echo 'checked'; ?> /> Game Center Enabled icon<br>
+		<input type="checkbox" name="appStore_options[displayuniversal]" value="yes" <?php if ($options['displayuniversal'] == "yes") echo 'checked'; ?> /> Universal App icon<br>
+		<input type="checkbox" name="appStore_options[displaysupporteddevices]" value="yes" <?php if ($options['displaysupporteddevices'] == "yes") echo 'checked'; ?> /> Supported Devices list<br>
+		<input type="checkbox" name="appStore_options[displayreleasedate]" value="yes" <?php if ($options['displayreleasedate'] == "yes") echo 'checked'; ?> /> Date Released<br>
+		
+		<h2>App Icon Size:</h2>
+		Icon to start with: <input type="radio" name="appStore_options[appstoreicon_to_use]" value="60" <?php if ($options['appstoreicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
+		<input type="radio" name="appStore_options[appstoreicon_to_use]" value="512" <?php if ($options['appstoreicon_to_use'] == "512") echo 'checked'; ?> /> 512px<br>
+		<input type="text" size="3" name="appStore_options[appicon_size_adjust]" value="<?php echo $options['appicon_size_adjust']; ?>" />% Adjust Icon Size<br>
+		<input type="text" size="3" name="appStore_options[appicon_iOS_size_adjust]" value="<?php echo $options['appicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
+    </div>
+    
+    
+    
+    <div id="fragment-3">
+   		<h2>Show in Post body:</h2>
+		<input type="checkbox" name="appStore_options[displayitunestitle]" value="yes" <?php if ($options['displayitunestitle'] == "yes") echo 'checked'; ?> /> Music Title<br>
+		<input type="checkbox" name="appStore_options[displayitunestrackcount]" value="yes" <?php if ($options['displayitunestrackcount'] == "yes") echo 'checked'; ?> /> Track count<br>
+		<input type="checkbox" name="appStore_options[displayitunesartistname]" value="yes" <?php if ($options['displayitunesartistname'] == "yes") echo 'checked'; ?> /> Artist<br>
+		<input type="checkbox" name="appStore_options[displayitunesfromalbum]" value="yes" <?php if ($options['displayitunesfromalbum'] == "yes") echo 'checked'; ?> /> From Album...<br>
+		<input type="checkbox" name="appStore_options[displayitunesgenre]" value="yes" <?php if ($options['displayitunesgenre'] == "yes") echo 'checked'; ?> /> Genre<br>
+		<input type="checkbox" name="appStore_options[displayitunesreleasedate]" value="yes" <?php if ($options['displayitunesreleasedate'] == "yes") echo 'checked'; ?> /> Release Date<br>
+		<input type="checkbox" name="appStore_options[displayitunesdescription]" value="yes" <?php if ($options['displayitunesdescription'] == "yes") echo 'checked'; ?> /> Description<br>
+		<input type="checkbox" name="appStore_options[displayitunesexplicitwarning]" value="yes" <?php if ($options['displayitunesexplicitwarning'] == "yes") echo 'checked'; ?> /> Explicit Lyrics Bagde<br>
+		<h2>App Icon Size:</h2>
+		Icon to start with: <input type="radio" name="appStore_options[itunesicon_to_use]" value="30" <?php if ($options['itunesicon_to_use'] == "30") echo 'checked'; ?> /> 30px 
+		<input type="radio" name="appStore_options[itunesicon_to_use]" value="60" <?php if ($options['itunesicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
+		<input type="radio" name="appStore_options[itunesicon_to_use]" value="100" <?php if ($options['itunesicon_to_use'] == "100") echo 'checked'; ?> /> 100px
+		<br>
+		<input type="text" size="3" name="appStore_options[itunesicon_size_adjust]" value="<?php echo $options['itunesicon_size_adjust']; ?>" />% Adjust Icon Size<br>
+		<input type="text" size="3" name="appStore_options[itunesicon_iOS_size_adjust]" value="<?php echo $options['itunesicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
+	</div>
+    
+    
+    <div id="fragment-4">
+    	<table class="form-table">
+        <tr>
+			<th scope="row">Data cache time:</th>
+			<td colspan="2">
+				<select name='appStore_options[cache_time_select_box]'>
+				
+					<?php $cache_intervals = array(
+												'Don\'t cache'=>0,
+												'1 minute'=>1*60,
+												'5 minutes'=>5*60,
+												'10 minutes'=>10*60,
+												'30 minutes'=>30*60,
+												'1 hour'=>1*60*60,
+												'6 hours'=>6*60*60,
+												'12 hours'=>12*60*60,
+												'24 hours'=>24*60*60,
+												'1 Week'=>24*60*60*7,
+												'1 Month'=>24*60*60*7*30,
+												'1 Year'=>24*60*60*7*30*365
+											);
+					
+					foreach ($cache_intervals as $key => $value) {
+						echo '<option value="' . $value . '" ' . selected($value, $options['cache_time_select_box']) . '>' . $key . '</option>';
+					}						
+					?>							
+				</select>
+				<span style="color:#666666;margin-left:2px;">This option determines how long before the plugin requests new data from Apple's servers.</span>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">Cache images locally:</th>
+					<td colspan="2">
+						<!-- First checkbox button -->
+						<label><input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /> Yes</label><br />
+						<span style="color:#666666;margin-left:2px;">Load icons, screenshots, etc. locally instead of using Apple's CDN server. Your wp-content/uploads/ directory MUST be writeable for this option to have any effect.</span>
+					</td>
+				</tr>
+			</table>
+    </div>
+    
+    
+    
+    <div id="fragment-5">
+        <table class="form-table">
 				<tr>
 					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">Affiliate Networks</th>
 				</tr>
@@ -191,112 +327,15 @@ function appStore_render_form() {
 						<input type="text" size="20" name="appStore_options[dgmwrapper]" value="<?php echo $options['dgmwrapper']; ?>"/>
 					</td>
 				</tr>
-				<tr>
-					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">Display Options</th>
-				</tr>
-				<tr>
-					<th scope="row">Show in Post body:</th>
-					<td valign="top"><h1>App Stores</h1><br>
-					<input type="checkbox" name="appStore_options[displayapptitle]" value="yes" <?php if ($options['displayapptitle'] == "yes") echo 'checked'; ?> /> App Name<br>
-					<input type="checkbox" name="appStore_options[displayversion]" value="yes" <?php if ($options['displayversion'] == "yes") echo 'checked'; ?> /> App Version<br>
-					<input type="checkbox" name="appStore_options[displayadvisoryrating]" value="yes" <?php if ($options['displayadvisoryrating'] == "yes") echo 'checked'; ?> /> Advisory Rating<br>
-					<input type="checkbox" name="appStore_options[displaycategories]" value="yes" <?php if ($options['displaycategories'] == "yes") echo 'checked'; ?> /> App Categories<br>
-					<input type="checkbox" name="appStore_options[displayfilesize]" value="yes" <?php if ($options['displayfilesize'] == "yes") echo 'checked'; ?> /> File Size<br>
-					<input type="checkbox" name="appStore_options[displaystarrating]" value="yes" <?php if ($options['displaystarrating'] == "yes") echo 'checked'; ?> /> App Star Rating<br>
-					<input type="checkbox" name="appStore_options[displaydevelopername]" value="yes" <?php if ($options['displaydevelopername'] == "yes") echo 'checked'; ?> /> Developer Name<br>
-					<input type="checkbox" name="appStore_options[displaysellername]" value="yes" <?php if ($options['displaysellername'] == "yes") echo 'checked'; ?> /> Seller Name<br>
-					<input type="checkbox" name="appStore_options[displaygamecenterenabled]" value="yes" <?php if ($options['displaygamecenterenabled'] == "yes") echo 'checked'; ?> /> Game Center Enabled icon<br>
-					<input type="checkbox" name="appStore_options[displayuniversal]" value="yes" <?php if ($options['displayuniversal'] == "yes") echo 'checked'; ?> /> Universal App icon<br>
-					<input type="checkbox" name="appStore_options[displaysupporteddevices]" value="yes" <?php if ($options['displaysupporteddevices'] == "yes") echo 'checked'; ?> /> Supported Devices list<br>
-					<input type="checkbox" name="appStore_options[displayreleasedate]" value="yes" <?php if ($options['displayreleasedate'] == "yes") echo 'checked'; ?> /> Date Released<br>					
-					Icon: <input type="radio" name="appStore_options[appstoreicon_to_use]" value="60" <?php if ($options['appstoreicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
-					<input type="radio" name="appStore_options[appstoreicon_to_use]" value="512" <?php if ($options['appstoreicon_to_use'] == "512") echo 'checked'; ?> /> 512px
-					<br>
-					<input type="text" size="3" name="appStore_options[appicon_size_adjust]" value="<?php echo $options['appicon_size_adjust']; ?>" />% Adjust Icon Size<br>
-					<input type="text" size="3" name="appStore_options[appicon_iOS_size_adjust]" value="<?php echo $options['appicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
-					</td>
-					<td valign="top"><h1>iTunes Store</h1><input type="checkbox" name="appStore_options[displayitunestitle]" value="yes" <?php if ($options['displayitunestitle'] == "yes") echo 'checked'; ?> /> Music Title<br>
-					<input type="checkbox" name="appStore_options[displayitunestrackcount]" value="yes" <?php if ($options['displayitunestrackcount'] == "yes") echo 'checked'; ?> /> Track count<br>
-					<input type="checkbox" name="appStore_options[displayitunesartistname]" value="yes" <?php if ($options['displayitunesartistname'] == "yes") echo 'checked'; ?> /> Artist<br>
-					<input type="checkbox" name="appStore_options[displayitunesfromalbum]" value="yes" <?php if ($options['displayitunesfromalbum'] == "yes") echo 'checked'; ?> /> From Album...<br>
-					<input type="checkbox" name="appStore_options[displayitunesgenre]" value="yes" <?php if ($options['displayitunesgenre'] == "yes") echo 'checked'; ?> /> Genre<br>
-					<input type="checkbox" name="appStore_options[displayitunesreleasedate]" value="yes" <?php if ($options['displayitunesreleasedate'] == "yes") echo 'checked'; ?> /> Release Date<br>
-					<input type="checkbox" name="appStore_options[displayitunesdescription]" value="yes" <?php if ($options['displayitunesdescription'] == "yes") echo 'checked'; ?> /> Description<br>
-					<input type="checkbox" name="appStore_options[displayitunesexplicitwarning]" value="yes" <?php if ($options['displayitunesexplicitwarning'] == "yes") echo 'checked'; ?> /> Explicit Lyrics Bagde<br>
-					Icon: <input type="radio" name="appStore_options[itunesicon_to_use]" value="30" <?php if ($options['itunesicon_to_use'] == "30") echo 'checked'; ?> /> 30px 
-					<input type="radio" name="appStore_options[itunesicon_to_use]" value="60" <?php if ($options['itunesicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
-					<input type="radio" name="appStore_options[itunesicon_to_use]" value="100" <?php if ($options['itunesicon_to_use'] == "100") echo 'checked'; ?> /> 100px
-					<br>
-					<input type="text" size="3" name="appStore_options[itunesicon_size_adjust]" value="<?php echo $options['itunesicon_size_adjust']; ?>" />% Adjust Icon Size<br>
-					<input type="text" size="3" name="appStore_options[itunesicon_iOS_size_adjust]" value="<?php echo $options['itunesicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
-					</td>
-
-				</tr>
-				<tr>
-					<th scope="row">Max Short Description Length:<br /><small>For "My Picks" list pages.</small></th>
-					<td colspan="2">
-						<input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">Smaller iOS Buy Button</th>
-					<td colspan="2">
-						<input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> />
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">How many apps to display from ATOM feed:</th>
-					<td colspan="2">
-						<input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" />
-					</td>
-				</tr>
-
-				<tr>
-					<th scope="row">Screenshot Width:<br /><small>(in px. Height is automatic.)</small></th>
-					<td colspan="2">
-						<input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />
-					</td>
-				</tr>
-				<tr>
-					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">Cache Options</th>
-				</tr>
-				<tr>
-					<th scope="row">Data cache time:</th>
-					<td colspan="2">
-						<select name='appStore_options[cache_time_select_box]'>
-						
-							<?php $cache_intervals = array(
-														'Don\'t cache'=>0,
-														'1 minute'=>1*60,
-														'5 minutes'=>5*60,
-														'10 minutes'=>10*60,
-														'30 minutes'=>30*60,
-														'1 hour'=>1*60*60,
-														'6 hours'=>6*60*60,
-														'12 hours'=>12*60*60,
-														'24 hours'=>24*60*60,
-														'1 Week'=>24*60*60*7,
-														'1 Month'=>24*60*60*7*30,
-														'1 Year'=>24*60*60*7*30*365
-													);
-							
-							foreach ($cache_intervals as $key => $value) {
-								echo '<option value="' . $value . '" ' . selected($value, $options['cache_time_select_box']) . '>' . $key . '</option>';
-							}						
-							?>							
-						</select>
-						<span style="color:#666666;margin-left:2px;">This option determines how long before the plugin requests new data from Apple's servers.</span>
-					</td>
-				</tr>
-				<tr valign="top">
-					<th scope="row">Cache images locally:</th>
-					<td colspan="2">
-						<!-- First checkbox button -->
-						<label><input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /> Yes</label><br />
-						<span style="color:#666666;margin-left:2px;">Load icons, screenshots, etc. locally instead of using Apple's CDN server. Your wp-content/uploads/ directory MUST be writeable for this option to have any effect.</span>
-					</td>
-				</tr>
 			</table>
+    </div>
+</div>
+
+	
+	
+
+
+
 			<p class="submit">
 			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 			</p>
@@ -320,4 +359,27 @@ function appStore_plugin_action_links( $links, $file ) {
 	}
 
 	return $links;
+}
+
+function load_js_files()
+{
+	//wp_enqueue_script('addclasskillclass', plugins_url('/js_functions/addclasskillclass.js',__FILE__) );
+	//wp_enqueue_script('addcss', plugins_url('/js_functions/AddCSS.js',__FILE__) );
+	//wp_enqueue_script('attachevent', plugins_url('/js_functions/attachevent.js',__FILE__) );
+	//wp_enqueue_script('tabtastic', plugins_url('/js_functions/tabtastic.js',__FILE__) );
+
+
+    wp_deregister_script( 'jqueryui' );
+    wp_register_script( 'jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js');
+    wp_enqueue_script( 'jqueryui' );
+    wp_deregister_script( 'jquery' );
+    wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js');
+    wp_enqueue_script( 'jquery' );
+	wp_enqueue_script('jquerymenusstart', plugins_url('/js_functions/jquerymenusstart',__FILE__) );
+
+}
+
+function appStore_admin_page_add_stylesheet() {
+	wp_register_style('appStore-admin-styles', plugins_url( 'appStore-admin.css', __FILE__ ));
+	wp_enqueue_style( 'appStore-admin-styles');
 }

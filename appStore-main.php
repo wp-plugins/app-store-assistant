@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.2.4
+Version: 4.3
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Store.
 Author: Scott Immerman
@@ -14,6 +14,7 @@ Copyright 2012 Scott Immerman
 */
 require_once('simplepie.inc');
 define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup?id=');
+add_action('wp_print_styles', 'appStore_page_add_stylesheet');
 
 include_once("appStore-admin.php");
 
@@ -24,7 +25,6 @@ add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
 add_shortcode('appStore_IDsearch', 'idsearch_app_handler');
-add_action('wp_print_styles', 'appStore_page_add_stylesheet');
 add_action('init', 'add_asa_mce_button');
 add_filter( 'tiny_mce_version', 'my_refresh_mce');
 
@@ -82,7 +82,10 @@ function idsearch_app_handler($atts,$content=null, $code="") {
 				$TheAppPrice .="&cent;";
 			} else {
 				$TheAppPrice = "$".$appData->price."";
-			}		
+			}
+			
+			$Categories = implode(",", $appData->genres);
+					
 			echo '<div class="appInfo">';
 				echo '<div class="appStore-search-icon-container">';
 					echo '<img class="appStore-icon" alt="'.$appData->artworkUrl60.'" src="'.$appData->artworkUrl60.'" width="60" height="60" align="middle">';
@@ -91,7 +94,8 @@ function idsearch_app_handler($atts,$content=null, $code="") {
 				
 					echo $appData->trackName;
 					echo " (".$appData->version.")";
-					echo " [".$TheAppPrice."]<br>";
+					echo " [".$TheAppPrice."] ";
+					echo " [".$Categories."]<br>";
 					echo '<input id="id'.$appData->trackId.'" type="text" size="27" value="';
 					if ($_POST['type'] == "software") {
 						echo '[ios_app';
