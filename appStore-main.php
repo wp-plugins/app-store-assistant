@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.3
+Version: 4.3.1
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Store.
 Author: Scott Immerman
@@ -57,13 +57,13 @@ function my_refresh_mce($ver) {
 
 function idsearch_app_handler($atts,$content=null, $code="") {
 	echo '<div id="searchForm" class="searchForm">';
-	echo '<form action="'.get_permalink( $post->ID ).'" method="POST">';
-	echo 'App Name: <input type="search" name="appname" id="appname" value="'.$_POST['appname'].'"><br>';
-	echo '<input type="radio" name="type" value="software" checked> iOS';
-	echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="macSoftware"> Mac';
-	echo '&nbsp;&nbsp;&nbsp;<button class="appStore-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
-	echo '</button>';
-	echo '</form>';
+		echo '<form action="'.get_permalink( $post->ID ).'" method="POST">';
+		echo 'App Name: <input type="search" name="appname" id="appname" value="'.$_POST['appname'].'"><br>';
+		echo '<input type="radio" name="type" value="software" checked> iOS';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="macSoftware"> Mac';
+		echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
+		echo '</button>';
+		echo '</form>';
 	echo '</div>';
 	if (is_array($_POST)) {
 		$url="http://itunes.apple.com/search?term=".urlencode($_POST['appname'])."&country=us&entity=".$_POST['type']."";
@@ -73,42 +73,44 @@ function idsearch_app_handler($atts,$content=null, $code="") {
 		$listOfApps = $foundApps->results;
 		//echo "<pre>";print_r($listOfApps);echo "</pre><hr>";
 		//echo "[$url]<hr>";
-		echo '<div id="appsList" class="appsList">';
-		foreach ($listOfApps as $appData) {
-			if($appData->price == 0) {
-				$TheAppPrice = "Free!";
-			} elseif($appData->price < 1)  {
-				$TheAppPrice = number_format($appData->price,2)*100;
-				$TheAppPrice .="&cent;";
-			} else {
-				$TheAppPrice = "$".$appData->price."";
-			}
-			
-			$Categories = implode(",", $appData->genres);
-					
-			echo '<div class="appInfo">';
-				echo '<div class="appStore-search-icon-container">';
-					echo '<img class="appStore-icon" alt="'.$appData->artworkUrl60.'" src="'.$appData->artworkUrl60.'" width="60" height="60" align="middle">';
-				echo '</div>';
-				echo '<div class="appdetail">';
+		echo '<div class="appStore-search-appsList">';
+			echo '<ul>';
+			foreach ($listOfApps as $appData) {
+				if($appData->price == 0) {
+					$TheAppPrice = "Free!";
+				} elseif($appData->price < 1)  {
+					$TheAppPrice = number_format($appData->price,2)*100;
+					$TheAppPrice .="&cent;";
+				} else {
+					$TheAppPrice = "$".$appData->price."";
+				}
 				
-					echo $appData->trackName;
-					echo " (".$appData->version.")";
-					echo " [".$TheAppPrice."] ";
-					echo " [".$Categories."]<br>";
-					echo '<input id="id'.$appData->trackId.'" type="text" size="27" value="';
-					if ($_POST['type'] == "software") {
-						echo '[ios_app';
-					} else {
-						echo '[mac_app';
-					}
-					echo ' id=&quot;'.$appData->trackId.'&quot;]';
-					echo '">';
-				echo '</div>';
-		
-			echo "</div>";
-		}
+				$Categories = implode(", ", $appData->genres);
+						
+				echo "<li class='appStore-search-result' ";
+				echo "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
+				echo "<p>";
+				echo "<span class='appStore-search-title'>".$appData->trackName."</span>";
+				echo " (".$appData->version.")<br>";
+				
+				echo " by ".$appData->artistName."/".$appData->sellerName."<br>";
+				echo " [".$TheAppPrice."] ";
+				echo "<b> [".$Categories."]</b><br><br>";
+				echo '<input id="id'.$appData->trackId.'" type="text" size="27" value="';
+				if ($_POST['type'] == "software") {
+					echo '[ios_app';
+				} else {
+					echo '[mac_app';
+				}
+				echo ' id=&quot;'.$appData->trackId.'&quot;]';
+				echo '">';
+				echo "</p>";
+				echo '</li>';
+			}
+			echo '</ul>';
 		echo "</div>";
+		echo '<div style="clear:left;">&nbsp;</div>';
+
 	}
 }
 
