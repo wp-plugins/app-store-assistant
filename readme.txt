@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.3.2
-Stable tag: 4.3.1
+Stable tag: 4.3.2
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -17,6 +17,8 @@ Works with the LinkShare/Linksynergy, TradeDoubler and DGM Affiliate Programs.
 You can also add a shortcode to a Private page and have your own quick search function. Searches for iOS or Mac apps. Displays the shortcode already filled out.
 
 You can also Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
+
+Please let us know of any features you would like added or bugs that need squashing in the Wordpress fourms <http://wordpress.org/tags/app-store-assistant?forum_id=10>
 
 
 == Installation ==
@@ -36,9 +38,17 @@ You can also Donate to fund the development of this plugin at <http://theiphonea
 
 [itunes_store id="123456789" more_info_text="open in iTunes..."] (where "123456789" is the iTunes Store ID) works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos
 
-[appStore_IDsearch] Add this short code to a Private page in Wordpress to have your own quick search function. Searches for iOS or Mac apps
+[appStore_IDsearch] Add this short code to a Private page/post in Wordpress to have your own quick search function. Searches for iPhone/iPod, iPad or Mac apps. Displays Name, Price, Developer, Categories and a copyable shortcode already filled out.
 
 == Changelog ==
+
+= 4.3.2 =
+* Added ability to ID Search for iPhone/iPod OR iPad apps [was just iOS]
+* Updated ID Search for Mac apps [API change]
+* Added title to ID Search based on selected type of search
+* Fixed ID Search form to keep app type selection after search
+* Adjusted box size for shortcode in ID Serach Results for easier copying
+* CSS changes in ID Search Results
 
 = 4.3.1 =
 * Fixed issue with empty Main Stylesheet [Was blank in 4.3]
@@ -47,7 +57,7 @@ You can also Donate to fund the development of this plugin at <http://theiphonea
 * Cleaned some code for more efficient processing
 
 = 4.3 =
-* Redesigned Settings page for easier setup
+* Redesigned Settings page for easier setup [Major update]
 * Added Categories display to ID Search results
 
 = 4.2.4 =

@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.3.1
+Version: 4.3.2
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Store.
 Author: Scott Immerman
@@ -56,23 +56,58 @@ function my_refresh_mce($ver) {
 // ----- End of Add ASA buttons to TinyMCE
 
 function idsearch_app_handler($atts,$content=null, $code="") {
+
+	if (!empty($_POST)) {
+		switch ($_POST['type']) {
+    	case "software":
+			$Searchtype = "iPhone/iPod Software";
+			$shortCodeStart = "[ios_app";
+			$iCK = " checked";
+			break;
+    	case "iPadSoftware":
+			$Searchtype = "iPad Software";
+			$shortCodeStart = "[ios_app";
+			$iPCK = " checked";
+			break;
+    	case "macSoftware":
+			$Searchtype = "Macintosh Software";
+			$shortCodeStart = "[mac_app";
+			$mCK = " checked";
+			break;
+		default:
+			$Searchtype = "iPhone/iPod Software";
+			$iCK = " checked";
+			$shortCodeStart = "[ios_app";		
+		}
+		$SearchTerm = $_POST['appname'];
+	} else {
+		$SearchTerm = "";
+		$iCK = " checked";
+	}
+
+
 	echo '<div id="searchForm" class="searchForm">';
 		echo '<form action="'.get_permalink( $post->ID ).'" method="POST">';
-		echo 'App Name: <input type="search" name="appname" id="appname" value="'.$_POST['appname'].'"><br>';
-		echo '<input type="radio" name="type" value="software" checked> iOS';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="macSoftware"> Mac';
+		echo 'App Name: <input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="50"><br>';
+		echo '<input type="radio" name="type" value="software"'.$iCK.'> iPhone/iPod';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPadSoftware"'.$iPCK.'> iPad';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="macSoftware"'.$mCK.'> Mac';
 		echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
 		echo '</button>';
 		echo '</form>';
 	echo '</div>';
-	if (is_array($_POST)) {
-		$url="http://itunes.apple.com/search?term=".urlencode($_POST['appname'])."&country=us&entity=".$_POST['type']."";
+	if (!empty($_POST)) {
+
+		$url  = "http://itunes.apple.com/search?term=";
+		$url .= urlencode($_POST['appname'])."&country=us&entity=".$_POST['type']."";
 		$contents = file_get_contents($url); 
 		$contents = utf8_encode($contents); 
 		$foundApps = json_decode($contents);
 		$listOfApps = $foundApps->results;
 		//echo "<pre>";print_r($listOfApps);echo "</pre><hr>";
+		//echo "<pre>";print_r($_POST);echo "</pre><hr>";
 		//echo "[$url]<hr>";
+		echo "<h2>$Searchtype</h2>";
 		echo '<div class="appStore-search-appsList">';
 			echo '<ul>';
 			foreach ($listOfApps as $appData) {
@@ -96,12 +131,8 @@ function idsearch_app_handler($atts,$content=null, $code="") {
 				echo " by ".$appData->artistName."/".$appData->sellerName."<br>";
 				echo " [".$TheAppPrice."] ";
 				echo "<b> [".$Categories."]</b><br><br>";
-				echo '<input id="id'.$appData->trackId.'" type="text" size="27" value="';
-				if ($_POST['type'] == "software") {
-					echo '[ios_app';
-				} else {
-					echo '[mac_app';
-				}
+				echo '<input id="id'.$appData->trackId.'" type="text" size="28" value="';
+				echo $shortCodeStart;
 				echo ' id=&quot;'.$appData->trackId.'&quot;]';
 				echo '">';
 				echo "</p>";
