@@ -1,9 +1,9 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.3.2
+Version: 4.4
 Plugin URI: http://TheiPhoneAppsList.com/
-Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Store.
+Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
 Author URI: http://SEALsystems.net/
 */
@@ -15,6 +15,7 @@ Copyright 2012 Scott Immerman
 require_once('simplepie.inc');
 define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup?id=');
 add_action('wp_print_styles', 'appStore_page_add_stylesheet');
+add_action( 'wp_head', 'appStore_css_hook' );
 
 include_once("appStore-admin.php");
 
@@ -54,6 +55,99 @@ function my_refresh_mce($ver) {
 }
 
 // ----- End of Add ASA buttons to TinyMCE
+function appStore_css_hook( ) {
+
+	$emptyStar = plugins_url( 'images/star-rating-'.appStore_setting('empty_star_color').'.png', __FILE__ );
+	$fullStar = plugins_url( 'images/star-rating-'.appStore_setting('full_star_color').'.png', __FILE__ );
+	
+?>
+ 
+<style type='text/css'>
+.appStore-rating_bar {
+	display:inline-block;
+	/* width of the background picture * 5 */
+	width: 155px;
+	text-align:left;
+	/* This is the picture of a single empty star */
+	background: url(<?php echo $emptyStar; ?>) 0 0 repeat-x;
+}
+
+.appStore-rating_bar span {
+	display:inherit;
+	/* height of the background picture */
+	height: 31px;
+	/* This is the picture of a single full star */
+	background: url(<?php echo $fullStar; ?>) 0 0 repeat-x;
+}
+
+.appStore-Button {
+	padding: 5px 20px 5px 20px;
+	-moz-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonStart') ?>;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #<?php echo appStore_setting('color_buttonBorder') ?>;
+	display:inline-block;
+	color:#<?php echo appStore_setting('color_buttonText') ?>;
+	font-family:Trebuchet MS;
+	font-size:16px;
+	font-weight:bold;
+	padding:4px 8px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #<?php echo appStore_setting('color_buttonTextShadow') ?>;
+	margin-top: 8px;
+
+}
+
+.appStore-Button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonHoverStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonHoverStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonHoverStart') ?> 5%, #<?php echo appStore_setting('color_buttonHoverStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonHoverStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonHoverStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonHoverStart') ?>;
+	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
+}
+
+.iTunesStore-Button {
+	padding: 5px 20px 5px 20px;
+	-moz-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonStart') ?>;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #<?php echo appStore_setting('color_buttonBorder') ?>;
+	display:inline-block;
+	color:#<?php echo appStore_setting('color_buttonText') ?>;
+	font-family:Trebuchet MS;
+	font-size:16px;
+	font-weight:bold;
+	padding:4px 8px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #<?php echo appStore_setting('color_buttonTextShadow') ?>;
+	margin-top: 8px;
+
+}
+
+.iTunesStore-Button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonHoverStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonHoverStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonHoverStart') ?> 5%, #<?php echo appStore_setting('color_buttonHoverStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonHoverStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonHoverStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonHoverStart') ?>;
+	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
+}
+</style>
+<?php
+}
 
 function idsearch_app_handler($atts,$content=null, $code="") {
 
@@ -85,7 +179,6 @@ function idsearch_app_handler($atts,$content=null, $code="") {
 		$iCK = " checked";
 	}
 
-
 	echo '<div id="searchForm" class="searchForm">';
 		echo '<form action="'.get_permalink( $post->ID ).'" method="POST">';
 		echo 'App Name: <input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="50"><br>';
@@ -104,9 +197,6 @@ function idsearch_app_handler($atts,$content=null, $code="") {
 		$contents = utf8_encode($contents); 
 		$foundApps = json_decode($contents);
 		$listOfApps = $foundApps->results;
-		//echo "<pre>";print_r($listOfApps);echo "</pre><hr>";
-		//echo "<pre>";print_r($_POST);echo "</pre><hr>";
-		//echo "[$url]<hr>";
 		echo "<h2>$Searchtype</h2>";
 		echo '<div class="appStore-search-appsList">';
 			echo '<ul>';
@@ -274,9 +364,6 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 			$iTunesURL = $iTunesItem->collectionViewUrl;
 			break;
 	}
-
-	
-	
 	$iTunesCategory = $iTunesItem->primaryGenreName;
 	$artistName = $iTunesItem->artistName;
 	$releaseDate = date( 'F j, Y', strtotime($iTunesItem->releaseDate));
@@ -309,9 +396,6 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
  			$description = $iTunesItem->longDescription;
 			break;
 	}
-
-
-
 	//Check to see if the app is free, or under a dollar
 	if($unformattedPrice == 0) {
 		$iTunesPrice = "Free!";
@@ -365,7 +449,6 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 
 	</div>
 	<?php
-	
 	
 	if ((appStore_setting('displayitunestitle') == "yes" AND !empty($iTunesName)) OR $mode != "internal") {
 		echo '<h1 class="iTunesStore-title">'.$iTunesName.'</h1>';
@@ -449,7 +532,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	if($is_iphone) $adjustIcon = appStore_setting('appicon_iOS_size_adjust')/100;
 	$newImageWidth = $originalImageSize[0] * $adjustIcon;
 	$newImageHeight = $originalImageSize[1] * $adjustIcon;
-
 	
 	//App Category
 	$appCategory = $app->genres;
@@ -528,14 +610,9 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		}
 		echo '</span>';
 	}
-	if(isset($app->userRatingCount) AND appStore_setting('displaystarrating') == "yes") {
-		echo '<div class="appStore-rating">';
-		echo '	<span class="appStore-rating_bar" title="Rating '.$app->averageUserRating.' stars">';
-		echo '	<span style="width:'.$appRating.'%"></span>';
-		echo '	</span> by '.$app->userRatingCount.' users.';
-		echo '</div>';
-	}
 	
+	displayAppStoreRating($appRating,$app->averageUserRating,$app->userRatingCount);
+		
 	if (appStore_setting('displaygamecenterenabled') == "yes" AND $app->isGameCenterEnabled == 1) {
 		echo '<img src="'.plugins_url( 'images/gamecenter.jpg' , __FILE__ ).'" width="88" height="92" alt="gamecenter" />';
 	}
@@ -623,20 +700,27 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		echo '<span class="appStore-supporteddevices">Supported Devices: '.implode(", ", $app->supportedDevices)."</span><br>";
 	}
 	echo '	</div>';
-	//echo '	<div style="clear:left;">&nbsp;</div>';
 	
 	if($_SERVER['REMOTE_ADDR'] == "98.148.220.0B") {
 		echo "<hr>";
 		echo "<pre>";echo print_r($iTunesItem, true);echo "</pre>";
 	}
-
-	
-	
-	
 	$return = ob_get_contents();
 	ob_end_clean();	
 	return $return;
 }
+
+function displayAppStoreRating($appRating,$averageRating,$ratingCount) {
+	if(isset($ratingCount) AND appStore_setting('displaystarrating') == "yes") {
+		echo '<div class="appStore-rating">';
+		echo '	<span class="appStore-rating_bar" title="Rating '.$averageRating.' stars">';
+		echo '	<span style="width:'.$appRating.'%"></span>';
+		echo '	</span> by '.$ratingCount.' users.';
+		echo '</div>';
+	}
+
+}
+
 
 function getAffiliateURL($iTunesURL){
 	switch (appStore_setting('affiliatepartnerid')) {
@@ -676,7 +760,6 @@ function getAffiliateURL($iTunesURL){
 	return $AffiliateURL;
 }
 
-
 function appStore_get_data( $id ) {
 	//Check to see if we have a cached version of the JSON.
 	$appStore_options = get_option('appStore_appData_' . $id, '');		
@@ -688,10 +771,6 @@ function appStore_get_data( $id ) {
 	}	
 	return $appStore_options['app_data'];
 }
-
-
-
-
 
 function appStore_getIDs_from_feed($atomurl) {
 	$last = $atomurl[strlen($atomurl)-1];

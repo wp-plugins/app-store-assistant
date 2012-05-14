@@ -7,7 +7,7 @@ add_action('admin_init', 'appStore_init' );
 add_action('admin_menu', 'appStore_add_options_page');
 add_filter('plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
 add_action('admin_print_styles', 'appStore_admin_page_add_stylesheet');
-add_action('admin_print_scripts', 'load_js_files');
+add_action('admin_enqueue_scripts', 'load_js_files');
 
 // Delete options table entries ONLY when plugin deactivated AND deleted
 function appStore_delete_plugin_options() {
@@ -25,8 +25,6 @@ function appStore_delete_plugin_options() {
 // ------------------------------------------------------------------------------
 
 // Define default option settings
-
-
 
 function appStore_add_defaults() {
 	$tmp = get_option('appStore_options');
@@ -67,6 +65,17 @@ function appStore_add_defaults() {
 						"smaller_buy_button_iOS" => "yes",
 						"max_description" => "300",
 						"qty_of_apps" => "10",
+						"full_star_color" => "gold",
+						"empty_star_color" => "clear",
+						"color_buttonStart" => "79bbff",
+						"color_buttonStop" => "378de5",
+						"color_buttonText" => "fcfc00",
+						"color_buttonTextShadow" => "39618a",
+						"color_buttonShadow" => "bbdaf7",
+						"color_buttonBorder" => "84bbf3",
+						"color_buttonHoverStart" => "378de5",
+						"color_buttonHoverStop" => "79bbff",
+						"color_buttonHoverText" => "C9C9FF",
 						"ss_size" => "120",
 						"cache_time_select_box" => (24*60*60),
 						"cache_images_locally" => "1"
@@ -77,11 +86,13 @@ function appStore_add_defaults() {
 
 // Init plugin options to white list our options
 function appStore_init(){
-
 	$settings = get_option('appStore_options');
-
 	if(!$settings) appStore_add_defaults();
 	register_setting( 'appStore_plugin_options', 'appStore_options', 'appStore_validate_options' );
+	wp_enqueue_script('jquery-ui-core');//enables UI
+	wp_enqueue_script('jquery-ui-tabs');
+	wp_enqueue_style( 'farbtastic' );
+	wp_enqueue_script( 'farbtastic' );
 }
 
 // Add menu page
@@ -101,16 +112,14 @@ function appStore_render_form() {
 			<?php settings_fields('appStore_plugin_options'); ?>
 			<?php $options = get_option('appStore_options'); ?>
 
-
-
-
-<div id="tabs">
+<div class="tabs">
     <ul>
         <li><a href="#fragment-1"><span>General Options</span></a></li>
-        <li><a href="#fragment-2"><span>App Store Options</span></a></li>
-        <li><a href="#fragment-3"><span>iTunes Store Options</span></a></li>
-        <li><a href="#fragment-4"><span>Cache Options</span></a></li>
-        <li><a href="#fragment-5"><span>Affiliate Networks</span></a></li>
+        <li><a href="#fragment-2"><span>Visual Elements</span></a></li>
+        <li><a href="#fragment-3"><span>App Store Options</span></a></li>
+        <li><a href="#fragment-4"><span>iTunes Store Options</span></a></li>
+        <li><a href="#fragment-5"><span>Cache Options</span></a></li>
+        <li><a href="#fragment-6"><span>Affiliate Networks</span></a></li>
     </ul>
     <div id="fragment-1">
         <table class="form-table">
@@ -132,7 +141,6 @@ function appStore_render_form() {
 			<input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" />
 		</td>
 	</tr>
-
 	<tr>
 		<th scope="row">Screenshot Width:<br /><small>(in px. Height is automatic.)</small></th>
 		<td colspan="2">
@@ -141,43 +149,126 @@ function appStore_render_form() {
 	</tr>
         </table>
     </div>
-
-
-
     <div id="fragment-2">
-		<h2>Show in Post body:</h2>
-		<input type="checkbox" name="appStore_options[displayapptitle]" value="yes" <?php if ($options['displayapptitle'] == "yes") echo 'checked'; ?> /> App Name<br>
-		<input type="checkbox" name="appStore_options[displayversion]" value="yes" <?php if ($options['displayversion'] == "yes") echo 'checked'; ?> /> App Version<br>
-		<input type="checkbox" name="appStore_options[displayadvisoryrating]" value="yes" <?php if ($options['displayadvisoryrating'] == "yes") echo 'checked'; ?> /> Advisory Rating<br>
-		<input type="checkbox" name="appStore_options[displaycategories]" value="yes" <?php if ($options['displaycategories'] == "yes") echo 'checked'; ?> /> App Categories<br>
-		<input type="checkbox" name="appStore_options[displayfilesize]" value="yes" <?php if ($options['displayfilesize'] == "yes") echo 'checked'; ?> /> File Size<br>
-		<input type="checkbox" name="appStore_options[displaystarrating]" value="yes" <?php if ($options['displaystarrating'] == "yes") echo 'checked'; ?> /> App Star Rating<br>
-		<input type="checkbox" name="appStore_options[displaydevelopername]" value="yes" <?php if ($options['displaydevelopername'] == "yes") echo 'checked'; ?> /> Developer Name<br>
-		<input type="checkbox" name="appStore_options[displaysellername]" value="yes" <?php if ($options['displaysellername'] == "yes") echo 'checked'; ?> /> Seller Name<br>
-		<input type="checkbox" name="appStore_options[displaygamecenterenabled]" value="yes" <?php if ($options['displaygamecenterenabled'] == "yes") echo 'checked'; ?> /> Game Center Enabled icon<br>
-		<input type="checkbox" name="appStore_options[displayuniversal]" value="yes" <?php if ($options['displayuniversal'] == "yes") echo 'checked'; ?> /> Universal App icon<br>
-		<input type="checkbox" name="appStore_options[displaysupporteddevices]" value="yes" <?php if ($options['displaysupporteddevices'] == "yes") echo 'checked'; ?> /> Supported Devices list<br>
-		<input type="checkbox" name="appStore_options[displayreleasedate]" value="yes" <?php if ($options['displayreleasedate'] == "yes") echo 'checked'; ?> /> Date Released<br>
+    	<?php
+    	$starColors = array("clear", "black", "blue","bronze","faded","gold","green","grey","orange","pink","purple","red");
+    	?>
+        <table class="form-table">
+		<tr><th scope="row"><h2>Empty Star:</h2></th></tr>
+		<tr><td>
+		<?php
+    	foreach ($starColors as $starColor) {
+    		echo '<input type="radio" ';
+    		echo 'name="appStore_options[empty_star_color]" ';
+    		echo 'value="'.$starColor.'"';
+    		if ($options['empty_star_color'] == $starColor) echo 'checked';
+    		echo ' />';
+    		echo '<img src="';
+    		echo plugins_url( 'images/star-rating-'.$starColor.'.png', __FILE__ );
+    		echo '" alt="'.$starColor.' Star" />';
+    		echo '&nbsp;&nbsp;&nbsp;';    	
+		}
+		?>
+		</td></tr>
+		<tr><th scope="row"><h2>Full Star:</h2></th></tr>
+		<tr><td>
+		<?php
+    	foreach ($starColors as $starColor) {
+    		echo '<input type="radio" ';
+    		echo 'name="appStore_options[full_star_color]" ';
+    		echo 'value="'.$starColor.'"';
+    		if ($options['full_star_color'] == $starColor) echo 'checked';
+    		echo ' />';
+    		echo '<img src="';
+    		echo plugins_url( 'images/star-rating-'.$starColor.'.png', __FILE__ );
+    		echo '" alt="'.$starColor.' Star" />';
+    		echo '&nbsp;&nbsp;&nbsp;';    	
+		}
+		?>
+		</td></tr>
+		</table>
 		
+
+<hr /><h2>Colors</h2>      
+<?php
+	//define your color pickers
+	$colorPickers = array(
+		array('ID' => 'color_buttonStart', 'label' => 'Button Background Gradient Start'),
+		array('ID' => 'color_buttonStop', 'label' => 'Button Background Gradient Stop'),
+		array('ID' => 'color_buttonText', 'label' => 'Button Text'),
+		array('ID' => 'color_buttonTextShadow', 'label' => 'Button Text Shadow'),
+		array('ID' => 'color_buttonShadow', 'label' => 'Button Shadow'),
+		array('ID' => 'color_buttonBorder', 'label' => 'Button Border'),
+		array('ID' => 'color_buttonHoverStart', 'label' => 'Button Background Gradient Start (Hover)'),
+		array('ID' => 'color_buttonHoverStop', 'label' => 'Button Background Gradient Stop (Hover)'),
+		array('ID' => 'color_buttonHoverText', 'label' => 'Button Text (Hover)'),
+	);
+
+	foreach($colorPickers as $colorPicker) {
+		echo "<div>\r";
+		echo '<label for="'.$colorPicker['ID'].'">'.$colorPicker['label'].'</label>'."\r";
+		echo '<input type="text" class="color" id="'.$colorPicker['ID'].'" ';
+		echo 'value="'.$options[$colorPicker['ID']].'" ';
+		echo 'name="appStore_options['.$colorPicker['ID'].']" size="6" />'."\r";
+		echo '<div id="'.$colorPicker['ID'].'_color"></div>'."\r";
+		echo '</div>'."\r";
+	} ?>
+	<hr />
+    </div>
+    <div id="fragment-3">
+		<h2>Show in Post body:</h2>
+		<?php
+    	$appStoreProperties = array(
+    		array('ID' => "displayapptitle", 'label' => "App Name"),
+    		array('ID' => "displayversion", 'label' => "App Version"),
+    		array('ID' => "displayadvisoryrating", 'label' => "Advisory Rating"),
+    		array('ID' => "displaycategories", 'label' => "App Categories"),
+    		array('ID' => "displayfilesize", 'label' => "File Size"),
+    		array('ID' => "displaystarrating", 'label' => "App Star Rating"),
+    		array('ID' => "displaydevelopername", 'label' => "Developer Name"),
+    		array('ID' => "displaysellername", 'label' => "Seller Name"),
+    		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon"),
+    		array('ID' => "displayuniversal", 'label' => "Universal App icon"),
+    		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices list"),
+    		array('ID' => "displayreleasedate", 'label' => "Date Released"),
+    	);
+		foreach($appStoreProperties as $appStoreProperty) {
+			echo '<input type="checkbox" name="appStore_options[';
+			echo $appStoreProperty['ID'];
+			echo ']" value="yes"';
+			if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
+			echo ' /> '.$appStoreProperty['label']."<br>\r";
+		}
+		?>
 		<h2>App Icon Size:</h2>
 		Icon to start with: <input type="radio" name="appStore_options[appstoreicon_to_use]" value="60" <?php if ($options['appstoreicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
 		<input type="radio" name="appStore_options[appstoreicon_to_use]" value="512" <?php if ($options['appstoreicon_to_use'] == "512") echo 'checked'; ?> /> 512px<br>
 		<input type="text" size="3" name="appStore_options[appicon_size_adjust]" value="<?php echo $options['appicon_size_adjust']; ?>" />% Adjust Icon Size<br>
 		<input type="text" size="3" name="appStore_options[appicon_iOS_size_adjust]" value="<?php echo $options['appicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
     </div>
-    
-    
-    
-    <div id="fragment-3">
+    <div id="fragment-4">
    		<h2>Show in Post body:</h2>
-		<input type="checkbox" name="appStore_options[displayitunestitle]" value="yes" <?php if ($options['displayitunestitle'] == "yes") echo 'checked'; ?> /> Music Title<br>
-		<input type="checkbox" name="appStore_options[displayitunestrackcount]" value="yes" <?php if ($options['displayitunestrackcount'] == "yes") echo 'checked'; ?> /> Track count<br>
-		<input type="checkbox" name="appStore_options[displayitunesartistname]" value="yes" <?php if ($options['displayitunesartistname'] == "yes") echo 'checked'; ?> /> Artist<br>
-		<input type="checkbox" name="appStore_options[displayitunesfromalbum]" value="yes" <?php if ($options['displayitunesfromalbum'] == "yes") echo 'checked'; ?> /> From Album...<br>
-		<input type="checkbox" name="appStore_options[displayitunesgenre]" value="yes" <?php if ($options['displayitunesgenre'] == "yes") echo 'checked'; ?> /> Genre<br>
-		<input type="checkbox" name="appStore_options[displayitunesreleasedate]" value="yes" <?php if ($options['displayitunesreleasedate'] == "yes") echo 'checked'; ?> /> Release Date<br>
-		<input type="checkbox" name="appStore_options[displayitunesdescription]" value="yes" <?php if ($options['displayitunesdescription'] == "yes") echo 'checked'; ?> /> Description<br>
-		<input type="checkbox" name="appStore_options[displayitunesexplicitwarning]" value="yes" <?php if ($options['displayitunesexplicitwarning'] == "yes") echo 'checked'; ?> /> Explicit Lyrics Bagde<br>
+   		
+  		<?php
+    	$iTunesStoreProperties = array(
+    		array('ID' => "displayitunestitle", 'label' => "Music Title"),
+    		array('ID' => "displayitunestrackcount", 'label' => "Track Count"),
+    		array('ID' => "displayitunesartistname", 'label' => "Artist Name"),
+    		array('ID' => "displayitunesfromalbum", 'label' => "From Album&hellip;"),
+    		array('ID' => "displayitunesgenre", 'label' => "Genre"),
+    		array('ID' => "displayitunesreleasedate", 'label' => "Release Date"),
+    		array('ID' => "displayitunesdescription", 'label' => "Description"),
+    		array('ID' => "displayitunesexplicitwarning", 'label' => "Explicit Lyrics Bagde"),
+    	);
+		foreach($iTunesStoreProperties as $iTunesStoreProperty) {
+			echo '<input type="checkbox" name="appStore_options[';
+			echo $iTunesStoreProperty['ID'];
+			echo ']" value="yes"';
+			if ($options[$iTunesStoreProperty['ID']] == "yes") echo ' checked';
+			echo ' /> '.$iTunesStoreProperty['label']."<br>\r";
+		}
+		?>
+
 		<h2>App Icon Size:</h2>
 		Icon to start with: <input type="radio" name="appStore_options[itunesicon_to_use]" value="30" <?php if ($options['itunesicon_to_use'] == "30") echo 'checked'; ?> /> 30px 
 		<input type="radio" name="appStore_options[itunesicon_to_use]" value="60" <?php if ($options['itunesicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
@@ -185,10 +276,8 @@ function appStore_render_form() {
 		<br>
 		<input type="text" size="3" name="appStore_options[itunesicon_size_adjust]" value="<?php echo $options['itunesicon_size_adjust']; ?>" />% Adjust Icon Size<br>
 		<input type="text" size="3" name="appStore_options[itunesicon_iOS_size_adjust]" value="<?php echo $options['itunesicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
-	</div>
-    
-    
-    <div id="fragment-4">
+	</div>    
+    <div id="fragment-5">
     	<table class="form-table">
         <tr>
 			<th scope="row">Data cache time:</th>
@@ -228,10 +317,7 @@ function appStore_render_form() {
 				</tr>
 			</table>
     </div>
-    
-    
-    
-    <div id="fragment-5">
+    <div id="fragment-6">
         <table class="form-table">
 				<tr>
 					<th scope="row" colspan="3" style="background-color: #B3B3B3;font-weight: bold;">Affiliate Networks</th>
@@ -324,18 +410,12 @@ function appStore_render_form() {
 				<tr>
 				<th scope="row">DGM wrapper:</th>
 					<td colspan="2">
-						<input type="text" size="20" name="appStore_options[dgmwrapper]" value="<?php echo $options['dgmwrapper']; ?>"/>
+						<input type="text" size="50" name="appStore_options[dgmwrapper]" value="<?php echo $options['dgmwrapper']; ?>"/>
 					</td>
 				</tr>
 			</table>
-    </div>
+    </div>    
 </div>
-
-	
-	
-
-
-
 			<p class="submit">
 			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 			</p>
@@ -357,26 +437,12 @@ function appStore_plugin_action_links( $links, $file ) {
 		// make the 'Settings' link appear first
 		array_unshift( $links, $appStore_links );
 	}
-
 	return $links;
 }
 
-function load_js_files()
-{
-	//wp_enqueue_script('addclasskillclass', plugins_url('/js_functions/addclasskillclass.js',__FILE__) );
-	//wp_enqueue_script('addcss', plugins_url('/js_functions/AddCSS.js',__FILE__) );
-	//wp_enqueue_script('attachevent', plugins_url('/js_functions/attachevent.js',__FILE__) );
-	//wp_enqueue_script('tabtastic', plugins_url('/js_functions/tabtastic.js',__FILE__) );
-
-
-    wp_deregister_script( 'jqueryui' );
-    wp_register_script( 'jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js');
-    wp_enqueue_script( 'jqueryui' );
-    wp_deregister_script( 'jquery' );
-    wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js');
-    wp_enqueue_script( 'jquery' );
-	wp_enqueue_script('jquerymenusstart', plugins_url('/js_functions/jquerymenusstart',__FILE__) );
-
+function load_js_files() {
+ 	wp_enqueue_script('jquerymenusstart', plugins_url('/js_functions/jquerymenusstart.js',__FILE__), null, null, true);
+	wp_enqueue_script('jscolor', plugins_url('/js_functions/jscolor/jscolor.js',__FILE__), null, null, true);
 }
 
 function appStore_admin_page_add_stylesheet() {
