@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.3.2
-Stable tag: 4.4.1
+Stable tag: 4.4.2
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -48,6 +48,14 @@ Please let us know of any features you would like added or bugs that need squash
 4. ATOM Feed listing
 
 == Changelog ==
+
+= 4.4.2 =
+* Fixed issue with new Ratings bar images not being displayed
+* Added ability to use Full or Short description on Single Post page [Thanks Costin]
+* Added ability to use Full or Short description on Multiple Post pages [Thanks Costin]
+* Moved App Store bag to local image folder to reduce page load time
+* Added ability to reset all options to defaults.
+* Changed "More Info" button to better reflect new description options
 
 = 4.4.1 =
 * Added 12 additional styles to Ratings bar

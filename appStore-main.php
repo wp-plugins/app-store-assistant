@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.4.1
+Version: 4.4.2
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -551,7 +551,9 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	} else {
 		$buttonText = $TheAppPrice." - View in App Store ";
 	}
-	
+
+	$smallDescription = shortenDescription($app->description);
+
 ?>
 <div class="appStore-wrapper">
 	<hr>
@@ -623,11 +625,15 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 <?php
 	if (is_single()) {
 		echo '	<div class="appStore-description">';
-		echo nl2br($app->description);
+		if (appStore_setting('use_shortDesc_on_single') == "yes") {
+			echo nl2br($smallDescription);
+		} else {
+			echo nl2br($app->description);
+		}
 		echo '</br>';
 		echo '<div class="appStore-badge"><a href="'.$appURL.'" >';
-		echo '<img src="http://ax.phobos.apple.com.edgesuite.net/images/web/linkmaker/badge_appstore-lrg.gif" alt="App Store" style="border: 0;"/></a></div>';
-
+		echo '<img src="'.plugins_url( 'images/badge_appstore-lrg' , __FILE__ ).'" alt="App Store" style="border: 0;"/></a></div>';
+		// Original image from http://ax.phobos.apple.com.edgesuite.net/images/web/linkmaker/badge_appstore-lrg.gif
 		echo '</div>';
 
 		// Display iPhone Screenshots
@@ -682,13 +688,18 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		echo '	</div>';
 		
 	} else {
-		$smallDescription = shortenDescription($app->description);
 		echo '	<div class="appStore-description">';
-		echo nl2br($smallDescription);
-		if($mode=="internal") {
+		if (appStore_setting('use_shortDesc_on_multiple') == "yes") {
+			echo nl2br($smallDescription);
 			echo ' - <a href="'.get_permalink().'" value="">continued&hellip;</a>';
+			$FullDescriptionButtonText = "Show Full Description & Screenshots";
+		} else {
+			echo nl2br($app->description);
+			$FullDescriptionButtonText = "Show Screenshots";
+		}
+		if($mode=="internal") {
 			echo '	<div style="clear:left;">&nbsp;</div>';
-			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">Show Full Description & Screenshots</a></div>';
+			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">'.$FullDescriptionButtonText.'</a></div>';
 		} else {
 			echo ' - <a href="'.$appURL.'" value="">'.$more_info_text.'</a>';		
 		}
@@ -701,10 +712,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	}
 	echo '	</div>';
 	
-	if($_SERVER['REMOTE_ADDR'] == "98.148.220.0B") {
-		echo "<hr>";
-		echo "<pre>";echo print_r($iTunesItem, true);echo "</pre>";
-	}
 	$return = ob_get_contents();
 	ob_end_clean();	
 	return $return;

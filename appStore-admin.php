@@ -26,61 +26,75 @@ function appStore_delete_plugin_options() {
 
 // Define default option settings
 
-function appStore_add_defaults() {
-	$tmp = get_option('appStore_options');
-    if(!$tmp || !is_array($tmp)) {
-		delete_option('appStore_options');
-		$arr = array(	"affiliatecode" => "http://click.linksynergy.com/fs-bin/stat?id=uiuOb3Yu7Hg&offerid=146261&type=3&subid=0&tmpid=1826&RD_PARM1=",
-						"affiliatetoken" => "uiuOb3Yu7Hg",
-						"affiliatepartnerid" => "30",
-						"tdwebsiteID" => "",
-						"tdprogramID" => "23708",
-						"dgmwrapper" => "",
-						"displaystarrating" => "yes",
-						"displayadvisoryrating" => "yes",
-						"displaycategories" => "yes",
-						"displayversion" => "yes",
-						"displaydevelopername" => "yes",
-						"displaysellername" => "yes",
-						"displaygamecenterenabled" => "yes",
-						"displayuniversal" => "yes",
-						"displayreleasedate" => "yes",
-						"displaysupporteddevices" => "yes",
-						"displayfilesize" => "yes",
-						"displayapptitle" => "yes",
-						"displayitunestitle" => "yes",
-						"displayitunestrackcount" => "yes",
-						"displayitunesartistname" => "yes",
-						"displayitunesfromalbum" => "yes",
-						"displayitunesgenre" => "yes",
-						"displayitunesreleasedate" => "yes",
-						"displayitunesdescription" => "yes",
-						"displayitunesexplicitwarning" => "yes",
-						"itunesicon_to_use" => "100",
-						"itunesicon_size_adjust" => "100",		
-						"itunesicon_iOS_size_adjust" => "50",		
-						"appstoreicon_to_use" => "512",
-						"appicon_size_adjust" => "25",
-						"appicon_iOS_size_adjust" => "12",
-						"smaller_buy_button_iOS" => "yes",
-						"max_description" => "300",
-						"qty_of_apps" => "10",
-						"full_star_color" => "gold",
-						"empty_star_color" => "clear",
-						"color_buttonStart" => "79bbff",
-						"color_buttonStop" => "378de5",
-						"color_buttonText" => "fcfc00",
-						"color_buttonTextShadow" => "39618a",
-						"color_buttonShadow" => "bbdaf7",
-						"color_buttonBorder" => "84bbf3",
-						"color_buttonHoverStart" => "378de5",
-						"color_buttonHoverStop" => "79bbff",
-						"color_buttonHoverText" => "C9C9FF",
-						"ss_size" => "120",
-						"cache_time_select_box" => (24*60*60),
-						"cache_images_locally" => "1"
+function appStore_add_defaults($ResetOptions = false) {
+	$appStore_defaults = array(
+		"max_description" => "400",
+		"use_shortDesc_on_single" => "no",
+		"use_shortDesc_on_multiple" => "yes",
+		"smaller_buy_button_iOS" => "yes",
+		"qty_of_apps" => "10",
+		"ss_size" => "120",
+
+		"full_star_color" => "blue",
+		"empty_star_color" => "clear",
+		"color_buttonStart" => "79bbff",
+		"color_buttonStop" => "378de5",
+		"color_buttonText" => "fcfc00",
+		"color_buttonTextShadow" => "39618a",
+		"color_buttonShadow" => "bbdaf7",
+		"color_buttonBorder" => "84bbf3",
+		"color_buttonHoverStart" => "378de5",
+		"color_buttonHoverStop" => "79bbff",
+		"color_buttonHoverText" => "C9C9FF",
+
+		"displayapptitle" => "no",
+		"displayversion" => "yes",
+		"displayadvisoryrating" => "yes",
+		"displaycategories" => "yes",
+		"displayfilesize" => "no",
+		"displaystarrating" => "yes",
+		"displaydevelopername" => "yes",
+		"displaysellername" => "yes",
+		"displaygamecenterenabled" => "yes",
+		"displayuniversal" => "yes",
+		"displaysupporteddevices" => "no",
+		"displayreleasedate" => "no",
+		"appstoreicon_to_use" => "512",
+		"appicon_size_adjust" => "25",
+		"appicon_iOS_size_adjust" => "12",
+
+		"displayitunestitle" => "yes",
+		"displayitunestrackcount" => "yes",
+		"displayitunesartistname" => "yes",
+		"displayitunesfromalbum" => "yes",
+		"displayitunesgenre" => "yes",
+		"displayitunesreleasedate" => "yes",
+		"displayitunesdescription" => "yes",
+		"displayitunesexplicitwarning" => "yes",
+		"itunesicon_to_use" => "100",
+		"itunesicon_size_adjust" => "100",		
+		"itunesicon_iOS_size_adjust" => "50",		
+
+		"cache_time_select_box" => (24*60*60),
+		"cache_images_locally" => "1",
+
+		"affiliatepartnerid" => "30",
+		"affiliatecode" => "http://click.linksynergy.com/fs-bin/stat?id=uiuOb3Yu7Hg&offerid=146261&type=3&subid=0&tmpid=1826&RD_PARM1=",
+		"affiliatetoken" => "uiuOb3Yu7Hg",
+		"tdwebsiteID" => "",
+		"tdprogramID" => "23708",
+		"dgmwrapper" => "",
+
+		"ResetCheckOne" => "NoWay",
+		"ResetCheckTwo" => "NoWay",
+		"ResetCheckThree" => "NoWay",
+
+		"versionInstalled" => "4.4.2"
 		);
-		update_option('appStore_options', $arr);
+	$tmp = get_option('appStore_options');
+    if(!$tmp || !is_array($tmp) || $ResetOptions) {
+		delete_option('appStore_options');
+		update_option('appStore_options', $appStore_defaults);
 	}
 }
 
@@ -102,6 +116,12 @@ function appStore_add_options_page() {
 
 // Render the Plugin options form
 function appStore_render_form() {
+	$options = get_option('appStore_options');
+	if($options['ResetCheckOne']=="DoIt" && $options['ResetCheckTwo']=="DoIt" && $options['ResetCheckThree']=="DoIt") {
+		appStore_add_defaults(true);
+		$OptionsReset = true;
+		$options = get_option('appStore_options');
+	}
 
 	?>
 	<div class="wrap">
@@ -110,8 +130,7 @@ function appStore_render_form() {
 		<h2>AppStore Assistant Page Options</h2>
 		<form method="post" action="options.php">
 			<?php settings_fields('appStore_plugin_options'); ?>
-			<?php $options = get_option('appStore_options'); ?>
-
+			<?php if ($OptionsReset) 	echo '<h1><font color="red">All Options have been reset to defaults!</font></h1>'; ?>
 <div class="tabs">
     <ul>
         <li><a href="#fragment-1"><span>General Options</span></a></li>
@@ -120,56 +139,53 @@ function appStore_render_form() {
         <li><a href="#fragment-4"><span>iTunes Store Options</span></a></li>
         <li><a href="#fragment-5"><span>Cache Options</span></a></li>
         <li><a href="#fragment-6"><span>Affiliate Networks</span></a></li>
+        <li><a href="#fragment-7"><span>Reset</span></a></li>
     </ul>
     <div id="fragment-1">
-        <table class="form-table">
-		<tr>
-		<th scope="row">Max Short Description Length:<br /><small>For "My Picks" list pages.</small></th>
-		<td colspan="2">
+	<table class="form-table">
+	<tr>
+		<th scope="row">Max Short Description Length:<br /></th>
+		<td>
 			<input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />
 		</td>
 	</tr>
 	<tr>
+		<th scope="row">Use short description on Single Post</th>
+		<td>
+			<input type="checkbox" name="appStore_options[use_shortDesc_on_single]" value="yes" <?php if ($options['use_shortDesc_on_single'] == "yes") echo 'checked'; ?> />
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Use short description on Multiple Post Page</th>
+		<td>
+			<input type="checkbox" name="appStore_options[use_shortDesc_on_multiple]" value="yes" <?php if ($options['use_shortDesc_on_multiple'] == "yes") echo 'checked'; ?> />
+		</td>
+	</tr>
+	<tr>
 		<th scope="row">Smaller iOS Buy Button</th>
-		<td colspan="2">
+		<td>
 			<input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> />
 		</td>
 	</tr>
 	<tr>
 		<th scope="row">How many apps to display from ATOM feed:</th>
-		<td colspan="2">
+		<td>
 			<input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" />
 		</td>
 	</tr>
 	<tr>
 		<th scope="row">Screenshot Width:<br /><small>(in px. Height is automatic.)</small></th>
-		<td colspan="2">
+		<td>
 			<input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />
 		</td>
 	</tr>
-        </table>
+    </table>
     </div>
     <div id="fragment-2">
     	<?php
     	$starColors = array("clear", "black", "blue","bronze","faded","gold","green","grey","orange","pink","purple","red");
     	?>
         <table class="form-table">
-		<tr><th scope="row"><h2>Empty Star:</h2></th></tr>
-		<tr><td>
-		<?php
-    	foreach ($starColors as $starColor) {
-    		echo '<input type="radio" ';
-    		echo 'name="appStore_options[empty_star_color]" ';
-    		echo 'value="'.$starColor.'"';
-    		if ($options['empty_star_color'] == $starColor) echo 'checked';
-    		echo ' />';
-    		echo '<img src="';
-    		echo plugins_url( 'images/star-rating-'.$starColor.'.png', __FILE__ );
-    		echo '" alt="'.$starColor.' Star" />';
-    		echo '&nbsp;&nbsp;&nbsp;';    	
-		}
-		?>
-		</td></tr>
 		<tr><th scope="row"><h2>Full Star:</h2></th></tr>
 		<tr><td>
 		<?php
@@ -178,6 +194,22 @@ function appStore_render_form() {
     		echo 'name="appStore_options[full_star_color]" ';
     		echo 'value="'.$starColor.'"';
     		if ($options['full_star_color'] == $starColor) echo 'checked';
+    		echo ' />';
+    		echo '<img src="';
+    		echo plugins_url( 'images/star-rating-'.$starColor.'.png', __FILE__ );
+    		echo '" alt="'.$starColor.' Star" />';
+    		echo '&nbsp;&nbsp;&nbsp;';    	
+		}
+		?>
+		</td></tr>
+		<tr><th scope="row"><h2>Empty Star:</h2></th></tr>
+		<tr><td>
+		<?php
+    	foreach ($starColors as $starColor) {
+    		echo '<input type="radio" ';
+    		echo 'name="appStore_options[empty_star_color]" ';
+    		echo 'value="'.$starColor.'"';
+    		if ($options['empty_star_color'] == $starColor) echo 'checked';
     		echo ' />';
     		echo '<img src="';
     		echo plugins_url( 'images/star-rating-'.$starColor.'.png', __FILE__ );
@@ -414,8 +446,20 @@ function appStore_render_form() {
 					</td>
 				</tr>
 			</table>
-    </div>    
+    </div>
+	<div id="fragment-7">
+	<h2>Reset All Settings to Defaults:</h2>
+	<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckOne]" /> I want to reset all settings to their defaults.<br><br>
+	<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckTwo]" /> I know this will not save any of my changes.<br><br>
+	<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckThree]" /> I wont get mad when all my changes are lost.
 </div>
+   
+</div>
+
+
+
+
+
 			<p class="submit">
 			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 			</p>
