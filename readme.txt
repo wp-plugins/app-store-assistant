@@ -3,8 +3,8 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
-Tested up to: 3.3.2
-Stable tag: 4.4.2
+Tested up to: 3.4.1
+Stable tag: 4.4.3
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -48,6 +48,10 @@ Please let us know of any features you would like added or bugs that need squash
 4. ATOM Feed listing
 
 == Changelog ==
+
+= 4.4.3 =
+* Fixed issue with RSS Feed button in editor. It was inserting "id" instead of "atomurl". [Thanks Fredrik]
+* Added error handling for incorrect tag format.
 
 = 4.4.2 =
 * Fixed issue with new Ratings bar images not being displayed

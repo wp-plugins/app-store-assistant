@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.4.2
+Version: 4.4.3
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -296,6 +296,10 @@ function appStore_atomfeed_handler($atts, $content = null, $code="") {
 		'atomurl' => '',
 		'more_info_text' => 'open in The App Store...'
 	), $atts ) );
+	if(empty($atomurl)) {
+		echo 'Missing atomurl in tag. Replace <b>id</b> with <b>atomurl</b>.';
+		return;
+	}
 	$last = $atomurl[strlen($atomurl)-1];
 	if($last != "/") $AddSlash = "/";
 	$RSS_Feed = $atomurl.$AddSlash."xml";
