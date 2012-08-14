@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.4.3
+Version: 4.5
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -149,6 +149,42 @@ function appStore_css_hook( ) {
 <?php
 }
 
+function format_price($unformattedPrice) {
+
+	
+	//Check to see if the app is free, or under a dollar
+	if($unformattedPrice == 0) {
+		$thePrice = "Free!";
+	} elseif($unformattedPrice < 1 && appStore_setting('currency_format')=="USD")  {
+		$thePrice = number_format($unformattedPrice,2)*100;
+		$thePrice .="&cent;";
+	} else {
+		switch (appStore_setting('currency_format')) {
+			case "USD":
+				$thePrice = "$".$unformattedPrice."";
+				break;
+			case "GBP":
+				$thePrice = "&pound;".$unformattedPrice."";
+				break;
+			case "EUR":
+				$thePrice = "&euro;".$unformattedPrice."";
+				break;
+			case "NOK":
+				$thePrice = $unformattedPrice." kr ";
+				break;
+			case "SEK":
+				$thePrice = $unformattedPrice." kr ";
+				break;
+			case "JPY":
+				$thePrice = $unformattedPrice." &yen; ";
+				break;
+		}
+	}
+
+	return $thePrice;
+}
+
+
 function idsearch_app_handler($atts,$content=null, $code="") {
 
 	if (!empty($_POST)) {
@@ -201,15 +237,9 @@ function idsearch_app_handler($atts,$content=null, $code="") {
 		echo '<div class="appStore-search-appsList">';
 			echo '<ul>';
 			foreach ($listOfApps as $appData) {
-				if($appData->price == 0) {
-					$TheAppPrice = "Free!";
-				} elseif($appData->price < 1)  {
-					$TheAppPrice = number_format($appData->price,2)*100;
-					$TheAppPrice .="&cent;";
-				} else {
-					$TheAppPrice = "$".$appData->price."";
-				}
-				
+			
+				$TheAppPrice = format_price($appData->price);
+							
 				$Categories = implode(", ", $appData->genres);
 						
 				echo "<li class='appStore-search-result' ";
@@ -400,16 +430,9 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
  			$description = $iTunesItem->longDescription;
 			break;
 	}
-	//Check to see if the app is free, or under a dollar
-	if($unformattedPrice == 0) {
-		$iTunesPrice = "Free!";
-	} elseif($unformattedPrice < 1)  {
-		$iTunesPrice = number_format($unformattedPrice,2)*100;
-		$iTunesPrice .="&cent;";
-	} else {
-		$iTunesPrice = "$".$unformattedPrice."";
-	}
-
+	
+	$iTunesPrice = format_price($unformattedPrice);
+	
 	// iTunes Artwork
 	switch (appStore_setting('itunesicon_to_use')) {
     	case "30":
@@ -446,9 +469,9 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 <div class="appStore-wrapper">
 	<hr>
 	<div id="iTunesStore-icon-container">
-		<a href="<? echo $iTunesURL; ?>" ><img class="iTunesStore-icon" src="<?php echo $artwork_url; ?>" width="<?php echo $newImageWidth; ?>" height="<?php echo $newImageHeight; ?>" /></a>
+		<a href="<?php echo $iTunesURL; ?>" ><img class="iTunesStore-icon" src="<?php echo $artwork_url; ?>" width="<?php echo $newImageWidth; ?>" height="<?php echo $newImageHeight; ?>" /></a>
 		<div class="iTunesStore-purchase">
-			<a type="button" href="<? echo $iTunesURL; ?>" value="" class="iTunesStore-Button BuyButton"><?PHP echo $buttonText; ?></a></br>
+			<a type="button" href="<?php echo $iTunesURL; ?>" value="" class="iTunesStore-Button BuyButton"><?PHP echo $buttonText; ?></a></br>
 		</div>
 
 	</div>
@@ -505,15 +528,8 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	// Start capturing output so the text in the post comes first.
 	ob_start();
 
-	//Check to see if the app is free, or under a dollar
-	if($app->price == 0) {
-		$TheAppPrice = "Free!";
-	} elseif($app->price < 1)  {
-		$TheAppPrice = number_format($app->price,2)*100;
-		$TheAppPrice .="&cent;";
-	} else {
-		$TheAppPrice = "$".$app->price."";
-	}
+
+	$TheAppPrice = format_price($app->price);
 
 	$appURL = getAffiliateURL($app->trackViewUrl);
 
@@ -562,9 +578,9 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 <div class="appStore-wrapper">
 	<hr>
 	<div id="appStore-icon-container">
-		<a href="<? echo $appURL; ?>" ><img class="appStore-icon" src="<?php echo $artwork_url; ?>" width="<?php echo $newImageWidth; ?>" height="<?php echo $newImageHeight; ?>" /></a>
+		<a href="<?php echo $appURL; ?>" ><img class="appStore-icon" src="<?php echo $artwork_url; ?>" width="<?php echo $newImageWidth; ?>" height="<?php echo $newImageHeight; ?>" /></a>
 		<div class="appStore-purchase">
-			<a type="button" href="<? echo $appURL; ?>" value="" class="appStore-Button BuyButton"><?PHP echo $buttonText; ?></a></br>
+			<a type="button" href="<?php echo $appURL; ?>" value="" class="appStore-Button BuyButton"><?PHP echo $buttonText; ?></a></br>
 		</div>
 
 	</div>

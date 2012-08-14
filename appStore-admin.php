@@ -34,7 +34,8 @@ function appStore_add_defaults($ResetOptions = false) {
 		"smaller_buy_button_iOS" => "yes",
 		"qty_of_apps" => "10",
 		"ss_size" => "120",
-
+		"currency_format" => "US",
+		
 		"full_star_color" => "blue",
 		"empty_star_color" => "clear",
 		"color_buttonStart" => "79bbff",
@@ -78,7 +79,7 @@ function appStore_add_defaults($ResetOptions = false) {
 		"cache_time_select_box" => (24*60*60),
 		"cache_images_locally" => "1",
 
-		"affiliatepartnerid" => "30",
+		"affiliatepartnerid" => "999",
 		"affiliatecode" => "http://click.linksynergy.com/fs-bin/stat?id=uiuOb3Yu7Hg&offerid=146261&type=3&subid=0&tmpid=1826&RD_PARM1=",
 		"affiliatetoken" => "uiuOb3Yu7Hg",
 		"tdwebsiteID" => "",
@@ -177,6 +178,18 @@ function appStore_render_form() {
 		<th scope="row">Screenshot Width:<br /><small>(in px. Height is automatic.)</small></th>
 		<td>
 			<input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Currency Type:<br /></th>
+		<td>
+			<select name='appStore_options[currency_format]'>
+				<option value="USD" <?php if ($options['currency_format'] == "USD") echo 'selected'; ?>>US ($ and &cent;)</option>
+				<option value="EUR" <?php if ($options['currency_format'] == "EUR") echo 'selected'; ?>>Euro (&euro;)</option>
+				<option value="GBP" <?php if ($options['currency_format'] == "GBP") echo 'selected'; ?>>United Kingdom Pound (&pound;)</option>
+				<option value="NOK" <?php if ($options['currency_format'] == "NOK") echo 'selected'; ?>>Norway Krone (kr)</option>
+				<option value="SEK" <?php if ($options['currency_format'] == "SEK") echo 'selected'; ?>>Sweden Krona (kr)</option>
+				<option value="JPY" <?php if ($options['currency_format'] == "JPY") echo 'selected'; ?>>Japan Yen &yen;</option>
 		</td>
 	</tr>
     </table>
