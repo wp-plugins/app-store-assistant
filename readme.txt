@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.4.1
-Stable tag: 4.5
+Stable tag: 4.5.1
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -48,6 +48,10 @@ Please let us know of any features you would like added or bugs that need squash
 4. ATOM Feed listing
 
 == Changelog ==
+
+= 4.5.1 =
+* Added ability to choose which country's store results to display
+* Add feature to delete App information cache
 
 = 4.5 =
 * Added Currency options (US $, Euro &euro; Norway Krone, Sweden Krona, Japan Yen and UK &pound;)

@@ -35,6 +35,7 @@ function appStore_add_defaults($ResetOptions = false) {
 		"qty_of_apps" => "10",
 		"ss_size" => "120",
 		"currency_format" => "US",
+		"store_country" => "US",
 		
 		"full_star_color" => "blue",
 		"empty_star_color" => "clear",
@@ -90,7 +91,10 @@ function appStore_add_defaults($ResetOptions = false) {
 		"ResetCheckTwo" => "NoWay",
 		"ResetCheckThree" => "NoWay",
 
-		"versionInstalled" => "4.4.2"
+		"ResetCacheOne" => "NoWay",
+		"ResetCacheTwo" => "NoWay",
+
+		"versionInstalled" => "4.5.1"
 		);
 	$tmp = get_option('appStore_options');
     if(!$tmp || !is_array($tmp) || $ResetOptions) {
@@ -122,13 +126,26 @@ function appStore_render_form() {
 		appStore_add_defaults(true);
 		$OptionsReset = true;
 		$options = get_option('appStore_options');
+		showMessage("All settings have been reset to their defaults!",true);
 	}
+
+	if($options['ResetCacheOne']=="DoIt" && $options['ResetCacheTwo']=="DoIt") {
+		clearAppCache();
+		update_option('ResetCacheOne', "NoWay");
+		update_option('ResetCacheTwo', "NoWay");
+
+		showMessage("The App data cache has been cleared!",true);
+	}
+
 
 	?>
 	<div class="wrap">
 		
 		<div class="icon32" id="icon-options-general"><br></div>
 		<h2>AppStore Assistant Page Options</h2>
+		
+		
+		
 		<form method="post" action="options.php">
 			<?php settings_fields('appStore_plugin_options'); ?>
 			<?php if ($OptionsReset) 	echo '<h1><font color="red">All Options have been reset to defaults!</font></h1>'; ?>
@@ -190,6 +207,28 @@ function appStore_render_form() {
 				<option value="NOK" <?php if ($options['currency_format'] == "NOK") echo 'selected'; ?>>Norway Krone (kr)</option>
 				<option value="SEK" <?php if ($options['currency_format'] == "SEK") echo 'selected'; ?>>Sweden Krona (kr)</option>
 				<option value="JPY" <?php if ($options['currency_format'] == "JPY") echo 'selected'; ?>>Japan Yen &yen;</option>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Show results from this country's store:<br /></th>
+		<td>
+			<select name='appStore_options[store_country]'>
+				<option value="US" <?php if ($options['store_country'] == "US") echo 'selected'; ?>>iTunes US</option>
+				<option value="AT" <?php if ($options['store_country'] == "AT") echo 'selected'; ?>>iTunes AT</option>
+				<option value="BE" <?php if ($options['store_country'] == "BE") echo 'selected'; ?>>iTunes BE</option>
+				<option value="CH" <?php if ($options['store_country'] == "CH") echo 'selected'; ?>>iTunes CH</option>
+				<option value="DE" <?php if ($options['store_country'] == "DE") echo 'selected'; ?>>iTunes DE</option>
+				<option value="DK" <?php if ($options['store_country'] == "DK") echo 'selected'; ?>>iTunes DK</option>
+				<option value="ES" <?php if ($options['store_country'] == "ES") echo 'selected'; ?>>iTunes ES</option>
+				<option value="FI" <?php if ($options['store_country'] == "FI") echo 'selected'; ?>>iTunes FI</option>
+				<option value="FR" <?php if ($options['store_country'] == "FR") echo 'selected'; ?>>iTunes FR</option>
+				<option value="GB" <?php if ($options['store_country'] == "GB") echo 'selected'; ?>>iTunes GB</option>
+				<option value="IE" <?php if ($options['store_country'] == "IE") echo 'selected'; ?>>iTunes IE</option>
+				<option value="IT" <?php if ($options['store_country'] == "IT") echo 'selected'; ?>>iTunes IT</option>
+				<option value="NL" <?php if ($options['store_country'] == "NL") echo 'selected'; ?>>iTunes NL</option>
+				<option value="NO" <?php if ($options['store_country'] == "NO") echo 'selected'; ?>>iTunes NO</option>
+				<option value="SE" <?php if ($options['store_country'] == "SE") echo 'selected'; ?>>iTunes SE</option>
+			</select>
 		</td>
 	</tr>
     </table>
@@ -349,7 +388,7 @@ function appStore_render_form() {
 					}						
 					?>							
 				</select>
-				<span style="color:#666666;margin-left:2px;">This option determines how long before the plugin requests new data from Apple's servers.</span>
+				<span style="color:#666666;margin-left:2px;">This option determines how long before the plugin requests new data from Apple's servers. You can clear the cached app data via the Reset tab.</span>
 					</td>
 				</tr>
 				<tr valign="top">
@@ -461,18 +500,17 @@ function appStore_render_form() {
 			</table>
     </div>
 	<div id="fragment-7">
-	<h2>Reset All Settings to Defaults:</h2>
-	<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckOne]" /> I want to reset all settings to their defaults.<br><br>
-	<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckTwo]" /> I know this will not save any of my changes.<br><br>
-	<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckThree]" /> I wont get mad when all my changes are lost.
-</div>
+		<h2>Reset All Settings to Defaults:</h2>
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckOne]" /> I want to reset all settings to their defaults.<br><br>
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckTwo]" /> I know this will not save any of my changes.<br><br>
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckThree]" /> I wont get mad when all my changes are lost.<br><br>
+		<hr>
+		<h2>Reset cached App data:</h2>
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCacheOne]" /> I want to reset all cached app data.<br><br>
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCacheTwo]" /> I know this will slow down my site as it rebuilds.<br><br>
+	</div>
    
 </div>
-
-
-
-
-
 			<p class="submit">
 			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 			</p>
@@ -484,6 +522,30 @@ function appStore_render_form() {
 // Sanitize and validate input. Accepts an array, return a sanitized array.
 function appStore_validate_options($input) {
 	return $input;
+}
+
+function clearAppCache() {
+	global $wpdb;
+	$options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'appStore_appData_%'");
+	//print_r($options);
+	if ( is_null($options) ) return false;
+	foreach( $options as $option ) {
+		delete_option( $option->option_name );
+		//echo $option->option_name."\r\n"; 
+ 	} 
+
+}
+
+function showMessage($message, $errormsg = false)
+{
+	if ($errormsg) {
+		echo '<div id="message" class="error">';
+	}
+	else {
+		echo '<div id="message" class="updated fade">';
+	}
+
+	echo "<p><strong>$message</strong></p></div>";
 }
 
 // Display a Settings link on the main Plugins page

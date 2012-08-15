@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.5
+Version: 4.5.1
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -13,11 +13,12 @@ Copyright 2012 Scott Immerman
 
 */
 require_once('simplepie.inc');
-define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup?id=');
 add_action('wp_print_styles', 'appStore_page_add_stylesheet');
 add_action( 'wp_head', 'appStore_css_hook' );
 
 include_once("appStore-admin.php");
+
+define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup?country='.appStore_setting('store_country').'&id=');
 
 add_shortcode("ios_asaf_atomfeed", "appStore_atomfeed_handler"); // Legacy shortcode for older installs
 add_shortcode("asaf_atomfeed", "appStore_atomfeed_handler");
@@ -786,6 +787,8 @@ function getAffiliateURL($iTunesURL){
 
 	return $AffiliateURL;
 }
+
+
 
 function appStore_get_data( $id ) {
 	//Check to see if we have a cached version of the JSON.
