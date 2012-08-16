@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.5.1
+Version: 4.5.2
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -187,86 +187,131 @@ function format_price($unformattedPrice) {
 
 
 function idsearch_app_handler($atts,$content=null, $code="") {
+	GLOBAL $masterList,$checkForDuplicates;
 
 	if (!empty($_POST)) {
 		switch ($_POST['type']) {
-    	case "software":
+    	case "iPhone":
 			$Searchtype = "iPhone/iPod Software";
 			$shortCodeStart = "[ios_app";
 			$iCK = " checked";
+			$entity = "software";
 			break;
-    	case "iPadSoftware":
+    	case "iOS":
+			$Searchtype = "All iOS Software";
+			$shortCodeStart = "[ios_app";
+			$iOSCK = " checked";
+			$entity = "software";
+			break;
+    	case "iPad":
 			$Searchtype = "iPad Software";
 			$shortCodeStart = "[ios_app";
 			$iPCK = " checked";
+			$entity = "iPadSoftware";
 			break;
-    	case "macSoftware":
+    	case "Mac":
 			$Searchtype = "Macintosh Software";
 			$shortCodeStart = "[mac_app";
+			$entity = "macSoftware";
 			$mCK = " checked";
 			break;
 		default:
 			$Searchtype = "iPhone/iPod Software";
 			$iCK = " checked";
 			$shortCodeStart = "[ios_app";		
+			$entity = "software";
 		}
 		$SearchTerm = $_POST['appname'];
 	} else {
 		$SearchTerm = "";
-		$iCK = " checked";
+		$iOSCK = " checked";
 	}
 
 	echo '<div id="searchForm" class="searchForm">';
 		echo '<form action="'.get_permalink( $post->ID ).'" method="POST">';
-		echo 'App Name: <input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="50"><br>';
-		echo '<input type="radio" name="type" value="software"'.$iCK.'> iPhone/iPod';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPadSoftware"'.$iPCK.'> iPad';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="macSoftware"'.$mCK.'> Mac';
-		echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
-		echo '</button>';
+		echo '<b>App Name:</b> <input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="30"> <button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button><br />';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> All iOS';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> Mac';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> Just iPhone/iPod';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> Just iPad';
+		//echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
+		//echo '</button>';
 		echo '</form>';
 	echo '</div>';
 	if (!empty($_POST)) {
 
-		$url  = "http://itunes.apple.com/search?term=";
-		$url .= urlencode($_POST['appname'])."&country=us&entity=".$_POST['type']."";
-		$contents = file_get_contents($url); 
-		$contents = utf8_encode($contents); 
-		$foundApps = json_decode($contents);
-		$listOfApps = $foundApps->results;
+		$checkForDuplicates[] = "000000000"; //Setup array for later use
+		$listOfApps = getSearchResultsFromApple($entity);
+		buildListOfFoundApps($listOfApps,"1",$shortCodeStart);
+		if($_POST['type'] == "iOS") {
+			$biggerListOfApps = getSearchResultsFromApple("iPadSoftware");
+			buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart);
+		}
+		if(is_array($masterList)){
 		echo "<h2>$Searchtype</h2>";
-		echo '<div class="appStore-search-appsList">';
-			echo '<ul>';
-			foreach ($listOfApps as $appData) {
-			
-				$TheAppPrice = format_price($appData->price);
-							
-				$Categories = implode(", ", $appData->genres);
-						
-				echo "<li class='appStore-search-result' ";
-				echo "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
-				echo "<p>";
-				echo "<span class='appStore-search-title'>".$appData->trackName."</span>";
-				echo " (".$appData->version.")<br>";
-				
-				echo " by ".$appData->artistName."/".$appData->sellerName."<br>";
-				echo " [".$TheAppPrice."] ";
-				echo "<b> [".$Categories."]</b><br><br>";
-				echo '<input id="id'.$appData->trackId.'" type="text" size="28" value="';
-				echo $shortCodeStart;
-				echo ' id=&quot;'.$appData->trackId.'&quot;]';
-				echo '">';
-				echo "</p>";
-				echo '</li>';
-			}
-			echo '</ul>';
-		echo "</div>";
+			echo '<div class="appStore-search-appsList">';
+				echo '<ul>';
+				ksort($masterList);
+				foreach ($masterList as $appRow) {
+					echo $appRow;
+				}
+				echo '</ul>';
+			echo "</div>";
+		} else {
+			echo "<h2>No $Searchtype Results Found!</h2>";
+		}
+		
 		echo '<div style="clear:left;">&nbsp;</div>';
+	}
+}
 
+function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
+	GLOBAL $masterList,$checkForDuplicates;
+	$i = $startKey;
+	foreach ($listOfApps as $appData) {
+		$masterList[$i] = "";
+		if (!array_search($appData->trackId, $checkForDuplicates)) {
+			$TheAppPrice = format_price($appData->price);
+						
+			$Categories = implode(", ", $appData->genres);
+					
+			$masterList[$i] .= "<li class='appStore-search-result' ";
+			$masterList[$i] .= "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
+			$masterList[$i] .= "<p>";
+			$masterList[$i] .= "<span class='appStore-search-title'>".$appData->trackName."</span>";
+			$masterList[$i] .= " (".$appData->version.")<br />";
+			
+			$masterList[$i] .= " by ".$appData->artistName."/".$appData->sellerName."<br />";
+			$masterList[$i] .= " [".$TheAppPrice."] ";
+			$masterList[$i] .= "<b> [".$Categories."]</b> ";
+			if($startKey == "2") $masterList[$i] .= "<b> [iPad Only]</b>";
+			$masterList[$i] .= "<br /><br />";
+			$masterList[$i] .= '<input id="id'.$appData->trackId.'" type="text" size="28" value="';
+			$masterList[$i] .= $shortCodeStart;
+			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot;]';
+			$masterList[$i] .= '">';
+			$masterList[$i] .= "</p>";
+			$masterList[$i] .= '</li>';
+		}
+		
+		$checkForDuplicates[] = $appData->trackId;
+		$i = $i + 2;
 	}
 }
 
 
+
+function getSearchResultsFromApple($entity){
+
+	$url  = "http://itunes.apple.com/search?term=";
+	$url .= urlencode($_POST['appname'])."&country=us&entity=$entity";
+	$contents = file_get_contents($url); 
+	$contents = utf8_encode($contents); 
+	$foundApps = json_decode($contents);
+	$listOfApps = $foundApps->results;
+	return $listOfApps;
+
+}
 function appStore_app_handler( $atts,$content=null, $code="" ) {
 	// Get App ID and more_info_text from shortcode
 	extract( shortcode_atts( array(
@@ -456,8 +501,14 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 	$newImageWidth = $originalImageSize[0] * $adjustIcon;
 	$newImageHeight = $originalImageSize[1] * $adjustIcon;
 
+	if(appStore_setting('itunesicon_size_adjust_type') == 'pixels') {
+		$newIconSize = appStore_setting('itunesicon_size_max');
+		if($is_iphone) $newIconSize = appStore_setting('itunesicon_iOS_size_max');
+		$newImageWidth = $newIconSize;
+		$newImageHeight = $newIconSize;
+	}
+
 	$iTunesURL = getAffiliateURL($iTunesURL);
-	
 	
 	if(appStore_setting('smaller_buy_button_iOS') == "yes" && $is_iphone) {
 		$buttonText = $iTunesPrice." ";
@@ -501,7 +552,7 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 	}
 
 	if (appStore_setting('displayitunesexplicitwarning') == "yes" AND $isExplicit == "explicit") {
-		echo '<span class="iTunesStore-explicitwarning"><img src="'.plugins_url( 'images/parental_advisory_explicit_content-big.gif' , __FILE__ ).'" width="112" height="67" alt="Explicit Lyrics" /></span><br>';// 450x268
+		echo '<span class="iTunesStore-explicitwarning"><img src="'.plugins_url( 'images/parental_advisory_explicit_content-big.gif' , __FILE__ ).'" width="112" height="67" alt="Explicit Lyrics" /></span><br />';// 450x268
 	}
 	if (appStore_setting('displayitunesdescription') == "yes" AND !empty($description)) {	
 		echo '	<div class="iTunesStore-description">';
@@ -553,6 +604,14 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	if($is_iphone) $adjustIcon = appStore_setting('appicon_iOS_size_adjust')/100;
 	$newImageWidth = $originalImageSize[0] * $adjustIcon;
 	$newImageHeight = $originalImageSize[1] * $adjustIcon;
+	
+	if(appStore_setting('appstoreicon_size_adjust_type') == 'pixels') {
+		$newIconSize = appStore_setting('appicon_size_max');
+		if($is_iphone) $newIconSize = appStore_setting('appicon_iOS_size_max');
+		$newImageWidth = $newIconSize;
+		$newImageHeight = $newIconSize;
+	}
+	
 	
 	//App Category
 	$appCategory = $app->genres;
@@ -616,7 +675,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	}
 
 	if (appStore_setting('displayuniversal') == "yes" AND $AppFeatures[0] == "iosUniversal") {
-		echo '<span class="appStore-universal"><img src="'.plugins_url( 'images/fat-binary-badge-web.png' , __FILE__ ).'" width="14" height="14" alt="gamecenter" /> This app is designed for both iPhone and iPad</span><br>';
+		echo '<span class="appStore-universal"><img src="'.plugins_url( 'images/fat-binary-badge-web.png' , __FILE__ ).'" width="14" height="14" alt="gamecenter" /> This app is designed for both iPhone and iPad</span><br />';
 	}
 
 	if (appStore_setting('displayadvisoryrating') == "yes" AND !empty($app->contentAdvisoryRating)) {
@@ -729,7 +788,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	echo '	<div style="clear:left;">&nbsp;</div>';
 	
 	if (appStore_setting('displaysupporteddevices') == "yes" AND is_array($app->supportedDevices)) {
-		echo '<span class="appStore-supporteddevices">Supported Devices: '.implode(", ", $app->supportedDevices)."</span><br>";
+		echo '<span class="appStore-supporteddevices">Supported Devices: '.implode(", ", $app->supportedDevices)."</span><br />";
 	}
 	echo '	</div>';
 	

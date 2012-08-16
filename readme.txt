@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.4.1
-Stable tag: 4.5.1
+Stable tag: 4.5.2
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -48,6 +48,14 @@ Please let us know of any features you would like added or bugs that need squash
 4. ATOM Feed listing
 
 == Changelog ==
+
+= 4.5.2 =
+* Added new search functions for "[appStore_IDsearch]" tag
+* Improved search results for "[appStore_IDsearch]" tag
+* Apple now includes some 1024 x 1024 iOS icons and we have added code to handle this
+* Added option to choose adjust icon size by percentage or set max pixel size
+* Updated CSS for admin page to improve readability
+* Reorganized and cleaned up admin page
 
 = 4.5.1 =
 * Added ability to choose which country's store results to display

@@ -62,8 +62,11 @@ function appStore_add_defaults($ResetOptions = false) {
 		"displaysupporteddevices" => "no",
 		"displayreleasedate" => "no",
 		"appstoreicon_to_use" => "512",
+		"appstoreicon_size_adjust_type" => "percent",
 		"appicon_size_adjust" => "25",
 		"appicon_iOS_size_adjust" => "12",
+		"appicon_size_max" => "128",
+		"appicon_iOS_size_max" => "64",
 
 		"displayitunestitle" => "yes",
 		"displayitunestrackcount" => "yes",
@@ -73,9 +76,12 @@ function appStore_add_defaults($ResetOptions = false) {
 		"displayitunesreleasedate" => "yes",
 		"displayitunesdescription" => "yes",
 		"displayitunesexplicitwarning" => "yes",
+		"itunesicon_size_adjust_type" => "percent",
 		"itunesicon_to_use" => "100",
 		"itunesicon_size_adjust" => "100",		
 		"itunesicon_iOS_size_adjust" => "50",		
+		"itunesicon_size_max" => "100",
+		"itunesicon_iOS_size_max" => "50",
 
 		"cache_time_select_box" => (24*60*60),
 		"cache_images_locally" => "1",
@@ -137,14 +143,11 @@ function appStore_render_form() {
 		showMessage("The App data cache has been cleared!",true);
 	}
 
-
 	?>
 	<div class="wrap">
 		
-		<div class="icon32" id="icon-options-general"><br></div>
+		<div class="icon32" id="icon-options-general"><br /></div>
 		<h2>AppStore Assistant Page Options</h2>
-		
-		
 		
 		<form method="post" action="options.php">
 			<?php settings_fields('appStore_plugin_options'); ?>
@@ -160,86 +163,59 @@ function appStore_render_form() {
         <li><a href="#fragment-7"><span>Reset</span></a></li>
     </ul>
     <div id="fragment-1">
-	<table class="form-table">
-	<tr>
-		<th scope="row">Max Short Description Length:<br /></th>
-		<td>
-			<input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">Use short description on Single Post</th>
-		<td>
-			<input type="checkbox" name="appStore_options[use_shortDesc_on_single]" value="yes" <?php if ($options['use_shortDesc_on_single'] == "yes") echo 'checked'; ?> />
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">Use short description on Multiple Post Page</th>
-		<td>
-			<input type="checkbox" name="appStore_options[use_shortDesc_on_multiple]" value="yes" <?php if ($options['use_shortDesc_on_multiple'] == "yes") echo 'checked'; ?> />
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">Smaller iOS Buy Button</th>
-		<td>
-			<input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> />
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">How many apps to display from ATOM feed:</th>
-		<td>
-			<input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" />
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">Screenshot Width:<br /><small>(in px. Height is automatic.)</small></th>
-		<td>
-			<input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">Currency Type:<br /></th>
-		<td>
-			<select name='appStore_options[currency_format]'>
-				<option value="USD" <?php if ($options['currency_format'] == "USD") echo 'selected'; ?>>US ($ and &cent;)</option>
-				<option value="EUR" <?php if ($options['currency_format'] == "EUR") echo 'selected'; ?>>Euro (&euro;)</option>
-				<option value="GBP" <?php if ($options['currency_format'] == "GBP") echo 'selected'; ?>>United Kingdom Pound (&pound;)</option>
-				<option value="NOK" <?php if ($options['currency_format'] == "NOK") echo 'selected'; ?>>Norway Krone (kr)</option>
-				<option value="SEK" <?php if ($options['currency_format'] == "SEK") echo 'selected'; ?>>Sweden Krona (kr)</option>
-				<option value="JPY" <?php if ($options['currency_format'] == "JPY") echo 'selected'; ?>>Japan Yen &yen;</option>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">Show results from this country's store:<br /></th>
-		<td>
-			<select name='appStore_options[store_country]'>
-				<option value="US" <?php if ($options['store_country'] == "US") echo 'selected'; ?>>iTunes US</option>
-				<option value="AT" <?php if ($options['store_country'] == "AT") echo 'selected'; ?>>iTunes AT</option>
-				<option value="BE" <?php if ($options['store_country'] == "BE") echo 'selected'; ?>>iTunes BE</option>
-				<option value="CH" <?php if ($options['store_country'] == "CH") echo 'selected'; ?>>iTunes CH</option>
-				<option value="DE" <?php if ($options['store_country'] == "DE") echo 'selected'; ?>>iTunes DE</option>
-				<option value="DK" <?php if ($options['store_country'] == "DK") echo 'selected'; ?>>iTunes DK</option>
-				<option value="ES" <?php if ($options['store_country'] == "ES") echo 'selected'; ?>>iTunes ES</option>
-				<option value="FI" <?php if ($options['store_country'] == "FI") echo 'selected'; ?>>iTunes FI</option>
-				<option value="FR" <?php if ($options['store_country'] == "FR") echo 'selected'; ?>>iTunes FR</option>
-				<option value="GB" <?php if ($options['store_country'] == "GB") echo 'selected'; ?>>iTunes GB</option>
-				<option value="IE" <?php if ($options['store_country'] == "IE") echo 'selected'; ?>>iTunes IE</option>
-				<option value="IT" <?php if ($options['store_country'] == "IT") echo 'selected'; ?>>iTunes IT</option>
-				<option value="NL" <?php if ($options['store_country'] == "NL") echo 'selected'; ?>>iTunes NL</option>
-				<option value="NO" <?php if ($options['store_country'] == "NO") echo 'selected'; ?>>iTunes NO</option>
-				<option value="SE" <?php if ($options['store_country'] == "SE") echo 'selected'; ?>>iTunes SE</option>
-			</select>
-		</td>
-	</tr>
-    </table>
+    
+    <h2 class="asa_admin">Short Description</h2>
+		<div class="asa_admin">
+		Max Length: <input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" /> characters<br />
+		<input type="checkbox" name="appStore_options[use_shortDesc_on_single]" value="yes" <?php if ($options['use_shortDesc_on_single'] == "yes") echo 'checked'; ?> /> Use on Single Post<br />
+		<input type="checkbox" name="appStore_options[use_shortDesc_on_multiple]" value="yes" <?php if ($options['use_shortDesc_on_multiple'] == "yes") echo 'checked'; ?> /> Use on Multiple Post Page<br />
+		</div>
+    <h2 class="asa_admin">Localization</h2>
+		<div class="asa_admin">
+	
+		Currency Type: <select name='appStore_options[currency_format]'>
+					<option value="USD" <?php if ($options['currency_format'] == "USD") echo 'selected'; ?>>US ($ and &cent;)</option>
+					<option value="EUR" <?php if ($options['currency_format'] == "EUR") echo 'selected'; ?>>Euro (&euro;)</option>
+					<option value="GBP" <?php if ($options['currency_format'] == "GBP") echo 'selected'; ?>>United Kingdom Pound (&pound;)</option>
+					<option value="NOK" <?php if ($options['currency_format'] == "NOK") echo 'selected'; ?>>Norway Krone (kr)</option>
+					<option value="SEK" <?php if ($options['currency_format'] == "SEK") echo 'selected'; ?>>Sweden Krona (kr)</option>
+					<option value="JPY" <?php if ($options['currency_format'] == "JPY") echo 'selected'; ?>>Japan Yen &yen;</option>
+				</select><br />
+		Show results from this country's store: <select name='appStore_options[store_country]'>
+					<option value="US" <?php if ($options['store_country'] == "US") echo 'selected'; ?>>iTunes US</option>
+					<option value="AT" <?php if ($options['store_country'] == "AT") echo 'selected'; ?>>iTunes AT</option>
+					<option value="BE" <?php if ($options['store_country'] == "BE") echo 'selected'; ?>>iTunes BE</option>
+					<option value="CH" <?php if ($options['store_country'] == "CH") echo 'selected'; ?>>iTunes CH</option>
+					<option value="DE" <?php if ($options['store_country'] == "DE") echo 'selected'; ?>>iTunes DE</option>
+					<option value="DK" <?php if ($options['store_country'] == "DK") echo 'selected'; ?>>iTunes DK</option>
+					<option value="ES" <?php if ($options['store_country'] == "ES") echo 'selected'; ?>>iTunes ES</option>
+					<option value="FI" <?php if ($options['store_country'] == "FI") echo 'selected'; ?>>iTunes FI</option>
+					<option value="FR" <?php if ($options['store_country'] == "FR") echo 'selected'; ?>>iTunes FR</option>
+					<option value="GB" <?php if ($options['store_country'] == "GB") echo 'selected'; ?>>iTunes GB</option>
+					<option value="IE" <?php if ($options['store_country'] == "IE") echo 'selected'; ?>>iTunes IE</option>
+					<option value="IT" <?php if ($options['store_country'] == "IT") echo 'selected'; ?>>iTunes IT</option>
+					<option value="NL" <?php if ($options['store_country'] == "NL") echo 'selected'; ?>>iTunes NL</option>
+					<option value="NO" <?php if ($options['store_country'] == "NO") echo 'selected'; ?>>iTunes NO</option>
+					<option value="SE" <?php if ($options['store_country'] == "SE") echo 'selected'; ?>>iTunes SE</option>
+				</select><br />
+		<small>(Cached app data must be cleared for change to take effect. See <b>Reset</b> tab.)</small>
+		</div>
+	<h2 class="asa_admin">Miscellaneous</h2>
+		<div class="asa_admin">
+	
+		<input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> /> Show a smaller Buy Button in iOS browsers<br /><br />
+		Display <input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" /> apps from ATOM feed<br /><br />
+		Screenshot Width: <input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />px<br />
+		<small>(in px. Height is automatic.)</small>
+		</div>
+	
+
     </div>
     <div id="fragment-2">
     	<?php
     	$starColors = array("clear", "black", "blue","bronze","faded","gold","green","grey","orange","pink","purple","red");
     	?>
-        <table class="form-table">
-		<tr><th scope="row"><h2>Full Star:</h2></th></tr>
-		<tr><td>
+    	<h2 class="asa_admin">Full Star:</h2>
 		<?php
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';
@@ -253,9 +229,7 @@ function appStore_render_form() {
     		echo '&nbsp;&nbsp;&nbsp;';    	
 		}
 		?>
-		</td></tr>
-		<tr><th scope="row"><h2>Empty Star:</h2></th></tr>
-		<tr><td>
+		<h2 class="asa_admin">Empty Star:</h2>
 		<?php
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';
@@ -269,11 +243,10 @@ function appStore_render_form() {
     		echo '&nbsp;&nbsp;&nbsp;';    	
 		}
 		?>
-		</td></tr>
-		</table>
 		
 
-<hr /><h2>Colors</h2>      
+	<h2 class="asa_admin">Colors</h2>
+		<div class="asa_admin">     
 <?php
 	//define your color pickers
 	$colorPickers = array(
@@ -297,10 +270,11 @@ function appStore_render_form() {
 		echo '<div id="'.$colorPicker['ID'].'_color"></div>'."\r";
 		echo '</div>'."\r";
 	} ?>
-	<hr />
+		</div>
     </div>
     <div id="fragment-3">
-		<h2>Show in Post body:</h2>
+		<h2 class="asa_admin">Show in Post body:</h2>
+			<div class="asa_admin">
 		<?php
     	$appStoreProperties = array(
     		array('ID' => "displayapptitle", 'label' => "App Name"),
@@ -321,18 +295,36 @@ function appStore_render_form() {
 			echo $appStoreProperty['ID'];
 			echo ']" value="yes"';
 			if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
-			echo ' /> '.$appStoreProperty['label']."<br>\r";
+			echo ' /> '.$appStoreProperty['label']."<br />\r";
 		}
 		?>
-		<h2>App Icon Size:</h2>
-		Icon to start with: <input type="radio" name="appStore_options[appstoreicon_to_use]" value="60" <?php if ($options['appstoreicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
-		<input type="radio" name="appStore_options[appstoreicon_to_use]" value="512" <?php if ($options['appstoreicon_to_use'] == "512") echo 'checked'; ?> /> 512px<br>
-		<input type="text" size="3" name="appStore_options[appicon_size_adjust]" value="<?php echo $options['appicon_size_adjust']; ?>" />% Adjust Icon Size<br>
-		<input type="text" size="3" name="appStore_options[appicon_iOS_size_adjust]" value="<?php echo $options['appicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
+		</div>
+		<h2 class="asa_admin">App Icon Size:</h2>
+		<div class="asa_admin">
+		Icon to start with: <input type="radio" name="appStore_options[appstoreicon_to_use]" value="60" <?php if ($options['appstoreicon_to_use'] == "60") echo 'checked'; ?> /> Small Icon (60px)&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input type="radio" name="appStore_options[appstoreicon_to_use]" value="512" <?php if ($options['appstoreicon_to_use'] == "512") echo 'checked'; ?> /> Large Icon (512px or 1024px)<br /><br />
+		
+		<table class="asa_admin_table">
+		<tr>
+			<th><input type="radio" name="appStore_options[appstoreicon_size_adjust_type]" value="percent" <?php if ($options['appstoreicon_size_adjust_type'] == "percent") echo 'checked'; ?> /> Adjust by percentage</th>
+			<th><input type="radio" name="appStore_options[appstoreicon_size_adjust_type]" value="pixels" <?php if ($options['appstoreicon_size_adjust_type'] == "pixels") echo 'checked'; ?> /> Adjust to max pixels</th>
+		</tr>
+		<tr>
+			<td>Adjust <input type="text" size="3" name="appStore_options[appicon_size_adjust]" value="<?php echo $options['appicon_size_adjust']; ?>" />%</td>
+			<td>Adjust to <input type="text" size="4" name="appStore_options[appicon_size_max]" value="<?php echo $options['appicon_size_max']; ?>" />px</td>
+		</tr>
+		<tr>
+			<td>Adjust <input type="text" size="3" name="appStore_options[appicon_iOS_size_adjust]" value="<?php echo $options['appicon_iOS_size_adjust']; ?>" />%<br /><small>(iOS browsers)</small></td>
+			<td>Adjust to <input type="text" size="4" name="appStore_options[appicon_iOS_size_max]" value="<?php echo $options['appicon_iOS_size_max']; ?>" />px<br /><small>(iOS browsers)</small></td>
+		</tr>
+		</table>		
+		</div>
+		
+		
     </div>
     <div id="fragment-4">
-   		<h2>Show in Post body:</h2>
-   		
+   		<h2 class="asa_admin">Show in Post body:</h2>
+   		<div class="asa_admin">
   		<?php
     	$iTunesStoreProperties = array(
     		array('ID' => "displayitunestitle", 'label' => "Music Title"),
@@ -349,24 +341,40 @@ function appStore_render_form() {
 			echo $iTunesStoreProperty['ID'];
 			echo ']" value="yes"';
 			if ($options[$iTunesStoreProperty['ID']] == "yes") echo ' checked';
-			echo ' /> '.$iTunesStoreProperty['label']."<br>\r";
+			echo ' /> '.$iTunesStoreProperty['label']."<br />\r";
 		}
 		?>
-
-		<h2>App Icon Size:</h2>
+		</div>
+		<h2 class="asa_admin">App Icon Size:</h2>
+		<div class="asa_admin">
 		Icon to start with: <input type="radio" name="appStore_options[itunesicon_to_use]" value="30" <?php if ($options['itunesicon_to_use'] == "30") echo 'checked'; ?> /> 30px 
 		<input type="radio" name="appStore_options[itunesicon_to_use]" value="60" <?php if ($options['itunesicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
 		<input type="radio" name="appStore_options[itunesicon_to_use]" value="100" <?php if ($options['itunesicon_to_use'] == "100") echo 'checked'; ?> /> 100px
-		<br>
-		<input type="text" size="3" name="appStore_options[itunesicon_size_adjust]" value="<?php echo $options['itunesicon_size_adjust']; ?>" />% Adjust Icon Size<br>
-		<input type="text" size="3" name="appStore_options[itunesicon_iOS_size_adjust]" value="<?php echo $options['itunesicon_iOS_size_adjust']; ?>" />% Adjust Icon Size (iOS)<br>
+		<br /><br />
+		
+		<table class="asa_admin_table">
+		<tr>
+			<th><input type="radio" name="appStore_options[itunesicon_size_adjust_type]" value="percent" <?php if ($options['itunesicon_size_adjust_type'] == "percent") echo 'checked'; ?> /> Adjust by percentage</th>
+			<th><input type="radio" name="appStore_options[itunesicon_size_adjust_type]" value="pixels" <?php if ($options['itunesicon_size_adjust_type'] == "pixels") echo 'checked'; ?> /> Adjust to max pixels</th>
+		</tr>
+		<tr>
+			<td>Adjust <input type="text" size="3" name="appStore_options[itunesicon_size_adjust]" value="<?php echo $options['itunesicon_size_adjust']; ?>" />%</td>
+			<td>Adjust to <input type="text" size="4" name="appStore_options[itunesicon_size_max]" value="<?php echo $options['itunesicon_size_max']; ?>" />px</td>
+		</tr>
+		<tr>
+			<td>Adjust <input type="text" size="3" name="appStore_options[itunesicon_iOS_size_adjust]" value="<?php echo $options['itunesicon_iOS_size_adjust']; ?>" />%<br /><small>(iOS browsers)</small></td>
+			<td>Adjust to <input type="text" size="4" name="appStore_options[itunesicon_iOS_size_max]" value="<?php echo $options['itunesicon_iOS_size_max']; ?>" />px<br /><small>(iOS browsers)</small></td>
+		</tr>
+		</table>		
+		</div>
+		
+		
+		
 	</div>    
     <div id="fragment-5">
-    	<table class="form-table">
-        <tr>
-			<th scope="row">Data cache time:</th>
-			<td colspan="2">
-				<select name='appStore_options[cache_time_select_box]'>
+    	<h2 class="asa_admin">Data cache time:</h2>
+    	<div class="asa_admin">
+    	<select name='appStore_options[cache_time_select_box]'>
 				
 					<?php $cache_intervals = array(
 												'Don\'t cache'=>0,
@@ -389,17 +397,13 @@ function appStore_render_form() {
 					?>							
 				</select>
 				<span style="color:#666666;margin-left:2px;">This option determines how long before the plugin requests new data from Apple's servers. You can clear the cached app data via the Reset tab.</span>
-					</td>
-				</tr>
-				<tr valign="top">
-					<th scope="row">Cache images locally:</th>
-					<td colspan="2">
-						<!-- First checkbox button -->
-						<label><input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /> Yes</label><br />
-						<span style="color:#666666;margin-left:2px;">Load icons, screenshots, etc. locally instead of using Apple's CDN server. Your wp-content/uploads/ directory MUST be writeable for this option to have any effect.</span>
-					</td>
-				</tr>
-			</table>
+		</div>		
+		<h2 class="asa_admin">Cache images locally:</h2>
+		<div class="asa_admin">
+		<!-- First checkbox button -->
+						<label><input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /> Load icons, screenshots, etc. locally instead of using Apple's CDN server.</label><br /><small>Your wp-content/uploads/ directory MUST be writeable for this option to have any effect.</small>
+		</div>
+				
     </div>
     <div id="fragment-6">
         <table class="form-table">
@@ -500,14 +504,17 @@ function appStore_render_form() {
 			</table>
     </div>
 	<div id="fragment-7">
-		<h2>Reset All Settings to Defaults:</h2>
-		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckOne]" /> I want to reset all settings to their defaults.<br><br>
-		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckTwo]" /> I know this will not save any of my changes.<br><br>
-		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckThree]" /> I wont get mad when all my changes are lost.<br><br>
-		<hr>
-		<h2>Reset cached App data:</h2>
-		<input type="checkbox" value="DoIt" name="appStore_options[ResetCacheOne]" /> I want to reset all cached app data.<br><br>
-		<input type="checkbox" value="DoIt" name="appStore_options[ResetCacheTwo]" /> I know this will slow down my site as it rebuilds.<br><br>
+		<h2 class="asa_admin">Reset All Settings to Defaults:</h2>
+		<div class="asa_admin">
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckOne]" /> I want to reset all settings to their defaults.<br /><br />
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckTwo]" /> I know this will not save any of my changes.<br /><br />
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCheckThree]" /> I wont get mad when all my changes are lost.<br /><br />
+		</div>
+		<h2 class="asa_admin">Reset cached App data:</h2>
+		<div class="asa_admin">
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCacheOne]" /> I want to reset all cached app data.<br /><br />
+		<input type="checkbox" value="DoIt" name="appStore_options[ResetCacheTwo]" /> I know this will slow down my site as it rebuilds.
+		</div>
 	</div>
    
 </div>
@@ -516,7 +523,19 @@ function appStore_render_form() {
 			</p>
 		</form>
 	</div>
-	<?php	
+	
+    <hr>
+    
+    <div class="asa_admin_donate">
+		<h3 class="hndle"><span><strong class="red">Like this plugin?</strong></span></h3>
+		<div class="inside">
+			<p><strong>Want to help make it better? All donations are used to improve this plugin, so donate now!</strong></p>
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick" /> <input type="hidden" name="hosted_button_id" value="8RDJYGJSNF9LY" /> <input type="image" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal - The safer, easier way to pay online!" /> <img src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" alt="" width="1" height="1" border="0" /></form>
+<p>Or you could:</p><ul><li><a href="http://wordpress.org/extend/plugins/app-store-assistant/">Rate the plugin 5★ on WordPress.org</a></li></ul>
+		</div>
+	</div>	
+	
+<?php	
 }
 
 // Sanitize and validate input. Accepts an array, return a sanitized array.
