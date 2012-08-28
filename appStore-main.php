@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.5.2
+Version: 4.5.3
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -370,12 +370,18 @@ function appStore_atomfeed_handler($atts, $content = null, $code="") {
 	// Get ATOM URL and more_info_text from shortcode	
 	extract( shortcode_atts( array(
 		'atomurl' => '',
+		'debug' => 'false',
+		'mode' => 'iOS',
 		'more_info_text' => 'open in The App Store...'
 	), $atts ) );
 	if(empty($atomurl)) {
 		echo 'Missing atomurl in tag. Replace <b>id</b> with <b>atomurl</b>.';
 		return;
 	}
+	
+	//echo "[$debug]";
+	//if($debug=="true") echo "[$appID][".print_r($app)."]";
+	
 	$last = $atomurl[strlen($atomurl)-1];
 	if($last != "/") $AddSlash = "/";
 	$RSS_Feed = $atomurl.$AddSlash."xml";
@@ -391,16 +397,22 @@ function appStore_atomfeed_handler($atts, $content = null, $code="") {
 		$appIDs = appStore_getIDs_from_feed($RSS_Feed);
 		update_option($appStore_option, $appIDs);
 	}	
+	
 
 	//Pair down array to number of apps preference
 	array_splice($appIDs, appStore_setting('qty_of_apps'));
 	
 	//Load App data
 	foreach($appIDs as $appID) {
+	
 		if($appID == "" || !is_numeric($appID)) return;
 		$app = appStore_get_data($appID);
 		if($app) {
-			echo appStore_page_output($app,$more_info_text,"external",$code);
+			if(stristr($mode, 'itunes')) {
+				echo iTunesStore_page_output($app,$more_info_text,"external",$code);
+			} else {
+				echo appStore_page_output($app,$more_info_text,"external",$code);
+			}
 		} else {
 			echo "";
 			//wp_die('No valid data for app id: ' . $id);

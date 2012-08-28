@@ -48,7 +48,7 @@
 				var appID = prompt("ATOM Feed URL", "http://itunes.apple.com/us/rss/toppaidmacapps/limit=25");
 				var m = idPattern.exec(appID);
 				if (m != null && m != 'undefined')
-					ed.execCommand('mceInsertContent', false, '[asaf_atomfeed atomurl="'+m[0]+'" more_info_text="open in App Store..."]');
+					ed.execCommand('mceInsertContent', false, '[asaf_atomfeed atomurl="'+m[0]+'" mode="iOS" more_info_text="open in App Store..."]');
 				}
 		});  
 	}

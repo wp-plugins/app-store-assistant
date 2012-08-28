@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.4.1
-Stable tag: 4.5.2
+Stable tag: 4.5.3
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -30,15 +30,24 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Available Shortcodes ==
 
-[asaf_atomfeed atomurl="http://itunes.apple.com/us/rss/toppaidmacapps/limit=25" more_info_text="open in App Store..."]
+[asaf_atomfeed atomurl="http://itunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]
+	atomurl: feed URL supplied by Apple RSS Generator
+	mode: [iOS or iTunes]
+	more_info_text: Button text
 
-[ios_app id="123456789" more_info_text="open in App Store..."] (where "123456789" is the iOS app's App Store ID)
+[ios_app id="123456789" more_info_text="open in App Store..."]
+	id: The iOS app's App Store ID
+	more_info_text: Button text
 
-[mac_app id="123456789" more_info_text="open in Mac App Store..."] (where "123456789" is the Mac App Store ID)
+[mac_app id="123456789" more_info_text="open in Mac App Store..."]
+	id: The Mac App Store ID
+	more_info_text: Button text
 
-[itunes_store id="123456789" more_info_text="open in iTunes..."] (where "123456789" is the iTunes Store ID) works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos
+[itunes_store id="123456789" more_info_text="open in iTunes..."]
+	id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
 
-[appStore_IDsearch] Add this short code to a Private page/post in Wordpress to have your own quick search function. Searches for iPhone/iPod, iPad or Mac apps. Displays Name, Price, Developer, Categories and a copyable shortcode already filled out.
+[appStore_IDsearch]
+	Add this short code to a Private page/post in Wordpress to have your own quick search function. Searches for iPhone/iPod, iPad or Mac apps. Displays Name, Price, Developer, Categories and a copyable shortcode already filled out.
 
 == Screenshots ==
 
@@ -48,6 +57,11 @@ Please let us know of any features you would like added or bugs that need squash
 4. ATOM Feed listing
 
 == Changelog ==
+
+= 4.5.3 =
+* Fixed issue with iTunes RSS feeds [Thanks Fredrik]
+* Added "asaf_atomfeed" shortcode option for iTunes or iOS ATOM feeds
+* Changed RSS shortcode button in editor to reflect new option
 
 = 4.5.2 =
 * Added new search functions for "[appStore_IDsearch]" tag
