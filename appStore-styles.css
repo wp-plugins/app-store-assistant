@@ -1,3 +1,79 @@
+.appStore-search-appsList {
+    z-index: 9996;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    padding: 0;
+    min-width: 100px;
+    height: auto;
+    -webkit-box-shadow: 3px 5px 10px #ccc;
+    -moz-box-shadow: 3px 5px 10px #ccc;
+    box-shadow: 3px 5px 10px #ccc;
+}
+
+
+div.appStore-search-appsList > ul {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    list-style: none;
+}
+
+div.appStore-search-appsList > ul li:hover {
+    background-color: #ddd;
+}
+
+div.appStore-search-appsList > ul li {
+	padding: 5px 5px 5px 85px;
+	border-bottom: 2px #666666 solid;
+}
+
+.appStore-search-result {
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+
+span.appStore-search-title {
+	color: #004080;
+	font-size: 120%;
+	font-weight: bolder;
+}
+
+
+
+.appStore-search-find {
+ border-top: 1px solid #96d1f8;
+   background: #65a9d7;
+   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+   background: -o-linear-gradient(top, #3e779d, #65a9d7);
+   padding: 6px 12px;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 14px;
+   font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   vertical-align: middle;
+}
+
+.appStore-search-find:hover {
+   border-top-color: #28597a;
+   background: #28597a;
+   color: #ccc;
+   }
+.appStore-search-find:active {
+   border-top-color: #1b435e;
+   background: #1b435e;
+   }
+
+
 .appStore-screenshots {
 	list-style-type: none !important;
 	margin: 0;
@@ -11,8 +87,39 @@
 	float: right;
 }
 
+.iTunesStore-icon {
+	float: right;
+}
+
 .appStore-rating {
 	margin-bottom: 10px;
+}
+.appStore-version {
+	text-align: left;
+}
+.appStore-developername {
+	text-align: left;
+}
+.appStore-sellername {
+	text-align: left;
+}
+.appStore-releasedate {
+	text-align: left;
+}
+.appStore-filesize {
+	text-align: left;
+}
+.appStore-universal {
+	text-align: left;
+}
+.appStore-advisoryrating {
+	text-align: left;
+}
+.appStore-categories {
+	text-align: left;
+}
+.appStore-supporteddevices {
+	text-align: left;
 }
 
 #appStore-icon-container {
@@ -26,51 +133,35 @@
 	-moz-border-radius: 20px;
 	-webkit-border-radius: 20px;
 	overflow: hidden;
-	background-color: green;
+	background-color: Transparent;
 }
+
+#iTunesStore-icon-container {
+	float: right;
+}
+
+#iTunesStore-icon-container img {
+	border: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: Transparent;
+}
+
 
 th.prefTableHeader {
 	background-color: #B3B3B3;
 	font-weight: bold;
 }
 
-
 div.asaf-entry img {
 	/* max-width: 150px;*/
 }
 
-.appStore-Button {
-	padding: 5px 20px 5px 20px;
-	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5) );
-	background:-moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5');
-	background-color:#79bbff;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #84bbf3;
-	display:inline-block;
-	color:#fcfc00;
-	font-family:Trebuchet MS;
-	font-size:16px;
-	font-weight:bold;
-	padding:4px 8px;
-	text-decoration:none;
-	text-shadow:1px 1px 0px #39618a;
-	margin-top: 5px;
-
+.iTunesStore-Button:active {
+	position:relative;
+	top:1px;
 }
 
-.appStore-Button:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #79bbff) );
-	background:-moz-linear-gradient( center top, #378de5 5%, #79bbff 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#79bbff');
-	background-color:#378de5;
-	color: #C9C9FF;
-}
 
 .appStore-Button:active {
 	position:relative;
@@ -113,21 +204,8 @@ div.asaf-entry img {
 	text-align: center;
 }
 
-.appStore-rating_bar {
-	display:inline-block;
-	/* 70 = 14*5; 14 is the width of the background picture */
-	width: 160px;
-	/* Otherwise layout might break*/
-	/* when inherited align is center or right: */
-	text-align:left;
-	/* This is the picture of a single empty star */
-	background: url(/rating-empty.png) 0 0 repeat-x;
-}
-
-.appStore-rating_bar span {
-	display:inherit;
-	/* 12 is the height of the background picture */
-	height: 32px;
-	/* This is the picture of a single full star */
-	background: url(/rating-full.png) 0 0 repeat-x;
+.FullDescriptionButton {
+	font-size: 13px;
+	font-weight: normal;
+	padding: 4px 8px;
 }
