@@ -135,11 +135,13 @@ function appStore_render_form() {
 		showMessage("All settings have been reset to their defaults!",true);
 	}
 
-	if($options['ResetCacheOne']=="DoIt" && $options['ResetCacheTwo']=="DoIt") {
-		clearAppCache();
-		update_option('ResetCacheOne', "NoWay");
-		update_option('ResetCacheTwo', "NoWay");
 
+	if($options['ResetCacheOne']=="DoIt" && $options['ResetCacheTwo']=="DoIt") {
+		clearAppCache();		
+		$options = get_option('appStore_options');
+		$options["ResetCacheOne"] = "NoWay";
+		$options["ResetCacheTwo"] = "NoWay";		
+		update_option('appStore_options', $options);	
 		showMessage("The App data cache has been cleared!",true);
 	}
 

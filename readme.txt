@@ -1,10 +1,10 @@
 === App Store Assistant ===
 Contributors: sealsystems 
 Donate link:http://theiphoneappslist.com/donate/
-TTags: iOS, App Store, iTunes, apps, appstore, iphone, ipad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
+TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.4.1
-Stable tag: 4.5.3
+Stable tag: 4.5.4
 
 The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -18,7 +18,7 @@ You can also add a shortcode to a Private page and have your own quick search fu
 
 You can also Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
 
-Please let us know of any features you would like added or bugs that need squashing in the Wordpress fourms <http://wordpress.org/tags/app-store-assistant?forum_id=10>
+Please let us know of any features you would like added or bugs that need squashing in the Wordpress fourms <http://wordpress.org/support/plugin/app-store-assistant>
 
 
 == Installation ==
@@ -47,7 +47,7 @@ Please let us know of any features you would like added or bugs that need squash
 	id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
 
 [appStore_IDsearch]
-	Add this short code to a Private page/post in Wordpress to have your own quick search function. Searches for iPhone/iPod, iPad or Mac apps. Displays Name, Price, Developer, Categories and a copyable shortcode already filled out.
+	Add this short code to a Private page/post in Wordpress to have your own admin quick search function. Searches for iPhone/iPod, iPad or Mac apps. Displays Name, Price, Developer, Categories and a copyable shortcode already filled out.
 
 == Screenshots ==
 
@@ -55,8 +55,13 @@ Please let us know of any features you would like added or bugs that need squash
 2. Options Page for changing some of the text elements on the App Store detail
 3. Single item from a page of multiple apps
 4. ATOM Feed listing
+5. General Options
 
 == Changelog ==
+
+= 4.5.4 =
+* Fixed cache clearing code
+* Updated Screenshots
 
 = 4.5.3 =
 * Fixed issue with iTunes RSS feeds [Thanks Fredrik]
