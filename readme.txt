@@ -3,10 +3,10 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
-Tested up to: 3.4.1
-Stable tag: 4.5.4
+Tested up to: 3.4.2
+Stable tag: 4.6
 
-The App Store Assistent adds 5 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
+The App Store Assistent adds 7 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
 == Description ==
 
@@ -39,9 +39,17 @@ Please let us know of any features you would like added or bugs that need squash
 	id: The iOS app's App Store ID
 	more_info_text: Button text
 
+[ios_app_link id="123456789" text="App Name"]
+	id: The iOS app's App Store ID
+	text: Link text
+
 [mac_app id="123456789" more_info_text="open in Mac App Store..."]
 	id: The Mac App Store ID
 	more_info_text: Button text
+
+[mac_app_link id="123456789" text="App Name"]
+	id: The Mac App Store ID
+	text: Link text
 
 [itunes_store id="123456789" more_info_text="open in iTunes..."]
 	id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
@@ -58,6 +66,9 @@ Please let us know of any features you would like added or bugs that need squash
 5. General Options
 
 == Changelog ==
+
+= 4.6 =
+* Added two new shortcodes to display an affiliate link anywhere in a post [Thanks pwlk]
 
 = 4.5.4 =
 * Fixed cache clearing code

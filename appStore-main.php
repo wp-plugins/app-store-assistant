@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.5.4
+Version: 4.6
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -23,9 +23,11 @@ define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreService
 add_shortcode("ios_asaf_atomfeed", "appStore_atomfeed_handler"); // Legacy shortcode for older installs
 add_shortcode("asaf_atomfeed", "appStore_atomfeed_handler");
 add_shortcode('ios_app', 'appStore_app_handler'); 
+add_shortcode('ios_app_link', 'appStore_app_link_handler');
 add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
+add_shortcode('mac_app_link', 'appStore_app_link_handler');
 add_shortcode('appStore_IDsearch', 'idsearch_app_handler');
 add_action('init', 'add_asa_mce_button');
 add_filter( 'tiny_mce_version', 'my_refresh_mce');
@@ -331,6 +333,30 @@ function appStore_app_handler( $atts,$content=null, $code="" ) {
 		//wp_die('No valid data for app id: ' . $id);
 	}
 }
+
+function appStore_app_link_handler( $atts,$content=null, $code="") {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array(
+		'id' => '',
+		'text' => ''
+	), $atts ) );
+
+	//Don't do anything if the ID is blank or non-numeric
+	if($id == "" || !is_numeric($id))return;	
+
+	//Get the App Data
+	$app = appStore_get_data($id);
+	if($app) {
+		$appURL = getAffiliateURL($app->trackViewUrl);
+		if ($text == '') $text = $app->trackName;
+		$appURL = '<a href="'.$appURL.'">'.$text.'</a>';
+		return $appURL;
+	} else {
+		echo "";
+		//wp_die('No valid data for app id: ' . $id);
+	}
+}
+
 
 function iTunesStore_handler( $atts,$content=null, $code="" ) {
 	// Get iTunes ID and more_info_text from shortcode
