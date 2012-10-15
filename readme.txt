@@ -69,10 +69,10 @@ Please let us know of any features you would like added or bugs that need squash
 
 = 4.6.1 =
 * Added additional CSS configuration for buttons
-	*Transparent backgounds
-	*Gradient Backgrounds
-	*Button Corner Radius
-	*Button Border Width
+	* Transparent backgounds
+	* Gradient Backgrounds
+	* Button Corner Radius
+	* Button Border Width
 
 = 4.6 =
 * Added two new shortcodes to display an affiliate link anywhere in a post [Thanks pwlk]
@@ -99,7 +99,13 @@ Please let us know of any features you would like added or bugs that need squash
 * Add feature to delete App information cache
 
 = 4.5 =
-* Added Currency options (US $, Euro &euro; Norway Krone, Sweden Krona, Japan Yen and UK &pound;)
+* Added Currency options:
+	* US $
+	* Euro &euro;
+	* Norway Krone
+	* Sweden Krona
+	* Japan Yen
+	* UK &pound;
 * Fixed issue with older PHP installations. [Thanks Robert]
 
 = 4.4.3 =
@@ -116,7 +122,10 @@ Please let us know of any features you would like added or bugs that need squash
 
 = 4.4.1 =
 * Added 12 additional styles to Ratings bar
-* Added ability to customize button colors (Text, Shadows, Gradients etc.)
+* Added ability to customize button colors
+	* Text
+	* Shadows
+	* Gradients etc.
 * Fixed issue with jQuery conflict on Admin pages
 * Removed dependancy on specific version of jQuery
 * Fixed issue with DMG affiliate code
@@ -166,11 +175,13 @@ Please let us know of any features you would like added or bugs that need squash
 
 = 4.0 =
 * Added a new shortcode for iTunes Store
-* Added ability to display Music Albums, Songs and Music Videos
-* Added ability to display Movies, Short Films
-* Added ability to display TV Episodes and Seasons
-* Added choice of App icon size and % adjust
-* Added choice of iTunes icon size and % adjust
+* Added ability to display:
+	* Music Albums, Songs and Music Videos
+	* Movies, Short Films
+	* TV Episodes and Seasons
+* Added choice of:
+	* App icon size and % adjust
+	* iTunes icon size and % adjust
 * Can choose different size icons when viewed on iPhone
 * Smaller buy button choice for viewing on iPhone (less text)
 * Fixed iTunes Serach API error issue where "collectionId" is used in Albums rather than specified "collectionID"
@@ -191,18 +202,18 @@ Please let us know of any features you would like added or bugs that need squash
 * Added Affiliate Network partnerId pulldown menu in preferences
 * Can now be used with out belonging to the Affiliate program (We do strongly suggest you join though, you should be earning this commission.)
 * Added options to display various app details
-	-Title
-	-Version
-	-Developer Name
-	-Seller Name
-	-Date Released
-	-File Size
-	-Universal App
-	-Age Advisory
-	-Categories
-	-Star Rating
-	-Game Center Enabled icon
-	-Supported Devices list
+	* Title
+	* Version
+	* Developer Name
+	* Seller Name
+	* Date Released
+	* File Size
+	* Universal App
+	* Age Advisory
+	* Categories
+	* Star Rating
+	* Game Center Enabled icon
+	* Supported Devices list
 
 = 2.6 =
 * Fixed issue where Mac app icons were cut off in CSS
