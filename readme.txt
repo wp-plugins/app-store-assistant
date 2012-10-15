@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 4.6
+Stable tag: 4.6.1
 
 The App Store Assistent adds 7 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -66,6 +66,13 @@ Please let us know of any features you would like added or bugs that need squash
 5. General Options
 
 == Changelog ==
+
+= 4.6.1 =
+* Added additional CSS configuration for buttons
+	*Transparent backgounds
+	*Gradient Backgrounds
+	*Button Corner Radius
+	*Button Border Width
 
 = 4.6 =
 * Added two new shortcodes to display an affiliate link anywhere in a post [Thanks pwlk]
@@ -151,10 +158,11 @@ Please let us know of any features you would like added or bugs that need squash
 * Added shortcode to have a private search page
 
 = 4.1 =
-* Added a button to insert shortcode for iTunes Store
-* Added a button to insert shortcode for App Store
-* Added a button to insert shortcode for Mac App Store
-* Added a button to insert shortcode for Apple ATOM feed
+* Added a button to insert shortcode for
+	* iTunes Store
+	* App Store
+	* Mac App Store
+	* Apple ATOM feed
 
 = 4.0 =
 * Added a new shortcode for iTunes Store
