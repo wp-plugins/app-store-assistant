@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.5.3
+Version: 4.6.1
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -23,9 +23,11 @@ define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreService
 add_shortcode("ios_asaf_atomfeed", "appStore_atomfeed_handler"); // Legacy shortcode for older installs
 add_shortcode("asaf_atomfeed", "appStore_atomfeed_handler");
 add_shortcode('ios_app', 'appStore_app_handler'); 
+add_shortcode('ios_app_link', 'appStore_app_link_handler');
 add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
+add_shortcode('mac_app_link', 'appStore_app_link_handler');
 add_shortcode('appStore_IDsearch', 'idsearch_app_handler');
 add_action('init', 'add_asa_mce_button');
 add_filter( 'tiny_mce_version', 'my_refresh_mce');
@@ -86,14 +88,17 @@ function appStore_css_hook( ) {
 	-moz-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
 	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
-	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>');
-	background-color:#<?php echo appStore_setting('color_buttonStart') ?>;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #<?php echo appStore_setting('color_buttonBorder') ?>;
+	<?php
+	if(appStore_setting('hide_button_background') != "yes") { ?>
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79BBFF), color-stop(1, #378DE5) );
+	background:-moz-linear-gradient( center top, #79BBFF 5%, #378DE5 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79BBFF', endColorstr='#378DE5');
+	background-color:#79BBFF;
+	<?php } ?>
+	-moz-border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
+	-webkit-border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
+	border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
+	border:<?php echo appStore_setting('button_border_width') ?>px solid #<?php echo appStore_setting('color_buttonBorder') ?>;
 	display:inline-block;
 	color:#<?php echo appStore_setting('color_buttonText') ?>;
 	font-family:Trebuchet MS;
@@ -107,11 +112,14 @@ function appStore_css_hook( ) {
 }
 
 .appStore-Button:hover {
+	<?php if(appStore_setting('hide_button_background_hover') != "yes") { ?>
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonHoverStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonHoverStop') ?>) );
 	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonHoverStart') ?> 5%, #<?php echo appStore_setting('color_buttonHoverStop') ?> 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonHoverStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonHoverStop') ?>');
 	background-color:#<?php echo appStore_setting('color_buttonHoverStart') ?>;
+	<?php } ?>
 	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
+	text-decoration:none;
 }
 
 .iTunesStore-Button {
@@ -331,6 +339,30 @@ function appStore_app_handler( $atts,$content=null, $code="" ) {
 		//wp_die('No valid data for app id: ' . $id);
 	}
 }
+
+function appStore_app_link_handler( $atts,$content=null, $code="") {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array(
+		'id' => '',
+		'text' => ''
+	), $atts ) );
+
+	//Don't do anything if the ID is blank or non-numeric
+	if($id == "" || !is_numeric($id))return;	
+
+	//Get the App Data
+	$app = appStore_get_data($id);
+	if($app) {
+		$appURL = getAffiliateURL($app->trackViewUrl);
+		if ($text == '') $text = $app->trackName;
+		$appURL = '<a href="'.$appURL.'">'.$text.'</a>';
+		return $appURL;
+	} else {
+		echo "";
+		//wp_die('No valid data for app id: ' . $id);
+	}
+}
+
 
 function iTunesStore_handler( $atts,$content=null, $code="" ) {
 	// Get iTunes ID and more_info_text from shortcode

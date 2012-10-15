@@ -48,7 +48,11 @@ function appStore_add_defaults($ResetOptions = false) {
 		"color_buttonHoverStart" => "378de5",
 		"color_buttonHoverStop" => "79bbff",
 		"color_buttonHoverText" => "C9C9FF",
-
+		"hide_button_background" => "no",
+		"hide_button_background_hover" => "no",
+		"button_corner_radius" => "15",
+		"button_border_width" => "3",
+		
 		"displayapptitle" => "no",
 		"displayversion" => "yes",
 		"displayadvisoryrating" => "yes",
@@ -135,11 +139,13 @@ function appStore_render_form() {
 		showMessage("All settings have been reset to their defaults!",true);
 	}
 
-	if($options['ResetCacheOne']=="DoIt" && $options['ResetCacheTwo']=="DoIt") {
-		clearAppCache();
-		update_option('ResetCacheOne', "NoWay");
-		update_option('ResetCacheTwo', "NoWay");
 
+	if($options['ResetCacheOne']=="DoIt" && $options['ResetCacheTwo']=="DoIt") {
+		clearAppCache();		
+		$options = get_option('appStore_options');
+		$options["ResetCacheOne"] = "NoWay";
+		$options["ResetCacheTwo"] = "NoWay";		
+		update_option('appStore_options', $options);	
 		showMessage("The App data cache has been cleared!",true);
 	}
 
@@ -269,7 +275,24 @@ function appStore_render_form() {
 		echo 'name="appStore_options['.$colorPicker['ID'].']" size="6" />'."\r";
 		echo '<div id="'.$colorPicker['ID'].'_color"></div>'."\r";
 		echo '</div>'."\r";
-	} ?>
+	}
+	
+		echo "<br />\r";
+		echo '<input type="checkbox" name="appStore_options[hide_button_background]" value="yes"';
+		if ($options[hide_button_background] == "yes") echo ' checked';
+		echo ' /> Transparent Button Background'."\r";
+		echo "<br />\r";
+		echo '<input type="checkbox" name="appStore_options[hide_button_background_hover]" value="yes"';
+		if ($options[hide_button_background_hover] == "yes") echo ' checked';
+		echo ' /> Transparent Button Background (Hover)'."\r";
+	
+		echo "<br />\r";
+		echo 'Button Corner Radius: <input type="text" size="3" name="appStore_options[button_corner_radius]" value="'.$options['button_corner_radius'].'" />px';
+		echo "<br />\r";
+		echo 'Button Border Width: <input type="text" size="2" name="appStore_options[button_border_width]" value="'.$options['button_border_width'].'" />px';
+	
+	 ?>
+	
 		</div>
     </div>
     <div id="fragment-3">
