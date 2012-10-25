@@ -63,10 +63,11 @@ function appStore_css_hook( ) {
 
 	$emptyStar = plugins_url( 'images/star-rating-'.appStore_setting('empty_star_color').'.png', __FILE__ );
 	$fullStar = plugins_url( 'images/star-rating-'.appStore_setting('full_star_color').'.png', __FILE__ );
-	
 ?>
  
 <style type='text/css'>
+/* This site uses App Store Assistant version <?php echo plugin_get_version() ?> */
+
 .appStore-rating_bar {
 	display:inline-block;
 	/* width of the background picture * 5 */
@@ -163,6 +164,12 @@ function appStore_css_hook( ) {
 }
 </style>
 <?php
+}
+function plugin_get_version() {
+	if ( ! function_exists( 'get_plugins' ) ) require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	$plugin_folder = get_plugins( '/' . plugin_basename( dirname( __FILE__ ) ) );
+	$plugin_file = basename( ( __FILE__ ) );
+	return $plugin_folder[$plugin_file]['Version'];
 }
 
 function format_price($unformattedPrice) {
