@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 4.7
+Stable tag: 4.7.1
 
 The App Store Assistent adds 8 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -72,6 +72,9 @@ Please let us know of any features you would like added or bugs that need squash
 5. General Options
 
 == Changelog ==
+
+= 4.7.1 =
+* HTTPS is now supported for Search and Lookup requests to Apple via their updated Search API.
 
 = 4.7 =
 * Added new shortcode [ios_app_list] (Use this shortcode if you are listing **multiple apps** on one page/post.) [Thanks Rodney]

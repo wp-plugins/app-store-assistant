@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 4.7
+Version: 4.7.1
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -325,7 +325,7 @@ function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 
 function getSearchResultsFromApple($entity){
 
-	$url  = "http://itunes.apple.com/search?term=";
+	$url  = "https://itunes.apple.com/search?term=";
 	$url .= urlencode($_POST['appname'])."&country=us&entity=$entity";
 	$contents = file_get_contents($url); 
 	$contents = utf8_encode($contents); 
