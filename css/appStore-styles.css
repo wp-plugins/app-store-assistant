@@ -1,0 +1,211 @@
+.appStore-search-appsList {
+    z-index: 9996;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    padding: 0;
+    min-width: 100px;
+    height: auto;
+    -webkit-box-shadow: 3px 5px 10px #ccc;
+    -moz-box-shadow: 3px 5px 10px #ccc;
+    box-shadow: 3px 5px 10px #ccc;
+}
+
+
+div.appStore-search-appsList > ul {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    list-style: none;
+}
+
+div.appStore-search-appsList > ul li:hover {
+    background-color: #ddd;
+}
+
+div.appStore-search-appsList > ul li {
+	padding: 5px 5px 5px 85px;
+	border-bottom: 2px #666666 solid;
+}
+
+.appStore-search-result {
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+
+span.appStore-search-title {
+	color: #004080;
+	font-size: 120%;
+	font-weight: bolder;
+}
+
+
+
+.appStore-search-find {
+ border-top: 1px solid #96d1f8;
+   background: #65a9d7;
+   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+   background: -o-linear-gradient(top, #3e779d, #65a9d7);
+   padding: 6px 12px;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 14px;
+   font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   vertical-align: middle;
+}
+
+.appStore-search-find:hover {
+   border-top-color: #28597a;
+   background: #28597a;
+   color: #ccc;
+   }
+.appStore-search-find:active {
+   border-top-color: #1b435e;
+   background: #1b435e;
+   }
+
+
+.appStore-screenshots {
+	list-style-type: none !important;
+	margin: 0;
+	padding: 0;
+}
+.appStore-screenshots li {
+	float: left;
+	list-style-type: none !important;
+}
+.appStore-icon {
+	float: right;
+}
+
+.iTunesStore-icon {
+	float: right;
+}
+
+.appStore-rating {
+	margin-bottom: 10px;
+}
+.appStore-version {
+	text-align: left;
+}
+.appStore-developername {
+	text-align: left;
+}
+.appStore-sellername {
+	text-align: left;
+}
+.appStore-releasedate {
+	text-align: left;
+}
+.appStore-filesize {
+	text-align: left;
+}
+.appStore-universal {
+	text-align: left;
+}
+.appStore-advisoryrating {
+	text-align: left;
+}
+.appStore-categories {
+	text-align: left;
+}
+.appStore-supporteddevices {
+	text-align: left;
+}
+
+#appStore-icon-container {
+	float: right;
+}
+
+#appStore-icon-container img {
+	border: 0px;
+	margin: 0px;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	overflow: hidden;
+	background-color: Transparent;
+}
+
+#iTunesStore-icon-container {
+	float: right;
+}
+
+#iTunesStore-icon-container img {
+	border: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: Transparent;
+}
+
+
+th.prefTableHeader {
+	background-color: #B3B3B3;
+	font-weight: bold;
+}
+
+div.asaf-entry img {
+	/* max-width: 150px;*/
+}
+
+.iTunesStore-Button:active {
+	position:relative;
+	top:1px;
+}
+
+
+.appStore-Button:active {
+	position:relative;
+	top:1px;
+}
+
+.BuyButton {
+	color: #fcfc00;
+}
+
+.FullDescriptionButton {
+	font-size: 13px;
+	font-weight: normal;
+	padding: 4px 8px;
+}
+
+
+
+.appStore-badge {
+	width: 100%;
+	margin: 5px auto 5px auto;
+	text-align: right;
+}
+
+.appStore-FullDescButton {
+	width: 100%;
+	margin: 5px auto 5px auto;
+	text-align: center;
+}
+
+.appStore-purchase {
+	width: 100%;
+	margin: 20px auto 20px auto;
+	text-align: right;
+}
+
+.appStore-purchase-center {
+	width: 100%;
+	margin: 20px auto 20px auto;
+	text-align: center;
+}
+
+.FullDescriptionButton {
+	font-size: 13px;
+	font-weight: normal;
+	padding: 4px 8px;
+}
