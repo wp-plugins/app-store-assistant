@@ -3,8 +3,8 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
-Tested up to: 3.4.2
-Stable tag: 4.7.1
+Tested up to: 3.5
+Stable tag: 5.0
 
 The App Store Assistent adds 8 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -70,8 +70,25 @@ Please let us know of any features you would like added or bugs that need squash
 3. Single item from a page of multiple apps
 4. ATOM Feed listing
 5. General Options
+6. Shortcode buttons on editor toolbar
 
 == Changelog ==
+
+= 5.0 =
+* Added some WP 3.5 API coolness
+* Added ability to turn off screenshots [Thanks jack89ita]
+* Added screenshot of buttons on toolbar [Thanks crazymikesapps]
+* Now ready for Localization
+* No creates an Auto Except if no manual excerpt exists
+* Rewritten and optimized
+	* Options section
+	* Removed ios_asaf_atomfeed shortcode
+	* Major cleanup of codebase
+	* Now checks for writable image cache folder
+	* Removes cached files and database entries when cache is cleared
+* Fixed error with currency set to US instead of USD
+* Fixed issue with TinyMCE being re-declared in some themes
+* Added App Store Asst menu on Admin screen
 
 = 4.7.1 =
 * HTTPS is now supported for Search and Lookup requests to Apple via their updated Search API.
