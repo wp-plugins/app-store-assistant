@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 5.0
+Stable tag: 5.0.1
 
 The App Store Assistent adds 8 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
 
@@ -65,30 +65,38 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Screenshots ==
 
-1. Options Page for changing Visual Elements
-2. Options Page for changing some of the text elements on the App Store detail
+1. Settings Page for changing Visual Elements
+2. Settings Page for changing some of the text elements on the App Store detail
 3. Single item from a page of multiple apps
 4. ATOM Feed listing
-5. General Options
+5. General Settings
 6. Shortcode buttons on editor toolbar
 
 == Changelog ==
 
-= 5.0 =
+= 5.0.1 =
 * Added some WP 3.5 API coolness
+* New App Store Search Screen in Settings
+	* Search for an App ID with copyable shordcode
+	* Auto-Create a post from App Store Search form
+	* Moved the appStore_IDsearch to the Settings section
 * Added ability to turn off screenshots [Thanks jack89ita]
 * Added screenshot of buttons on toolbar [Thanks crazymikesapps]
 * Now ready for Localization
-* No creates an Auto Except if no manual excerpt exists
+* Now creates an Auto Except if no manual excerpt exists
 * Rewritten and optimized
-	* Options section
+	* Settings section
 	* Removed ios_asaf_atomfeed shortcode
+	* Removed appStore_IDsearch shortcode
 	* Major cleanup of codebase
 	* Now checks for writable image cache folder
 	* Removes cached files and database entries when cache is cleared
 * Fixed error with currency set to US instead of USD
 * Fixed issue with TinyMCE being re-declared in some themes
 * Added App Store Asst menu on Admin screen
+
+= 5.0 =
+* See Version 5.0.1
 
 = 4.7.1 =
 * HTTPS is now supported for Search and Lookup requests to Apple via their updated Search API.
@@ -283,7 +291,7 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Upgrade Notice ==
 
-None.
+The shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page.
 
 == Note ==
 

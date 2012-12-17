@@ -1,7 +1,8 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 5.0
+Version: 5.0.1
+Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
 Author: Scott Immerman
@@ -56,7 +57,6 @@ add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
 add_shortcode('mac_app_link', 'appStore_app_link_handler');
-add_shortcode('appStore_IDsearch', 'idsearch_app_handler');
 add_action('init', 'add_asa_mce_button');
 add_filter( 'tiny_mce_version', 'appStore_refresh_mce');
 // ------------------------------------------------------------------------

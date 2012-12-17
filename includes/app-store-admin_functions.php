@@ -132,8 +132,177 @@ function appStore_init(){
 function appStore_add_options_page() {
 	add_options_page('AppStore Assistant', 'AppStore Assistant', 'manage_options', ASA_MAIN_FILE, 'appStore_render_form');
 	add_menu_page( 'AppStore Assistant', 'AppStore Asst', 'manage_options', ASA_MAIN_FILE, 'appStore_render_form', plugins_url( 'images/app-store-logo.png', ASA_MAIN_FILE ) );
+
+	add_menu_page( 'Find Apps', 'Find App ID', 'edit_posts', "appStore_IDsearch", 'appStore_search_form', plugins_url( 'images/app-store-logo.png', ASA_MAIN_FILE ) );
+
+}
+function createPostFromAppID($appShortCode,$appTitle) {
+	global $current_user;
+	get_currentuserinfo();
+	
+	$my_post = array(
+		'post_title' => $appTitle,
+		'post_content' => $appShortCode,
+		'post_author' => $current_user->ID,
+		'post_status' => 'publish',
+		'post_type' => 'post',
+	);
+	$PostReturn = wp_insert_post( $my_post );
+	echo '<div class="updated settings-error">';
+	if($PostReturn) {
+		echo "<h3>Your POST has been created for <b>$appTitle</b>!</h3>";
+		echo '<a href="post.php?post='.$PostReturn.'&amp;action=edit">Click here to edit the new post.</a>';
+	} else {
+		echo "There was an error creating your post for <b>$appTitle</b>!";
+	}
+	echo "<br /><br /></div>";
+}
+function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
+	GLOBAL $masterList,$checkForDuplicates;
+	$i = $startKey;
+	foreach ($listOfApps as $appData) {
+		$masterList[$i] = "";
+		if (!array_search($appData->trackId, $checkForDuplicates)) {
+			$TheAppPrice = format_price($appData->price);
+						
+			$Categories = implode(", ", $appData->genres);
+					
+			$masterList[$i] .= "<li class='appStore-search-result' ";
+			$masterList[$i] .= "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
+			$masterList[$i] .= '<form action="admin.php?page=appStore_IDsearch" method="POST"><p>';
+			$masterList[$i] .= "<span class='appStore-search-title'>".$appData->trackName."</span>";
+			$masterList[$i] .= " (".$appData->version.")<br />";
+			
+			$masterList[$i] .= " by ".$appData->artistName."/".$appData->sellerName."<br />";
+			$masterList[$i] .= " [".$TheAppPrice."] ";
+			$masterList[$i] .= "<b> [".$Categories."]</b> ";
+			if($startKey == "2") $masterList[$i] .= "<b> [".__('iPad only',appStoreAssistant)."]</b>";
+			$masterList[$i] .= "<br /><br />";
+			$masterList[$i] .= '<input id="id'.$appData->trackId.'" type="text" size="28" value="';
+			$masterList[$i] .= $shortCodeStart;
+			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot;]';
+			$masterList[$i] .= '">';
+			$masterList[$i] .= '<input type="hidden" name="shortcode" value="';
+			$masterList[$i] .= $shortCodeStart;
+			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot;]"';
+			$masterList[$i] .= '>';
+			$masterList[$i] .= '<input type="hidden" name="postTitle" value="'.$appData->trackName.'">';
+			$masterList[$i] .= '<input type="hidden" name="createPost" value="true">';
+			$masterList[$i] .= '<button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
+			$masterList[$i] .= "</p></form>";
+			$masterList[$i] .= '</li>';
+		}
+		
+		$checkForDuplicates[] = $appData->trackId;
+		$i = $i + 2;
+	}
 }
 
+function getSearchResultsFromApple($entity){
+
+	$url  = "https://itunes.apple.com/search?term=";
+	$url .= urlencode($_POST['appname'])."&country=us&entity=$entity";
+	$contents = file_get_contents($url); 
+	$contents = utf8_encode($contents); 
+	$foundApps = json_decode($contents);
+	$listOfApps = $foundApps->results;
+	return $listOfApps;
+
+}
+
+function appStore_search_form() {
+	GLOBAL $masterList,$checkForDuplicates;
+	echo '<div class="icon32" id="icon-tools"><br></div>';
+	echo '<h2>Find an App ID from the App Store or Mac App Store</h2>';
+	echo '<p>This will generate a shortcode that you can paste into your POST.</p>';
+
+	if (!empty($_POST)) {
+		switch ($_POST['type']) {
+    	case "iPhone":
+			$Searchtype = __("iPhone/iPod Software",appStoreAssistant);
+			$shortCodeStart = "[ios_app";
+			$iCK = " checked";
+			$entity = "software";
+			break;
+    	case "iOS":
+			$Searchtype = __("All iOS Software",appStoreAssistant);
+			$shortCodeStart = "[ios_app";
+			$iOSCK = " checked";
+			$entity = "software";
+			break;
+    	case "iPad":
+			$Searchtype = __("iPad Software",appStoreAssistant);
+			$shortCodeStart = "[ios_app";
+			$iPCK = " checked";
+			$entity = "iPadSoftware";
+			break;
+    	case "Mac":
+			$Searchtype = __("Macintosh Software",appStoreAssistant);
+			$shortCodeStart = "[mac_app";
+			$entity = "macSoftware";
+			$mCK = " checked";
+			break;
+		default:
+			$Searchtype = __("iPhone/iPod Software",appStoreAssistant);
+			$iCK = " checked";
+			$shortCodeStart = "[ios_app";		
+			$entity = "software";
+		}
+		$SearchTerm = $_POST['appname'];
+		
+		if(!empty($_POST['createPost'])) {
+	
+			createPostFromAppID($_POST['shortcode'],$_POST['postTitle']);
+	
+		}
+	} else {
+		$SearchTerm = "";
+		$iOSCK = " checked";
+	}
+	echo '<div id="searchForm" class="searchForm">';
+		echo '<form action="admin.php?page=appStore_IDsearch" method="POST">';
+		echo '<b>'.__('App Name',appStoreAssistant).':</b> ';
+		
+		$string = __('Find Apps',appStoreAssistant);		
+		echo '<input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="30"> <button class="appStore-search-find" name="'.$string.'" type="submit" value="'.$string.'">'.$string.'</button><br />';
+			
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> '.__("All iOS",appStoreAssistant).'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> '.__("Mac",appStoreAssistant).'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> '.__("Just iPhone/iPod",appStoreAssistant).'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> '.__("Just iPad",appStoreAssistant).'';
+		//echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
+		//echo '</button>';
+		echo '</form>';
+	echo '</div>';
+	if (!empty($_POST)) {
+
+		$checkForDuplicates[] = "000000000"; //Setup array for later use
+		$listOfApps = getSearchResultsFromApple($entity);
+		buildListOfFoundApps($listOfApps,"1",$shortCodeStart);
+		if($_POST['type'] == "iOS") {
+			$biggerListOfApps = getSearchResultsFromApple("iPadSoftware");
+			buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart);
+		}
+		if(is_array($masterList)){
+		echo "<h2>$Searchtype</h2>";
+			echo '<div class="appStore-search-appsList">';
+				echo '<ul>';
+				ksort($masterList);
+				foreach ($masterList as $appRow) {
+					echo $appRow;
+				}
+				echo '</ul>';
+			echo "</div>";
+		} else {
+			$string = sprintf( __('No %d Results Found!', 'plugin-domain'), $Searchtype );
+		
+			echo "<h2>$string</h2>";
+		}
+		
+		echo '<div style="clear:left;">&nbsp;</div>';
+	}
+
+}
 
 function appStore_render_form() {
 	global $pagenow;
@@ -159,7 +328,7 @@ function appStore_render_form() {
 	
 	echo '<!-- Display Plugin Icon, Header, and Description -->';
 	echo '<div class="icon32" id="icon-options-general"><br></div>';
-	echo '<h2>AppStore Assistant Page Options</h2>';
+	echo '<h2>AppStore Assistant Page Settings</h2>';
 	echo '<p>Below is a collection of controls you can use to customize the App Store Assistant plugin.</p>';
 	$upload_dir = wp_upload_dir();
 	$appStore_cacheFolder = $upload_dir['basedir'] . '/appstoreassistant_cache';

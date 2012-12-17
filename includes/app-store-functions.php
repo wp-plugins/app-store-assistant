@@ -166,8 +166,6 @@ function plugin_get_version() {
 }
 
 function format_price($unformattedPrice) {
-
-	
 	//Check to see if the app is free, or under a dollar
 	if($unformattedPrice == 0) {
 		$thePrice = "Free!";
@@ -199,133 +197,6 @@ function format_price($unformattedPrice) {
 	return $thePrice;
 }
 
-
-function idsearch_app_handler($atts,$content=null, $code="") {
-	GLOBAL $masterList,$checkForDuplicates;
-
-	if (!empty($_POST)) {
-		switch ($_POST['type']) {
-    	case "iPhone":
-			$Searchtype = "iPhone/iPod Software";
-			$shortCodeStart = "[ios_app";
-			$iCK = " checked";
-			$entity = "software";
-			break;
-    	case "iOS":
-			$Searchtype = "All iOS Software";
-			$shortCodeStart = "[ios_app";
-			$iOSCK = " checked";
-			$entity = "software";
-			break;
-    	case "iPad":
-			$Searchtype = "iPad Software";
-			$shortCodeStart = "[ios_app";
-			$iPCK = " checked";
-			$entity = "iPadSoftware";
-			break;
-    	case "Mac":
-			$Searchtype = "Macintosh Software";
-			$shortCodeStart = "[mac_app";
-			$entity = "macSoftware";
-			$mCK = " checked";
-			break;
-		default:
-			$Searchtype = "iPhone/iPod Software";
-			$iCK = " checked";
-			$shortCodeStart = "[ios_app";		
-			$entity = "software";
-		}
-		$SearchTerm = $_POST['appname'];
-	} else {
-		$SearchTerm = "";
-		$iOSCK = " checked";
-	}
-
-	echo '<div id="searchForm" class="searchForm">';
-		echo '<form action="'.get_permalink( $post->ID ).'" method="POST">';
-		echo '<b>App Name:</b> <input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="30"> <button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button><br />';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> All '.__("iOS",appStoreAssistant).'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> '.__("Mac",appStoreAssistant).'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> '.__("Just iPhone/iPod",appStoreAssistant).'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> '.__("Just iPad",appStoreAssistant).'';
-		//echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
-		//echo '</button>';
-		echo '</form>';
-	echo '</div>';
-	if (!empty($_POST)) {
-
-		$checkForDuplicates[] = "000000000"; //Setup array for later use
-		$listOfApps = getSearchResultsFromApple($entity);
-		buildListOfFoundApps($listOfApps,"1",$shortCodeStart);
-		if($_POST['type'] == "iOS") {
-			$biggerListOfApps = getSearchResultsFromApple("iPadSoftware");
-			buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart);
-		}
-		if(is_array($masterList)){
-		echo "<h2>$Searchtype</h2>";
-			echo '<div class="appStore-search-appsList">';
-				echo '<ul>';
-				ksort($masterList);
-				foreach ($masterList as $appRow) {
-					echo $appRow;
-				}
-				echo '</ul>';
-			echo "</div>";
-		} else {
-			echo "<h2>No $Searchtype Results Found!</h2>";
-		}
-		
-		echo '<div style="clear:left;">&nbsp;</div>';
-	}
-}
-
-function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
-	GLOBAL $masterList,$checkForDuplicates;
-	$i = $startKey;
-	foreach ($listOfApps as $appData) {
-		$masterList[$i] = "";
-		if (!array_search($appData->trackId, $checkForDuplicates)) {
-			$TheAppPrice = format_price($appData->price);
-						
-			$Categories = implode(", ", $appData->genres);
-					
-			$masterList[$i] .= "<li class='appStore-search-result' ";
-			$masterList[$i] .= "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
-			$masterList[$i] .= "<p>";
-			$masterList[$i] .= "<span class='appStore-search-title'>".$appData->trackName."</span>";
-			$masterList[$i] .= " (".$appData->version.")<br />";
-			
-			$masterList[$i] .= " by ".$appData->artistName."/".$appData->sellerName."<br />";
-			$masterList[$i] .= " [".$TheAppPrice."] ";
-			$masterList[$i] .= "<b> [".$Categories."]</b> ";
-			if($startKey == "2") $masterList[$i] .= "<b> [iPad Only]</b>";
-			$masterList[$i] .= "<br /><br />";
-			$masterList[$i] .= '<input id="id'.$appData->trackId.'" type="text" size="28" value="';
-			$masterList[$i] .= $shortCodeStart;
-			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot;]';
-			$masterList[$i] .= '">';
-			$masterList[$i] .= "</p>";
-			$masterList[$i] .= '</li>';
-		}
-		
-		$checkForDuplicates[] = $appData->trackId;
-		$i = $i + 2;
-	}
-}
-
-
-
-function getSearchResultsFromApple($entity){
-
-	$url  = "https://itunes.apple.com/search?term=";
-	$url .= urlencode($_POST['appname'])."&country=us&entity=$entity";
-	$contents = file_get_contents($url); 
-	$contents = utf8_encode($contents); 
-	$foundApps = json_decode($contents);
-	$listOfApps = $foundApps->results;
-	return $listOfApps;
-
-}
 function appStore_app_handler( $atts,$content=null, $code="" ) {
 	// Get App ID and more_info_text from shortcode
 	extract( shortcode_atts( array(
@@ -455,7 +326,7 @@ function appStore_atomfeed_handler($atts, $content = null, $code="") {
 		'more_info_text' => 'open in The App Store...'
 	), $atts ) );
 	if(empty($atomurl)) {
-		echo 'Missing atomurl in tag. Replace <b>id</b> with <b>atomurl</b>.';
+		_e( 'Missing atomurl in tag. Replace <strong>id</strong> with <strong>atomurl</strong>.',appStoreAssistant);
 		return;
 	}
 	
@@ -747,7 +618,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	
 	if ($app->artistName == $app->sellerName) {
 		if ((appStore_setting('displaydevelopername') == "yes" OR appStore_setting('displaysellername') == "yes") AND !empty($app->artistName)) {
-			echo '<span class="appStore-developername">'.__("Created &amp; Sold by",appStoreAssistant).': '.$app->artistName.'</span></br>';
+			echo '<span class="appStore-developername">'.__("Created & Sold by",appStoreAssistant).': '.$app->artistName.'</span></br>';
 		}
 	} else {
 		if (appStore_setting('displaydevelopername') == "yes" AND !empty($app->artistName)) {
@@ -774,12 +645,11 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		echo '<span class="appStore-advisoryrating">'.__("Age Rating",appStoreAssistant).': '.$app->contentAdvisoryRating.'</span></br>';
 	}
 	if (appStore_setting('displaycategories') == "yes" AND !empty($appCategory)) {
-		echo '<span class="appStore-categories">';
+		$wordForCategories = sprintf( _n('Category', 'Categories', count($appCategory), appStoreAssistant), count($appCategory) );
+		echo '<span class="appStore-categories">'.$wordForCategories.": ";
 		if(count($appCategory) == 1) {
-			echo __("Category",appStoreAssistant).": ";
 			echo $appCategory[0];
 		} elseif (count($appCategory) > 1) {
-			echo __("Categories",appStoreAssistant).": ";
 			echo $appCategoryList;
 		}
 		echo '</span>';
@@ -897,7 +767,10 @@ function displayAppStoreRating($appRating,$averageRating,$ratingCount) {
 		echo '<div class="appStore-rating">';
 		echo '	<span class="appStore-rating_bar" title="Rating '.$averageRating.' stars">';
 		echo '	<span style="width:'.$appRating.'%"></span>';
-		echo '	</span> by '.$ratingCount.' '.__("users",appStoreAssistant).'.';
+		$string = sprintf( __('by %d users', appStoreAssistant), $ratingCount );
+		echo "	</span> $string.";
+		
+		
 		echo '</div>';
 	}
 
