@@ -1,0 +1,206 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: App Store Assistant\n"
+"POT-Creation-Date: 2012-12-16 01:29-0800\n"
+"PO-Revision-Date: 2012-12-16 01:43-0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: /Volumes/Aux Storage/Downloads/app-store-assistant\n"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-admin_functions.php:274
+#: Storage/Downloads/app-store-assistant/legacy code/appStore-admin.php:545
+msgid "Save Changes"
+msgstr "Save Changes"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-admin_functions.php:335
+#: Storage/Downloads/app-store-assistant/legacy code/appStore-admin.php:597
+msgid "Settings"
+msgstr "Settings"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:23
+msgid "read more"
+msgstr "read more"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:247
+msgid "iOS"
+msgstr "iOS"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:248
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:816
+msgid "Mac"
+msgstr "Mac"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:249
+msgid "Just iPhone/iPod"
+msgstr "Just iPhone/iPod"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:250
+msgid "Just iPad"
+msgstr "Just iPad"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:415
+msgid "Missing list of IDs."
+msgstr "Missing list of IDs."
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:544
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:549
+msgid "Artist"
+msgstr "Artist"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:545
+msgid "Explicit"
+msgstr "Explicit"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:546
+msgid "Track Count"
+msgstr "Track Count"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:552
+msgid "Director"
+msgstr "Director"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:553
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:558
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:567
+msgid "Rated"
+msgstr "Rated"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:557
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:566
+msgid "Series"
+msgstr "Series"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:565
+msgid "Episodes"
+msgstr "Episodes"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:608
+msgid "View in iTunes"
+msgstr "View in iTunes"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:634
+msgid "From"
+msgstr "From"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:637
+msgid "Genre"
+msgstr "Genre"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:643
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:763
+msgid "Released"
+msgstr "Released"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:724
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:861
+msgid "View in App Store"
+msgstr "View in App Store"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:745
+msgid "Version"
+msgstr "Version"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:750
+msgid "Created &amp; Sold by"
+msgstr "Created &amp; Sold by"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:754
+msgid "Created by"
+msgstr "Created by"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:757
+msgid "Sold by"
+msgstr "Sold by"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:766
+msgid "File Size"
+msgstr "File Size"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:770
+msgid "This app is designed for both iPhone and iPad"
+msgstr "This app is designed for both iPhone and iPad"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:774
+msgid "Age Rating"
+msgstr "Age Rating"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:779
+msgid "Category"
+msgstr "Category"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:782
+msgid "Categories"
+msgstr "Categories"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:817
+msgid "iPhone"
+msgstr "iPhone"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:818
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:842
+msgid "Screenshots"
+msgstr "Screenshots"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:842
+msgid "iPad"
+msgstr "iPad"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:869
+msgid "continued"
+msgstr "continued"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:870
+msgid "Show Full Description & Screenshots"
+msgstr "Show Full Description & Screenshots"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:873
+msgid "Show Screenshots"
+msgstr "Show Screenshots"
+
+#: /Volumes/Aux
+#: Storage/Downloads/app-store-assistant/includes/app-store-functions.php:900
+msgid "users"
+msgstr "users"
