@@ -1,25 +1,26 @@
 === App Store Assistant ===
 Contributors: sealsystems 
 Donate link:http://theiphoneappslist.com/donate/
-TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
+TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 5.0.1
+Stable tag: 5.5
 
-The App Store Assistent adds 8 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
+The App Store Assistent adds 8 shortcodes to display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
 
 == Description ==
 
-This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http://itunes.apple.com/rss) or the detail for Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos or Apps via the item's ID. It also converts the items's link to use your affiliate program. The App Store Assistant plugin adds 4 shortcodes to display an ATOM feed or the detail of an item from Apple's App Store or the iTunes Store. It also has the ability to use an affiliate program to earn commissions on click-throughs. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an ATOM feed (http://itunes.apple.com/rss) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
 
-Works with the LinkShare/Linksynergy, TradeDoubler and DGM Affiliate Programs.
+Works with the LinkShare/Linksynergy, TradeDoubler, Amazon Affiliates or DGM Affiliate Programs.
 
-You can also add a shortcode to a Private page and have your own quick search function. Searches for iOS or Mac apps. Displays the shortcode already filled out.
+-----[Amazon.com functionality is a beta release. Use with caution!!!]-----
+
+There is now a built-in quick search function. It searches for iOS or Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST alread titles with the appropriate shortcode already entered.
 
 You can also Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
 
 Please let us know of any features you would like added or bugs that need squashing in the Wordpress fourms <http://wordpress.org/support/plugin/app-store-assistant>
-
 
 == Installation ==
 
@@ -32,36 +33,44 @@ Please let us know of any features you would like added or bugs that need squash
 == Available Shortcodes ==
 
 * [asaf_atomfeed atomurl="http://itunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]
+	* Displays the items from the ATOm feed in a formatted view
 	* atomurl: feed URL supplied by Apple RSS Generator
-	* mode: [iOS or iTunes]
-	* more_info_text: Button text'
+	* mode: [iOS, Mac or iTunes]
+	* more_info_text: Button text
 
 * [ios_app id="123456789" more_info_text="open in App Store..."]
+	* Displays a single iOS app
 	* id: The iOS app's App Store ID
 	* more_info_text: Button text
 
 * [ios_app_list ids="123456789,123456789,123456789,123456789" more_info_text="open in App Store..." mode="iOS"]
+	* Displays Several iOS apps on a single page or post
 	* ids: Comma separated list iOS app's App Store IDs
 	* mode: [iOS, Mac, Mixed or iTunes] (Mixed displays both iOS and Mac apps)
 	* more_info_text: Button text
 
 * [ios_app_link id="123456789" text="App Name"]
+	* Displays a text only link to the iOS App
 	* id: The iOS app's App Store ID
 	* text: Link text
 
 * [mac_app id="123456789" more_info_text="open in Mac App Store..."]
+	* Displays a single Mac app
 	* id: The Mac App Store ID
 	* more_info_text: Button text
 
 * [mac_app_link id="123456789" text="App Name"]
+	* Displays a text only link to the Mac App
 	* id: The Mac App Store ID
 	* text: Link text
 
 * [itunes_store id="123456789" more_info_text="open in iTunes..."]
+	* Displays a single item from the iTunes Store
 	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
-
-* [appStore_IDsearch]
-	* Add this short code to a Private page/post in Wordpress to have your own admin quick search function. Searches for iPhone/iPod, iPad or Mac apps. Displays Name, Price, Developer, Categories and a copyable shortcode already filled out.
+	
+* [amazon_item asin="" more_info_text="open via Amazon.com..."]
+	* Displays a single item from Amazon.com
+	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
 
 == Screenshots ==
 
@@ -71,8 +80,14 @@ Please let us know of any features you would like added or bugs that need squash
 4. ATOM Feed listing
 5. General Settings
 6. Shortcode buttons on editor toolbar
+7. The Search Screen
 
 == Changelog ==
+= 5.5 =
+* Added Amazon.com beta feature
+
+= 5.1 =
+* Fixed issue with WordPress not recognizing manual excerpt
 
 = 5.0.1 =
 * Added some WP 3.5 API coolness
@@ -291,7 +306,7 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Upgrade Notice ==
 
-The shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page.
+In Version 5.0 the shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page.
 
 == Note ==
 

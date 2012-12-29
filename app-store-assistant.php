@@ -1,10 +1,10 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 5.0.1
+Version: 5.5
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
-Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes.
+Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
 Author: Scott Immerman
 Author URI: http://SEALsystems.net/
 */
@@ -23,6 +23,8 @@ define( 'ASA_MAIN_FILE', plugin_dir_path( __FILE__ )."app-store-assistant.php" )
 require_once(ASA_PLUGIN_PATH.'/includes/app-store-functions.php');
 require_once(ASA_PLUGIN_PATH.'/includes/simplepie.inc');
 require_once(ASA_PLUGIN_PATH.'/includes/app-store-admin_functions.php');
+require_once(ASA_PLUGIN_PATH.'/includes/app-store-amazon_functions.php');
+require_once(ASA_PLUGIN_PATH.'/includes/sha256.inc.php');
 
 // ------------------------------------------------------------------------
 // REQUIRE MINIMUM VERSION OF WORDPRESS:                                               
@@ -57,6 +59,7 @@ add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
 add_shortcode('mac_app_link', 'appStore_app_link_handler');
+add_shortcode('amazon_item', 'appStore_amazon_handler');
 add_action('init', 'add_asa_mce_button');
 add_filter( 'tiny_mce_version', 'appStore_refresh_mce');
 // ------------------------------------------------------------------------

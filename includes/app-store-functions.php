@@ -1,30 +1,275 @@
 <?php
+
+function appStore_amazon_handler( $atts,$content=null, $code="") {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array(
+		'asin' => '',
+		'text' => ''
+	), $atts ) );
+
+	//Don't do anything if the ID is blank or non-numeric
+	if ($asin!=''){
+		$apaapi_errors			= '';
+		$apaapi_responsegroup 	= "ItemAttributes,Images,Offers,Reviews,EditorialReview";
+		$apaapi_operation 		= "ItemLookup";
+		$apaapi_idtype	 		= "ASIN";
+		$apaapi_id				= $asin;
+		
+		$aws_public_api_key = appStore_setting('AWS_API_KEY');
+		$aws_secret_api_key = appStore_setting('AWS_API_SECRET_KEY');
+		$aws_associate_id = appStore_setting('AWS_ASSOCIATE_TAG');
+		$aws_partner_domain = appStore_setting('AWS_PARTNER_DOMAIN');
+		
+		$pxml = aws_signed_request($aws_partner_domain, array("Operation"=>$apaapi_operation,"ItemId"=>$apaapi_id,"ResponseGroup" => $apaapi_responsegroup,"IdType"=>$apaapi_idtype,"AssociateTag"=>$aws_associate_id ), $aws_public_api_key, $aws_secret_api_key);
+		if(!is_array($pxml)){
+			$pxml2=$pxml;
+			$pxml = array();
+			$pxml["itemlookuperrorresponse"]["error"]["code"]["message"] = $pxml2;
+		}
+		if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
+			$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
+		}
+		
+		if($apaapi_errors=='exceeded'){
+			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Requests Exceeded -->";
+			$apaapi_errors = 'Requests Exceeded';
+			if($extratext!=''){echo $hiddenerrors.$extratext;}
+			echo $hiddenerrors;
+		}elseif($apaapi_errors=='no signature match'){
+			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Signature does not match AWS Signature. Check AWS Keys and Signature method. -->";
+			$apaapi_errors = 'Signature does not match';
+			if($extratext!=''){echo $hiddenerrors.$extratext;}
+			echo $hiddenerrors;
+		}elseif($apaapi_errors=='not valid'){
+			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: The ASIN is Not Valid or may not be available in your region. -->";
+			$apaapi_errors = 'Not a valid item';
+			if($extratext!=''){echo $hiddenerrors.$extratext;}
+			echo $hiddenerrors;
+		}elseif($apaapi_errors!=''){
+			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: ". $apaapi_errors ."-->";
+			if($extratext!=''){echo $hiddenerrors.$extratext;}
+			echo $hiddenerrors;
+		}else{
+	
+			$AmazonProductData = cleanAWSresults($pxml);
+			
+				switch ($AmazonProductData['ProductGroup']) {
+				case "Book":
+					asa_displayAmazonBook($AmazonProductData);
+					break;
+				case "DVD":
+					asa_displayAmazonDisc($AmazonProductData);
+					break;
+				default:
+					asa_displayAmazonDefault($AmazonProductData);
+				}
+			//echo "<pre>";echo print_r($AmazonProductData, true);echo "</pre>";
+			//echo "<pre>";echo print_r($pxml, true);echo "</pre>";
+		}
+	} else {
+		return;
+	}
+}
+
+
+function asa_displayAmazonDisc($Data){
+
+	switch (appStore_setting('amazon_productimage_size')) {
+    case "small":
+        $productImageURL = $Data['SmallImage'];
+        break;
+    case "medium":
+        $productImageURL = $Data['MediumImage'];
+        break;
+    case "large":
+        $productImageURL = $Data['LargeImage'];
+        break;
+    default:
+        $productImageURL = $Data['MediumImage'];
+	}
+
+	echo "<h2>".$Data['Title']."</h2>";
+	if ($Data['Cast']) {
+		echo $Data['Cast']."<br>";
+	}
+	if ($Data['Director']) {
+		echo $Data['Director']."<br>";
+	}
+	echo '<a href="'.$Data['URL'].'" target="_blank">',
+		'<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	if ($Data['ProductDescription']) {
+		echo $Data['ProductDescription'].'<br>';
+	} elseif($Data['BookDescription']) {
+		echo $Data['BookDescription'].'<br>';
+	}
+	if ($Data['Status']) {
+		echo 'Status: '.$Data['Status'].'<br>';
+	}
+	if ($Data['ListPrice']) {
+		echo 'List Price: <strike>'. $Data['ListPrice'] .'</strike><br>';
+	}
+	if ($Data['Amount']) {
+		echo 'Amazon Price: <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+	}
+	if ($Data->ItemAttributes->ReleaseDate) {
+		echo 'DVD Released: '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'<br>';
+	}
+	if ($Data->ItemAttributes->TheatricalReleaseDate) {
+		echo 'Theatrical Release: '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'<br>';
+	}
+	if($Data['Studio']) {
+		echo 'From: '. $Data['Studio'] .'<br>';
+	}
+
+	echo '<br><div align="center">';
+	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
+	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
+	//echo '<h2>Click here to view this item at Amazon.com</h2>';
+	echo '</a></div>';
+
+}
+
+
+function asa_displayAmazonBook($Data){
+
+	switch (appStore_setting('amazon_productimage_size')) {
+    case "small":
+        $productImageURL = $Data['SmallImage'];
+        break;
+    case "medium":
+        $productImageURL = $Data['MediumImage'];
+        break;
+    case "large":
+        $productImageURL = $Data['LargeImage'];
+        break;
+    default:
+        $productImageURL = $Data['MediumImage'];
+	}
+
+	echo "<h2>".$Data['Title']."</h2>";
+	if ($Data['Authors']) {
+		echo $Data['Authors'].'<br>';
+	}
+
+	echo '<a href="'.$Data['URL'].'" target="_blank">',
+		'<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	if ($Data['ProductDescription']) {
+		echo $Data['ProductDescription'].'<br>';
+	} elseif($Data['BookDescription']) {
+		echo $Data['BookDescription'].'<br>';
+	}
+	if ($Data['Publisher']) {
+		echo 'Publisher: '.$Data['Publisher'].'<br>';
+	}
+	if ($Data['Status']) {
+		echo 'Status: '.$Data['Status'].'<br>';
+	}
+	if ($Data['ListPrice']) {
+		echo 'List Price: <strike>'. $Data['ListPrice'] .'</strike><br>';
+	}
+	if ($Data['Amount']) {
+		echo 'Amazon Price: <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+	}
+	if ($Data['ReleaseDate']) {
+		echo 'Released: '.date("F j, Y",strtotime($Data['ReleaseDate'])).'<br>';
+	}
+
+	if ($Data['PublishedDate']) {
+		echo 'Published: '.date("F j, Y",strtotime($Data['PublishedDate'])).'<br>';
+	}
+	echo '<br><div align="center">';
+	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
+	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
+	//echo '<h2>Click here to view this item at Amazon.com</h2>';
+	echo '</a></div>';
+
+}
+
+
+
+function asa_displayAmazonDefault($Data){
+	
+	
+	switch (appStore_setting('amazon_productimage_size')) {
+    case "small":
+        $productImageURL = $Data['SmallImage'];
+        break;
+    case "medium":
+        $productImageURL = $Data['MediumImage'];
+        break;
+    case "large":
+        $productImageURL = $Data['LargeImage'];
+        break;
+    default:
+        $productImageURL = $Data['MediumImage'];
+	}
+
+
+	echo "<h2>".$Data['Title']."</h2>";
+	echo '<a href="'.$Data['URL'].'" target="_blank">',
+		'<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	if ($Data['ProductDescription']) {
+		echo '<p>'.$Data['ProductDescription'].'</p>';
+	}
+	if ($Data['Features']) {
+		echo '<h3>Features:</h3>'.$Data['Features'].'';
+	}
+	if ($Data['Manufacturer']) {
+		echo '<br>Manufacturer: '.$Data['Manufacturer']."<br>";
+	}
+	if ($Data['Status']) {
+		echo 'Status: '.$Data['Status'].'<br>';
+	}
+	if ($Data['ListPrice']) {
+		echo 'List Price: <strike>'. $Data['ListPrice'] .'</strike><br>';
+	}
+	if ($Data['Amount']) {
+		echo 'Amazon Price: <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+	}
+	if ($Data['ReleaseDate']) {
+		echo 'Released: '.date("F j, Y",$Data['ReleaseDate']).'<br>';
+	}
+	echo '<br><div align="center">';
+	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
+	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
+	//echo '<h2>Click here to view this item at Amazon.com</h2>';
+	echo '</a></div>';
+
+} // end asa_displayAmazonDefault
+
+
 function asa_load_translation_file() {
 	// relative path to WP_PLUGIN_DIR where the translation files will sit:
 	$plugin_path = dirname( plugin_basename( __FILE__ ) ) . '/languages/';
 	load_plugin_textdomain( 'appStoreAssistant', false, $plugin_path );
 }
 
-function ce_excerpt_filter($text) {
+function ce_excerpt_filter() {
 
 	global $post;
-	$subject = substr($post->post_content,1, 400);
-	$pattern = '/([0-9]+)/';	
-	preg_match_all($pattern, $subject, $matches, PREG_PATTERN_ORDER);
-	$id = $matches[0][0];
 	
-	//Don't do anything if the ID is blank or non-numeric
-	if($id == "" || !is_numeric($id))return;	
+	$originalPost = $post;
+	$originalExcerpt = $originalPost->post_excerpt;
+	if(strlen($originalExcerpt) >20 ) {
+		$appShortDescription = $originalExcerpt;
+	} else {
 	
-	//Get the App Data
-	$app = appStore_get_data($id);
-	$appFullDescription = $app->description;
-	$appShortDescription = substr($appFullDescription,0, appStore_setting('excerpt_max_description'));
-	$appShortDescription .= '&hellip; <a href="'.esc_url( get_permalink() ).'">'.__("read more",appStoreAssistant).'</a>';
+		$subject = substr($post->post_content,1, 400);
+		$pattern = '/([0-9]+)/';	
+		preg_match_all($pattern, $subject, $matches, PREG_PATTERN_ORDER);
+		$id = $matches[0][0];
 	
+		//Don't do anything if the ID is blank or non-numeric
+		if($id == "" || !is_numeric($id))return;	
+	
+		//Get the App Data
+		$app = appStore_get_data($id);
+		$appFullDescription = $app->description;
+		$appShortDescription = substr($appFullDescription,0, appStore_setting('excerpt_max_description'));
+		$appShortDescription .= '&hellip; <a href="'.esc_url( get_permalink() ).'">'.__("read more",appStoreAssistant).'</a>';
+	}
 	return $appShortDescription;
 }
-
 
 // +++++ Add ios_app button to TinyMCE
 function add_asa_mce_button() {
