@@ -1,26 +1,54 @@
 === App Store Assistant ===
 Contributors: sealsystems 
 Donate link:http://theiphoneappslist.com/donate/
-TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
+Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 5.5.1
+Stable tag: 5.5.2
+License: GPLv3 or later
 
-The App Store Assistent adds 8 shortcodes to display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
+Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
 
 == Description ==
 
-The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an ATOM feed (http://itunes.apple.com/rss) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an ATOM feed (http://iTunes.apple.com/rss) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
 
-Works with the LinkShare/Linksynergy, TradeDoubler, Amazon Affiliates or DGM Affiliate Programs.
+**Features**
 
------[Amazon.com functionality is a beta release. Use with caution!!!]-----
+* Displays detailed item information from
+	* Apple App Store
+	* Mac App Store
+	* iTunes Store
+		* Songs
+		* Albums
+		* Movies
+		* Short Films
+		* TV Episodes or Seasons
+		* Music Videos
+	* Amazon.com
+* Multi-country support
+* I18n aka Localization is supported via POT file
+* Earn Money with Affiliate Programs
+	* LinkShare/Linksynergy
+	* TradeDoubler
+	* Amazon Affiliates
+	* DGM
+* Find an App ID fast with the Quick search in the Admin area
+* Customizable
+	* Choose from different Star rating colors
+	* Button colors and style
+	* Choose which detail elements to display
+	* Adjust App Icon image size
+* Cache detail and images locally for quicker page load times
+* Use custom Excerpts or let App Store Assistant auto-create an excerpt
 
-There is now a built-in quick search function. It searches for iOS or Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST alread titles with the appropriate shortcode already entered.
+*-----[Amazon.com functionality is a beta release. **Use this feature with caution!!!**]-----*
+
+There is now a built-in quick search function. It searches for iOS or Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST already titled with the appropriate shortcode already entered.
 
 You can also Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
 
-Please let us know of any features you would like added or bugs that need squashing in the Wordpress fourms <http://wordpress.org/support/plugin/app-store-assistant>
+Please let us know of any features you would like added or bugs that need squashing in the Wordpress forums <http://wordpress.org/support/plugin/app-store-assistant>
 
 == Installation ==
 
@@ -32,7 +60,7 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Available Shortcodes ==
 
-* [asaf_atomfeed atomurl="http://itunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]
+* [asaf_atomfeed atomurl="http://iTunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]
 	* Displays the items from the ATOm feed in a formatted view
 	* atomurl: feed URL supplied by Apple RSS Generator
 	* mode: [iOS, Mac or iTunes]
@@ -97,7 +125,7 @@ Please let us know of any features you would like added or bugs that need squash
 = 5.0.1 =
 * Added some WP 3.5 API coolness
 * New App Store Search Screen in Settings
-	* Search for an App ID with copyable shordcode
+	* Search for an App ID with copyable shortcode
 	* Auto-Create a post from App Store Search form
 	* Moved the appStore_IDsearch to the Settings section
 * Added ability to turn off screenshots [Thanks jack89ita]
@@ -130,7 +158,7 @@ Please let us know of any features you would like added or bugs that need squash
 
 = 4.6.1 =
 * Added additional CSS configuration for buttons
-	* Transparent backgounds
+	* Transparent backgrounds
 	* Gradient Backgrounds
 	* Button Corner Radius
 	* Button Border Width
@@ -188,7 +216,7 @@ Please let us know of any features you would like added or bugs that need squash
 	* Shadows
 	* Gradients etc.
 * Fixed issue with jQuery conflict on Admin pages
-* Removed dependancy on specific version of jQuery
+* Removed dependency on specific version of jQuery
 * Fixed issue with DMG affiliate code
 * Removed legacy code
 * Optimized some code
@@ -199,7 +227,7 @@ Please let us know of any features you would like added or bugs that need squash
 * Updated ID Search for Mac apps [API change]
 * Added title to ID Search based on selected type of search
 * Fixed ID Search form to keep app type selection after search
-* Adjusted box size for shortcode in ID Serach Results for easier copying
+* Adjusted box size for shortcode in ID Search Results for easier copying
 * CSS changes in ID Search Results
 
 = 4.3.1 =
@@ -245,7 +273,7 @@ Please let us know of any features you would like added or bugs that need squash
 	* iTunes icon size and % adjust
 * Can choose different size icons when viewed on iPhone
 * Smaller buy button choice for viewing on iPhone (less text)
-* Fixed iTunes Serach API error issue where "collectionId" is used in Albums rather than specified "collectionID"
+* Fixed iTunes Search API error issue where "collectionId" is used in Albums rather than specified "collectionID"
 
 = 3.0.2 =
 * Very minor CSS changes
@@ -323,7 +351,7 @@ The App Store Assistant can cache the data from your application in the Wordpres
 Each shortcode is designed to be used just once on a page/post. If you want to have multiple items listed on one page, than I would suggest using the [ios_app_list] shortcode. You can have a comma separated list of items to be displayed.
 
 = I really like the plugin, can I donate to the project? =
-Why, thank you for asking, of course you can. Just click the donate link. <http://theiphoneappslist.com/donate/>
+Why, thank you for asking, of course you can. Just click the [donate link](http://theiphoneappslist.com/donate/ "Donate"). <http://theiphoneappslist.com/donate/>
 
 == License ==
 
