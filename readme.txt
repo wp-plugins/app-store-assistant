@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 5.5
+Stable tag: 5.5.1
 
 The App Store Assistent adds 8 shortcodes to display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
 
@@ -83,6 +83,11 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+= 5.5.1 =
+* Now displays icons for Supported Devices or List of Supported Devices
+* Fixed issue with debug information showing
+* Added Localization items for Amazon.com section
+
 = 5.5 =
 * Added Amazon.com beta feature
 

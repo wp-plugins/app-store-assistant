@@ -14,7 +14,8 @@
     		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon"),
     		array('ID' => "displayuniversal", 'label' => "Universal App icon"),
     		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices list"),
-    		array('ID' => "displayreleasedate", 'label' => "Date Released"),
+     		array('ID' => "displaysupporteddeviceIcons", 'label' => "Supported Device Icons"),
+   			array('ID' => "displayreleasedate", 'label' => "Date Released")
     	);
     	
     	//$hiddenlist = '<input type="hidden" name="appStore_options[checkboxedoptions]" value="hide_button_background,hide_button_background_hover" />';

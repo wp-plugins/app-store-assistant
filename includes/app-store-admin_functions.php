@@ -58,6 +58,7 @@ function appStore_add_defaults() {
 		"displaygamecenterenabled" => "yes",
 		"displayuniversal" => "yes",
 		"displaysupporteddevices" => "no",
+		"displaysupporteddeviceIcons" => "yes",
 		"displayreleasedate" => "no",
 		"displayscreenshots" => "yes",
 		"appstoreicon_to_use" => "512",
@@ -403,7 +404,7 @@ function appStore_render_form() {
 	//echo "[-----------$pagenow------------]<br />[-----------".$_GET['page']."------------]<br />";
 	
 	if ( ($pagenow == 'options-general.php' || $pagenow == 'admin.php') && $_GET['page'] == 'app-store-assistant/app-store-assistant.php' ){
-		echo $_GET['tab'];
+		//echo $_GET['tab'];
 		if ( isset ( $_GET['tab'] ) ) $tab = $_GET['tab'];
 		else $tab = 'generaloptions';
 		switch ( $tab ){

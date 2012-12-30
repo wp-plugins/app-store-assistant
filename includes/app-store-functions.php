@@ -103,22 +103,22 @@ function asa_displayAmazonDisc($Data){
 		echo $Data['BookDescription'].'<br>';
 	}
 	if ($Data['Status']) {
-		echo 'Status: '.$Data['Status'].'<br>';
+		echo __("Status",appStoreAssistant).': '.$Data['Status'].'<br>';
 	}
 	if ($Data['ListPrice']) {
-		echo 'List Price: <strike>'. $Data['ListPrice'] .'</strike><br>';
+		echo __("List Price",appStoreAssistant).': <strike>'. $Data['ListPrice'] .'</strike><br>';
 	}
 	if ($Data['Amount']) {
-		echo 'Amazon Price: <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+		echo __("Amazon Price",appStoreAssistant).': <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
 	}
 	if ($Data->ItemAttributes->ReleaseDate) {
-		echo 'DVD Released: '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'<br>';
+		echo __("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'<br>';
 	}
 	if ($Data->ItemAttributes->TheatricalReleaseDate) {
-		echo 'Theatrical Release: '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'<br>';
+		echo __("Theatrical Release",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'<br>';
 	}
 	if($Data['Studio']) {
-		echo 'From: '. $Data['Studio'] .'<br>';
+		echo __("From",appStoreAssistant).': '. $Data['Studio'] .'<br>';
 	}
 
 	echo '<br><div align="center">';
@@ -159,23 +159,23 @@ function asa_displayAmazonBook($Data){
 		echo $Data['BookDescription'].'<br>';
 	}
 	if ($Data['Publisher']) {
-		echo 'Publisher: '.$Data['Publisher'].'<br>';
+		echo __("Publisher",appStoreAssistant).': '.$Data['Publisher'].'<br>';
 	}
 	if ($Data['Status']) {
-		echo 'Status: '.$Data['Status'].'<br>';
+		echo __("Status",appStoreAssistant).': '.$Data['Status'].'<br>';
 	}
 	if ($Data['ListPrice']) {
-		echo 'List Price: <strike>'. $Data['ListPrice'] .'</strike><br>';
+		echo __("List Price",appStoreAssistant).': <strike>'. $Data['ListPrice'] .'</strike><br>';
 	}
 	if ($Data['Amount']) {
-		echo 'Amazon Price: <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+		echo __("Amazon Price",appStoreAssistant).': <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
 	}
 	if ($Data['ReleaseDate']) {
-		echo 'Released: '.date("F j, Y",strtotime($Data['ReleaseDate'])).'<br>';
+		echo __("Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'<br>';
 	}
 
 	if ($Data['PublishedDate']) {
-		echo 'Published: '.date("F j, Y",strtotime($Data['PublishedDate'])).'<br>';
+		echo __("Published",appStoreAssistant).': '.date("F j, Y",strtotime($Data['PublishedDate'])).'<br>';
 	}
 	echo '<br><div align="center">';
 	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
@@ -212,22 +212,22 @@ function asa_displayAmazonDefault($Data){
 		echo '<p>'.$Data['ProductDescription'].'</p>';
 	}
 	if ($Data['Features']) {
-		echo '<h3>Features:</h3>'.$Data['Features'].'';
+		echo '<h3>'.__("Features",appStoreAssistant).':</h3>'.$Data['Features'].'';
 	}
 	if ($Data['Manufacturer']) {
-		echo '<br>Manufacturer: '.$Data['Manufacturer']."<br>";
+		echo '<br>'.__("Manufacturer",appStoreAssistant).': '.$Data['Manufacturer']."<br>";
 	}
 	if ($Data['Status']) {
-		echo 'Status: '.$Data['Status'].'<br>';
+		echo __("Status",appStoreAssistant).': '.$Data['Status'].'<br>';
 	}
 	if ($Data['ListPrice']) {
-		echo 'List Price: <strike>'. $Data['ListPrice'] .'</strike><br>';
+		echo __("List Price",appStoreAssistant).': <strike>'. $Data['ListPrice'] .'</strike><br>';
 	}
 	if ($Data['Amount']) {
-		echo 'Amazon Price: <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+		echo __("Amazon Price",appStoreAssistant).': <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
 	}
 	if ($Data['ReleaseDate']) {
-		echo 'Released: '.date("F j, Y",$Data['ReleaseDate']).'<br>';
+		echo __("Released",appStoreAssistant).': '.date("F j, Y",$Data['ReleaseDate']).'<br>';
 	}
 	echo '<br><div align="center">';
 	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
@@ -997,8 +997,21 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	}		
 	echo '	<div style="clear:left;">&nbsp;</div>';
 	
-	if (appStore_setting('displaysupporteddevices') == "yes" AND is_array($app->supportedDevices)) {
-		echo '<span class="appStore-supporteddevices">Supported Devices: '.implode(", ", $app->supportedDevices)."</span><br />";
+	if (is_array($app->supportedDevices)) {
+		$SupportedDecices = $app->supportedDevices;
+		sort($SupportedDecices);
+		if (appStore_setting('displaysupporteddevices') == "yes") {
+			echo '<span class="appStore-supporteddevices">';
+			_e('Supported Devices');
+			echo ': '.implode(", ", $SupportedDecices)."</span><br />";
+		}
+		if (appStore_setting('displaysupporteddeviceIcons') == "yes") {
+			$SupportedDecices = $app->supportedDevices;
+			sort($SupportedDecices);
+			foreach ($SupportedDecices as $device):
+				echo '<img src="'.plugins_url( 'images/iDevices/'.$device.'.png' , ASA_MAIN_FILE ).'" height="64" alt="'.$device.'" />';					
+			endforeach;
+		}	
 	}
 	echo '	</div>';
 	
@@ -1014,13 +1027,9 @@ function displayAppStoreRating($appRating,$averageRating,$ratingCount) {
 		echo '	<span style="width:'.$appRating.'%"></span>';
 		$string = sprintf( __('by %d users', appStoreAssistant), $ratingCount );
 		echo "	</span> $string.";
-		
-		
 		echo '</div>';
 	}
-
 }
-
 
 function getAffiliateURL($iTunesURL){
 	switch (appStore_setting('affiliatepartnerid')) {
