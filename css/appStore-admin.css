@@ -14,11 +14,13 @@
 	text-align: left;
 }
 
-.asa_admin_donate {
+.asa_admin_donate
+{
 	position: relative;
 	max-width: 255px;
-    background-color: rgb(245, 245, 245);
-    background-image: -moz-linear-gradient(center top , rgb(249, 249, 249), rgb(245, 245, 245));
+	background-color: rgb(245, 245, 245);
+	background-image: -moz-linear-gradient(center top , rgb(249, 249, 249), rgb(245, 245, 245));
+	text-align: center;
 }
 
 .asa_admin_donate h3 {

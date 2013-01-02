@@ -20,6 +20,7 @@ function cleanAWSresults($Result){
     $TotalCollectible 		= $Item["OfferSummary"]["TotalCollectible"];
     $TotalRefurbished 		= $Item["OfferSummary"]["TotalRefurbished"];
 	$ProductDescription		= $Item["EditorialReviews"]["EditorialReview"]["Content"];
+	$Tracks					= $Item["Tracks"];
 	$BookDescription		= $Item["EditorialReviews"]["EditorialReview"]["0"]["Content"];
 	$Status 				= $Item['Offers']['Offer']['OfferListing']['Availability'];
 	$PriceData				= $Item['Offers']['Offer']['OfferListing']['Price'];
@@ -93,6 +94,7 @@ function cleanAWSresults($Result){
                     'Publisher' => $ItemAttr['Publisher'],
                     'Status' => $Status,
                     'Features' => $Features,
+                    'Tracks' => $Tracks,
                     'ProductDescription' => $ProductDescription,
                     'BookDescription' => $BookDescription,
                     'Amount' => $Amount,

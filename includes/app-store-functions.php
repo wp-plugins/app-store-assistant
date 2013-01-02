@@ -10,7 +10,7 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 	//Don't do anything if the ID is blank or non-numeric
 	if ($asin!=''){
 		$apaapi_errors			= '';
-		$apaapi_responsegroup 	= "ItemAttributes,Images,Offers,Reviews,EditorialReview";
+		$apaapi_responsegroup 	= "ItemAttributes,Images,Offers,Reviews,EditorialReview,Tracks";
 		$apaapi_operation 		= "ItemLookup";
 		$apaapi_idtype	 		= "ASIN";
 		$apaapi_id				= $asin;
@@ -63,6 +63,7 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 				default:
 					asa_displayAmazonDefault($AmazonProductData);
 				}
+			
 			//echo "<pre>";echo print_r($AmazonProductData, true);echo "</pre>";
 			//echo "<pre>";echo print_r($pxml, true);echo "</pre>";
 		}
@@ -88,44 +89,55 @@ function asa_displayAmazonDisc($Data){
         $productImageURL = $Data['MediumImage'];
 	}
 
-	echo "<h2>".$Data['Title']."</h2>";
+	echo '<div class="appStore-wrapper"><hr>';
+	echo '	<div id="amazonStore-icon-container">';
+	echo '    <a href="'.$Data['URL'].'" target="_blank">',
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	echo '</div>';
+
+
+	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
 	if ($Data['Cast']) {
-		echo $Data['Cast']."<br>";
+		echo '<span class="amazonStore-cast">'.$Data['Cast']."</span><br />";
 	}
 	if ($Data['Director']) {
-		echo $Data['Director']."<br>";
+		echo '<span class="amazonStore-cast">'.$Data['Director']."<br />";
 	}
-	echo '<a href="'.$Data['URL'].'" target="_blank">',
-		'<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	if ($Data['ProductDescription']) {
-		echo $Data['ProductDescription'].'<br>';
+		echo '<div class="amazonStore-description">'.$Data['ProductDescription'].'</div><br />';
 	} elseif($Data['BookDescription']) {
-		echo $Data['BookDescription'].'<br>';
+		echo '<div class="amazonStore-description">';
+		echo iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $Data['BookDescription']);
+		echo '</div><br />';
 	}
 	if ($Data['Status']) {
-		echo __("Status",appStoreAssistant).': '.$Data['Status'].'<br>';
+		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		echo __("List Price",appStoreAssistant).': <strike>'. $Data['ListPrice'] .'</strike><br>';
+		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		echo __("Amazon Price",appStoreAssistant).': <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
 	if ($Data->ItemAttributes->ReleaseDate) {
-		echo __("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'<br>';
+		echo '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
 	}
 	if ($Data->ItemAttributes->TheatricalReleaseDate) {
-		echo __("Theatrical Release",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'<br>';
+		echo '<span class="amazonStore-date">'.__("Theatrical Release",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
 	}
 	if($Data['Studio']) {
-		echo __("From",appStoreAssistant).': '. $Data['Studio'] .'<br>';
+		echo '<span class="amazonStore-publisher">'.__("From",appStoreAssistant).': '. $Data['Studio'] .'</span><br />';
 	}
 
-	echo '<br><div align="center">';
+	echo '<br /><div align="center">';
 	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
 	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
 	//echo '<h2>Click here to view this item at Amazon.com</h2>';
 	echo '</a></div>';
+	echo '	<div style="clear:left;">&nbsp;</div>';
+	echo '</div>';
 
 }
 
@@ -146,42 +158,53 @@ function asa_displayAmazonBook($Data){
         $productImageURL = $Data['MediumImage'];
 	}
 
-	echo "<h2>".$Data['Title']."</h2>";
+	echo '<div class="appStore-wrapper"><hr>';
+	echo '	<div id="amazonStore-icon-container">';
+	echo '    <a href="'.$Data['URL'].'" target="_blank">',
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	echo '</div>';
+
+	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
+
 	if ($Data['Authors']) {
-		echo $Data['Authors'].'<br>';
+		echo '<span class="amazonStore-cast">'.$Data['Authors'].'</span><br />';
 	}
 
-	echo '<a href="'.$Data['URL'].'" target="_blank">',
-		'<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	if ($Data['ProductDescription']) {
-		echo $Data['ProductDescription'].'<br>';
+		echo '<div class="amazonStore-description">'.$Data['ProductDescription'].'</div><br />';
 	} elseif($Data['BookDescription']) {
-		echo $Data['BookDescription'].'<br>';
+		echo '<div class="amazonStore-description">';
+		echo iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $Data['BookDescription']);
+		echo '</div><br />';
 	}
 	if ($Data['Publisher']) {
-		echo __("Publisher",appStoreAssistant).': '.$Data['Publisher'].'<br>';
+		echo '<span class="amazonStore-publisher">'.__("Publisher",appStoreAssistant).': '.$Data['Publisher'].'</span><br />';
 	}
 	if ($Data['Status']) {
-		echo __("Status",appStoreAssistant).': '.$Data['Status'].'<br>';
+		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		echo __("List Price",appStoreAssistant).': <strike>'. $Data['ListPrice'] .'</strike><br>';
+		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		echo __("Amazon Price",appStoreAssistant).': <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
 	if ($Data['ReleaseDate']) {
-		echo __("Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'<br>';
+		echo '<span class="amazonStore-date">'.__("Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
 	}
 
 	if ($Data['PublishedDate']) {
-		echo __("Published",appStoreAssistant).': '.date("F j, Y",strtotime($Data['PublishedDate'])).'<br>';
+		echo '<span class="amazonStore-date">'.__("Published",appStoreAssistant).': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
 	}
 	echo '<br><div align="center">';
 	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
 	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
 	//echo '<h2>Click here to view this item at Amazon.com</h2>';
 	echo '</a></div>';
+	echo '	<div style="clear:left;">&nbsp;</div>';
+	echo '</div>';
 
 }
 
@@ -204,36 +227,48 @@ function asa_displayAmazonDefault($Data){
         $productImageURL = $Data['MediumImage'];
 	}
 
+	echo '<div class="appStore-wrapper"><hr>';
+	echo '	<div id="amazonStore-icon-container">';
+	echo '    <a href="'.$Data['URL'].'" target="_blank">',
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	echo '</div>';
+	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
 
-	echo "<h2>".$Data['Title']."</h2>";
-	echo '<a href="'.$Data['URL'].'" target="_blank">',
-		'<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+
+
+
+
 	if ($Data['ProductDescription']) {
-		echo '<p>'.$Data['ProductDescription'].'</p>';
+		echo '<div class="amazonStore-description">'.$Data['ProductDescription'].'</div><br />';
 	}
 	if ($Data['Features']) {
-		echo '<h3>'.__("Features",appStoreAssistant).':</h3>'.$Data['Features'].'';
+		echo '<span class="amazonStore-features-desc">'.__("Features",appStoreAssistant).':</span>'.$Data['Features'].'<br />';
 	}
 	if ($Data['Manufacturer']) {
-		echo '<br>'.__("Manufacturer",appStoreAssistant).': '.$Data['Manufacturer']."<br>";
+		echo '<span class="amazonStore-publisher">'.__("Manufacturer",appStoreAssistant).': '.$Data['Manufacturer']."</span><br />";
 	}
 	if ($Data['Status']) {
-		echo __("Status",appStoreAssistant).': '.$Data['Status'].'<br>';
+		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		echo __("List Price",appStoreAssistant).': <strike>'. $Data['ListPrice'] .'</strike><br>';
+		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		echo __("Amazon Price",appStoreAssistant).': <b><font color="red">'. $Data['Amount'] .'</font></b><br>';
+		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
-	if ($Data['ReleaseDate']) {
-		echo __("Released",appStoreAssistant).': '.date("F j, Y",$Data['ReleaseDate']).'<br>';
+	if ($Data->ItemAttributes->ReleaseDate) {
+		echo '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
 	}
 	echo '<br><div align="center">';
 	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
 	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
 	//echo '<h2>Click here to view this item at Amazon.com</h2>';
 	echo '</a></div>';
+	echo '	<div style="clear:left;">&nbsp;</div>';
+	echo '</div>';
+
 
 } // end asa_displayAmazonDefault
 
@@ -304,7 +339,7 @@ function appStore_css_hook( ) {
 ?>
  
 <style type='text/css'>
-/* This site uses App Store Assistant version <?php echo plugin_get_version() ?> */
+/* This site uses App Store Assistant version <?php echo plugin_get_version()." - ".appStore_setting('affiliatepartnerid'); ?> */
 
 .appStore-rating_bar {
 	display:inline-block;
@@ -738,7 +773,7 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 	<?php
 	
 	if ((appStore_setting('displayitunestitle') == "yes" AND !empty($iTunesName)) OR $mode != "internal") {
-		echo '<h1 class="iTunesStore-title">'.$iTunesName.'</h1>';
+		echo '<span class="iTunesStore-title">'.$iTunesName.'</span></br>';
 	}
 	if (appStore_setting('displayitunestrackcount') == "yes" AND !empty($trackCount)) {
 		echo '<span class="iTunesStore-trackcount">'.$trackType.': '.$trackCount.'</span></br>';
@@ -855,7 +890,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	<div class="appStore-addDetails">
 	<?php
 	if ((appStore_setting('displayapptitle') == "yes" AND !empty($app->trackName)) OR $mode != "internal") {
-		echo '<h1 class="appStore-title">'.$app->trackName.'</h1>';
+		echo '<span class="appStore-title">'.$app->trackName.'</span></br>';
 	}
 	if (appStore_setting('displayversion') == "yes" AND !empty($app->version)) {
 		echo '<span class="appStore-version">'.__("Version",appStoreAssistant).': '.$app->version.'</span></br>';
@@ -991,7 +1026,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 			echo '	<div style="clear:left;">&nbsp;</div>';
 			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">'.$FullDescriptionButtonText.'</a></div>';
 		} else {
-			echo ' - <a href="'.$appURL.'" value="">'.$more_info_text.'</a>';		
+			echo ' '.__('or',appStoreAssistant).' <a href="'.$appURL.'" value="">'.$more_info_text.'</a>';		
 		}
 		echo '  </div>';
 	}		

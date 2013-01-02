@@ -1,3 +1,44 @@
+.appStore-title
+{
+	font-size: x-large;
+	font-weight: bold;
+}
+.iTunesStore-title
+{
+	font-size: x-large;
+	font-weight: bold;
+}
+.amazonStore-title
+{
+	font-size: large;
+	font-weight: bold;
+}
+.amazonStore-amazonprice
+{
+	color: #F00;
+	font-weight: bold;
+}
+.amazonStore-amazonprice-desc { }
+.amazonStore-listprice
+{
+	font-weight: bold;
+	text-decoration: line-through;
+}
+.amazonStore-listprice-desc { }
+.amazonStore-description
+{
+	border-top: 1px #B3B3B3 solid;
+	margin-top: 10px;
+}
+.amazonStore-features-desc{
+	font-size: large;
+	font-weight: bold;
+
+}
+.amazonStore-description p
+{
+	text-indent: 40px;
+}
 
 .appStore-screenshots {
 	list-style-type: none !important;

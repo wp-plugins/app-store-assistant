@@ -1,7 +1,7 @@
 <?php
     	$starColors = array("clear", "black", "blue","bronze","faded","gold","green","grey","orange","pink","purple","red");
     	?>
-		<input type="hidden" name="appStore_options[checkboxedoptions]" value="hide_button_background,hide_button_background_hover" />
+		<input type="hidden" name="appStore_options[checkboxedoptions]" value="hide_button_background,hide_button_background_hover,smaller_buy_button_iOS" />
 
     	<h2 class="asa_admin">Full Star:</h2>
 		<?php
@@ -33,7 +33,7 @@
 		?>
 		
 
-	<h2 class="asa_admin">Colors</h2>
+	<h2 class="asa_admin">Buy Button Style</h2>
 		<div class="asa_admin">     
 <?php
 	//define your color pickers
@@ -51,10 +51,10 @@
 
 	foreach($colorPickers as $colorPicker) {
 		echo "<div>\r";
-		echo '<label for="'.$colorPicker['ID'].'">'.$colorPicker['label'].'</label>'."\r";
 		echo '<input type="text" class="color" id="'.$colorPicker['ID'].'" ';
 		echo 'value="'.$options[$colorPicker['ID']].'" ';
 		echo 'name="appStore_options['.$colorPicker['ID'].']" size="6" />'."\r";
+		echo '<label for="'.$colorPicker['ID'].'">'.$colorPicker['label'].'</label>'."\r";
 		echo '<div id="'.$colorPicker['ID'].'_color"></div>'."\r";
 		echo '</div>'."\r";
 	}
@@ -75,4 +75,16 @@
 	
 	 ?>
 	
+		</div>
+		
+<h2 class="asa_admin">Miscellaneous</h2>
+		<div class="asa_admin">
+		
+		<ul type="square" class="asa_optionslist">
+		
+		<li><input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> /> Show a smaller Buy Button in iOS browsers</li>
+		<li>Screenshot Width: <input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />px<br />
+		<small>(in px. Height is automatic.)</small></li>
+		
+		</ul>
 		</div>
