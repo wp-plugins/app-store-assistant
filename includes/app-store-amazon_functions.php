@@ -78,9 +78,32 @@ function cleanAWSresults($Result){
 	}else{
 		$Features = $ItemAttr["Feature"];
 	}
-
 	
-	
+	switch ($AmazonProductData['ProductGroup']) {
+		case "Book":
+			$Description = "";
+			if ($ProductDescription) {
+				$Description = $ProductDescription;
+			} elseif($BookDescription) {
+				$Description = $BookDescription;
+			}
+			break;
+		case "DVD":
+			$Description = "";
+			if ($ProductDescription) {
+				$Description = $ProductDescription;
+			} elseif($BookDescription) {
+				$Description = $BookDescription;
+			}
+			break;
+		default:
+			$Description = "";
+			if ($ProductDescription) {
+				$Description = $ProductDescription;
+			} elseif($BookDescription) {
+				$Description = $BookDescription;
+			}
+	}
 	
     $formattedResults = array('ASIN' => $Item['ASIN'],
                     'ProductGroup' => $Item['ItemAttributes']['ProductGroup'],
@@ -95,8 +118,9 @@ function cleanAWSresults($Result){
                     'Status' => $Status,
                     'Features' => $Features,
                     'Tracks' => $Tracks,
-                    'ProductDescription' => $ProductDescription,
-                    'BookDescription' => $BookDescription,
+                    'Description' => fixCharacters($Description),
+                    'ProductDescription' => fixCharacters($ProductDescription),
+                    'BookDescription' => fixCharacters($BookDescription),
                     'Amount' => $Amount,
                     'Currency' => $CurrencyCode,
                     'ReleaseDate' => $ReleaseDate,
@@ -106,7 +130,7 @@ function cleanAWSresults($Result){
                     'Authors' => $Authors,
                     
 				    'Director' => $Director,
-				    'Cast' => $Actors,
+				    'Cast' => fixCharacters($Actors),
 				    'Rating' => $Rating,
 				    'Formats' => $Formats,
 				    'Languages' => $Languages,
@@ -114,8 +138,62 @@ function cleanAWSresults($Result){
 				    'RunTime' => $RunTime,
                     'Errors' => $Result['itemlookuperrorresponse']['error']
                    );
+                                    
     return $formattedResults;  
-  } 
+} 
+
+function fixCharacters($stringToCheck) {
+	//Specific string replaces for ellipsis, etc that you dont want removed but replaced
+	$theBad = 	array("“","”","‘","’","…","—","–");
+	$theGood = array("\"","\"","'","'","...","-","-");
+	$cleanedString = str_replace($theBad,$theGood,$stringToCheck);
+	$cleanedString = htmlentities($cleanedString);
+
+	/*
+	$trans[chr(130)] = '&sbquo;';    // Single Low-9 Quotation Mark
+    $trans[chr(131)] = '&fnof;';    // Latin Small Letter F With Hook
+    $trans[chr(132)] = '&bdquo;';    // Double Low-9 Quotation Mark
+    $trans[chr(133)] = '&hellip;';    // Horizontal Ellipsis
+    $trans[chr(134)] = '&dagger;';    // Dagger
+    $trans[chr(135)] = '&Dagger;';    // Double Dagger
+    $trans[chr(136)] = '&circ;';    // Modifier Letter Circumflex Accent
+    $trans[chr(137)] = '&permil;';    // Per Mille Sign
+    $trans[chr(138)] = '&Scaron;';    // Latin Capital Letter S With Caron
+    $trans[chr(139)] = '&lsaquo;';    // Single Left-Pointing Angle Quotation Mark
+    $trans[chr(140)] = '&OElig;';    // Latin Capital Ligature OE
+    $trans[chr(145)] = '&lsquo;';    // Left Single Quotation Mark
+    $trans[chr(146)] = '&rsquo;';    // Right Single Quotation Mark
+    $trans[chr(147)] = '&ldquo;';    // Left Double Quotation Mark
+    $trans[chr(148)] = '&rdquo;';    // Right Double Quotation Mark
+    $trans[chr(149)] = '&bull;';    // Bullet
+    $trans[chr(150)] = '&ndash;';    // En Dash
+    $trans[chr(151)] = '&mdash;';    // Em Dash
+    $trans[chr(152)] = '&tilde;';    // Small Tilde
+    $trans[chr(153)] = '&trade;';    // Trade Mark Sign
+    $trans[chr(154)] = '&scaron;';    // Latin Small Letter S With Caron
+    $trans[chr(155)] = '&rsaquo;';    // Single Right-Pointing Angle Quotation Mark
+    $trans[chr(156)] = '&oelig;';    // Latin Small Ligature OE
+    $trans[chr(159)] = '&Yuml;';    // Latin Capital Letter Y With Diaeresis
+    $trans['euro'] = '&euro;';    // euro currency symbol
+    ksort($trans);
+    
+	echo "-----------[<pre>".print_r($cleanedString,true)."</pre>]-------------";
+
+    
+    
+    foreach ($trans as $badchar => $goodcharacter) {
+        $cleanedString = str_replace($badchar, $goodcharacter, $cleanedString);
+    }
+	
+	*/	
+		
+	
+	$theBad = 	array("&lt;","&gt;");
+	$theGood = array("<",">");
+	$cleanedString = str_replace($theBad,$theGood,$cleanedString);
+	return $cleanedString;
+}
+
 
 //GetXMLTree and GetChildren code from http://whoooop.co.uk/2005/03/20/xml-to-array/
 

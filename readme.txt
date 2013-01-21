@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 5.5.2
+Stable tag: 5.6
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -41,6 +41,8 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 	* Adjust App Icon image size
 * Cache detail and images locally for quicker page load times
 * Use custom Excerpts or let App Store Assistant auto-create an excerpt
+* Tested with over 300 Themes
+* Screenshot Lightbox support
 
 *-----[Amazon.com functionality is a beta release. **Use this feature with caution!!!**]-----*
 
@@ -111,10 +113,25 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 5.6 =
+* Added: Widget to show Apps
+* Added: Lightbox for display of Screenshots
+* Added: Cacheing of Amazon Product data and images
+* Added: Sends Thumbnail to Themes that request it (handy for related posts)
+* Added: option to show thumbnail as app icon or small product image in excerpt
+* Added: option to show "Read More" link in excerpt
+* Updated Amazon Product code to better handle foreign characters
+* Added: thumbnail support for iTunes products
+* Changed: Unified Cache directory with sub folders for each type of store
+* Changed: Optimized Cacheing system
+* Changed: Optimized image storing
+* Now Tested with over 300 Themes
+
 = 5.5.2 =
 * Added: Many CSS tags for Amazon.com section
-* Fixed: In App list mode, icon was appering above description
-* Fixed: In Music list mode, icon was appering above description
+* Fixed: In App list mode, icon was appearing above description
+* Fixed: In Music list mode, icon was appearing above description
 * Fixed: Some amazon.com item's use a description from Editorial Review, which can have odd characters. It now tries to translate them.
 * Changed: Some options have been moved to make more sense
 
@@ -127,7 +144,7 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Amazon.com beta feature
 
 = 5.1 =
-* Fixed: Issue with WordPress not recognizing manualy entered excerpts
+* Fixed: Issue with WordPress not recognizing manually entered excerpts
 
 = 5.0.1 =
 * Added: Some WP 3.5 API coolness
@@ -347,6 +364,8 @@ Please let us know of any features you would like added or bugs that need squash
 == Upgrade Notice ==
 
 In Version 5.0 the shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page. You should change the shortcode from ios_asaf_atomfeed to *asaf_atomfeed*.
+
+In Version 5.6 the Cacheing system has been replaced. It is recommended that you clear the caches before upgrading.
 
 == Note ==
 

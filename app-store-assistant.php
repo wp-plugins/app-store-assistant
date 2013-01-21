@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 5.5.2
+Version: 5.6
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -42,11 +42,15 @@ add_action('admin_init', 'appStore_init' );
 add_action('admin_menu', 'appStore_add_options_page');
 add_filter('plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
 add_action('admin_print_styles', 'appStore_admin_page_add_stylesheet');
-add_action('admin_enqueue_scripts', 'appStore_load_js_files');
+add_action('admin_enqueue_scripts', 'appStore_load_admin_js_files');
+add_action('wp_enqueue_scripts', 'appStore_load_js_files');
 
 remove_filter('get_the_excerpt', 'wp_trim_excerpt');
 add_filter('get_the_excerpt', 'ce_excerpt_filter');
 add_filter('get_the_excerpt','do_shortcode');
+
+add_filter( 'post_thumbnail_html', 'appStore_post_image_html', 10, 3 );
+
 
 // ------------------------------------------------------------------------
 // REGISTER SHORTCODES, ADD EDITOR BUTTONS
@@ -69,9 +73,115 @@ add_action('init', 'asa_load_translation_file');
 
 
 // ------------------------------------------------------------------------
-// DEFINE Apple App Store URL
+// DEFINE Apple App Store URL & CACHE directory
 // ------------------------------------------------------------------------
 define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup?country='.appStore_setting('store_country').'&id=');
+$upload_dir = wp_upload_dir();
+define('CACHE_DIRECTORY',$upload_dir['basedir'] . '/appstoreassistant_cache/');
+define('CACHE_DIRECTORY_URL',$upload_dir['baseurl'] . '/appstoreassistant_cache/');
 
+// ------------------------------------------------------------------------
+// Setup Widget
+// ------------------------------------------------------------------------
+
+
+
+class ASA_Widget1 extends WP_Widget {
+	function ASA_Widget1() {
+		parent::WP_Widget( false, $name = 'ASA Top 5 iOS' );
+	}
+
+	function widget( $args, $instance ) {
+		extract( $args );
+		//Widget Title
+		$title = apply_filters( 'widget_title', $instance['title'] );
+		if(!$title) $title = __('Top 5 iOS Apps');
+		echo $before_widget;
+		if ($title) echo $before_title . $title . $after_title;
+		
+		//ATOM Feed URL
+		$atomurl = apply_filters( 'widget_atomurl', $instance['atomurl'] );
+		if(empty($atomurl)) {
+			_e( 'Missing atomurl in tag. Replace <strong>id</strong> with <strong>atomurl</strong>.',appStoreAssistant);
+			return;
+		}
+		$last = $atomurl[strlen($atomurl)-1];
+		if($last != "/") $AddSlash = "/";
+		$RSS_Feed = $atomurl.$AddSlash."xml";
+		$appStore_option = "appStore_rssfeed_".hash('md2', $RSS_Feed);
+		$feedData = get_option($appStore_option);
+		if (!empty($feedData)) {
+			$appIDs = $feedData;
+		} else {
+			$appIDs = appStore_getIDs_from_feed($RSS_Feed);
+			update_option($appStore_option, $appIDs);
+		}		
+		array_splice($appIDs, 5);
+	
+		echo '<div class="asaWidget1"><ul>';
+		foreach($appIDs as $appID) {	
+			if($appID == "" || !is_numeric($appID)) return;
+			$app = appStore_get_data($appID);
+			$appURL = getAffiliateURL($app->trackViewUrl);
+	//echo "------$asin-----[<pre>".print_r($app,true)."</pre>]-------------";
+
+			
+			if($app) {
+				echo "<li>";
+				echo '<a href="'.$appURL.'">';
+				echo '<img src="'.$app->artworkUrl60.'" alt="'.$app->title.'" align="left" width="40"/>';
+				echo '</a>';
+				echo '<h3>'.$app->trackName.'</h3>';
+				echo "<p>";
+				echo '<a href="'.$appURL.'">';
+				echo $app->formattedPrice;
+				echo '</a>';
+				echo "</p>";
+				echo "</li>";
+
+			/*
+				if(stristr($mode, 'itunes')) {
+					echo iTunesStore_page_output($app,$more_info_text,"external",$code);
+				} else {
+					echo appStore_page_output($app,$more_info_text,"external",$code);
+				}
+			*/
+			} else {
+				echo "No valid data for app id";
+				//wp_die('No valid data for app id: ' . $id);
+			}
+		}
+		echo "</ul></div>";
+
+		echo $after_widget;
+	}
+
+  function update( $new_instance, $old_instance ) {
+    return $new_instance;
+  }
+
+  function form( $instance ) {
+    $title = esc_attr( $instance['title'] );
+    $atomurl = esc_attr( $instance['atomurl'] );
+    ?>
+
+    <p>
+      <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?>
+      <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
+      </label>
+    </p>
+    <p>
+      <label for="<?php echo $this->get_field_id( 'atomurl' ); ?>"><?php _e( 'ATOM Feed:' ); ?>
+      <input class="widefat" id="<?php echo $this->get_field_id( 'atomurl' ); ?>" name="<?php echo $this->get_field_name( 'atomurl' ); ?>" type="text" value="<?php echo $atomurl; ?>" />
+      </label>
+    </p>
+    <?php
+  }
+}
+
+add_action( 'widgets_init', 'ASA_Widget1Init' );
+function ASA_Widget1Init() {
+  register_widget( 'ASA_Widget1' );
+}
 
 ?>

@@ -61,6 +61,8 @@ function appStore_add_defaults() {
 		"displaysupporteddeviceIcons" => "yes",
 		"displayreleasedate" => "no",
 		"displayscreenshots" => "yes",
+		"displayexcerptthumbnail" => "yes",
+		"displayexcerptreadmore" => "no",
 		"appstoreicon_to_use" => "512",
 		"appstoreicon_size_adjust_type" => "percent",
 		"appicon_size_adjust" => "25",
@@ -82,6 +84,11 @@ function appStore_add_defaults() {
 		"itunesicon_iOS_size_adjust" => "50",		
 		"itunesicon_size_max" => "100",
 		"itunesicon_iOS_size_max" => "50",
+
+		"amazon_productimage_maxwidth" => "200",
+		"amazon_productimage_size" => "medium",
+		"AWS_PARTNER_DOMAIN" => "com",
+
 
 		"cache_time_select_box" => (24*60*60),
 		"cache_images_locally" => "1",
@@ -389,10 +396,6 @@ function appStore_render_form() {
 		echo '</font>';
 		echo '</li>';
 	}
-
-
-
-
 	if ( isset ( $_GET['tab'] ) ) appStore_admin_tabs($_GET['tab']);
 	else appStore_admin_tabs('generaloptions');
 
@@ -497,7 +500,6 @@ function requires_wordpress_version() {
 	}
 }
 
-
 // Display a Settings link on the main Plugins page
 function appStore_plugin_action_links( $links, $file ) {
 
@@ -526,7 +528,7 @@ function appStore_validate_options($input) {
 	return $options;
 }
 
-function appStore_load_js_files() {
+function appStore_load_admin_js_files() {
  	wp_enqueue_script('jquerymenusstart', plugins_url('js_functions/jquerymenusstart.js',ASA_MAIN_FILE), null, null, true);
 	wp_enqueue_script('jscolor', plugins_url('js_functions/jscolor/jscolor.js',ASA_MAIN_FILE), null, null, true);
 }
@@ -540,13 +542,22 @@ function appStoreClearAppCache() {
 	global $wpdb;
 	$upload_dir = wp_upload_dir();
 
+	//Clear AppStore Cache
 	$options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'appStore_appData_%'");
 	if ( is_null($options) ) return false;
 	foreach( $options as $option ) {
 		delete_option( $option->option_name );
-		//echo $option->option_name."\r\n"; 
  	} 
-	rrmdir($upload_dir['basedir'] . '/appstoreassistant_cache/');
+
+	//Clear Amazon Cache
+	$options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'appStore_amazonData_%'");
+	if ( is_null($options) ) return false;
+	foreach( $options as $option ) {
+		delete_option( $option->option_name );
+ 	}
+ 	
+ 	//Remove Cache Directory
+	rrmdir(CACHE_DIRECTORY);
 }
 
 function rrmdir($dir) { 
@@ -561,8 +572,6 @@ function rrmdir($dir) {
 		rmdir($dir); 
 	}
 } 
-
-
 
 function appStoreShowMessage($message, $errormsg = false)
 {

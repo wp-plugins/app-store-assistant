@@ -1,4 +1,7 @@
 <?php
+function appStore_load_js_files() {
+	wp_enqueue_script('lightbox', plugins_url('js_functions/lightbox/js/lightbox.js',ASA_MAIN_FILE), null, null, true);
+}
 
 function appStore_amazon_handler( $atts,$content=null, $code="") {
 	// Get App ID and more_info_text from shortcode
@@ -7,92 +10,171 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 		'text' => ''
 	), $atts ) );
 
-	//Don't do anything if the ID is blank or non-numeric
-	if ($asin!=''){
-		$apaapi_errors			= '';
-		$apaapi_responsegroup 	= "ItemAttributes,Images,Offers,Reviews,EditorialReview,Tracks";
-		$apaapi_operation 		= "ItemLookup";
-		$apaapi_idtype	 		= "ASIN";
-		$apaapi_id				= $asin;
-		
-		$aws_public_api_key = appStore_setting('AWS_API_KEY');
-		$aws_secret_api_key = appStore_setting('AWS_API_SECRET_KEY');
-		$aws_associate_id = appStore_setting('AWS_ASSOCIATE_TAG');
-		$aws_partner_domain = appStore_setting('AWS_PARTNER_DOMAIN');
-		
-		$pxml = aws_signed_request($aws_partner_domain, array("Operation"=>$apaapi_operation,"ItemId"=>$apaapi_id,"ResponseGroup" => $apaapi_responsegroup,"IdType"=>$apaapi_idtype,"AssociateTag"=>$aws_associate_id ), $aws_public_api_key, $aws_secret_api_key);
-		if(!is_array($pxml)){
-			$pxml2=$pxml;
-			$pxml = array();
-			$pxml["itemlookuperrorresponse"]["error"]["code"]["message"] = $pxml2;
-		}
-		if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
-			$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
-		}
-		
-		if($apaapi_errors=='exceeded'){
-			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Requests Exceeded -->";
-			$apaapi_errors = 'Requests Exceeded';
-			if($extratext!=''){echo $hiddenerrors.$extratext;}
-			echo $hiddenerrors;
-		}elseif($apaapi_errors=='no signature match'){
-			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Signature does not match AWS Signature. Check AWS Keys and Signature method. -->";
-			$apaapi_errors = 'Signature does not match';
-			if($extratext!=''){echo $hiddenerrors.$extratext;}
-			echo $hiddenerrors;
-		}elseif($apaapi_errors=='not valid'){
-			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: The ASIN is Not Valid or may not be available in your region. -->";
-			$apaapi_errors = 'Not a valid item';
-			if($extratext!=''){echo $hiddenerrors.$extratext;}
-			echo $hiddenerrors;
-		}elseif($apaapi_errors!=''){
-			$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: ". $apaapi_errors ."-->";
-			if($extratext!=''){echo $hiddenerrors.$extratext;}
-			echo $hiddenerrors;
-		}else{
+	//Don't do anything if the ASIN is blank or non-numeric
+	if ($asin=='') return;
 	
-			$AmazonProductData = cleanAWSresults($pxml);
-			
-				switch ($AmazonProductData['ProductGroup']) {
-				case "Book":
-					asa_displayAmazonBook($AmazonProductData);
-					break;
-				case "DVD":
-					asa_displayAmazonDisc($AmazonProductData);
-					break;
-				default:
-					asa_displayAmazonDefault($AmazonProductData);
-				}
-			
-			//echo "<pre>";echo print_r($AmazonProductData, true);echo "</pre>";
-			//echo "<pre>";echo print_r($pxml, true);echo "</pre>";
-		}
-	} else {
-		return;
+	
+	$AmazonProductData = appStore_get_amazonData($asin);
+	switch (appStore_setting('amazon_productimage_size')) {
+		case "small":
+			$productImageURL = $AmazonProductData['SmallImage'];
+			break;
+		case "medium":
+			$productImageURL = $AmazonProductData['MediumImage'];
+			break;
+		case "large":
+			$productImageURL = $AmazonProductData['MediumImage'];
+			if ($AmazonProductData['LargeImage']) $productImageURL = $AmazonProductData['LargeImage'];
+			break;
+		default:
+			$productImageURL = $AmazonProductData['MediumImage'];
 	}
+
+
+	
+	switch ($AmazonProductData['ProductGroup']) {
+	case "Book":
+		asa_displayAmazonBook($AmazonProductData,$productImageURL);
+		break;
+	case "DVD":
+		asa_displayAmazonDisc($AmazonProductData,$productImageURL);
+		break;
+	default:
+		asa_displayAmazonDefault($AmazonProductData,$productImageURL);
+	}
+}	
+	
+	
+function appStore_get_amazonData($asin) {	
+	//Check to see if we have a cached version of the Amazon Product Data.
+	$appStore_options = get_option('appStore_amazonData_' . $asin, '');		
+	
+	if($appStore_options == '' || $appStore_options['next_check'] < time()) {
+		$appStore_options_data = appStore_page_get_amazonXML($asin);
+		if(appStore_setting('cache_images_locally') == '1') {
+			$appStore_options_data = appStore_save_amazonImages_locally($appStore_options_data);
+		}
+		$appStore_options = array('next_check' => time() + appStore_setting('cache_time_select_box'), 'app_data' => $appStore_options_data);
+		update_option('appStore_amazonData_' . $asin, $appStore_options);
+		
+	}
+	return $appStore_options['app_data'];
+}
+
+function appStore_save_amazonImages_locally($productData) {
+	$asin = $productData['ASIN'];	
+
+	
+	if(!is_writeable(CACHE_DIRECTORY)) {
+		//Uploads dir isn't writeable. bummer.
+		appStore_set_setting('cache_images_locally', '0');
+		return;
+	} else {
+		if(!is_dir(CACHE_DIRECTORY ."Amazon/". $asin)) {
+			if(!mkdir(CACHE_DIRECTORY ."Amazon/". $asin, 0755, true)) {
+				appStore_set_setting('cache_images_locally', '0');
+				return;	
+			}
+		}
+		$urls_to_cache = array();
+		if($productData['SmallImage']) $urls_to_cache['SmallImage'] = $productData['SmallImage'];
+		if($productData['MediumImage']) $urls_to_cache['MediumImage'] = $productData['MediumImage'];
+		if($productData['LargeImage']) $urls_to_cache['MediumImage'] = $productData['LargeImage'];
+
+
+		foreach($urls_to_cache as $urlname=>$url) {
+			$content = appStore_fopen_or_curl($url);
+			$info = pathinfo(basename($url));
+			$Newpath = CACHE_DIRECTORY ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
+			$Newurl = CACHE_DIRECTORY_URL ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
+			
+			if($fp = fopen($Newpath, "w+")) {
+				fwrite($fp, $content);
+				fclose($fp);
+				$productData[$urlname] = $Newurl;
+			} else {
+				//Couldnt write the file. Permissions must be wrong.
+				appStore_set_setting('cache_images_locally', '0');
+				return;
+			}
+		}
+	}
+	return $productData;
+}
+
+function appStore_page_get_amazonXML($asin) {	
+	$apaapi_errors			= '';
+	$apaapi_responsegroup 	= "ItemAttributes,Images,Offers,Reviews,EditorialReview,Tracks";
+	$apaapi_operation 		= "ItemLookup";
+	$apaapi_idtype	 		= "ASIN";
+	$apaapi_id				= $asin;
+	
+	$aws_public_api_key = appStore_setting('AWS_API_KEY');
+	$aws_secret_api_key = appStore_setting('AWS_API_SECRET_KEY');
+	$aws_associate_id = appStore_setting('AWS_ASSOCIATE_TAG');
+	$aws_partner_domain = appStore_setting('AWS_PARTNER_DOMAIN');
+	
+	$pxml = aws_signed_request($aws_partner_domain,
+		array("Operation"=>$apaapi_operation, 		
+			  "ItemId"=>$apaapi_id,
+			  "ResponseGroup" => $apaapi_responsegroup,
+			  "IdType"=>$apaapi_idtype,
+			  "AssociateTag"=>$aws_associate_id ),
+			  $aws_public_api_key, $aws_secret_api_key);
+
+	if(!is_array($pxml)){
+		$pxml2=$pxml;
+		$pxml = array();
+		$pxml["itemlookuperrorresponse"]["error"]["code"]["message"] = $pxml2;
+	}
+	
+	if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
+		$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
+	}
+	
+	if($apaapi_errors=='exceeded'){
+		$AmazonProductData[0] = 'Requests Exceeded';
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Requests Exceeded -->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}elseif($apaapi_errors=='no signature match'){
+		$AmazonProductData[0] = 'Signature does not match';
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Signature does not match AWS Signature. Check AWS Keys and Signature method. -->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}elseif($apaapi_errors=='not valid'){
+		$AmazonProductData[0] = 'Not a valid item';
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: The ASIN is Not Valid or may not be available in your region. -->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}elseif($apaapi_errors!=''){
+		$AmazonProductData[0] = $apaapi_errors;
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: ". $apaapi_errors ."-->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}else{
+		$AmazonProductData = cleanAWSresults($pxml);
+		//echo "<pre>";echo print_r($AmazonProductData, true);echo "</pre>";
+		//echo "<pre>";echo print_r($pxml, true);echo "</pre>";
+	}
+	return $AmazonProductData;
+
 }
 
 
-function asa_displayAmazonDisc($Data){
-
-	switch (appStore_setting('amazon_productimage_size')) {
-    case "small":
-        $productImageURL = $Data['SmallImage'];
-        break;
-    case "medium":
-        $productImageURL = $Data['MediumImage'];
-        break;
-    case "large":
-        $productImageURL = $Data['LargeImage'];
-        break;
-    default:
-        $productImageURL = $Data['MediumImage'];
-	}
-
+function asa_displayAmazonDisc($Data,$productImageURL){
 	echo '<div class="appStore-wrapper"><hr>';
 	echo '	<div id="amazonStore-icon-container">';
 	echo '    <a href="'.$Data['URL'].'" target="_blank">',
-		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
 	echo '</div>';
 
 
@@ -103,12 +185,8 @@ function asa_displayAmazonDisc($Data){
 	if ($Data['Director']) {
 		echo '<span class="amazonStore-cast">'.$Data['Director']."<br />";
 	}
-	if ($Data['ProductDescription']) {
-		echo '<div class="amazonStore-description">'.$Data['ProductDescription'].'</div><br />';
-	} elseif($Data['BookDescription']) {
-		echo '<div class="amazonStore-description">';
-		echo iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $Data['BookDescription']);
-		echo '</div><br />';
+	if ($Data['Description']) {
+		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Status']) {
 		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
@@ -141,27 +219,11 @@ function asa_displayAmazonDisc($Data){
 
 }
 
-
-function asa_displayAmazonBook($Data){
-
-	switch (appStore_setting('amazon_productimage_size')) {
-    case "small":
-        $productImageURL = $Data['SmallImage'];
-        break;
-    case "medium":
-        $productImageURL = $Data['MediumImage'];
-        break;
-    case "large":
-        $productImageURL = $Data['LargeImage'];
-        break;
-    default:
-        $productImageURL = $Data['MediumImage'];
-	}
-
+function asa_displayAmazonBook($Data,$productImageURL){
 	echo '<div class="appStore-wrapper"><hr>';
 	echo '	<div id="amazonStore-icon-container">';
 	echo '    <a href="'.$Data['URL'].'" target="_blank">',
-		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
 	echo '</div>';
 
 	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
@@ -170,12 +232,8 @@ function asa_displayAmazonBook($Data){
 		echo '<span class="amazonStore-cast">'.$Data['Authors'].'</span><br />';
 	}
 
-	if ($Data['ProductDescription']) {
-		echo '<div class="amazonStore-description">'.$Data['ProductDescription'].'</div><br />';
-	} elseif($Data['BookDescription']) {
-		echo '<div class="amazonStore-description">';
-		echo iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $Data['BookDescription']);
-		echo '</div><br />';
+	if ($Data['Description']) {
+		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Publisher']) {
 		echo '<span class="amazonStore-publisher">'.__("Publisher",appStoreAssistant).': '.$Data['Publisher'].'</span><br />';
@@ -205,41 +263,18 @@ function asa_displayAmazonBook($Data){
 	echo '</a></div>';
 	echo '	<div style="clear:left;">&nbsp;</div>';
 	echo '</div>';
-
 }
 
-
-
-function asa_displayAmazonDefault($Data){
-	
-	
-	switch (appStore_setting('amazon_productimage_size')) {
-    case "small":
-        $productImageURL = $Data['SmallImage'];
-        break;
-    case "medium":
-        $productImageURL = $Data['MediumImage'];
-        break;
-    case "large":
-        $productImageURL = $Data['LargeImage'];
-        break;
-    default:
-        $productImageURL = $Data['MediumImage'];
-	}
-
+function asa_displayAmazonDefault($Data,$productImageURL){
 	echo '<div class="appStore-wrapper"><hr>';
 	echo '	<div id="amazonStore-icon-container">';
 	echo '    <a href="'.$Data['URL'].'" target="_blank">',
-		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'],
+		 '" border="0" width="'.appStore_setting('amazon_productimage_maxwidth').'" style="float: right; margin: 10px;" /></a>';
 	echo '</div>';
 	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
-
-
-
-
-
-	if ($Data['ProductDescription']) {
-		echo '<div class="amazonStore-description">'.$Data['ProductDescription'].'</div><br />';
+	if ($Data['Description']) {
+		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Features']) {
 		echo '<span class="amazonStore-features-desc">'.__("Features",appStoreAssistant).':</span>'.$Data['Features'].'<br />';
@@ -268,10 +303,7 @@ function asa_displayAmazonDefault($Data){
 	echo '</a></div>';
 	echo '	<div style="clear:left;">&nbsp;</div>';
 	echo '</div>';
-
-
 } // end asa_displayAmazonDefault
-
 
 function asa_load_translation_file() {
 	// relative path to WP_PLUGIN_DIR where the translation files will sit:
@@ -279,30 +311,116 @@ function asa_load_translation_file() {
 	load_plugin_textdomain( 'appStoreAssistant', false, $plugin_path );
 }
 
+function appStore_post_image_html( $html, $post_id, $post_image_id ) {
+
+	$appIconDesc = appStore_get_icon_desc();
+	$html = '<a href="' . get_permalink( $post_id ) . '" title="' . esc_attr( get_post_field( 'post_title', $post_id ) ) . '">';
+	$html .= '<img src="'.$appIconDesc['appIcon_url'].'" alt="<# some text #>" />';	
+	$html .= '</a>';
+	return $html;
+}
+
+function appStore_get_icon_desc() {
+	global $post;
+	$postContent = substr($post->post_content,1, 400);
+
+	if (preg_match('/ios_app/',$postContent)) $shortcodeMode = "ios_app";
+	if (preg_match('/amazon_item/',$postContent)) $shortcodeMode = "amazon_item";
+	if (preg_match('/mac_app/',$postContent)) $shortcodeMode = "mac_app";
+	if (preg_match('/itunes_store/',$postContent)) $shortcodeMode = "itunes_store";
+	if (preg_match('/ibooks_store/',$postContent)) $shortcodeMode = "ibooks_store";
+	if (preg_match('/ios_app_list/',$postContent)) {
+		$shortcodeMode = "ios_app_list";
+		if(preg_match('/iTunes/',$postContent)) $shortcodeMode = "iTunes_list";
+	}
+	switch ($shortcodeMode) {
+	case "ios_app":
+		$pattern = '/id="([0-9]+)"/';	
+		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
+		$id = $matches[1][0];	
+		//Don't do anything if the ID is blank or non-numeric
+		if($id == "" || !is_numeric($id))return;	
+		$app = appStore_get_data($id);
+		$appFullDescription = $app->description;
+		$appIcon_url = $app->artworkUrl60;
+		break;
+	case "amazon_item":
+		$pattern = '/asin="([a-zA-Z0-9]+)"/';
+		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
+		$asin = $matches[1][0];	
+		//Don't do anything if the ID is blank or non-numeric
+		if($asin == "")return;	
+		$amazonProduct = appStore_get_amazonData($asin);
+		$appFullDescription = $amazonProduct['Description'];
+		$appIcon_url = $amazonProduct['SmallImage'];
+		break;
+	case "mac_app":
+		$pattern = '/id="([0-9]+)"/';	
+		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
+		$id = $matches[1][0];	
+		//Don't do anything if the ID is blank or non-numeric
+		if($id == "" || !is_numeric($id))return;	
+		$app = appStore_get_data($id);
+		$appFullDescription = $app->description;
+		$appIcon_url = $app->artworkUrl60;
+		break;
+	case "itunes_store":
+		$pattern = '/id="([0-9]+)"/';	
+		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
+		$id = $matches[1][0];	
+		//Don't do anything if the ID is blank or non-numeric
+		if($id == "" || !is_numeric($id))return;	
+		$iTunesItem = appStore_get_data($id);
+		$appFullDescription = $iTunesItem->longDescription;
+		$appIcon_url = $iTunesItem->artworkUrl60;
+		break;
+	case "iTunes_list":
+		$appFullDescription = __('A List of music from iTunes');
+		$appIcon_url = plugins_url( 'images/MusicList.png', ASA_MAIN_FILE );
+		break;
+	case "ios_app_list":
+		$appFullDescription = __('A List of Apps');
+		$appIcon_url = plugins_url( 'images/Apps.jpg', ASA_MAIN_FILE );
+		break;
+	}
+
+	$appData['appFullDescription'] = $appFullDescription;
+	$appData['appIcon_url'] = $appIcon_url;
+	return $appData;
+}
+
+
 function ce_excerpt_filter() {
 
 	global $post;
-	
 	$originalPost = $post;
-	$originalExcerpt = $originalPost->post_excerpt;
-	if(strlen($originalExcerpt) >20 ) {
-		$appShortDescription = $originalExcerpt;
+	$originalExcerpt = esc_attr( get_post_field( 'post_excerpt', $post_id ) );
+	$postTitle = esc_attr( get_post_field( 'post_title', $post_id ) );
+	if (appStore_setting('displayexcerptreadmore')=="yes") {
+		$readMoreLink = ' <a href="'.esc_url( get_permalink() ).'">'.__("read more",appStoreAssistant).'</a>';
 	} else {
-	
-		$subject = substr($post->post_content,1, 400);
-		$pattern = '/([0-9]+)/';	
-		preg_match_all($pattern, $subject, $matches, PREG_PATTERN_ORDER);
-		$id = $matches[0][0];
-	
-		//Don't do anything if the ID is blank or non-numeric
-		if($id == "" || !is_numeric($id))return;	
-	
-		//Get the App Data
-		$app = appStore_get_data($id);
-		$appFullDescription = $app->description;
-		$appShortDescription = substr($appFullDescription,0, appStore_setting('excerpt_max_description'));
-		$appShortDescription .= '&hellip; <a href="'.esc_url( get_permalink() ).'">'.__("read more",appStoreAssistant).'</a>';
+		$readMoreLink = "";
 	}
+	
+	$appIconDesc = appStore_get_icon_desc();
+
+	if(appStore_setting('displayexcerptthumbnail')=="yes") {
+		$displayIcon = '<a href="'.get_permalink( $post_id ).'" title="'.$postTitle.'">';
+		$displayIcon .= '<img src="'.$appIconDesc['appIcon_url'].'" alt="'.$postTitle.'" width ="60" align="left" class="appStore_ThumbIcon" />';	
+		$displayIcon .= '</a>';
+	} else {
+		$displayIcon ="";
+	}
+
+	if(strlen($originalExcerpt) >20 ) {
+		$appShortDescription = $displayIcon.$originalExcerpt;
+	} else {	
+		//Get the App Data
+		$appShortDescription = $displayIcon;
+		$appShortDescription .= substr($appIconDesc['appFullDescription'],0, appStore_setting('excerpt_max_description'));
+		$appShortDescription .= '&hellip;'.$readMoreLink;
+	}
+	
 	return $appShortDescription;
 }
 
@@ -435,6 +553,30 @@ function appStore_css_hook( ) {
 	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
 	text-decoration:none;
 }
+
+<?php
+	$newIconSize = appStore_setting('appicon_size_adjust')."%";
+	if($is_iphone) $newIconSize = appStore_setting('appicon_iOS_size_adjust')."%";
+	
+	if(appStore_setting('appstoreicon_size_adjust_type') == 'pixels') {
+		$newIconSize = appStore_setting('appicon_size_max')."px";
+		if($is_iphone) $newIconSize = appStore_setting('appicon_iOS_size_max')."px";
+	}
+
+
+
+?>
+
+
+
+img.appStore-icon{
+	float: right;
+	max-width:<?php echo $newIconSize; ?>;
+}
+
+
+
+
 </style>
 <?php
 }
@@ -572,7 +714,6 @@ function appStore_list_handler($atts, $content = null, $code="") {
 	
 		$appIDs = explode(",",$ids);
 		$AppListing = "";
-	//echo "-----------[".print_r($appIDs,true)."]-------------";
 
 	//Pair down array to number of apps preference
 	array_splice($appIDs, appStore_setting('qty_of_apps'));
@@ -734,10 +875,6 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 			$artwork_url = $iTunesItem->artworkUrl100;
 			break;
 	}
-	if(appStore_setting('cache_images_locally') == '1') {
-		$upload_dir = wp_upload_dir();
-		$artwork_url = $upload_dir['baseurl'] . '/appstoreassistant_cache/' . $iTunesID . '/' . basename($artwork_url);
-	}
 	$originalImageSize = getimagesize("$artwork_url");
 	$adjustIcon = appStore_setting('itunesicon_size_adjust')/100;
 	if($is_iphone) $adjustIcon = appStore_setting('itunesicon_iOS_size_adjust')/100;
@@ -837,23 +974,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 			$artwork_url = $app->artworkUrl512;
 			break;
 	}
-	if(appStore_setting('cache_images_locally') == '1') {
-		$upload_dir = wp_upload_dir();
-		$artwork_url = $upload_dir['baseurl'] . '/appstoreassistant_cache/' . $app->trackId . '/' . basename($artwork_url);
-	}
-	$originalImageSize = getimagesize("$artwork_url");
-	
-	$adjustIcon = appStore_setting('appicon_size_adjust')/100;
-	if($is_iphone) $adjustIcon = appStore_setting('appicon_iOS_size_adjust')/100;
-	$newImageWidth = $originalImageSize[0] * $adjustIcon;
-	$newImageHeight = $originalImageSize[1] * $adjustIcon;
-	
-	if(appStore_setting('appstoreicon_size_adjust_type') == 'pixels') {
-		$newIconSize = appStore_setting('appicon_size_max');
-		if($is_iphone) $newIconSize = appStore_setting('appicon_iOS_size_max');
-		$newImageWidth = $newIconSize;
-		$newImageHeight = $newIconSize;
-	}
 	
 	
 	//App Category
@@ -881,7 +1001,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 <div class="appStore-wrapper">
 	<hr>
 	<div id="appStore-icon-container">
-		<a href="<?php echo $appURL; ?>" target="_blank"><img class="appStore-icon" src="<?php echo $artwork_url; ?>" width="<?php echo $newImageWidth; ?>" height="<?php echo $newImageHeight; ?>" /></a>
+		<a href="<?php echo $appURL; ?>" target="_blank"><img class="appStore-icon" src="<?php echo $artwork_url; ?>" /></a>
 		<div class="appStore-purchase">
 			<a type="button" href="<?php echo $appURL; ?>" value="" class="appStore-Button BuyButton" target="_blank"><?PHP echo $buttonText; ?></a></br>
 		</div>
@@ -969,12 +1089,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 				echo ':</h2>';
 				echo '		<ul class="appStore-screenshots">';
 				foreach($app->screenshotUrls as $ssurl) {
-					$ssurl = str_replace(".png", ".320x480-75.jpg", $ssurl);
-	
-					if(appStore_setting('cache_images_locally') == '1') {
-						$upload_dir = wp_upload_dir();
-						$ssurl = $upload_dir['baseurl'] . '/appstoreassistant_cache/' . $app->trackId . '/' . basename($ssurl);
-					}
 	
 					echo '<li class="appStore-screenshot"><a href="';
 					echo $ssurl . '" alt="Full Size Screenshot" rel="lightbox['.$appIDcode.']"><img src="';
@@ -992,10 +1106,6 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 				echo '		<h2>'.__("iPad",appStoreAssistant).' '.__("Screenshots",appStoreAssistant).':</h2>';
 				echo '		<ul class="appStore-screenshots">';
 				foreach($app->ipadScreenshotUrls as $ssurl) {	
-					if(appStore_setting('cache_images_locally') == '1') {
-						$upload_dir = wp_upload_dir();
-						$ssurl = $upload_dir['baseurl'] . '/appstoreassistant_cache/' . $app->trackId . '/' . basename($ssurl);
-					}
 	
 					echo '<li class="appStore-screenshot"><a href="';
 					echo $ssurl . '" alt="Full Size Screenshot" rel="lightbox['.$appIDcode.'iPad]"><img src="';
@@ -1104,16 +1214,17 @@ function getAffiliateURL($iTunesURL){
 	return $AffiliateURL;
 }
 
-
-
 function appStore_get_data( $id ) {
 	//Check to see if we have a cached version of the JSON.
 	$appStore_options = get_option('appStore_appData_' . $id, '');		
 	if($appStore_options == '' || $appStore_options['next_check'] < time()) {	
 		$appStore_options_data = appStore_page_get_json($id);
+		if(appStore_setting('cache_images_locally') == '1') {
+			$appStore_options_data = appStore_save_images_locally($appStore_options_data);
+		}
+		
 		$appStore_options = array('next_check' => time() + appStore_setting('cache_time_select_box'), 'app_data' => $appStore_options_data);
 		update_option('appStore_appData_' . $id, $appStore_options);
-		if(appStore_setting('cache_images_locally') == '1') appStore_save_images_locally($appStore_options['app_data']);
 	}	
 	return $appStore_options['app_data'];
 }
@@ -1139,6 +1250,8 @@ function appStore_getIDs_from_feed($atomurl) {
 function appStore_page_add_stylesheet() {
 	wp_register_style('appStore-styles', plugins_url( 'css/appStore-styles.css', ASA_MAIN_FILE ));
 	wp_enqueue_style( 'appStore-styles');
+	wp_register_style('lightbox-styles', plugins_url( 'js_functions/lightbox/css/lightbox.css', ASA_MAIN_FILE ));
+	wp_enqueue_style( 'lightbox-styles');
 }
 
 function appStore_page_get_json($id) {
@@ -1188,59 +1301,89 @@ function appStore_fopen_or_curl($url) {
 }
 
 function appStore_save_images_locally($app) {
-	//echo "-----------[".print_r($app,true)."]-------------";
-
 	$appID = $app->trackId;
 	if($app->wrapperType == "audiobook") $appID = $app->collectionId;
 	if($app->wrapperType == "collection") $appID = $app->collectionId;
 
-	$upload_dir = wp_upload_dir();
-	if(!is_writeable($upload_dir['basedir'])) {
+	if(!is_writeable(CACHE_DIRECTORY)) {
 		//Uploads dir isn't writeable. bummer.
 		appStore_set_setting('cache_images_locally', '0');
 		return;
 	} else {
 		//Loop through screenshots and the app icons and cache everything
-		if(!is_dir($upload_dir['basedir'] . '/appstoreassistant_cache/' . $appID)) {
-			if(!mkdir($upload_dir['basedir'] . '/appstoreassistant_cache/' . $appID, 0755, true)) {
+		if(!is_dir(CACHE_DIRECTORY."AppStore/" . $appID)) {
+			if(!mkdir(CACHE_DIRECTORY."AppStore/" . $appID, 0755, true)) {
 				appStore_set_setting('cache_images_locally', '0');
 				return;	
 			}
 		}
 		$urls_to_cache = array();
-		if($app->artworkUrl30) $urls_to_cache[] = $app->artworkUrl30;
-		if($app->artworkUrl60) $urls_to_cache[] = $app->artworkUrl60;
-		if($app->artworkUrl100) $urls_to_cache[] = $app->artworkUrl100;
-		if($app->artworkUrl512) $urls_to_cache[] = $app->artworkUrl512;
-		
-		if($app->screenshotUrls) {
-			foreach($app->screenshotUrls as $ssurl) {
-				$ssurl2 = str_replace(".png", ".320x480-75.jpg", $ssurl);
-				$urls_to_cache[] = $ssurl;
-				$urls_to_cache[] = $ssurl2;
-			}
-		}
-		if($app->ipadScreenshotUrls) {
-			foreach($app->ipadScreenshotUrls as $ssurl) {
-				$ssurl2 = str_replace(".png", ".320x480-75.jpg", $ssurl);
-				$urls_to_cache[] = $ssurl;
-				$urls_to_cache[] = $ssurl2;
-			}
-		}
+		if($app->artworkUrl30) $urls_to_cache['artworkUrl30'] = $app->artworkUrl30;
+		if($app->artworkUrl60) $urls_to_cache['artworkUrl60'] = $app->artworkUrl60;
+		if($app->artworkUrl100) $urls_to_cache['artworkUrl100'] = $app->artworkUrl100;
+		if($app->artworkUrl512) $urls_to_cache['artworkUrl512'] = $app->artworkUrl512;
 
-		foreach($urls_to_cache as $url) {
+		foreach($urls_to_cache as $urlname=>$url) {
 			$content = appStore_fopen_or_curl($url);
-			
-			if($fp = fopen($upload_dir['basedir'] . '/appstoreassistant_cache/' . $appID . '/' . basename($url), "w+")) {
+			$info = pathinfo(basename($url));
+			$Newpath = CACHE_DIRECTORY ."AppStore/". $appID . '/' . $urlname.".".$info['extension'];
+			$Newurl = CACHE_DIRECTORY_URL ."AppStore/". $appID . '/' . $urlname.".".$info['extension'];
+			if($fp = fopen($Newpath, "w+")) {
 				fwrite($fp, $content);
 				fclose($fp);
+				$app->$urlname = $Newurl;
 			} else {
 				//Couldnt write the file. Permissions must be wrong.
 				appStore_set_setting('cache_images_locally', '0');
 				return;
 			}
 		}
+
+		if($app->screenshotUrls) {
+			foreach($app->screenshotUrls as $ssid=>$ssurl) {
+				$content = appStore_fopen_or_curl($ssurl);
+				$info = pathinfo(basename($ssurl));
+				$Newname = "ios_ss_".$ssid.".".$info['extension'];
+				$Newpath = CACHE_DIRECTORY ."AppStore/". $appID . '/' . $Newname;
+				$Newurl = CACHE_DIRECTORY_URL ."AppStore/". $appID . '/' . $Newname;
+			
+				if($fp = fopen($Newpath, "w+")) {
+					fwrite($fp, $content);
+					fclose($fp);
+					$screenshotUrls[] = $Newurl;
+				} else {
+					//Couldnt write the file. Permissions must be wrong.
+					appStore_set_setting('cache_images_locally', '0');
+					return;
+				}
+			}
+			$app->screenshotUrls = $screenshotUrls;
+
+		}
+		
+		if($app->ipadScreenshotUrls) {
+			foreach($app->ipadScreenshotUrls as $ssid=>$ssurl) {
+				$content = appStore_fopen_or_curl($ssurl);
+				$info = pathinfo(basename($ssurl));
+				$Newname = "ipad_ss_".$ssid.".".$info['extension'];
+				$Newpath = CACHE_DIRECTORY ."AppStore/". $appID . '/' . $Newname;
+				$Newurl = CACHE_DIRECTORY_URL ."AppStore/". $appID . '/' . $Newname;
+			
+				if($fp = fopen($Newpath, "w+")) {
+					fwrite($fp, $content);
+					fclose($fp);
+					$iPadScreenshotUrls[] = $Newurl;
+				} else {
+					//Couldnt write the file. Permissions must be wrong.
+					appStore_set_setting('cache_images_locally', '0');
+					return;
+				}
+			}
+			$app->ipadScreenshotUrls = $iPadScreenshotUrls;
+	
+		}		
 	}
+	return $app;
 }
 
 $appStore_settings = array();
