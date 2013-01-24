@@ -22,9 +22,16 @@ function appStore_add_defaults() {
 
 	$appStore_defaults = array(
 		"max_description" => "400",
-		"excerpt_max_description" => "50",
+		"excerpt_max_chars" => "55",
+		"excerpt_moreinfo_text" => "More Info",
+		"excerpt_moreinfo_link" => "button",
 		"use_shortDesc_on_single" => "no",
+		"excerpt_generator" => "wordpress",
+		"featured_image_generator" => "wordpress",
 		"use_shortDesc_on_multiple" => "yes",
+		"shortDesc_fullDesc_text" => "Show Full Description & Screenshots",
+		"shortDesc_screenshot_text" => "Show Screenshots",
+		"shortDesc_link" => "button",
 		"smaller_buy_button_iOS" => "yes",
 		"qty_of_apps" => "10",
 		"ss_size" => "120",
@@ -88,6 +95,9 @@ function appStore_add_defaults() {
 		"amazon_productimage_maxwidth" => "200",
 		"amazon_productimage_size" => "medium",
 		"AWS_PARTNER_DOMAIN" => "com",
+		"AWS_API_KEY" => "",
+		"AWS_API_SECRET_KEY" => "",
+		"AWS_ASSOCIATE_TAG" => "",
 
 
 		"cache_time_select_box" => (24*60*60),
@@ -192,7 +202,7 @@ function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 			$masterList[$i] .= '">';
 			$masterList[$i] .= '<input type="hidden" name="shortcode" value="';
 			$masterList[$i] .= $shortCodeStart;
-			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot;]"';
+			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot; more_info_text=&quot;open in App Store...&quot;]"';
 			$masterList[$i] .= '>';
 			$masterList[$i] .= '<input type="hidden" name="postTitle" value="'.$appData->trackName.'">';
 			$masterList[$i] .= '<input type="hidden" name="createPost" value="true">';

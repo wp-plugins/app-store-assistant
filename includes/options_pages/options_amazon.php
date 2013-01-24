@@ -4,7 +4,7 @@
 		<p>Amazon.com requires you have your own AWS Public and Private Keys. You can get the keys by signing up at <a href="http://aws-portal.amazon.com/gp/aws/developer/account/index.html">http://aws-portal.amazon.com/gp/aws/developer/account/index.html</a>.</p>
 		Access Key ID: <input type="text" size="50" name="appStore_options[AWS_API_KEY]" value="<?php echo $options['AWS_API_KEY']; ?>"/><br />
 		Secret Access Key: <input type="text" size="50" name="appStore_options[AWS_API_SECRET_KEY]" value="<?php echo $options['AWS_API_SECRET_KEY']; ?>"/><br />
-		Amazon.com Affiliate Code: <input type="text" size="50" name="appStore_options[AWS_ASSOCIATE_TAG]" value="<?php echo $options['AWS_ASSOCIATE_TAG']; ?>"/><br />
+		Amazon.com Affiliate Code: <input type="text" size="20" maxsize="50" name="appStore_options[AWS_ASSOCIATE_TAG]" value="<?php echo $options['AWS_ASSOCIATE_TAG']; ?>"/> <small>(optional)</small><br />
 		
 		
 		Your Amazon Locale (Region): <select name='appStore_options[AWS_PARTNER_DOMAIN]'>

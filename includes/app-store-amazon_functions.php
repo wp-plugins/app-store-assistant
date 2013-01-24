@@ -5,7 +5,332 @@ define('DEBUG', false);
 //hash_hmac code from comment by Ulrich in http://mierendo.com/software/aws_signed_query/
 //sha256.inc.php from http://www.nanolink.ca/pub/sha256/ 
 
+function appStore_amazon_handler( $atts,$content=null, $code="") {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array(
+		'asin' => '',
+		'text' => ''
+	), $atts ) );
 
+	//Don't do anything if the ASIN is blank or non-numeric
+	if ($asin=='') return;
+	
+	
+	$AmazonProductData = appStore_get_amazonData($asin);
+	switch (appStore_setting('amazon_productimage_size')) {
+		case "small":
+			$productImageURL = $AmazonProductData['SmallImage'];
+			break;
+		case "medium":
+			$productImageURL = $AmazonProductData['MediumImage'];
+			break;
+		case "large":
+			$productImageURL = $AmazonProductData['MediumImage'];
+			if ($AmazonProductData['LargeImage']) $productImageURL = $AmazonProductData['LargeImage'];
+			break;
+		default:
+			$productImageURL = $AmazonProductData['MediumImage'];
+	}
+
+
+	switch ($AmazonProductData['ProductGroup']) {
+	case "Book":
+		asa_displayAmazonBook($AmazonProductData,$productImageURL);
+		break;
+	case "DVD":
+		asa_displayAmazonDisc($AmazonProductData,$productImageURL);
+		break;
+	default:
+		asa_displayAmazonDefault($AmazonProductData,$productImageURL);
+	}
+}	
+	
+	
+function appStore_get_amazonData($asin) {
+	//Check to see if we have a cached version of the Amazon Product Data.
+	$appStore_options = get_option('appStore_amazonData_' . $asin, '');		
+	
+	if($appStore_options == '' || $appStore_options['next_check'] < time()) {
+		$appStore_options_data = appStore_page_get_amazonXML($asin);
+		if($appStore_options_data['Error']) {
+			$nextCheck = 10;
+		} else {
+			$nextCheck = time() + appStore_setting('cache_time_select_box');
+			if(appStore_setting('cache_images_locally') == '1') {
+				$appStore_options_data = appStore_save_amazonImages_locally($appStore_options_data);
+			}
+		}
+		$appStore_options = array('next_check' => $nextCheck, 'app_data' => $appStore_options_data);
+		update_option('appStore_amazonData_' . $asin, $appStore_options);
+		
+	}
+	return $appStore_options['app_data'];
+}
+
+function appStore_save_amazonImages_locally($productData) {
+	$asin = $productData['ASIN'];	
+
+	
+	if(!is_writeable(CACHE_DIRECTORY)) {
+		//Uploads dir isn't writeable. bummer.
+		appStore_set_setting('cache_images_locally', '0');
+		return;
+	} else {
+		if(!is_dir(CACHE_DIRECTORY ."Amazon/". $asin)) {
+			if(!mkdir(CACHE_DIRECTORY ."Amazon/". $asin, 0755, true)) {
+				appStore_set_setting('cache_images_locally', '0');
+				return;	
+			}
+		}
+		$urls_to_cache = array();
+		if($productData['SmallImage']) $urls_to_cache['SmallImage'] = $productData['SmallImage'];
+		if($productData['MediumImage']) $urls_to_cache['MediumImage'] = $productData['MediumImage'];
+		if($productData['LargeImage']) $urls_to_cache['MediumImage'] = $productData['LargeImage'];
+
+
+		foreach($urls_to_cache as $urlname=>$url) {
+			$content = appStore_fopen_or_curl($url);
+			$info = pathinfo(basename($url));
+			$Newpath = CACHE_DIRECTORY ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
+			$Newurl = CACHE_DIRECTORY_URL ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
+			
+			if($fp = fopen($Newpath, "w+")) {
+				fwrite($fp, $content);
+				fclose($fp);
+				$productData[$urlname] = $Newurl;
+			} else {
+				//Couldnt write the file. Permissions must be wrong.
+				appStore_set_setting('cache_images_locally', '0');
+				return;
+			}
+		}
+	}
+	return $productData;
+}
+
+
+
+function appStore_page_get_amazonXML($asin) {
+	//Check to see if AWS Info is filled out in Admin Section
+	if(appStore_setting('AWS_API_KEY') == "" || appStore_setting('AWS_API_SECRET_KEY') == "" || appStore_setting('AWS_PARTNER_DOMAIN') == "") {
+		$AmazonProductData['asin'] = $asin;
+		$AmazonProductData['Description'] = "Error Processing Amazon Item, please check admin settings via the Amazon.com tab.";
+		$errorImage = plugins_url( 'images/CautionIcon.png' , ASA_MAIN_FILE );
+		$AmazonProductData['SmallImage'] = $errorImage;
+		$AmazonProductData['MediumImage'] = $errorImage;
+		$AmazonProductData['LargeImage'] = $errorImage;
+		$AmazonProductData['Title'] = "Error Message";
+		$AmazonProductData['Error'] = "NoKeys";
+		return $AmazonProductData;
+	}
+
+	$aws_public_api_key = appStore_setting('AWS_API_KEY');
+	$aws_secret_api_key = appStore_setting('AWS_API_SECRET_KEY');
+	$aws_partner_domain = appStore_setting('AWS_PARTNER_DOMAIN');
+
+	if(appStore_setting('AWS_ASSOCIATE_TAG') == "") {
+		$aws_associate_id = "thewebbedseal";
+	}else{
+		$aws_associate_id = appStore_setting('AWS_ASSOCIATE_TAG');
+	}
+
+	$apaapi_errors			= '';
+	$apaapi_responsegroup 	= "ItemAttributes,Images,Offers,Reviews,EditorialReview,Tracks";
+	$apaapi_operation 		= "ItemLookup";
+	$apaapi_idtype	 		= "ASIN";
+	$apaapi_id				= $asin;
+	
+	
+	$pxml = aws_signed_request($aws_partner_domain,
+		array("Operation"=>$apaapi_operation, 		
+			  "ItemId"=>$apaapi_id,
+			  "ResponseGroup" => $apaapi_responsegroup,
+			  "IdType"=>$apaapi_idtype,
+			  "AssociateTag"=>$aws_associate_id ),
+			  $aws_public_api_key, $aws_secret_api_key);
+
+	if(!is_array($pxml)){
+		$pxml2=$pxml;
+		$pxml = array();
+		$pxml["itemlookuperrorresponse"]["error"]["code"]["message"] = $pxml2;
+	}
+	
+	if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
+		$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
+	}
+	
+	if($apaapi_errors=='exceeded'){
+		$AmazonProductData[0] = 'Requests Exceeded';
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Requests Exceeded -->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}elseif($apaapi_errors=='no signature match'){
+		$AmazonProductData[0] = 'Signature does not match';
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Signature does not match AWS Signature. Check AWS Keys and Signature method. -->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}elseif($apaapi_errors=='not valid'){
+		$AmazonProductData[0] = 'Not a valid item';
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: The ASIN is Not Valid or may not be available in your region. -->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}elseif($apaapi_errors!=''){
+		$AmazonProductData[0] = $apaapi_errors;
+		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: ". $apaapi_errors ."-->";
+		if($extratext!=''){
+			$AmazonProductData[1] = $hiddenerrors.$extratext;
+		}
+		$AmazonProductData[1] = $hiddenerrors;
+	}else{
+		$AmazonProductData = cleanAWSresults($pxml);
+		//echo "<pre>";echo print_r($AmazonProductData, true);echo "</pre>";
+		//echo "<pre>";echo print_r($pxml, true);echo "</pre>";
+	}
+	return $AmazonProductData;
+
+}
+
+
+function asa_displayAmazonDisc($Data,$productImageURL){
+	echo '<div class="appStore-wrapper"><hr>';
+	echo '	<div id="amazonStore-icon-container">';
+	echo '    <a href="'.$Data['URL'].'" target="_blank">',
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
+	echo '</div>';
+
+
+	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
+	if ($Data['Cast']) {
+		echo '<span class="amazonStore-cast">'.$Data['Cast']."</span><br />";
+	}
+	if ($Data['Director']) {
+		echo '<span class="amazonStore-cast">'.$Data['Director']."<br />";
+	}
+	if ($Data['Description']) {
+		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
+	}
+	if ($Data['Status']) {
+		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+	}
+	if ($Data['ListPrice']) {
+		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
+	}
+	if ($Data['Amount']) {
+		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
+	}
+	if ($Data->ItemAttributes->ReleaseDate) {
+		echo '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
+	}
+	if ($Data->ItemAttributes->TheatricalReleaseDate) {
+		echo '<span class="amazonStore-date">'.__("Theatrical Release",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
+	}
+	if($Data['Studio']) {
+		echo '<span class="amazonStore-publisher">'.__("From",appStoreAssistant).': '. $Data['Studio'] .'</span><br />';
+	}
+
+	echo '<br /><div align="center">';
+	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
+	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
+	//echo '<h2>Click here to view this item at Amazon.com</h2>';
+	echo '</a></div>';
+	echo '	<div style="clear:left;">&nbsp;</div>';
+	echo '</div>';
+
+}
+function asa_displayAmazonBook($Data,$productImageURL){
+	echo '<div class="appStore-wrapper"><hr>';
+	echo '	<div id="amazonStore-icon-container">';
+	echo '    <a href="'.$Data['URL'].'" target="_blank">',
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
+	echo '</div>';
+
+	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
+
+	if ($Data['Authors']) {
+		echo '<span class="amazonStore-cast">'.$Data['Authors'].'</span><br />';
+	}
+
+	if ($Data['Description']) {
+		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
+	}
+	if ($Data['Publisher']) {
+		echo '<span class="amazonStore-publisher">'.__("Publisher",appStoreAssistant).': '.$Data['Publisher'].'</span><br />';
+	}
+	if ($Data['Status']) {
+		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+	}
+	if ($Data['ListPrice']) {
+		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
+	}
+	if ($Data['Amount']) {
+		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
+	}
+	if ($Data['ReleaseDate']) {
+		echo '<span class="amazonStore-date">'.__("Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
+	}
+
+	if ($Data['PublishedDate']) {
+		echo '<span class="amazonStore-date">'.__("Published",appStoreAssistant).': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
+	}
+	echo '<br><div align="center">';
+	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
+	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
+	//echo '<h2>Click here to view this item at Amazon.com</h2>';
+	echo '</a></div>';
+	echo '	<div style="clear:left;">&nbsp;</div>';
+	echo '</div>';
+}
+
+function asa_displayAmazonDefault($Data,$productImageURL){
+
+	echo '<div class="appStore-wrapper"><hr>';
+	echo '	<div id="amazonStore-icon-container">';
+	echo '    <a href="'.$Data['URL'].'" target="_blank">',
+		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'],
+		 '" border="0" width="'.appStore_setting('amazon_productimage_maxwidth').'" style="float: right; margin: 10px;" /></a>';
+	echo '</div>';
+	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
+	if ($Data['Description']) {
+		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
+	}
+	if ($Data['Features']) {
+		echo '<span class="amazonStore-features-desc">'.__("Features",appStoreAssistant).':</span>'.$Data['Features'].'<br />';
+	}
+	if ($Data['Manufacturer']) {
+		echo '<span class="amazonStore-publisher">'.__("Manufacturer",appStoreAssistant).': '.$Data['Manufacturer']."</span><br />";
+	}
+	if ($Data['Status']) {
+		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+	}
+	if ($Data['ListPrice']) {
+		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
+	}
+	if ($Data['Amount']) {
+		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
+	}
+	if ($Data->ItemAttributes->ReleaseDate) {
+		echo '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
+	}
+	echo '<br><div align="center">';
+	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
+	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
+	//echo '<h2>Click here to view this item at Amazon.com</h2>';
+	echo '</a></div>';
+	echo '	<div style="clear:left;">&nbsp;</div>';
+	echo '</div>';
+} // end asa_displayAmazonDefault
 
 function cleanAWSresults($Result){
     $Item 					= $Result['ItemLookupResponse']['Items']['Item'];
@@ -176,10 +501,6 @@ function fixCharacters($stringToCheck) {
     $trans[chr(159)] = '&Yuml;';    // Latin Capital Letter Y With Diaeresis
     $trans['euro'] = '&euro;';    // euro currency symbol
     ksort($trans);
-    
-	echo "-----------[<pre>".print_r($cleanedString,true)."</pre>]-------------";
-
-    
     
     foreach ($trans as $badchar => $goodcharacter) {
         $cleanedString = str_replace($badchar, $goodcharacter, $cleanedString);

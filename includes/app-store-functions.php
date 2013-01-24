@@ -3,307 +3,8 @@ function appStore_load_js_files() {
 	wp_enqueue_script('lightbox', plugins_url('js_functions/lightbox/js/lightbox.js',ASA_MAIN_FILE), null, null, true);
 }
 
-function appStore_amazon_handler( $atts,$content=null, $code="") {
-	// Get App ID and more_info_text from shortcode
-	extract( shortcode_atts( array(
-		'asin' => '',
-		'text' => ''
-	), $atts ) );
-
-	//Don't do anything if the ASIN is blank or non-numeric
-	if ($asin=='') return;
-	
-	
-	$AmazonProductData = appStore_get_amazonData($asin);
-	switch (appStore_setting('amazon_productimage_size')) {
-		case "small":
-			$productImageURL = $AmazonProductData['SmallImage'];
-			break;
-		case "medium":
-			$productImageURL = $AmazonProductData['MediumImage'];
-			break;
-		case "large":
-			$productImageURL = $AmazonProductData['MediumImage'];
-			if ($AmazonProductData['LargeImage']) $productImageURL = $AmazonProductData['LargeImage'];
-			break;
-		default:
-			$productImageURL = $AmazonProductData['MediumImage'];
-	}
 
 
-	
-	switch ($AmazonProductData['ProductGroup']) {
-	case "Book":
-		asa_displayAmazonBook($AmazonProductData,$productImageURL);
-		break;
-	case "DVD":
-		asa_displayAmazonDisc($AmazonProductData,$productImageURL);
-		break;
-	default:
-		asa_displayAmazonDefault($AmazonProductData,$productImageURL);
-	}
-}	
-	
-	
-function appStore_get_amazonData($asin) {	
-	//Check to see if we have a cached version of the Amazon Product Data.
-	$appStore_options = get_option('appStore_amazonData_' . $asin, '');		
-	
-	if($appStore_options == '' || $appStore_options['next_check'] < time()) {
-		$appStore_options_data = appStore_page_get_amazonXML($asin);
-		if(appStore_setting('cache_images_locally') == '1') {
-			$appStore_options_data = appStore_save_amazonImages_locally($appStore_options_data);
-		}
-		$appStore_options = array('next_check' => time() + appStore_setting('cache_time_select_box'), 'app_data' => $appStore_options_data);
-		update_option('appStore_amazonData_' . $asin, $appStore_options);
-		
-	}
-	return $appStore_options['app_data'];
-}
-
-function appStore_save_amazonImages_locally($productData) {
-	$asin = $productData['ASIN'];	
-
-	
-	if(!is_writeable(CACHE_DIRECTORY)) {
-		//Uploads dir isn't writeable. bummer.
-		appStore_set_setting('cache_images_locally', '0');
-		return;
-	} else {
-		if(!is_dir(CACHE_DIRECTORY ."Amazon/". $asin)) {
-			if(!mkdir(CACHE_DIRECTORY ."Amazon/". $asin, 0755, true)) {
-				appStore_set_setting('cache_images_locally', '0');
-				return;	
-			}
-		}
-		$urls_to_cache = array();
-		if($productData['SmallImage']) $urls_to_cache['SmallImage'] = $productData['SmallImage'];
-		if($productData['MediumImage']) $urls_to_cache['MediumImage'] = $productData['MediumImage'];
-		if($productData['LargeImage']) $urls_to_cache['MediumImage'] = $productData['LargeImage'];
-
-
-		foreach($urls_to_cache as $urlname=>$url) {
-			$content = appStore_fopen_or_curl($url);
-			$info = pathinfo(basename($url));
-			$Newpath = CACHE_DIRECTORY ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
-			$Newurl = CACHE_DIRECTORY_URL ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
-			
-			if($fp = fopen($Newpath, "w+")) {
-				fwrite($fp, $content);
-				fclose($fp);
-				$productData[$urlname] = $Newurl;
-			} else {
-				//Couldnt write the file. Permissions must be wrong.
-				appStore_set_setting('cache_images_locally', '0');
-				return;
-			}
-		}
-	}
-	return $productData;
-}
-
-function appStore_page_get_amazonXML($asin) {	
-	$apaapi_errors			= '';
-	$apaapi_responsegroup 	= "ItemAttributes,Images,Offers,Reviews,EditorialReview,Tracks";
-	$apaapi_operation 		= "ItemLookup";
-	$apaapi_idtype	 		= "ASIN";
-	$apaapi_id				= $asin;
-	
-	$aws_public_api_key = appStore_setting('AWS_API_KEY');
-	$aws_secret_api_key = appStore_setting('AWS_API_SECRET_KEY');
-	$aws_associate_id = appStore_setting('AWS_ASSOCIATE_TAG');
-	$aws_partner_domain = appStore_setting('AWS_PARTNER_DOMAIN');
-	
-	$pxml = aws_signed_request($aws_partner_domain,
-		array("Operation"=>$apaapi_operation, 		
-			  "ItemId"=>$apaapi_id,
-			  "ResponseGroup" => $apaapi_responsegroup,
-			  "IdType"=>$apaapi_idtype,
-			  "AssociateTag"=>$aws_associate_id ),
-			  $aws_public_api_key, $aws_secret_api_key);
-
-	if(!is_array($pxml)){
-		$pxml2=$pxml;
-		$pxml = array();
-		$pxml["itemlookuperrorresponse"]["error"]["code"]["message"] = $pxml2;
-	}
-	
-	if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
-		$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
-	}
-	
-	if($apaapi_errors=='exceeded'){
-		$AmazonProductData[0] = 'Requests Exceeded';
-		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Requests Exceeded -->";
-		if($extratext!=''){
-			$AmazonProductData[1] = $hiddenerrors.$extratext;
-		}
-		$AmazonProductData[1] = $hiddenerrors;
-	}elseif($apaapi_errors=='no signature match'){
-		$AmazonProductData[0] = 'Signature does not match';
-		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: Signature does not match AWS Signature. Check AWS Keys and Signature method. -->";
-		if($extratext!=''){
-			$AmazonProductData[1] = $hiddenerrors.$extratext;
-		}
-		$AmazonProductData[1] = $hiddenerrors;
-	}elseif($apaapi_errors=='not valid'){
-		$AmazonProductData[0] = 'Not a valid item';
-		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: The ASIN is Not Valid or may not be available in your region. -->";
-		if($extratext!=''){
-			$AmazonProductData[1] = $hiddenerrors.$extratext;
-		}
-		$AmazonProductData[1] = $hiddenerrors;
-	}elseif($apaapi_errors!=''){
-		$AmazonProductData[0] = $apaapi_errors;
-		$hiddenerrors = "<"."!-- HIDDEN AMAZON PAAPI ERROR: ". $apaapi_errors ."-->";
-		if($extratext!=''){
-			$AmazonProductData[1] = $hiddenerrors.$extratext;
-		}
-		$AmazonProductData[1] = $hiddenerrors;
-	}else{
-		$AmazonProductData = cleanAWSresults($pxml);
-		//echo "<pre>";echo print_r($AmazonProductData, true);echo "</pre>";
-		//echo "<pre>";echo print_r($pxml, true);echo "</pre>";
-	}
-	return $AmazonProductData;
-
-}
-
-
-function asa_displayAmazonDisc($Data,$productImageURL){
-	echo '<div class="appStore-wrapper"><hr>';
-	echo '	<div id="amazonStore-icon-container">';
-	echo '    <a href="'.$Data['URL'].'" target="_blank">',
-		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
-	echo '</div>';
-
-
-	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
-	if ($Data['Cast']) {
-		echo '<span class="amazonStore-cast">'.$Data['Cast']."</span><br />";
-	}
-	if ($Data['Director']) {
-		echo '<span class="amazonStore-cast">'.$Data['Director']."<br />";
-	}
-	if ($Data['Description']) {
-		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
-	}
-	if ($Data['Status']) {
-		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
-	}
-	if ($Data['ListPrice']) {
-		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
-		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
-	}
-	if ($Data['Amount']) {
-		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
-		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
-	}
-	if ($Data->ItemAttributes->ReleaseDate) {
-		echo '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
-	}
-	if ($Data->ItemAttributes->TheatricalReleaseDate) {
-		echo '<span class="amazonStore-date">'.__("Theatrical Release",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
-	}
-	if($Data['Studio']) {
-		echo '<span class="amazonStore-publisher">'.__("From",appStoreAssistant).': '. $Data['Studio'] .'</span><br />';
-	}
-
-	echo '<br /><div align="center">';
-	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
-	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
-	//echo '<h2>Click here to view this item at Amazon.com</h2>';
-	echo '</a></div>';
-	echo '	<div style="clear:left;">&nbsp;</div>';
-	echo '</div>';
-
-}
-
-function asa_displayAmazonBook($Data,$productImageURL){
-	echo '<div class="appStore-wrapper"><hr>';
-	echo '	<div id="amazonStore-icon-container">';
-	echo '    <a href="'.$Data['URL'].'" target="_blank">',
-		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
-	echo '</div>';
-
-	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
-
-	if ($Data['Authors']) {
-		echo '<span class="amazonStore-cast">'.$Data['Authors'].'</span><br />';
-	}
-
-	if ($Data['Description']) {
-		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
-	}
-	if ($Data['Publisher']) {
-		echo '<span class="amazonStore-publisher">'.__("Publisher",appStoreAssistant).': '.$Data['Publisher'].'</span><br />';
-	}
-	if ($Data['Status']) {
-		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
-	}
-	if ($Data['ListPrice']) {
-		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
-		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
-	}
-	if ($Data['Amount']) {
-		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
-		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
-	}
-	if ($Data['ReleaseDate']) {
-		echo '<span class="amazonStore-date">'.__("Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
-	}
-
-	if ($Data['PublishedDate']) {
-		echo '<span class="amazonStore-date">'.__("Published",appStoreAssistant).': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
-	}
-	echo '<br><div align="center">';
-	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
-	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
-	//echo '<h2>Click here to view this item at Amazon.com</h2>';
-	echo '</a></div>';
-	echo '	<div style="clear:left;">&nbsp;</div>';
-	echo '</div>';
-}
-
-function asa_displayAmazonDefault($Data,$productImageURL){
-	echo '<div class="appStore-wrapper"><hr>';
-	echo '	<div id="amazonStore-icon-container">';
-	echo '    <a href="'.$Data['URL'].'" target="_blank">',
-		 '<img src="'.$productImageURL.'" alt="'.$Data['Title'],
-		 '" border="0" width="'.appStore_setting('amazon_productimage_maxwidth').'" style="float: right; margin: 10px;" /></a>';
-	echo '</div>';
-	echo '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
-	if ($Data['Description']) {
-		echo '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
-	}
-	if ($Data['Features']) {
-		echo '<span class="amazonStore-features-desc">'.__("Features",appStoreAssistant).':</span>'.$Data['Features'].'<br />';
-	}
-	if ($Data['Manufacturer']) {
-		echo '<span class="amazonStore-publisher">'.__("Manufacturer",appStoreAssistant).': '.$Data['Manufacturer']."</span><br />";
-	}
-	if ($Data['Status']) {
-		echo '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
-	}
-	if ($Data['ListPrice']) {
-		echo '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
-		echo '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
-	}
-	if ($Data['Amount']) {
-		echo '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
-		echo '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
-	}
-	if ($Data->ItemAttributes->ReleaseDate) {
-		echo '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
-	}
-	echo '<br><div align="center">';
-	echo '<a href="'.$Data['URL'].'" TARGET="_blank">';
-	echo '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
-	//echo '<h2>Click here to view this item at Amazon.com</h2>';
-	echo '</a></div>';
-	echo '	<div style="clear:left;">&nbsp;</div>';
-	echo '</div>';
-} // end asa_displayAmazonDefault
 
 function asa_load_translation_file() {
 	// relative path to WP_PLUGIN_DIR where the translation files will sit:
@@ -311,64 +12,91 @@ function asa_load_translation_file() {
 	load_plugin_textdomain( 'appStoreAssistant', false, $plugin_path );
 }
 
-function appStore_post_image_html( $html, $post_id, $post_image_id ) {
 
-	$appIconDesc = appStore_get_icon_desc();
-	$html = '<a href="' . get_permalink( $post_id ) . '" title="' . esc_attr( get_post_field( 'post_title', $post_id ) ) . '">';
-	$html .= '<img src="'.$appIconDesc['appIcon_url'].'" alt="<# some text #>" />';	
-	$html .= '</a>';
-	return $html;
+function appStore_get_the_post_thumbnail( $post_id = null, $size = 'post-thumbnail', $attr = '' ) {
+	$post_id = ( null === $post_id ) ? get_the_ID() : $post_id;
+	$post_thumbnail_id = get_post_thumbnail_id( $post_id );
+	$size = apply_filters( 'post_thumbnail_size', $size );
+	if ( $post_thumbnail_id ) {
+		do_action( 'begin_fetch_post_thumbnail_html', $post_id, $post_thumbnail_id, $size ); // for "Just In Time" filtering of all of wp_get_attachment_image()'s filters
+		if ( in_the_loop() )
+			update_post_thumbnail_cache();
+		$html = wp_get_attachment_image( $post_thumbnail_id, $size, false, $attr );
+		do_action( 'end_fetch_post_thumbnail_html', $post_id, $post_thumbnail_id, $size );
+	} else {
+		$html = '';
+	}
+	
+	$errorImage = plugins_url( 'images/CautionIcon.png' , ASA_MAIN_FILE );
+
+	
+	
+	$html = "<!-   HERE IT IS ->";
+	return apply_filters( 'post_thumbnail_html', $html, $post_id, $post_thumbnail_id, $size, $attr );
 }
 
-function appStore_get_icon_desc() {
-	global $post;
-	$postContent = substr($post->post_content,1, 400);
+function appStore_post_thumbnail_html( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
 
-	if (preg_match('/ios_app/',$postContent)) $shortcodeMode = "ios_app";
-	if (preg_match('/amazon_item/',$postContent)) $shortcodeMode = "amazon_item";
-	if (preg_match('/mac_app/',$postContent)) $shortcodeMode = "mac_app";
-	if (preg_match('/itunes_store/',$postContent)) $shortcodeMode = "itunes_store";
-	if (preg_match('/ibooks_store/',$postContent)) $shortcodeMode = "ibooks_store";
-	if (preg_match('/ios_app_list/',$postContent)) {
-		$shortcodeMode = "ios_app_list";
-		if(preg_match('/iTunes/',$postContent)) $shortcodeMode = "iTunes_list";
+
+
+	$errorImage = plugins_url( 'images/CautionIcon.png' , ASA_MAIN_FILE );
+	$html = '<img src="$errorImage" alt="FAKE THUMBNAIL" />';
+	return $html;
+	/*
+		echo "------------------------[BREAK POINT]------------------------------";
+
+	if (appStore_setting('excerpt_generator')=="asa") {
+		$appIconDesc = appStore_get_icon_desc();
+		$html = '<a href="' . get_permalink( $post_id ) . '" title="' . esc_attr( get_post_field( 'post_title', $post_id ) ) . '">';
+		$html .= '<img src="'.$appIconDesc['appIcon_url'].'" alt="<# some text #>" />';	
+		$html .= '</a>';
+		return $html;
+	} else {
+	
+		$post_id = ( null === $post_id ) ? get_the_ID() : $post_id;
+		$post_thumbnail_id = get_post_thumbnail_id( $post_id );
+		$size = apply_filters( 'post_thumbnail_size', $size );
+		if ( $post_thumbnail_id ) {
+			do_action( 'begin_fetch_post_thumbnail_html', $post_id, $post_thumbnail_id, $size ); // for "Just In Time" filtering of all of wp_get_attachment_image()'s filters
+			if ( in_the_loop() )
+				update_post_thumbnail_cache();
+			$html = wp_get_attachment_image( $post_thumbnail_id, $size, false, $attr );
+			do_action( 'end_fetch_post_thumbnail_html', $post_id, $post_thumbnail_id, $size );
+		} else {
+			$html = '';
+		}
+		return apply_filters( 'post_thumbnail_html', $html, $post_id, $post_thumbnail_id, $size, $attr );
+	
 	}
-	switch ($shortcodeMode) {
+	*/
+}
+
+function appStore_get_icon_desc($shortcodeData) {
+
+	switch ($shortcodeData['shortcode']) {
 	case "ios_app":
-		$pattern = '/id="([0-9]+)"/';	
-		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
-		$id = $matches[1][0];	
-		//Don't do anything if the ID is blank or non-numeric
+		$id = $shortcodeData['atts']['id'];	
 		if($id == "" || !is_numeric($id))return;	
 		$app = appStore_get_data($id);
 		$appFullDescription = $app->description;
 		$appIcon_url = $app->artworkUrl60;
 		break;
 	case "amazon_item":
-		$pattern = '/asin="([a-zA-Z0-9]+)"/';
-		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
-		$asin = $matches[1][0];	
-		//Don't do anything if the ID is blank or non-numeric
+		$asin = $shortcodeData['atts']['asin'];	
 		if($asin == "")return;	
 		$amazonProduct = appStore_get_amazonData($asin);
 		$appFullDescription = $amazonProduct['Description'];
 		$appIcon_url = $amazonProduct['SmallImage'];
 		break;
 	case "mac_app":
-		$pattern = '/id="([0-9]+)"/';	
-		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
-		$id = $matches[1][0];	
-		//Don't do anything if the ID is blank or non-numeric
+		$id = $shortcodeData['atts']['id'];	
 		if($id == "" || !is_numeric($id))return;	
 		$app = appStore_get_data($id);
 		$appFullDescription = $app->description;
 		$appIcon_url = $app->artworkUrl60;
 		break;
 	case "itunes_store":
-		$pattern = '/id="([0-9]+)"/';	
-		preg_match_all($pattern, $postContent, $matches, PREG_PATTERN_ORDER);
-		$id = $matches[1][0];	
-		//Don't do anything if the ID is blank or non-numeric
+		$id = $shortcodeData['atts']['id'];	
 		if($id == "" || !is_numeric($id))return;	
 		$iTunesItem = appStore_get_data($id);
 		$appFullDescription = $iTunesItem->longDescription;
@@ -390,39 +118,112 @@ function appStore_get_icon_desc() {
 }
 
 
-function ce_excerpt_filter() {
-
+function appStore_excerpt_filter($text, $excerpt="") {
 	global $post;
-	$originalPost = $post;
-	$originalExcerpt = esc_attr( get_post_field( 'post_excerpt', $post_id ) );
-	$postTitle = esc_attr( get_post_field( 'post_title', $post_id ) );
-	if (appStore_setting('displayexcerptreadmore')=="yes") {
-		$readMoreLink = ' <a href="'.esc_url( get_permalink() ).'">'.__("read more",appStoreAssistant).'</a>';
+	if (appStore_setting('excerpt_generator')=="asa") {
+		$originalPost = $post;
+		$postContent = substr($post->post_content,1, 400);
+		$originalExcerpt = esc_attr( get_post_field( 'post_excerpt', $post_id ) );
+		$postTitle = esc_attr( get_post_field( 'post_title', $post_id ) );
+
+		$shortcodeData = getShortcodeDataFromPost();	
+
+		// Create More Info text
+		if (appStore_setting('displayexcerptreadmore')=="yes") {
+			$shortCodeMoreInfoText = $shortcodeData['atts']['more_info_text'];	
+			if(!$shortCodeMoreInfoText == "") {
+				$readMoreText = $shortCodeMoreInfoText;
+			} else {
+				$readMoreText = appStore_setting('excerpt_moreinfo_text');
+			}
+			$readMoreLink = ' <a href="'.esc_url( get_permalink() ).'">';
+			$readMoreLink .= $readMoreText;
+			$readMoreLink .= '</a>';
+			if (appStore_setting('excerpt_moreinfo_link') == "button") {
+				$readMoreLink = ''; // '<div style="clear:left;">&nbsp;</div>';
+				$readMoreLink .= '<div class="appStore-moreinfo_button">';
+				$readMoreLink .= '<a type="button" href="'.esc_url( get_permalink() ).'" value="" class="appStore-MoreInfoButton">';
+				$readMoreLink .= $readMoreText.'</a></div>';
+			}
+		} else {
+			$readMoreLink = "";
+		}
+		
+		$appIconDesc = appStore_get_icon_desc($shortcodeData);
+
+		if(appStore_setting('displayexcerptthumbnail')=="yes") {
+			$displayIcon = '<a href="'.get_permalink( $post_id ).'" title="'.$postTitle.'">';
+			$displayIcon .= '<img src="'.$appIconDesc['appIcon_url'].'" alt="'.$postTitle.'" width ="60" align="left" class="appStore_ThumbIcon" />';	
+			$displayIcon .= '</a>';
+		} else {
+			$displayIcon ="";
+		}
+
+		if(strlen($originalExcerpt) >20 ) {
+			$appShortDescription = $displayIcon.$originalExcerpt." ".$readMoreLink;
+		} else {	
+			//Get the App Data
+			$appShortDescription = $displayIcon;
+			$appShortDescription .= substr($appIconDesc['appFullDescription'],0, appStore_setting('excerpt_max_chars'));
+			$appShortDescription .= '&hellip;'.$readMoreLink;
+		}
+		return $appShortDescription;
+
 	} else {
-		$readMoreLink = "";
+
+		if ($excerpt) return $excerpt;
+
+		$text = strip_shortcodes( $text );
+
+		$text = apply_filters('the_content', $text);
+		$text = str_replace(']]>', ']]&gt;', $text);
+		$text = strip_tags($text);
+		$excerpt_length = apply_filters('excerpt_length', 55);
+		$excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
+		$words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
+		if ( count($words) > $excerpt_length ) {
+			array_pop($words);
+			$text = implode(' ', $words);
+			$text = $text . $excerpt_more;
+		} else {
+			$text = implode(' ', $words);
+		}
+		return apply_filters('wp_trim_excerpt', $text, $raw_excerpt);
+	
 	}
 	
-	$appIconDesc = appStore_get_icon_desc();
-
-	if(appStore_setting('displayexcerptthumbnail')=="yes") {
-		$displayIcon = '<a href="'.get_permalink( $post_id ).'" title="'.$postTitle.'">';
-		$displayIcon .= '<img src="'.$appIconDesc['appIcon_url'].'" alt="'.$postTitle.'" width ="60" align="left" class="appStore_ThumbIcon" />';	
-		$displayIcon .= '</a>';
-	} else {
-		$displayIcon ="";
-	}
-
-	if(strlen($originalExcerpt) >20 ) {
-		$appShortDescription = $displayIcon.$originalExcerpt;
-	} else {	
-		//Get the App Data
-		$appShortDescription = $displayIcon;
-		$appShortDescription .= substr($appIconDesc['appFullDescription'],0, appStore_setting('excerpt_max_description'));
-		$appShortDescription .= '&hellip;'.$readMoreLink;
-	}
 	
 	return $appShortDescription;
 }
+
+function getShortcodeDataFromPost(){
+	global $post;
+	$postContent = substr($post->post_content,1, 400);
+	$shortcodes = array("ios_app", "itunes_store","ibooks_store","mac_app","amazon_item");
+	foreach ($shortcodes as $shortcode) {
+		if (stristr($postContent, $shortcode) !== FALSE) {
+			$shortcodeData['shortcode'] = $shortcode;
+		}
+	}
+	// Get Attributes
+	$data = preg_match_all('/([a-zA-Z_]+)=\"([^\"]*?)\"/', $postContent, $matches);
+	foreach ($matches[1] as $shortcodeKey=>$shortcode) {
+		$shortcodeData['atts'][$shortcode] = $matches[2][$shortcodeKey];
+	}
+	/*
+	example array:
+			[shortcode] => ios_app
+			[atts] => Array
+				(
+					[id] => 411784735
+					[more_info_text] => More Info Text from Oscars post!!!...
+				)
+	*/
+		
+	return $shortcodeData;
+}
+
+
 
 // +++++ Add ios_app button to TinyMCE
 function add_asa_mce_button() {
@@ -502,6 +303,42 @@ function appStore_css_hook( ) {
 	text-shadow:1px 1px 0px #<?php echo appStore_setting('color_buttonTextShadow') ?>;
 	margin-top: 8px;
 
+}
+
+.appStore-MoreInfoButton {
+	padding: 2px 10px 2px 10px;
+	-moz-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	<?php
+	if(appStore_setting('hide_button_background') != "yes") { ?>
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79BBFF), color-stop(1, #378DE5) );
+	background:-moz-linear-gradient( center top, #79BBFF 5%, #378DE5 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79BBFF', endColorstr='#378DE5');
+	background-color:#79BBFF;
+	<?php } ?>
+	-moz-border-radius:7px;
+	-webkit-border-radius:7px;
+	border-radius:7px;
+	display:inline-block;
+	color:#<?php echo appStore_setting('color_buttonText') ?>;
+	font-family:Trebuchet MS;
+	font-size:12px;
+	font-weight:normal;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #<?php echo appStore_setting('color_buttonTextShadow') ?>;
+	margin-top: 4px;
+
+}
+.appStore-MoreInfoButton:hover {
+	<?php if(appStore_setting('hide_button_background_hover') != "yes") { ?>
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonHoverStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonHoverStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonHoverStart') ?> 5%, #<?php echo appStore_setting('color_buttonHoverStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonHoverStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonHoverStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonHoverStart') ?>;
+	<?php } ?>
+	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
+	text-decoration:none;
 }
 
 .appStore-Button:hover {
@@ -959,10 +796,7 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 
 	// Start capturing output so the text in the post comes first.
 	ob_start();
-
-
 	$TheAppPrice = format_price($app->price);
-
 	$appURL = getAffiliateURL($app->trackViewUrl);
 
 	// App Artwork
@@ -1126,15 +960,15 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		echo '	<div class="appStore-description">';
 		if (appStore_setting('use_shortDesc_on_multiple') == "yes") {
 			echo nl2br($smallDescription);
-			echo ' - <a href="'.get_permalink().'" value="">'.__("continued",appStoreAssistant).'&hellip;</a>';
-			$FullDescriptionButtonText = __("Show Full Description & Screenshots",appStoreAssistant);
+			$FullDescriptionButtonText = appStore_setting('shortDesc_fullDesc_text');
+			if (appStore_setting('shortDesc_link') == "text") echo ' - <a href="'.get_permalink().'" value="">'.$FullDescriptionButtonText.'</a>';
 		} else {
 			echo nl2br($app->description);
-			$FullDescriptionButtonText = __("Show Screenshots",appStoreAssistant);
-		}
+			$FullDescriptionButtonText = appStore_setting('shortDesc_screenshot_text');
+			if (appStore_setting('shortDesc_link') == "text") echo ' - <a href="'.get_permalink().'" value="">'.$FullDescriptionButtonText.'</a>';		}
 		if($mode=="internal") {
 			echo '	<div style="clear:left;">&nbsp;</div>';
-			echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">'.$FullDescriptionButtonText.'</a></div>';
+			if (appStore_setting('shortDesc_link') == "button") echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">'.$FullDescriptionButtonText.'</a></div>';
 		} else {
 			echo ' '.__('or',appStoreAssistant).' <a href="'.$appURL.'" value="">'.$more_info_text.'</a>';		
 		}

@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 5.6
+Stable tag: 5.6.1
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -40,6 +40,7 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 	* Choose which detail elements to display
 	* Adjust App Icon image size
 * Cache detail and images locally for quicker page load times
+* Widget to show ATOM/RSS Feed of Apps
 * Use custom Excerpts or let App Store Assistant auto-create an excerpt
 * Tested with over 300 Themes
 * Screenshot Lightbox support
@@ -62,16 +63,32 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Available Shortcodes ==
 
+* [ios_app id="123456789" more_info_text="More Info on this App..."]
+	* Displays a single iOS app
+	* id: The iOS app's App Store ID
+	* more_info_text: Excerpt "more info" link text
+
+* [mac_app id="123456789" more_info_text="More Info on this Mac App..."]
+	* Displays a single Mac app
+	* id: The Mac App Store ID
+	* more_info_text: Excerpt "more info" link text
+
+* [itunes_store id="123456789" more_info_text="More Info on this iTunes item..."]
+	* Displays a single item from the iTunes Store
+	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
+	* more_info_text: Excerpt "more info" link text
+	
+* [amazon_item asin="" more_info_text="More Info on this item from Amazon.com..."]
+	* Displays a single item from Amazon.com
+	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
+	* more_info_text: Excerpt "more info" link text
+	
 * [asaf_atomfeed atomurl="http://iTunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]
 	* Displays the items from the ATOm feed in a formatted view
 	* atomurl: feed URL supplied by Apple RSS Generator
 	* mode: [iOS, Mac or iTunes]
-	* more_info_text: Button text
+	* more_info_text: Excerpt "more info" link text
 
-* [ios_app id="123456789" more_info_text="open in App Store..."]
-	* Displays a single iOS app
-	* id: The iOS app's App Store ID
-	* more_info_text: Button text
 
 * [ios_app_list ids="123456789,123456789,123456789,123456789" more_info_text="open in App Store..." mode="iOS"]
 	* Displays Several iOS apps on a single page or post
@@ -84,23 +101,10 @@ Please let us know of any features you would like added or bugs that need squash
 	* id: The iOS app's App Store ID
 	* text: Link text
 
-* [mac_app id="123456789" more_info_text="open in Mac App Store..."]
-	* Displays a single Mac app
-	* id: The Mac App Store ID
-	* more_info_text: Button text
-
 * [mac_app_link id="123456789" text="App Name"]
 	* Displays a text only link to the Mac App
 	* id: The Mac App Store ID
 	* text: Link text
-
-* [itunes_store id="123456789" more_info_text="open in iTunes..."]
-	* Displays a single item from the iTunes Store
-	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
-	
-* [amazon_item asin="" more_info_text="open via Amazon.com..."]
-	* Displays a single item from Amazon.com
-	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
 
 == Screenshots ==
 
@@ -114,14 +118,23 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
+= 5.6.1 =
+* Added: More options for "More Info" links and buttons
+* Removed: Option to use Custom Featured Image generator, conflicted with too many themes
+* Added: Option to use WordPress or Custom Excerpt generator
+* Updated: New shortcode descriptions for "More Info" text
+* Fixed: "More Info" link is now customizable globally or for each shortcode
+* Fixed: Issue with excerpt not working with certain themes (see new option on general tab)
+* Fixed: Issue with Featured Image not showing when defined 
+
 = 5.6 =
-* Added: Widget to show Apps
+* Added: Widget to show ATOM Feeds of Apps
 * Added: Lightbox for display of Screenshots
 * Added: Cacheing of Amazon Product data and images
 * Added: Sends Thumbnail to Themes that request it (handy for related posts)
 * Added: option to show thumbnail as app icon or small product image in excerpt
 * Added: option to show "Read More" link in excerpt
-* Updated Amazon Product code to better handle foreign characters
+* Updated: Amazon Product code to better handle foreign characters
 * Added: thumbnail support for iTunes products
 * Changed: Unified Cache directory with sub folders for each type of store
 * Changed: Optimized Cacheing system

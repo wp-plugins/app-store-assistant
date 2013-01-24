@@ -1,7 +1,7 @@
 <?php
     	$starColors = array("clear", "black", "blue","bronze","faded","gold","green","grey","orange","pink","purple","red");
     	?>
-		<input type="hidden" name="appStore_options[checkboxedoptions]" value="hide_button_background,hide_button_background_hover,smaller_buy_button_iOS,displayexcerptthumbnail,displayexcerptreadmore" />
+		<input type="hidden" name="appStore_options[checkboxedoptions]" value="hide_button_background,hide_button_background_hover,smaller_buy_button_iOS" />
 
     	<h2 class="asa_admin">Full Star:</h2>
 		<?php
@@ -83,12 +83,6 @@
 		<ul type="square" class="asa_optionslist">
 		
 		<li><input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> /> Show a smaller Buy Button in iOS browsers</li>
-
-		<li><input type="checkbox" name="appStore_options[displayexcerptthumbnail]" value="yes" <?php if ($options['displayexcerptthumbnail'] == "yes") echo 'checked'; ?> /> Show App Icon in excerpt</li>
-		<li><input type="checkbox" name="appStore_options[displayexcerptreadmore]" value="yes" <?php if ($options['displayexcerptreadmore'] == "yes") echo 'checked'; ?> /> Show "Read More" link at end of excerpt</li>
-
-
-
 
 		<li>Screenshot Width: <input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />px<br />
 		<small>(in px. Height is automatic.)</small></li>
