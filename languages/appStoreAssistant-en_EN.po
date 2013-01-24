@@ -1,0 +1,317 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: App Store Assistant\n"
+"POT-Creation-Date: 2012-12-29 17:05-0800\n"
+"PO-Revision-Date: 2012-12-29 17:05-0800\n"
+"Last-Translator: S.E.A.L. Systems <asa.localization@sealsystems.net>\n"
+"Language-Team: S.E.A.L. Systems <asa.localization@sealsystems.net>\n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: __;_e;_n\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:180
+msgid "iPad only"
+msgstr "iPad only"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:223
+#: Assistant/trunk/includes/app-store-admin_functions.php:247
+msgid "iPhone/iPod Software"
+msgstr "Just iPhone/iPod"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:229
+msgid "All iOS Software"
+msgstr "All iOS Software"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:235
+msgid "iPad Software"
+msgstr "iPad Software"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:241
+msgid "Macintosh Software"
+msgstr "Macintosh Software"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:265
+msgid "App Name"
+msgstr "App Name"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:267
+msgid "Find Apps"
+msgstr "Find Apps"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:270
+msgid "All iOS"
+msgstr "All iOS"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:271
+#: Assistant/trunk/includes/app-store-functions.php:931
+msgid "Mac"
+msgstr "Mac"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:272
+msgid "Just iPhone/iPod"
+msgstr "Just iPhone/iPod"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:273
+msgid "Just iPad"
+msgstr "Just iPad"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:298
+#, php-format
+msgid "No %d Results Found!"
+msgstr "No %d Results Found!"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:444
+msgid "Save Changes"
+msgstr "Save Changes"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-admin_functions.php:505
+msgid "Settings"
+msgstr "Settings"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:106
+#: Assistant/trunk/includes/app-store-functions.php:165
+#: Assistant/trunk/includes/app-store-functions.php:221
+msgid "Status"
+msgstr "Status"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:109
+#: Assistant/trunk/includes/app-store-functions.php:168
+#: Assistant/trunk/includes/app-store-functions.php:224
+msgid "List Price"
+msgstr "List Price"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:112
+#: Assistant/trunk/includes/app-store-functions.php:171
+#: Assistant/trunk/includes/app-store-functions.php:227
+msgid "Amazon Price"
+msgstr "Amazon.com Price"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:115
+msgid "Disc Released"
+msgstr "Released"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:118
+msgid "Theatrical Release"
+msgstr "Theatrical Release"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:121
+#: Assistant/trunk/includes/app-store-functions.php:750
+msgid "From"
+msgstr "From"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:162
+msgid "Publisher"
+msgstr "Publisher"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:174
+#: Assistant/trunk/includes/app-store-functions.php:230
+#: Assistant/trunk/includes/app-store-functions.php:759
+#: Assistant/trunk/includes/app-store-functions.php:879
+msgid "Released"
+msgstr "Released"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:178
+msgid "Published"
+msgstr "Published"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:215
+msgid "Features"
+msgstr "Features"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:218
+msgid "Manufacturer"
+msgstr "Manufacturer"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:269
+msgid "read more"
+msgstr "read more"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:531
+msgid "Missing list of IDs."
+msgstr "Missing list of IDs."
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:574
+msgid ""
+"Missing atomurl in tag. Replace <strong>id</strong> with <strong>atomurl</"
+"strong>."
+msgstr ""
+"Missing atomurl in tag. Replace <strong>id</strong> with <strong>atomurl</"
+"strong>."
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:660
+#: Assistant/trunk/includes/app-store-functions.php:665
+msgid "Artist"
+msgstr "Artist"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:661
+msgid "Explicit"
+msgstr "Explicit"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:662
+msgid "Track Count"
+msgstr "Track Count"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:668
+msgid "Director"
+msgstr "Director"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:669
+#: Assistant/trunk/includes/app-store-functions.php:674
+#: Assistant/trunk/includes/app-store-functions.php:683
+msgid "Rated"
+msgstr "Rated"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:673
+#: Assistant/trunk/includes/app-store-functions.php:682
+msgid "Series"
+msgstr "Series"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:681
+msgid "Episodes"
+msgstr "Episodes"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:724
+msgid "View in iTunes"
+msgstr "View in iTunes"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:753
+msgid "Genre"
+msgstr "Genre"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:840
+#: Assistant/trunk/includes/app-store-functions.php:976
+msgid "View in App Store"
+msgstr "View in App Store"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:861
+msgid "Version"
+msgstr "Version"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:866
+msgid "Created & Sold by"
+msgstr "Created &amp; Sold by"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:870
+msgid "Created by"
+msgstr "Created by"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:873
+msgid "Sold by"
+msgstr "Sold by"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:882
+msgid "File Size"
+msgstr "File Size"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:886
+msgid "This app is designed for both iPhone and iPad"
+msgstr "This app is designed for both iPhone and iPad"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:890
+msgid "Age Rating"
+msgstr "Age Rating"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:893
+msgid "Category"
+msgstr "Category"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:932
+msgid "iPhone"
+msgstr "iPhone"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:933
+#: Assistant/trunk/includes/app-store-functions.php:957
+msgid "Screenshots"
+msgstr "Screenshots"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:957
+msgid "iPad"
+msgstr "iPad"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:984
+msgid "continued"
+msgstr "continued"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:985
+msgid "Show Full Description & Screenshots"
+msgstr "Show Full Description & Screenshots"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:988
+msgid "Show Screenshots"
+msgstr "Show Screenshots"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:1005
+msgid "Supported Devices"
+msgstr "Supported Devices"
+
+#: /Users/scott/Documents/Programming/WordPress Plugins/App Store
+#: Assistant/trunk/includes/app-store-functions.php:1028
+#, php-format
+msgid "by %d users"
+msgstr "by %d users"
+
+#~ msgid "iOS"
+#~ msgstr "iOS"
+
+#~ msgid "Categories"
+#~ msgstr "Categories"
