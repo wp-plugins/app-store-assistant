@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 5.6.1
+Stable tag: 5.6.2
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -117,6 +117,9 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 5.6.2 =
+* Fixed: Buy Button Background Gradient Start does not change the color. [Thanks Jeroen]
 
 = 5.6.1 =
 * Added: More options for "More Info" links and buttons

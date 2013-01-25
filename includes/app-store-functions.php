@@ -284,10 +284,10 @@ function appStore_css_hook( ) {
 	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
 	<?php
 	if(appStore_setting('hide_button_background') != "yes") { ?>
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79BBFF), color-stop(1, #378DE5) );
-	background:-moz-linear-gradient( center top, #79BBFF 5%, #378DE5 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79BBFF', endColorstr='#378DE5');
-	background-color:#79BBFF;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonStart') ?>;
 	<?php } ?>
 	-moz-border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
 	-webkit-border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
@@ -312,10 +312,10 @@ function appStore_css_hook( ) {
 	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
 	<?php
 	if(appStore_setting('hide_button_background') != "yes") { ?>
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79BBFF), color-stop(1, #378DE5) );
-	background:-moz-linear-gradient( center top, #79BBFF 5%, #378DE5 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79BBFF', endColorstr='#378DE5');
-	background-color:#79BBFF;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonStart') ?>;
 	<?php } ?>
 	-moz-border-radius:7px;
 	-webkit-border-radius:7px;
