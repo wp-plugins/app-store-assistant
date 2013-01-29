@@ -55,3 +55,14 @@
 		</tr>
 		</table>		
 		</div>
+		<h2 class="asa_admin">App Store Badge:</h2>
+		<div class="asa_admin">
+				App Stores Badge Verbage: <select name='appStore_options[appStore_store_badge_type]'>
+					<option value="available" <?php if ($options['appStore_store_badge_type'] == "available") echo 'selected'; ?>>Available on the App Store</option>
+					<option value="download" <?php if ($options['appStore_store_badge_type'] == "download") echo 'selected'; ?>>Download on the App Store</option>
+				</select><br />
+
+
+
+
+</div>

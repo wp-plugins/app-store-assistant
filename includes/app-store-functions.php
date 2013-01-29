@@ -776,7 +776,23 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 		echo nl2br($description);
 		echo '</br></div>';
 	}
-	
+		echo '</br>';
+
+		echo '<div class="appStore-badge"><a href="'.$iTunesURL.'" >';
+		$badgeImage = 'images/Badges/';
+		if(appStore_setting('iTunes_store_badge_type') == "download") {
+			$badgeImage .= "Download_on_iTunes_Badge_";
+		} else {
+			$badgeImage .= "Available_on_iTunes_Badge_";
+		}
+		if(appStore_setting('store_badge_language')) {
+			$badgeImage .= appStore_setting('store_badge_language');
+		} else {
+			$badgeImage .= "US-UK";
+		}
+		$badgeImage .= "_110x40.png";
+		echo '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a>';
+		echo '</div>';
 	 ?>
 	<div style="clear:left;">&nbsp;</div>
 </div>
@@ -908,8 +924,23 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 		}
 		echo '</br>';
 		echo '<div class="appStore-badge"><a href="'.$appURL.'" >';
-		echo '<img src="'.plugins_url( 'images/badge_appstore-lrg.gif' , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a></div>';
-		// Original image from http://ax.phobos.apple.com.edgesuite.net/images/web/linkmaker/badge_appstore-lrg.gif
+		$badgeImage = 'images/Badges/';
+		if(appStore_setting('appStore_store_badge_type') == "download") {
+			$badgeImage .= "Download_on_the_";
+		} else {
+			$badgeImage .= "Available_on_the_";
+		}
+		if($platform=="mac_app") $badgeImage .= "Mac_App_Store_Badge_";
+		if($platform=="ios_app") $badgeImage .= "App_Store_Badge_";
+	
+		if(appStore_setting('store_badge_language')) {
+			$badgeImage .= appStore_setting('store_badge_language');
+		} else {
+			$badgeImage .= "US-UK";
+		}
+		if($platform=="mac_app") $badgeImage .= "_165x40.png";
+		if($platform=="ios_app") $badgeImage .= "_135x40.png";
+		echo '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a></div>';
 		echo '</div>';
 
 		// Display iPhone Screenshots

@@ -3,8 +3,8 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
-Tested up to: 3.5
-Stable tag: 5.6.2
+Tested up to: 3.5.1
+Stable tag: 5.6.3
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -117,6 +117,13 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 5.6.3 =
+* Added: Choose the language of the iTunes/App Store Badges (See General->Localization)
+* Added: Choose the verbage of the iTunes/App Store Badges (See App Store or iTunes Store)
+* Added: New icons for iTunes and App Store badges as per new Apple Guidelines
+* Changed: Corrected text in iTunes settings section
+* Changed: A few default CSS values based on requests
 
 = 5.6.2 =
 * Fixed: Buy Button Background Gradient Start does not change the color. [Thanks Jeroen]

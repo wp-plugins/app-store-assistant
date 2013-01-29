@@ -36,6 +36,9 @@ function appStore_add_defaults() {
 		"qty_of_apps" => "10",
 		"ss_size" => "120",
 		"currency_format" => "USD",
+		"store_badge_language" => "US-UK",
+		"appStore_store_badge_type" => "available",
+		"iTunes_store_badge_type" => "available",
 		"store_country" => "US",
 	
 		"full_star_color" => "blue",
@@ -51,7 +54,7 @@ function appStore_add_defaults() {
 		"color_buttonHoverText" => "C9C9FF",
 		"hide_button_background" => "no",
 		"hide_button_background_hover" => "no",
-		"button_corner_radius" => "15",
+		"button_corner_radius" => "10",
 		"button_border_width" => "3",
 	
 		"displayapptitle" => "no",
