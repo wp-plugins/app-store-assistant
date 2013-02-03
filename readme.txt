@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 5.6.5
+Stable tag: 5.6.6
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -15,7 +15,7 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 
 **Features**
 
-* Displays detailed item information from
+* Displays detailed item information or links
 	* Apple App Store
 	* Mac App Store
 	* Amazon.com
@@ -71,6 +71,7 @@ Please let us know of any features you would like added or bugs that need squash
 * [ios_app_list]: Displays Several iOS apps on a single page or post with the modes iOS, Mac, Mixed or iTunes
 * [ios_app_link]: Displays a text only link to the iOS App
 * [mac_app_link]: Displays a text only link to the Mac App
+* [itunes_store_link]: Displays a text only link to the iTunes item
 * [amazon_item_link]: Displays a button or text only link to the Amazon Item with the modes text,button or textPrice]. The mode "textPrice" displays "Available from Amazon.com for" ending with price or "View on Amazon.com" if there is no price."
 
 *Full help for shortcodes is displayed in the settings area.*
@@ -86,6 +87,10 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 5.6.6 =
+* Added: Short code to display a link to an iTunes item
+* Changed: Cleaned up the Shortcode help section and added more descriptive text
 
 = 5.6.5 =
 * Added: Shortcode help section to Settings area

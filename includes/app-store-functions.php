@@ -499,8 +499,39 @@ function appStore_app_link_handler( $atts,$content=null, $code="") {
 	}
 }
 
+function iTunesStore_link_handler( $atts,$content=null, $code="") {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array(
+		'id' => '',
+		'text' => ''
+	), $atts ) );
 
-
+	//Don't do anything if the ID is blank or non-numeric
+	if($id == "" || !is_numeric($id))return;
+	$iTunesItem = appStore_get_data($id);
+	if($iTunesItem) {
+	
+		switch ($iTunesItem->wrapperType) {
+			case "collection":
+				$iTunesName = $iTunesItem->collectionName;
+				$iTunesURL = getAffiliateURL($iTunesItem->collectionViewUrl);
+				break;
+			case "track":
+				$iTunesName = $iTunesItem->trackName;
+				$iTunesURL = getAffiliateURL($iTunesItem->trackViewUrl);
+				break;
+			case "audiobook":
+				$iTunesName = $iTunesItem->collectionName;
+				$iTunesURL = getAffiliateURL($iTunesItem->collectionViewUrl);
+				break;
+		}
+		if ($text == '') $text = $iTunesName;
+		$iTunesURL = '<a href="'.$iTunesURL.'" target="_blank">'.$text.'</a>';
+		return $iTunesURL;
+	} else {
+		echo "";
+	}	
+}
 
 function iTunesStore_handler( $atts,$content=null, $code="" ) {
 	// Get iTunes ID and more_info_text from shortcode

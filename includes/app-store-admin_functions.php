@@ -102,7 +102,6 @@ function appStore_add_defaults() {
 		"AWS_API_SECRET_KEY" => "",
 		"AWS_ASSOCIATE_TAG" => "",
 
-
 		"cache_time_select_box" => (24*60*60),
 		"cache_images_locally" => "1",
 

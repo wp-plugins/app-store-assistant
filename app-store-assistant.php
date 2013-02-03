@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 5.6.5
+Version: 5.6.6
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -62,6 +62,7 @@ add_shortcode("ios_app_list", "appStore_list_handler");
 add_shortcode('ios_app', 'appStore_app_handler');
 add_shortcode('ios_app_link', 'appStore_app_link_handler');
 add_shortcode('itunes_store', 'iTunesStore_handler');
+add_shortcode('itunes_store_link', 'iTunesStore_link_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
 add_shortcode('mac_app', 'appStore_app_handler');
 add_shortcode('mac_app_link', 'appStore_app_link_handler');

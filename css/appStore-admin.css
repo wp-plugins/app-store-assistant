@@ -18,7 +18,9 @@
 	margin-bottom: 15px;
 	margin-top: 15px;
 	color: #004080;
+	padding-bottom: 25px;
 }
+
 .asa_help ul ul
 {
 	margin-left: .5em;
@@ -26,8 +28,24 @@
 	font-size: 100%;
 	font-weight: normal;
 	color: #000;
+	margin-bottom: 5px;
+	margin-top: 5px;
 } 
 
+.asa_help ul p
+{
+	margin-top: 0px;
+margin-left:40px;
+	font-weight: normal;
+	font-size: 100%;
+	color: #002A4A;
+} 
+.asa_help ul ul p
+{
+	color: #F00;
+	margin-top: 0px;
+	color: #002A4A;
+} 
 
 .asa_admin_table td, .asa_admin_table th {
 	padding-right: 20px;
