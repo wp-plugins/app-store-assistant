@@ -18,24 +18,41 @@ function appStore_amazon_link_handler ($atts,$content=null, $code="") {
 	
 	$AmazonProductData = appStore_get_amazonData($asin);
 	if($AmazonProductData) {
-		$itemURL = $AmazonProductData['URL'];
+		$itemURLStart = '<a href="'.$AmazonProductData['URL'].'" target="_blank">';
 		$itemTitle = $AmazonProductData['Title'];
 		$itemPrice = $AmazonProductData['Amount'];
 		if ($text == '') $text = $itemTitle;
-		if ($mode == 'textPrice') {
-			if($itemPrice == "Not Listed") {
-				$text = __('View on Amazon.com');
-			} else {
-				$text = __('Available on Amazon.com for');
-				$text .= " $itemPrice";
-			}
+
+
+		$itemTextLink = $itemURLStart.$text.'</a>';
+		if($itemPrice == "Not Listed") {
+			$textPrice = __('View on Amazon.com');
+		} else {
+			$textPrice = __('Available on Amazon.com for');
+			$textPrice .= " $itemPrice";
 		}
-		$itemLink = '<a href="'.$itemURL.'">'.$text.'</a>';
-		if ($mode == 'button') {
-			$itemLink = '<a href="'.$itemURL.'">';
-			$itemLink .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$text.'" />';
+		$itemTextPriceLink = $itemURLStart.$textPrice.'</a>';
+
+		$itemButtonLink = $itemURLStart;
+		$itemButtonLink .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$text.'" />';
+		$itemButtonLink .= '</a>';
+
+		switch ($mode) {
+			case "textPrice":
+				$itemLink = $itemTextPriceLink;	
+				break;
+			case "button":
+				$itemLink = $itemButtonLink;	
+				break;
+			case "both":
+				$itemLink = $itemTextLink."<br /><br />".$itemButtonLink;	
+				break;
+			case "bothPrice":
+				$itemLink = $itemTextPriceLink."<br /><br />".$itemButtonLink;	
+				break;
+			default:
+				$itemLink = $itemTextLink;	
 		}
-		$itemLink .= '</a>';
 	} else {
 		$itemLink = "";
 	}

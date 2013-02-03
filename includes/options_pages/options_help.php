@@ -80,7 +80,7 @@
 	<li>Displays a text only link to the Amazon Item</li>
 	<li>asin: The Amazon Store ID (Found in the URL from Amazon.com)</li>
 	<li>text: Link text</li>
-	<li>mode: [text,button,textPrice] Default is text. Displays the link as a button or text with the Link Text. <b>textPrice</b> displays "Available from Amazon.com for" ending with price or "View on Amazon.com" if there is no price."</li>
+	<li>mode: [<b>text</b>,button,textPrice,both,bothPrice] Displays the link as a button or text with the Link Text. <b>textPrice</b> displays "Available from Amazon.com for" ending with the price or "View on Amazon.com" if there is no price. <b>both</b> displays both text and a button. <b>bothPrice</b> displays both text with price and a button.</li>
 	</ul>
 </li>
 </ul>

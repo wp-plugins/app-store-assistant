@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 5.6.4
+Stable tag: 5.6.5
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -87,12 +87,17 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
-= 5.6.4 =
+= 5.6.5 =
 * Added: Shortcode help section to Settings area
 * Added: Shortcode to display a link to an Amazon.com items
 * Added: amazon_item_link shortcode mode for displaying price after item text
 * Added: amazon_item_link shortcode mode for displaying separate text if item price is unavailable
+* Added: amazon_item_link shortcode mode for displaying any combination of text and button
 * Updated: More text has been added to Localization items for Amazon.com section
+* Fixed: Amazon Links now open in a new Window
+
+= 5.6.4 =
+*Fixed: See Version 5.6.5 
 
 = 5.6.3 =
 * Added: Choose the language of the iTunes/App Store Badges (See General->Localization)
