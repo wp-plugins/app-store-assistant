@@ -448,6 +448,9 @@ function appStore_render_form() {
 				if ($options['affiliatepartnerid'] == "2003") $appStoreOptionsPage = "options_affiliate_td.php";
 				if ($options['affiliatepartnerid'] == "1002") $appStoreOptionsPage = "options_affiliate_dgm.php";
 				break;
+			case 'help' :
+				$appStoreOptionsPage = "options_help.php";
+				break;
 			case 'reset' :
 				$appStoreOptionsPage = "options_reset.php";
 				break;
@@ -469,7 +472,7 @@ function appStore_render_form() {
 function appStore_admin_tabs( $current = 'generaloptions' ) {
 	$options = get_option('appStore_options');
 
-	$tabs_start = array( 'generaloptions' => 'General', 'visual' => 'Visual Elements', 'appstore' => 'App Store', 'itunes' => 'iTunes Store', 'amazon' => 'Amazon.com', 'cache' => 'Cache' );
+	$tabs_start = array( 'generaloptions' => 'General', 'visual' => 'Visual Elements', 'appstore' => 'App Store', 'itunes' => 'iTunes Store', 'amazon' => 'Amazon.com', 'cache' => 'Cache', 'help' => 'Help' );
 	
 	switch ( $options['affiliatepartnerid'] ){
 	  case '999' :

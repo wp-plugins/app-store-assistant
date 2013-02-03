@@ -8,6 +8,27 @@
 .asa_admin_table {
 }
 
+
+.asa_help ul
+{
+	margin-left: .75em;
+	padding-left: .75em;
+	font-size: 120%;
+	font-weight: bolder;
+	margin-bottom: 15px;
+	margin-top: 15px;
+	color: #004080;
+}
+.asa_help ul ul
+{
+	margin-left: .5em;
+	padding-left: .5em;
+	font-size: 100%;
+	font-weight: normal;
+	color: #000;
+} 
+
+
 .asa_admin_table td, .asa_admin_table th {
 	padding-right: 20px;
 	padding-bottom: 10px;

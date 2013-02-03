@@ -500,6 +500,8 @@ function appStore_app_link_handler( $atts,$content=null, $code="") {
 }
 
 
+
+
 function iTunesStore_handler( $atts,$content=null, $code="" ) {
 	// Get iTunes ID and more_info_text from shortcode
 	extract( shortcode_atts( array(

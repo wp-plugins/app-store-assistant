@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 5.6.3
+Stable tag: 5.6.4
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -63,48 +63,17 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Available Shortcodes ==
 
-* [ios_app id="123456789" more_info_text="More Info on this App..."]
-	* Displays a single iOS app
-	* id: The iOS app's App Store ID
-	* more_info_text: Excerpt "more info" link text
+* [ios_app]: Displays a single iOS app
+* [mac_app]: Displays a single Mac app
+* [itunes_store]: Displays a single item from the iTunes Store
+* [amazon_item]: Displays a single item from Amazon.com
+* [asaf_atomfeed]: Displays the items from the ATOm feed in a formatted view with the modes iOS, Mac or iTunes
+* [ios_app_list]: Displays Several iOS apps on a single page or post with the modes iOS, Mac, Mixed or iTunes
+* [ios_app_link]: Displays a text only link to the iOS App
+* [mac_app_link]: Displays a text only link to the Mac App
+* [amazon_item_link]: Displays a button or text only link to the Amazon Item with the modes text,button or textPrice]. The mode "textPrice" displays "Available from Amazon.com for" ending with price or "View on Amazon.com" if there is no price."
 
-* [mac_app id="123456789" more_info_text="More Info on this Mac App..."]
-	* Displays a single Mac app
-	* id: The Mac App Store ID
-	* more_info_text: Excerpt "more info" link text
-
-* [itunes_store id="123456789" more_info_text="More Info on this iTunes item..."]
-	* Displays a single item from the iTunes Store
-	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
-	* more_info_text: Excerpt "more info" link text
-	
-* [amazon_item asin="" more_info_text="More Info on this item from Amazon.com..."]
-	* Displays a single item from Amazon.com
-	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
-	* more_info_text: Excerpt "more info" link text
-	
-* [asaf_atomfeed atomurl="http://iTunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]
-	* Displays the items from the ATOm feed in a formatted view
-	* atomurl: feed URL supplied by Apple RSS Generator
-	* mode: [iOS, Mac or iTunes]
-	* more_info_text: Excerpt "more info" link text
-
-
-* [ios_app_list ids="123456789,123456789,123456789,123456789" more_info_text="open in App Store..." mode="iOS"]
-	* Displays Several iOS apps on a single page or post
-	* ids: Comma separated list iOS app's App Store IDs
-	* mode: [iOS, Mac, Mixed or iTunes] (Mixed displays both iOS and Mac apps)
-	* more_info_text: Button text
-
-* [ios_app_link id="123456789" text="App Name"]
-	* Displays a text only link to the iOS App
-	* id: The iOS app's App Store ID
-	* text: Link text
-
-* [mac_app_link id="123456789" text="App Name"]
-	* Displays a text only link to the Mac App
-	* id: The Mac App Store ID
-	* text: Link text
+*Full help for shortcodes is displayed in the settings area.*
 
 == Screenshots ==
 
@@ -118,9 +87,16 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
+= 5.6.4 =
+* Added: Shortcode help section to Settings area
+* Added: Shortcode to display a link to an Amazon.com items
+* Added: amazon_item_link shortcode mode for displaying price after item text
+* Added: amazon_item_link shortcode mode for displaying separate text if item price is unavailable
+* Updated: More text has been added to Localization items for Amazon.com section
+
 = 5.6.3 =
 * Added: Choose the language of the iTunes/App Store Badges (See General->Localization)
-* Added: Choose the verbage of the iTunes/App Store Badges (See App Store or iTunes Store)
+* Added: Choose the text of the iTunes/App Store Badges (See App Store or iTunes Store)
 * Added: New icons for iTunes and App Store badges as per new Apple Guidelines
 * Changed: Corrected text in iTunes settings section
 * Changed: A few default CSS values based on requests

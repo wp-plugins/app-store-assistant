@@ -5,6 +5,43 @@ define('DEBUG', false);
 //hash_hmac code from comment by Ulrich in http://mierendo.com/software/aws_signed_query/
 //sha256.inc.php from http://www.nanolink.ca/pub/sha256/ 
 
+function appStore_amazon_link_handler ($atts,$content=null, $code="") {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array(
+		'asin' => '',
+		'mode' => '',
+		'text' => ''
+	), $atts ) );
+
+	//Don't do anything if the ASIN is blank or non-numeric
+	if ($asin=='') return;
+	
+	$AmazonProductData = appStore_get_amazonData($asin);
+	if($AmazonProductData) {
+		$itemURL = $AmazonProductData['URL'];
+		$itemTitle = $AmazonProductData['Title'];
+		$itemPrice = $AmazonProductData['Amount'];
+		if ($text == '') $text = $itemTitle;
+		if ($mode == 'textPrice') {
+			if($itemPrice == "Not Listed") {
+				$text = __('View on Amazon.com');
+			} else {
+				$text = __('Available on Amazon.com for');
+				$text .= " $itemPrice";
+			}
+		}
+		$itemLink = '<a href="'.$itemURL.'">'.$text.'</a>';
+		if ($mode == 'button') {
+			$itemLink = '<a href="'.$itemURL.'">';
+			$itemLink .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$text.'" />';
+		}
+		$itemLink .= '</a>';
+	} else {
+		$itemLink = "";
+	}
+	return $itemLink;
+}
+
 function appStore_amazon_handler( $atts,$content=null, $code="") {
 	// Get App ID and more_info_text from shortcode
 	extract( shortcode_atts( array(
