@@ -1,8 +1,12 @@
-<h2 class="asa_admin">Using the Shortcode buttons on editor toolbar:</h2>
-<h3>Look for the buttons at the top of the Post or Page Editor. These will help you insert Shortcodes.</h3>
+<h2 class="asa_admin">Getting Started</h2>
+	<p>The easiest way to insert a shortcode for an item from the App Store or Mac App Store is to use the "New App Post" botton to the left. This will allow you to search for the app you want. Once found, it will create a shorcode or give you the option to create a post from the found app. If you choose to create a post, it will insert the shortcode, add a featured image from the App's icon or iTunes Artwork, add the categories and create a new post. In the settings you can choose whether the post should be saved as a Draft, Pending of Published post.</p>
+
+
+<h2 class="asa_admin">Using the Shortcode buttons on editor toolbar</h2>
+<p>Look for the buttons at the top of the Post or Page Editor. These will help you insert Shortcodes.</p>
 <img src="<?php echo plugins_url( 'screenshot-6.png' , ASA_MAIN_FILE ) ?>" alt="Editor Toolbar" /><br /><br />
 
-<h2 class="asa_admin">Shortcodes:</h2>
+<h2 class="asa_admin">Shortcodes</h2>
 
 <h3 class="asa_admin">Display a single item:</h3>
 
@@ -75,11 +79,25 @@
 	<li>text: Link text (optional)<p>If no text is specified, the item name will be displayed.</p></li>
 	</ul>
 </li>
-<li>[amazon_item_link asin="B005F02DA0" text="Item Name" mode="text"]<p>Displays the link as a button or text with the Link Text to the Amazon Item</p>
+<li>[amazon_item_link asin="B005F02DA0" linktext="Star Wars Ep. 7" textmode="linktext" mode="text" showprice="yes"]<p>Displays the link as a button or text with the Link Text to the Amazon Item</p>
 	<ul>
 	<li>asin: The Amazon Standard Identification Number is a 10-character alphanumeric unique identifier assigned by Amazon.com<p>Found in the URL from Amazon.com, for example: <i>http://www.amazon.com/dp/<b>B001KNH8VU</b>/?tag=047-20</i></p></li>
-	<li>text: Link text (optional)<p>If no text is specified, the item name will be displayed.</p></li>
-	<li>mode: [<b>text</b>, button, textPrice, both or bothPrice]<p><b>textPrice</b> displays "Available from Amazon.com for" ending with the price or "View on Amazon.com" if there is no price.<br /><b>both</b> displays both text and a button.<br /><b>bothPrice</b> displays both text with price and a button.<p></li>
+	<li>linktext: Link text (optional)<p>This will be used for the link if textmode=linktext</p></li>
+	<li>showprice: (optional)<p>If this is set to yes, the price will be shown after the link text</p></li>
+	<li>textmode: [<b>linktext</b>, itemname, defaulttext]
+		<p>
+		<b>linktext</b> displays the text specified in linktext<br />
+		<b>defaulttext</b> displays the text specified in Amazon.com settings<br />
+		<b>itemname</b> displays the item name
+		</p>
+	</li>
+	<li>mode: [<b>text</b>, button or both]
+		<p>
+		<b>text</b> displays a text link<br />
+		<b>button</b> displays graphical button for the link<br />
+		<b>both</b> displays both text and a button.<br />
+		</p>
+	</li>
 	</ul>
 </li>
 </ul>

@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 5.6.6
+Stable tag: 5.7.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -15,6 +15,13 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 
 **Features**
 
+* Find an App ID fast with the "New App Post" button in the Admin area
+	* Auto-creates new POST or Shortcode
+	* Adds App Title
+	* Choose from Draft, Publish or Pending
+	* Auto creates Featured Image from app icon
+	* Adds App Categories to Post
+	* Can auto create Categories based on App Categories
 * Displays detailed item information or links
 	* Apple App Store
 	* Mac App Store
@@ -26,6 +33,7 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 		* Short Films
 		* TV Episodes or Seasons
 		* Music Videos
+* Arrange the order of App elements via drag and drop
 * Multi-country support
 * I18n aka Localization is supported via POT file
 * Earn Money with Affiliate Programs
@@ -33,13 +41,13 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 	* TradeDoubler
 	* Amazon Affiliates
 	* DGM
-* Find an App ID fast with the Quick search in the Admin area
 * Customizable
 	* Choose from different Star rating colors
 	* Button colors and style
-	* Choose which detail elements to display
+	* Choose which detail elements to display and their order
 	* Adjust App Icon image size
 * Cache detail and images locally for quicker page load times
+* Remove the whole cache or individual items
 * Widget to show ATOM/RSS Feed of Apps
 * Use custom Excerpts or let App Store Assistant auto-create an excerpt
 * Tested with over 300 Themes
@@ -88,6 +96,25 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
+= 5.7.0 =
+* Added: You can now rearrange the order of App elements via drag and drop
+* Added: Now saves Featured Image from app icon when using "New App Post" to create post
+* Added: New Setting for posts created from "New App Post" [Draft, Publish or Pending]
+* Added: New feature to add Featured Images to posts that do not have a Featured Image assigned
+* Added: Option to add App Store categories to posts created from "New App Post"
+* Added: Option to create new categories, if needed, to posts created from "New App Post"
+* Added: Now lists categories and newly created categories upon new post creation
+* Added: New option to not display App Icon in post
+* Added: You can now clear individulal items from the Data cache and Cache folders
+* Changed: Now checks for new settings that haven't been set before as sets then them to default (useful on updates)
+* Changed: "Find App ID" is now "New App Post"
+* Updated: Now caches App data and images upon creation of post when using "New App Post"
+* Fixed: Device and "Universal App" icons were showing border in some themes
+* Fixed: Does not load excerpt handler if turned off in settings
+* Changed: New options for the amazon_item_link shortcode (see help section)
+* Changed: Reset page has been changed to Utilities
+* Changed: Cache options have been moved to General
+
 = 5.6.6 =
 * Added: Short code to display a link to an iTunes item
 * Changed: Cleaned up the Shortcode help section and added more descriptive text
@@ -120,14 +147,14 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Option to use WordPress or Custom Excerpt generator
 * Updated: New shortcode descriptions for "More Info" text
 * Fixed: "More Info" link is now customizable globally or for each shortcode
-* Fixed: Issue with excerpt not working with certain themes (see new option on general tab)
+* Fixed: Issue with excerpt not working with certain themes (see new setting on general tab)
 * Fixed: Issue with Featured Image not showing when defined 
 
 = 5.6 =
 * Added: Widget to show ATOM Feeds of Apps
 * Added: Lightbox for display of Screenshots
 * Added: Cacheing of Amazon Product data and images
-* Added: Sends Thumbnail to Themes that request it (handy for related posts)
+* Added: Sends Featured Image to Themes that request it (handy for related posts)
 * Added: option to show thumbnail as app icon or small product image in excerpt
 * Added: option to show "Read More" link in excerpt
 * Updated: Amazon Product code to better handle foreign characters
@@ -237,10 +264,10 @@ Please let us know of any features you would like added or bugs that need squash
 = 4.4.2 =
 * Added: Ability to use Full or Short description on Single Post page [Thanks Costin]
 * Added: Ability to use Full or Short description on Multiple Post pages [Thanks Costin]
-* Added: Ability to reset all options to defaults.
+* Added: Ability to reset all settings to defaults.
 * Fixed: Issue with new Ratings bar images not being displayed
 * Changed: Moved App Store badge to local image folder to reduce page load time
-* Changed: "More Info" button now better reflects new description options
+* Changed: "More Info" button now better reflects new description settings
 
 = 4.4.1 =
 * Added: 12 additional styles to Ratings bar
@@ -323,7 +350,7 @@ Please let us know of any features you would like added or bugs that need squash
 * Fixed: Affiliate Network support for LinkShare
 * Added: Affiliate Network partnerId pulldown menu in preferences
 * Changed: Can now be used with out belonging to the Affiliate program (We do strongly suggest you join though, you should be earning this commission.)
-* Added: Options to display, or not, various app details
+* Added: Settings to display, or not, various app details
 	* Title
 	* Version
 	* Developer Name

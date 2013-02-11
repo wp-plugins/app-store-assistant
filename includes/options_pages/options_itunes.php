@@ -1,5 +1,5 @@
- 		<h2 class="asa_admin">Show in Post body:</h2>
-   		<div class="asa_admin">
+<h2 class="asa_admin">Show in Post body</h2>
+   	<div class="asa_admin">
   		<?php
     	$iTunesStoreProperties = array(
     		array('ID' => "displayitunestitle", 'label' => "Music Title"),
@@ -25,7 +25,7 @@
 		echo '<input type="hidden" name="appStore_options[checkboxedoptions]" value="'.$hiddenlistcsv.'" />'
 		?>
 		</div>
-		<h2 class="asa_admin">Item Image Size:</h2>
+		<h2 class="asa_admin">Item Image Size</h2>
 		<div class="asa_admin">
 		Image Size to start with: <input type="radio" name="appStore_options[itunesicon_to_use]" value="30" <?php if ($options['itunesicon_to_use'] == "30") echo 'checked'; ?> /> 30px 
 		<input type="radio" name="appStore_options[itunesicon_to_use]" value="60" <?php if ($options['itunesicon_to_use'] == "60") echo 'checked'; ?> /> 60px 
@@ -47,14 +47,10 @@
 		</tr>
 		</table>		
 		</div>
-				<h2 class="asa_admin">iTunes Store Badge:</h2>
-		<div class="asa_admin">
-				iTunes Store Badge Verbage: <select name='appStore_options[iTunes_store_badge_type]'>
-					<option value="available" <?php if ($options['iTunes_store_badge_type'] == "available") echo 'selected'; ?>>Available on the App Store</option>
-					<option value="download" <?php if ($options['iTunes_store_badge_type'] == "download") echo 'selected'; ?>>Download on the App Store</option>
-				</select><br />
-
-
-
-
-</div>
+<h2 class="asa_admin">iTunes Store Badge</h2>
+	<div class="asa_admin">
+		iTunes Store Badge Verbage: <select name='appStore_options[iTunes_store_badge_type]'>
+		<option value="available" <?php if ($options['iTunes_store_badge_type'] == "available") echo 'selected'; ?>>Available on the App Store</option>
+		<option value="download" <?php if ($options['iTunes_store_badge_type'] == "download") echo 'selected'; ?>>Download on the App Store</option>
+		</select><br />
+	</div>

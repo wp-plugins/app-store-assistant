@@ -8,6 +8,24 @@
 .asa_admin_table {
 }
 
+div.asa_admin_element
+{
+	margin-bottom: 8px;
+}
+
+p.asa_admin_explain
+{
+	color: #00F;
+	margin-left: 20px;
+	margin-top: 3px;
+}
+p.asa_admin_warning
+{
+	color: #F00;
+	margin-left: 20px;
+	margin-top: 3px;
+}
+
 
 .asa_help ul
 {
@@ -78,10 +96,11 @@ h2.asa_admin
 	background-image: -moz-linear-gradient(center top , rgb(249, 249, 249), rgb(236, 236, 236));
 	color: #004080;
 	font-weight: bolder;
-	border-bottom: 1px #004080 solid;
+	border-top: 1px #004080 solid;
 	margin-bottom: 5px;
 	margin-top: 5px;
 	padding: 3px;
+	border-left: 1px #004080 solid;
 }
 div.asa_admin {
 	padding-left: 20px;

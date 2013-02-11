@@ -3,7 +3,7 @@
     	?>
 		<input type="hidden" name="appStore_options[checkboxedoptions]" value="hide_button_background,hide_button_background_hover,smaller_buy_button_iOS" />
 
-    	<h2 class="asa_admin">Full Star:</h2>
+    	<h2 class="asa_admin">Full Star</h2>
 		<?php
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';
@@ -17,7 +17,7 @@
     		echo '&nbsp;&nbsp;&nbsp;';    	
 		}
 		?>
-		<h2 class="asa_admin">Empty Star:</h2>
+		<h2 class="asa_admin">Empty Star</h2>
 		<?php
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';
@@ -60,32 +60,28 @@
 	}
 	
 		echo "<br />\r";
-		echo '<input type="checkbox" name="appStore_options[hide_button_background]" value="yes"';
+		echo '<div class="asa_admin_element"><input type="checkbox" name="appStore_options[hide_button_background]" value="yes"';
 		if ($options[hide_button_background] == "yes") echo ' checked';
 		echo ' /> Transparent Button Background'."\r";
-		echo "<br />\r";
-		echo '<input type="checkbox" name="appStore_options[hide_button_background_hover]" value="yes"';
+		echo "</div>\r";
+		echo '<div class="asa_admin_element"><input type="checkbox" name="appStore_options[hide_button_background_hover]" value="yes"';
 		if ($options[hide_button_background_hover] == "yes") echo ' checked';
 		echo ' /> Transparent Button Background (Hover)'."\r";
 	
-		echo "<br />\r";
-		echo 'Button Corner Radius: <input type="text" size="3" name="appStore_options[button_corner_radius]" value="'.$options['button_corner_radius'].'" />px';
-		echo "<br />\r";
-		echo 'Button Border Width: <input type="text" size="2" name="appStore_options[button_border_width]" value="'.$options['button_border_width'].'" />px';
+		echo "</div>\r";
+		echo '<div class="asa_admin_element">Button Corner Radius: <input type="text" size="3" name="appStore_options[button_corner_radius]" value="'.$options['button_corner_radius'].'" />px';
+		echo "</div>\r";
+		echo '<div class="asa_admin_element">Button Border Width: <input type="text" size="2" name="appStore_options[button_border_width]" value="'.$options['button_border_width'].'" />px</div>';
 	
 	 ?>
 	
 		</div>
 		
 <h2 class="asa_admin">Miscellaneous</h2>
-		<div class="asa_admin">
+	<div class="asa_admin">
 		
-		<ul type="square" class="asa_optionslist">
-		
-		<li><input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> /> Show a smaller Buy Button in iOS browsers</li>
-
-		<li>Screenshot Width: <input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />px<br />
-		<small>(in px. Height is automatic.)</small></li>
-		
-		</ul>
-		</div>
+		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[smaller_buy_button_iOS]" value="yes" <?php if ($options['smaller_buy_button_iOS'] == "yes") echo 'checked'; ?> /> Show a smaller Buy Button in iOS browsers</div>
+		<div class="asa_admin_element">Screenshot Width: <input type="text" size="3" maxlength="3" name="appStore_options[ss_size]" value="<?php echo $options['ss_size']; ?>" />px<br />
+		<p class="asa_admin_explain">(in px. Height is automatic.)</p>
+		</div>		
+	</div>

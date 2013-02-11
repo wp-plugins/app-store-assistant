@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 5.6.6
+Version: 5.7.0
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -45,14 +45,16 @@ add_action('admin_print_styles', 'appStore_admin_page_add_stylesheet');
 add_action('admin_enqueue_scripts', 'appStore_load_admin_js_files');
 add_action('wp_enqueue_scripts', 'appStore_load_js_files');
 
-remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-add_filter('get_the_excerpt', 'appStore_excerpt_filter');
-add_filter('get_the_excerpt','do_shortcode');
-
-//add_filter( 'post_thumbnail_html', 'appStore_post_thumbnail_html', 10, 3 );
-//add_filter( 'post_thumbnail_html', 'appStore_post_thumbnail_html');
-//add_filter( 'get_the_post_thumbnail', 'appStore_get_the_post_thumbnail', 10, 3 );
-
+if (appStore_setting('excerpt_generator')=="asa") {
+	remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+	add_filter('get_the_excerpt', 'appStore_excerpt_filter');
+	add_filter('get_the_excerpt','do_shortcode');
+}
+if (appStore_setting('featured_image_generator')=="asa") {
+	//add_filter( 'post_thumbnail_html', 'appStore_post_thumbnail_html', 10, 3 );
+	//add_filter( 'post_thumbnail_html', 'appStore_post_thumbnail_html');
+	//add_filter( 'get_the_post_thumbnail', 'appStore_get_the_post_thumbnail', 10, 3 );
+}
 
 // ------------------------------------------------------------------------
 // REGISTER SHORTCODES, ADD EDITOR BUTTONS
@@ -127,9 +129,6 @@ class ASA_Widget1 extends WP_Widget {
 			if($appID == "" || !is_numeric($appID)) return;
 			$app = appStore_get_data($appID);
 			$appURL = getAffiliateURL($app->trackViewUrl);
-	//echo "------$asin-----[<pre>".print_r($app,true)."</pre>]-------------";
-
-			
 			if($app) {
 				echo "<li>";
 				echo '<a href="'.$appURL.'">';

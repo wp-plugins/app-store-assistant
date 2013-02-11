@@ -10,7 +10,9 @@ function appStore_amazon_link_handler ($atts,$content=null, $code="") {
 	extract( shortcode_atts( array(
 		'asin' => '',
 		'mode' => '',
-		'text' => ''
+		'textmode' => '',
+		'showprice' => '',
+		'linktext' => ''
 	), $atts ) );
 
 	//Don't do anything if the ASIN is blank or non-numeric
@@ -21,40 +23,51 @@ function appStore_amazon_link_handler ($atts,$content=null, $code="") {
 		$itemURLStart = '<a href="'.$AmazonProductData['URL'].'" target="_blank">';
 		$itemTitle = $AmazonProductData['Title'];
 		$itemPrice = $AmazonProductData['Amount'];
-		if ($text == '') $text = $itemTitle;
-
-
-		$itemTextLink = $itemURLStart.$text.'</a>';
-		if($itemPrice == "Not Listed") {
-			$textPrice = __('View on Amazon.com');
+		
+		// Get Default Text Link
+		if($showprice=="yes") {		
+			if($itemPrice == "Not Listed") {
+				$itemLinkText = appStore_setting('amazon_textlink_default');
+			} else {
+				$itemLinkText = appStore_setting('amazon_textlink_price_default');
+			}
 		} else {
-			$textPrice = __('Available on Amazon.com for');
-			$textPrice .= " $itemPrice";
+			$itemLinkText = appStore_setting('amazon_textlink_default');
 		}
-		$itemTextPriceLink = $itemURLStart.$textPrice.'</a>';
 
-		$itemButtonLink = $itemURLStart;
-		$itemButtonLink .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$text.'" />';
-		$itemButtonLink .= '</a>';
+		// Check Text Mode
+		switch ($textmode) {
+			case "linktext":
+				if(isset($linktext)) $itemLinkText = $linktext;	
+				break;
+			case "defaulttext":
+				// Other options could go here	
+				break;
+			case "itemname":
+				if(isset($itemTitle)) $itemLinkText = $itemTitle;	
+				break;
+		}
+
+		if($showprice=="yes") $itemLinkText .= " $itemPrice";
+
+		// Set Button Image
+		$itemButtonImage .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$asin.'" />';
 
 		switch ($mode) {
-			case "textPrice":
-				$itemLink = $itemTextPriceLink;	
+			case "text":
+				$itemLink = $itemURLStart.$itemLinkText.'</a>';	
 				break;
 			case "button":
-				$itemLink = $itemButtonLink;	
+				$itemLink = $itemURLStart.$itemButtonImage.'</a>';	
 				break;
 			case "both":
-				$itemLink = $itemTextLink."<br /><br />".$itemButtonLink;	
-				break;
-			case "bothPrice":
-				$itemLink = $itemTextPriceLink."<br /><br />".$itemButtonLink;	
+				$itemLink = $itemURLStart.$itemLinkText.'</a><br /><br />'.$itemURLStart.$itemButtonImage.'</a><br /><br />';	
 				break;
 			default:
-				$itemLink = $itemTextLink;	
+				$itemLink = $itemURLStart.$itemLinkText.'</a>';	
 		}
 	} else {
-		$itemLink = "";
+		$itemLink = "ERROR LOADING AMAZON.COM DATA (Check Settings)";
 	}
 	return $itemLink;
 }

@@ -118,9 +118,10 @@ img.appStore_ThumbIcon
 .appStore-filesize {
 	text-align: left;
 }
-.appStore-universal {
-	text-align: left;
+.appStore-universal img
+{
 }
+
 .appStore-advisoryrating {
 	text-align: left;
 }
