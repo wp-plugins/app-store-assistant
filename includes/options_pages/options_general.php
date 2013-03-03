@@ -1,4 +1,4 @@
-<input type="hidden" name="appStore_options[checkboxedoptions]" value="use_shortDesc_on_single,use_shortDesc_on_multiple,displayexcerptthumbnail,displayexcerptreadmore,newPost_addCategories,cache_images_locally" />		<h2 class="asa_admin">Short Description</h2>
+<input type="hidden" name="appStore_options[checkboxedoptions]" value="use_shortDesc_on_single,use_shortDesc_on_multiple,displayexcerptthumbnail,displayexcerptreadmore,newPost_addCategories,cache_images_locally,newPost_defaultTextShow" />		<h2 class="asa_admin">Short Description</h2>
 	<div class="asa_admin">
 		
 		<div class="asa_admin_element">Max Length of Short Description: <input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" /> characters</div>
@@ -30,19 +30,24 @@
 		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[displayexcerptreadmore]" value="yes" <?php if ($options['displayexcerptreadmore'] == "yes") echo 'checked'; ?> /> Show "More Info" link at end of excerpt</div>
 		<div class="asa_admin_element">Default More Info Text: <input type="text" size="15" name="appStore_options[excerpt_moreinfo_text]" value="<?php echo $options['excerpt_moreinfo_text']; ?>" maxlength="30" /></div>
 		<div class="asa_admin_element">Show "More Info" link as:&nbsp;&nbsp;<input type="radio" name="appStore_options[excerpt_moreinfo_link]" value="button" <?php if ($options['excerpt_moreinfo_link'] == "button") echo 'checked'; ?> /> Button&nbsp;&nbsp;&nbsp;&nbsp; <input type="radio" name="appStore_options[excerpt_moreinfo_link]" value="text" <?php if ($options['excerpt_moreinfo_link'] == "text") echo 'checked'; ?> /> Text</div>
-	</div>
+</div>
+
 <h2 class="asa_admin">Create Post from App ID</h2>
-		<div class="asa_admin">
-		<div class="asa_admin_element">Create New posts as:&nbsp;&nbsp;<input type="radio" name="appStore_options[newPost_status]" value="draft" <?php if ($options['newPost_status'] == "draft") echo 'checked'; ?> /> Draft&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="appStore_options[newPost_status]" value="publish" <?php if ($options['newPost_status'] == "publish") echo 'checked'; ?> /> Publish&nbsp;&nbsp;&nbsp;&nbsp; 
-		<input type="radio" name="appStore_options[newPost_status]" value="pending" <?php if ($options['newPost_status'] == "pending") echo 'checked'; ?> /> Pending</div>
+	<div class="asa_admin">
+	<div class="asa_admin_element">Create New posts as:&nbsp;&nbsp;<input type="radio" name="appStore_options[newPost_status]" value="draft" <?php if ($options['newPost_status'] == "draft") echo 'checked'; ?> /> Draft&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="radio" name="appStore_options[newPost_status]" value="publish" <?php if ($options['newPost_status'] == "publish") echo 'checked'; ?> /> Publish&nbsp;&nbsp;&nbsp;&nbsp; 
+	<input type="radio" name="appStore_options[newPost_status]" value="pending" <?php if ($options['newPost_status'] == "pending") echo 'checked'; ?> /> Pending</div>
 
-		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[newPost_addCategories]" value="yes" <?php if ($options['newPost_addCategories'] == "yes") echo 'checked'; ?> /> Add App Store categories to post</div>
+	<div class="asa_admin_element"><input type="checkbox" name="appStore_options[newPost_addCategories]" value="yes" <?php if ($options['newPost_addCategories'] == "yes") echo 'checked'; ?> /> Add App Store categories to post</div>
 
-		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[newPost_createCategories]" value="yes" <?php if ($options['newPost_createCategories'] == "yes") echo 'checked'; ?> /> Create categories if they don't adread exist</div>
+	<div class="asa_admin_element"><input type="checkbox" name="appStore_options[newPost_createCategories]" value="yes" <?php if ($options['newPost_createCategories'] == "yes") echo 'checked'; ?> /> Create categories if they don't adread exist</div>
 
-	</div>
+	<div class="asa_admin_element"><input type="checkbox" name="appStore_options[newPost_defaultTextShow]" value="yes" <?php if ($options['newPost_defaultTextShow'] == "yes") echo 'checked'; ?> /> Add "more_info_text" attribute to shortcode</div>
+	<div class="asa_admin_element">Default More Info Text: <input type="text" size="15" name="appStore_options[newPost_defaultText]" value="<?php echo $options['newPost_defaultText']; ?>" maxlength="30" /></div>
 
+</div>
+
+<?php /*
 <h2 class="asa_admin">Featured Image</h2>
 	<div class="asa_admin">
 		<div class="asa_admin_element">Featured Image Generator:&nbsp;&nbsp;<input type="radio" name="appStore_options[featured_image_generator]" value="wordpress" <?php if ($options['featured_image_generator'] == "wordpress") echo 'checked'; ?> /> WordPress&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -52,7 +57,8 @@
 		
 		<hr>
 	</div>		
-		
+*/
+?>	
 <h2 class="asa_admin">Localization</h2>
 	<div class="asa_admin">
 		<div class="asa_admin_element">Currency Type: <select name='appStore_options[currency_format]'>

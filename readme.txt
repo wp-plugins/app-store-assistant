@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 5.7.0
+Stable tag: 5.7.1
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -96,6 +96,14 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
+= 5.7.1 =
+* Added: OPTIONALLY display "App Icon's buy button" [Thanks snurnberg]
+* Added: OPTIONALLY display the Apps description [Thanks snurnberg]
+* Changed: You can now edit the shortcode before creating a new post
+* Fixed: Sorting of App Elements did not save on some Wordpress setups (broken by JetPack v2.2)
+* Fixed: Compatibility issue with JetPack running shortcode twice
+* Fixed: Issue with "New App Post" creating longer than necessary shortcode
+
 = 5.7.0 =
 * Added: You can now rearrange the order of App elements via drag and drop
 * Added: Now saves Featured Image from app icon when using "New App Post" to create post
@@ -105,7 +113,7 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Option to create new categories, if needed, to posts created from "New App Post"
 * Added: Now lists categories and newly created categories upon new post creation
 * Added: New option to not display App Icon in post
-* Added: You can now clear individulal items from the Data cache and Cache folders
+* Added: You can now clear individual items from the Data cache and Cache folders
 * Changed: Now checks for new settings that haven't been set before as sets then them to default (useful on updates)
 * Changed: "Find App ID" is now "New App Post"
 * Updated: Now caches App data and images upon creation of post when using "New App Post"

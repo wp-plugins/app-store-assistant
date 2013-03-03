@@ -3,15 +3,11 @@ function appStore_load_js_files() {
 	wp_enqueue_script('lightbox', plugins_url('js_functions/lightbox/js/lightbox.js',ASA_MAIN_FILE), null, null, true);
 }
 
-
-
-
 function asa_load_translation_file() {
 	// relative path to WP_PLUGIN_DIR where the translation files will sit:
 	$plugin_path = dirname( plugin_basename( __FILE__ ) ) . '/languages/';
 	load_plugin_textdomain( 'appStoreAssistant', false, $plugin_path );
 }
-
 
 function appStore_get_the_post_thumbnail( $post_id = null, $size = 'post-thumbnail', $attr = '' ) {
 	$post_id = ( null === $post_id ) ? get_the_ID() : $post_id;
@@ -28,19 +24,20 @@ function appStore_get_the_post_thumbnail( $post_id = null, $size = 'post-thumbna
 	}
 	
 	$errorImage = plugins_url( 'images/CautionIcon.png' , ASA_MAIN_FILE );
+	$html = '<img src="$errorImage" alt="FAKE THUMBNAIL 1" />';
 
 	
 	
-	$html = "<!-   HERE IT IS ->";
+	//$html = "<!-   HERE IT IS ->";
 	return apply_filters( 'post_thumbnail_html', $html, $post_id, $post_thumbnail_id, $size, $attr );
 }
 
-function appStore_post_thumbnail_html( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
-
+function appStore_post_thumbnail_html( $html) {
+	// was  appStore_post_thumbnail_html( $html, $post_id, $post_thumbnail_id, $size, $attr ) 
 
 
 	$errorImage = plugins_url( 'images/CautionIcon.png' , ASA_MAIN_FILE );
-	$html = '<img src="$errorImage" alt="FAKE THUMBNAIL" />';
+	$html = '<img src="'.$errorImage.'" alt="FAKE THUMBNAIL 2" />';
 	return $html;
 	/*
 		echo "------------------------[BREAK POINT]------------------------------";
@@ -224,7 +221,7 @@ function appStore_refresh_mce($ver) {
 }
 
 // ----- End of Add ASA buttons to TinyMCE
-function appStore_css_hook( ) {
+function appStore_css_hook() {
 
 	$emptyStar = plugins_url( 'images/star-rating-'.appStore_setting('empty_star_color').'.png', ASA_MAIN_FILE );
 	$fullStar = plugins_url( 'images/star-rating-'.appStore_setting('full_star_color').'.png', ASA_MAIN_FILE );
@@ -889,54 +886,57 @@ function displayAppStore_appScreenshots($app) {
 }
 
 function displayAppStore_appDescription($app) {
-	$smallDescription = shortenDescription($app->description);
+	if (appStore_setting('displayappdescription') == "yes") {
 
-	if (is_single()) {
-		echo '	<div class="appStore-description">';
-		if (appStore_setting('use_shortDesc_on_single') == "yes") {
-			echo nl2br($smallDescription);
-		} else {
-			echo nl2br($app->description);
-		}
-		echo '</br>';
-		echo '<div class="appStore-badge"><a href="'.$app->appURL.'" >';
-		$badgeImage = 'images/Badges/';
-		if(appStore_setting('appStore_store_badge_type') == "download") {
-			$badgeImage .= "Download_on_the_";
-		} else {
-			$badgeImage .= "Available_on_the_";
-		}
-		if($app->platform=="mac_app") $badgeImage .= "Mac_App_Store_Badge_";
-		if($app->platform=="ios_app") $badgeImage .= "App_Store_Badge_";
+		$smallDescription = shortenDescription($app->description);
 	
-		if(appStore_setting('store_badge_language')) {
-			$badgeImage .= appStore_setting('store_badge_language');
+		if (is_single()) {
+			echo '	<div class="appStore-description">';
+			if (appStore_setting('use_shortDesc_on_single') == "yes") {
+				echo nl2br($smallDescription);
+			} else {
+				echo nl2br($app->description);
+			}
+			echo '</br>';
+			echo '<div class="appStore-badge"><a href="'.$app->appURL.'" >';
+			$badgeImage = 'images/Badges/';
+			if(appStore_setting('appStore_store_badge_type') == "download") {
+				$badgeImage .= "Download_on_the_";
+			} else {
+				$badgeImage .= "Available_on_the_";
+			}
+			if($app->platform=="mac_app") $badgeImage .= "Mac_App_Store_Badge_";
+			if($app->platform=="ios_app") $badgeImage .= "App_Store_Badge_";
+	
+			if(appStore_setting('store_badge_language')) {
+				$badgeImage .= appStore_setting('store_badge_language');
+			} else {
+				$badgeImage .= "US-UK";
+			}
+			if($app->platform=="mac_app") $badgeImage .= "_165x40.png";
+			if($app->platform=="ios_app") $badgeImage .= "_135x40.png";
+			echo '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a></div>';
+			echo '</div>';
 		} else {
-			$badgeImage .= "US-UK";
-		}
-		if($app->platform=="mac_app") $badgeImage .= "_165x40.png";
-		if($app->platform=="ios_app") $badgeImage .= "_135x40.png";
-		echo '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a></div>';
-		echo '</div>';
-	} else {
-		echo '	<div class="appStore-description">';
-		if (appStore_setting('use_shortDesc_on_multiple') == "yes") {
-			echo nl2br($smallDescription);
-			$FullDescriptionButtonText = appStore_setting('shortDesc_fullDesc_text');
-			if (appStore_setting('shortDesc_link') == "text") echo ' - <a href="'.get_permalink().'" value="">'.$FullDescriptionButtonText.'</a>';
-		} else {
-			echo nl2br($app->description);
-			$FullDescriptionButtonText = appStore_setting('shortDesc_screenshot_text');
-			if (appStore_setting('shortDesc_link') == "text") echo ' - <a href="'.get_permalink().'" value="">'.$FullDescriptionButtonText.'</a>';		}
-		if($app->mode=="internal") {
-			echo '	<div style="clear:left;">&nbsp;</div>';
-			if (appStore_setting('shortDesc_link') == "button") echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">'.$FullDescriptionButtonText.'</a></div>';
-		} else {
-			echo ' '.__('or',appStoreAssistant).' <a href="'.$app->appURL.'" value="">'.$app->more_info_text.'</a>';		
-		}
-		echo '  </div>';
-	}		
-	echo '	<div style="clear:left;">&nbsp;</div>';
+			echo '	<div class="appStore-description">';
+			if (appStore_setting('use_shortDesc_on_multiple') == "yes") {
+				echo nl2br($smallDescription);
+				$FullDescriptionButtonText = appStore_setting('shortDesc_fullDesc_text');
+				if (appStore_setting('shortDesc_link') == "text") echo ' - <a href="'.get_permalink().'" value="">'.$FullDescriptionButtonText.'</a>';
+			} else {
+				echo nl2br($app->description);
+				$FullDescriptionButtonText = appStore_setting('shortDesc_screenshot_text');
+				if (appStore_setting('shortDesc_link') == "text") echo ' - <a href="'.get_permalink().'" value="">'.$FullDescriptionButtonText.'</a>';		}
+			if($app->mode=="internal") {
+				echo '	<div style="clear:left;">&nbsp;</div>';
+				if (appStore_setting('shortDesc_link') == "button") echo '<div class="appStore-FullDescButton"><a type="button" href="'.get_permalink().'" value="" class="appStore-Button FullDescriptionButton">'.$FullDescriptionButtonText.'</a></div>';
+			} else {
+				echo ' '.__('or',appStoreAssistant).' <a href="'.$app->appURL.'" value="">'.$app->more_info_text.'</a>';		
+			}
+			echo '  </div>';
+		}		
+		echo '	<div style="clear:left;">&nbsp;</div>';
+	}
 }
 
 function displayAppStore_appBuyButton($app) {
@@ -1054,9 +1054,11 @@ function displayAppStore_appIcon ($app){
 		}
 		echo '<div id="appStore-icon-container">';
 		echo '<a href="'.$app->appURL.'" target="_blank"><img class="appStore-icon" src="'.$artwork_url.'" /></a><br />';
-		echo '	<div class="appStore-purchase">';
-		echo '	<a type="button" href="'.$app->appURL.'" value="" class="appStore-Button BuyButton" target="_blank">'.$app->buttonText.'</a></br>';
-		echo '	</div>';
+		if (appStore_setting('displayappiconbuybutton') == "yes") {
+			echo '	<div class="appStore-purchase">';
+			echo '	<a type="button" href="'.$app->appURL.'" value="" class="appStore-Button BuyButton" target="_blank">'.$app->buttonText.'</a></br>';
+			echo '	</div>';
+		}
 		echo '</div>';
 		echo '<div style="clear:left;">&nbsp;</div>';
 	}

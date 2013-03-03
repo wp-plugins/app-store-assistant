@@ -60,9 +60,13 @@ function appStore_add_defaults() {
 		"newPost_status" => "draft",
 		"newPost_addCategories" => "yes",
 		"newPost_createCategories" => "yes",
+		"newPost_defaultText" => "Read More...",
+		"newPost_defaultTextShow" => "no",
 	
 		"displayapptitle" => "no",
+		"displayappdescription" => "yes",
 		"displayappicon" => "yes",
+		"displayappiconbuybutton" => "yes",
 		"displayversion" => "yes",
 		"displayadvisoryrating" => "yes",
 		"displaycategories" => "yes",
@@ -174,7 +178,6 @@ function appStore_add_defaults() {
 // Init plugin options to white list our options
 function appStore_init(){
 	$settings = get_option('appStore_options');
-	add_action( 'add_meta_boxes', 'appStore_add_custom_box' );
 	appStore_add_defaults(); // Also checks for new settings that haven't been set before
 	register_setting( 'appStore_plugin_options', 'appStore_options', 'appStore_validate_options' );
 	wp_enqueue_script('jquery');
@@ -193,73 +196,6 @@ function appStore_init(){
 // ------------------------------------------------------------------------------
 
 
-/* Adds a box to the main column on the Post and Page edit screens */
-function appStore_add_custom_box() {
-    $screens = array( 'post', 'page' );
-    foreach ($screens as $screen) {
-        add_meta_box(
-            'appStore_sectionid',
-            __( 'Create Featured Image from App Icon', 'appStore_textdomain' ),
-            'appStore_inner_custom_box',
-            $screen
-        );
-    }
-}
-
-/* Prints the box content */
-function appStore_inner_custom_box( $post ) {
-
-  // Use nonce for verification
-  wp_nonce_field( plugin_basename( __FILE__ ), 'appStore_noncename' );
-
-  // The actual fields for data entry
-  // Use get_post_meta to retrieve an existing value from the database and use the value for the form
-  $value = get_post_meta( $_POST['post_ID'], $key = '_my_meta_value_key', $single = true );
-  echo '<label for="appStore_new_field">';
-       _e("Description for this field", 'appStore_textdomain' );
-  echo '</label> ';
-  echo '<input type="text" id="appStore_new_field" name="appStore_new_field" value="'.esc_attr($value).'" size="25" />';
-}
-
-/* When the post is saved, saves our custom data */
-function appStore_save_postdata( $post_id ) {
-  // verify if this is an auto save routine. 
-  // If it is our form has not been submitted, so we dont want to do anything
-  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
-      return;
-
-  // verify this came from the our screen and with proper authorization,
-  // because save_post can be triggered at other times
-
-  if ( !wp_verify_nonce( $_POST['appStore_noncename'], plugin_basename( __FILE__ ) ) )
-      return;
-
-  
-  // Check permissions
-  if ( 'page' == $_POST['post_type'] ) 
-  {
-    if ( !current_user_can( 'edit_page', $post_id ) )
-        return;
-  }
-  else
-  {
-    if ( !current_user_can( 'edit_post', $post_id ) )
-        return;
-  }
-
-  // OK, we're authenticated: we need to find and save the data
-
-  //if saving in a custom table, get post_ID
-  $post_ID = $_POST['post_ID'];
-  //sanitize user input
-  $mydata = sanitize_text_field( $_POST['appStore_new_field'] );
-
-  // Do something with $mydata 
-  // either using 
-  add_post_meta($post_ID, '_my_meta_value_key', $mydata, true) or
-    update_post_meta($post_ID, '_my_meta_value_key', $mydata);
-  // or a custom table (see Further Reading section below)
-}
 
 // Add menu page
 function appStore_add_options_page() {
@@ -268,7 +204,6 @@ function appStore_add_options_page() {
 
 	add_menu_page( 'New Apps', 'New App Post', 'edit_posts', "appStore_IDsearch", 'appStore_search_form', plugins_url( 'images/app-store-logo.png', ASA_MAIN_FILE ) );
 }
-
 
 
 function createPostFromAppID($appShortCode,$appTitle,$appCategories,$appID) {
@@ -352,7 +287,12 @@ function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 						
 			$Categories = implode(", ", $appData->genres);
 			$CategoriesNS = implode(",", $appData->genres);
-					
+			
+			$theShortCode = $shortCodeStart.' id=&quot;'.$appData->trackId.'&quot;';
+			if(appStore_setting('newPost_defaultTextShow') == "yes") $theShortCode .= ' more_info_text=&quot;'.appStore_setting('newPost_defaultText').'&quot;';
+			$theShortCode .= ']';
+			
+			
 			$masterList[$i] .= "<li class='appStore-search-result' ";
 			$masterList[$i] .= "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
 			$masterList[$i] .= '<form action="admin.php?page=appStore_IDsearch" method="POST"><p>';
@@ -364,19 +304,18 @@ function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 			$masterList[$i] .= "<b> [".$Categories."]</b> ";
 			if($startKey == "2") $masterList[$i] .= "<b> [".__('iPad only',appStoreAssistant)."]</b>";
 			$masterList[$i] .= "<br /><br />";
-			$masterList[$i] .= '<input id="id'.$appData->trackId.'" type="text" size="28" value="';
-			$masterList[$i] .= $shortCodeStart;
-			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot;]';
+			$masterList[$i] .= '<input id="id'.$appData->trackId.'" type="text" name="shortcode" size="48" value="';
+			$masterList[$i] .= $theShortCode;
+
 			$masterList[$i] .= '">';
-			$masterList[$i] .= '<input type="hidden" name="shortcode" value="';
-			$masterList[$i] .= $shortCodeStart;
-			$masterList[$i] .= ' id=&quot;'.$appData->trackId.'&quot; more_info_text=&quot;open in App Store...&quot;]"';
-			$masterList[$i] .= '>';
+			//$masterList[$i] .= '<input type="hidden" name="shortcode" value="';
+			//$masterList[$i] .= $theShortCode;
+			//$masterList[$i] .= '">';
 			$masterList[$i] .= '<input type="hidden" name="postTitle" value="'.$appData->trackName.'">';
 			$masterList[$i] .= '<input type="hidden" name="appID" value="'.$appData->trackId.'">';
 			$masterList[$i] .= '<input type="hidden" name="postCategories" value="'.$CategoriesNS.'">';
 			$masterList[$i] .= '<input type="hidden" name="createPost" value="true">';
-			$masterList[$i] .= '<button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
+			$masterList[$i] .= '<br /><button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
 			$masterList[$i] .= "</p></form>";
 			$masterList[$i] .= '</li>';
 		}

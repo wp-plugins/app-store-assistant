@@ -10,7 +10,7 @@ jQuery(function() {
         stop : function(event, ui){
           //alert(jQuery(this).sortable('serialize'));
           var ordering = jQuery(this).sortable('toArray').toString();
-          document.getElementById("attrib_order").value = ordering;
+          document.getElementById("app_elements_order").value = ordering;
           //alert(ordering);
         }
     });
@@ -23,7 +23,9 @@ jQuery(function() {
     	$appStoreProperties = array(
      		array('ID' => "-----", 'label' => "Elements"),
     		array('ID' => "displayapptitle", 'label' => "App Name"),
+    		array('ID' => "displayappdescription", 'label' => "App Description"),
     		array('ID' => "displayappicon", 'label' => "App Icon"),
+    		array('ID' => "displayappiconbuybutton", 'label' => "App Icon's buy button"),
      		array('ID' => "-----", 'label' => "Details"),
   	 		array('ID' => "displayversion", 'label' => "App Version"),
      		array('ID' => "displaydevelopername", 'label' => "Developer Name"),
@@ -61,10 +63,9 @@ jQuery(function() {
 		
 		?>
 		</div>
-		<h2 class="asa_admin">Order of Post Elements</h2>
-			<div class="asa_admin">
-			Drag the elements into the order you would like them displayed<br />
-<ul id="sortable">
+		
+		
+		
 <?php
     	$appStoreProperties = array(
     		"appStoreDetail_appName" => "App Name",
@@ -82,12 +83,25 @@ jQuery(function() {
 		$appDetailsOrder = array_filter($appDetailsOrder, 'strlen');
 		
 		if(count($appDetailsOrder) != 9) {
-			$DefaultLost = "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating";
-			$appDetailsOrder = explode(",",$DefaultLost);
+			//echo "-----".count($appDetailsOrder)."------[<pre>".print_r($appDetailsOrder,true)."</pre>]-------------";
+			$appElements_DefaultList = "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating";
+			$appDetailsOrder = explode(",",$appElements_DefaultList);
 			$appDetailsOrder = array_filter($appDetailsOrder, 'strlen');
-					echo "-----------[<pre>".print_r($appDetailsOrder,true)."</pre>]-------------";
-
+			//echo "-----".count($appDetailsOrder)."------[<pre>".print_r($appDetailsOrder,true)."</pre>]-------------";
+			$appElements_StartList = $appElements_DefaultList;
+		} else {
+		
+			$appElements_StartList = appStore_setting('appDetailsOrder');
 		}
+?>		
+		
+		
+		<h2 class="asa_admin">Order of Post Elements</h2>
+			<div class="asa_admin">
+			Drag the elements into the order you would like them displayed<br />
+<ul id="sortable">
+<?php
+
 		foreach($appDetailsOrder as $appDetailOrder) {
 			echo '<li id="';
 			echo $appDetailOrder;
@@ -97,7 +111,7 @@ jQuery(function() {
 		}
 ?>
 </ul>
-<input type="hidden" id="attrib_order" name="appStore_options[appDetailsOrder]" value="AppleTwo" />
+<input type="hidden" id="app_elements_order" name="appStore_options[appDetailsOrder]" value="<?php echo $appElements_StartList; ?>" />
 <div style="clear:both;"></div>
 	
 		
