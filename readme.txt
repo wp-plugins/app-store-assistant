@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 5.7.1
+Stable tag: 5.7.2
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -95,6 +95,9 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 5.7.2 =
+* Fixed: Issue with images not showing in sort view of Admin section [Thanks snurnberg]
 
 = 5.7.1 =
 * Added: OPTIONALLY display "App Icon's buy button" [Thanks snurnberg]

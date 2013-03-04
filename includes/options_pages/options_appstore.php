@@ -106,7 +106,7 @@ jQuery(function() {
 			echo '<li id="';
 			echo $appDetailOrder;
 			echo '" class="ui-state-default">';
-			echo '<img src="'.plugins_url( 'images/adminDetails/'.$appDetailOrder, ASA_MAIN_FILE ) .'" alt="'.$appDetailOrder.'" align="middle" /> ';
+			echo '<img src="'.plugins_url( 'images/adminDetails/'.$appDetailOrder, ASA_MAIN_FILE ) .'.png" alt="'.$appDetailOrder.'" align="middle" /> ';
 			echo ' &nbsp;&nbsp;&nbsp;'.$appStoreProperties[$appDetailOrder]."</li>\r";
 		}
 ?>
