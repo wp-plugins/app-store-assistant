@@ -1,0 +1,180 @@
+# Copyright (C) 2012 App Store Assistant
+# This file is distributed under the same license as the App Store Assistant package.
+msgid ""
+msgstr ""
+"Project-Id-Version: App Store Assistant 5.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/app-store-assistant\n"
+"POT-Creation-Date: 2012-12-17 02:12:31+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: includes/app-store-admin_functions.php:274
+msgid "Save Changes"
+msgstr ""
+
+#: includes/app-store-admin_functions.php:335
+msgid "Settings"
+msgstr ""
+
+#: includes/app-store-functions.php:23
+msgid "read more"
+msgstr ""
+
+#: includes/app-store-functions.php:247
+msgid "iOS"
+msgstr ""
+
+#: includes/app-store-functions.php:248 includes/app-store-functions.php:816
+msgid "Mac"
+msgstr ""
+
+#: includes/app-store-functions.php:249
+msgid "Just iPhone/iPod"
+msgstr ""
+
+#: includes/app-store-functions.php:250
+msgid "Just iPad"
+msgstr ""
+
+#: includes/app-store-functions.php:415
+msgid "Missing list of IDs."
+msgstr ""
+
+#: includes/app-store-functions.php:544 includes/app-store-functions.php:549
+msgid "Artist"
+msgstr ""
+
+#: includes/app-store-functions.php:545
+msgid "Explicit"
+msgstr ""
+
+#: includes/app-store-functions.php:546
+msgid "Track Count"
+msgstr ""
+
+#: includes/app-store-functions.php:552
+msgid "Director"
+msgstr ""
+
+#: includes/app-store-functions.php:553 includes/app-store-functions.php:558
+#: includes/app-store-functions.php:567
+msgid "Rated"
+msgstr ""
+
+#: includes/app-store-functions.php:557 includes/app-store-functions.php:566
+msgid "Series"
+msgstr ""
+
+#: includes/app-store-functions.php:565
+msgid "Episodes"
+msgstr ""
+
+#: includes/app-store-functions.php:608
+msgid "View in iTunes"
+msgstr ""
+
+#: includes/app-store-functions.php:634
+msgid "From"
+msgstr ""
+
+#: includes/app-store-functions.php:637
+msgid "Genre"
+msgstr ""
+
+#: includes/app-store-functions.php:643 includes/app-store-functions.php:763
+msgid "Released"
+msgstr ""
+
+#: includes/app-store-functions.php:724 includes/app-store-functions.php:861
+msgid "View in App Store"
+msgstr ""
+
+#: includes/app-store-functions.php:745
+msgid "Version"
+msgstr ""
+
+#: includes/app-store-functions.php:750
+msgid "Created &amp; Sold by"
+msgstr ""
+
+#: includes/app-store-functions.php:754
+msgid "Created by"
+msgstr ""
+
+#: includes/app-store-functions.php:757
+msgid "Sold by"
+msgstr ""
+
+#: includes/app-store-functions.php:766
+msgid "File Size"
+msgstr ""
+
+#: includes/app-store-functions.php:770
+msgid "This app is designed for both iPhone and iPad"
+msgstr ""
+
+#: includes/app-store-functions.php:774
+msgid "Age Rating"
+msgstr ""
+
+#: includes/app-store-functions.php:779
+msgid "Category"
+msgstr ""
+
+#: includes/app-store-functions.php:782
+msgid "Categories"
+msgstr ""
+
+#: includes/app-store-functions.php:817
+msgid "iPhone"
+msgstr ""
+
+#: includes/app-store-functions.php:818 includes/app-store-functions.php:842
+msgid "Screenshots"
+msgstr ""
+
+#: includes/app-store-functions.php:842
+msgid "iPad"
+msgstr ""
+
+#: includes/app-store-functions.php:869
+msgid "continued"
+msgstr ""
+
+#: includes/app-store-functions.php:870
+msgid "Show Full Description & Screenshots"
+msgstr ""
+
+#: includes/app-store-functions.php:873
+msgid "Show Screenshots"
+msgstr ""
+
+#: includes/app-store-functions.php:900
+msgid "users"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "App Store Assistant"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://TheiPhoneAppsList.com/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Adds shortcodes to display ATOM feed or individual item information from "
+"Apple's App Stores or iTunes."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Scott Immerman"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://SEALsystems.net/"
+msgstr ""
