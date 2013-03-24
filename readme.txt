@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 6.0.0
+Stable tag: 6.0.2
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -97,6 +97,9 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 6.0.2 =
+* Fixed: An issue where the ios_app_elements shortcode was returning data out of order  [Thanks beakernet]
 
 = 6.0.0 =
 * Added: You can now display individual elements via new shortcode "ios_app_elements" [Thanks beakernet & snurnberg]
