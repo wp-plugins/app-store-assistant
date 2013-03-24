@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 5.7.2
+Stable tag: 6.0.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -34,6 +34,7 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 		* TV Episodes or Seasons
 		* Music Videos
 * Arrange the order of App elements via drag and drop
+* You can now display individual item elements via new shortcode
 * Multi-country support
 * I18n aka Localization is supported via POT file
 * Earn Money with Affiliate Programs
@@ -78,6 +79,7 @@ Please let us know of any features you would like added or bugs that need squash
 * [asaf_atomfeed]: Displays the items from the ATOm feed in a formatted view with the modes iOS, Mac or iTunes
 * [ios_app_list]: Displays Several iOS apps on a single page or post with the modes iOS, Mac, Mixed or iTunes
 * [ios_app_link]: Displays a text only link to the iOS App
+* [ios_app_elements]: Displays any single element of the iOS Apps details
 * [mac_app_link]: Displays a text only link to the Mac App
 * [itunes_store_link]: Displays a text only link to the iTunes item
 * [amazon_item_link]: Displays a button or text only link to the Amazon Item with the modes text,button or textPrice]. The mode "textPrice" displays "Available from Amazon.com for" ending with price or "View on Amazon.com" if there is no price."
@@ -95,6 +97,18 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 6.0.0 =
+* Added: You can now display individual elements via new shortcode "ios_app_elements" [Thanks beakernet & snurnberg]
+* Changed: New Simplified Settings Pages
+* Changed: Accordian display of description etc
+* Changed: Placement of App Store/iTunes badges now separate from description. [Thanks snurnberg]
+* Added: You now have the option to have link open in a new window [Thanks beakernet]
+* Fixed: The buy button for an iTunes item now render using the custom color selections [Thanks beakernet]
+* Fixed: Issue with iTunes store Post body elements prefs not saving. [Thanks beakernet]
+* Changed: New icons for iDevice types [Thanks snurnberg]
+* Changed: Optimized code 
+* Fixed: iTunes Store Badge Verbage in settings
 
 = 5.7.2 =
 * Fixed: Issue with images not showing in sort view of Admin section [Thanks snurnberg]

@@ -26,6 +26,7 @@ function appStore_add_defaults() {
 		"excerpt_moreinfo_text" => "More Info",
 		"excerpt_moreinfo_link" => "button",
 		"use_shortDesc_on_single" => "no",
+		"open_links_externally" => "no",
 		"excerpt_generator" => "wordpress",
 		"featured_image_generator" => "wordpress",
 		"use_shortDesc_on_multiple" => "yes",
@@ -65,24 +66,53 @@ function appStore_add_defaults() {
 	
 		"displayapptitle" => "no",
 		"displayappdescription" => "yes",
+		"displayappbadge" => "yes",
 		"displayappicon" => "yes",
 		"displayappiconbuybutton" => "yes",
+
 		"displayversion" => "yes",
-		"displayadvisoryrating" => "yes",
-		"displaycategories" => "yes",
-		"displayfilesize" => "no",
-		"displaystarrating" => "yes",
 		"displaydevelopername" => "yes",
 		"displaysellername" => "yes",
-		"displaygamecenterenabled" => "yes",
+		"displayreleasedate" => "no",
+		"displayfilesize" => "no",
 		"displayuniversal" => "yes",
+		"displaycategories" => "yes",
+		"displayadvisoryrating" => "yes",
+
+		"displaygamecenterenabled" => "yes",
+		"displayappbuybutton" => "yes",
+		"displaystarrating" => "yes",
+		"displayscreenshots" => "yes",
 		"displaysupporteddevices" => "no",
 		"displaysupporteddeviceIcons" => "yes",
-		"displayreleasedate" => "no",
-		"displayscreenshots" => "yes",
+
+		"displaympapptitle" => "no",
+		"displaympappdescription" => "yes",
+		"displaympappbadge" => "yes",
+		"displaympappicon" => "yes",
+		"displaympappiconbuybutton" => "yes",
+
+		"displaympversion" => "yes",
+		"displaympdevelopername" => "yes",
+		"displaympsellername" => "yes",
+		"displaympreleasedate" => "no",
+		"displaympfilesize" => "no",
+		"displaympuniversal" => "yes",
+		"displaympcategories" => "yes",
+		"displaympadvisoryrating" => "yes",
+
+		"displaympgamecenterenabled" => "yes",
+		"displaympappbuybutton" => "yes",
+		"displaympstarrating" => "yes",
+		"displaympscreenshots" => "yes",
+		"displaympsupporteddevices" => "no",
+		"displaympsupporteddeviceIcons" => "yes",
+
 		"displayexcerptthumbnail" => "yes",
 		"displayexcerptreadmore" => "no",
 		"displayappdetailsaslist" => "yes",
+		
+		"displayappdetailsasliststyle" => "bw",
 		"appstoreicon_to_use" => "512",
 		"appstoreicon_size_adjust_type" => "percent",
 		"appicon_size_adjust" => "25",
@@ -90,7 +120,8 @@ function appStore_add_defaults() {
 		"appicon_size_max" => "128",
 		"appicon_iOS_size_max" => "64",
 
-		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
+		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
+		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
 
 		"displayitunestitle" => "yes",
 		"displayitunestrackcount" => "yes",
@@ -132,54 +163,47 @@ function appStore_add_defaults() {
 
 		"ResetCacheOne" => "NoWay",
 		"ResetCacheTwo" => "NoWay",
+		
 		"RemoveCachedItem" => "NoWay",
 		"RemoveCachedItemID" => "",
 		"RemoveCachedItemASIN" => "",
 
 		"versionInstalled" => "5"
 		);
-		$PostedValues = $_REQUEST;
-		$appStore_options = $appStore_savedOptions;
-		
-		
-		// Changes values from form
-		if($PostedValues['action'] == "update" && is_array($PostedValues['appStore_options'])) {
-			foreach ($appStore_defaults as $defaultName => $defaultValue) {
-				$settingsValue = $PostedValues['appStore_options'][$defaultName];
-				if($settingsValue != "") {
-					$appStore_options[$defaultName] = $settingsValue;
-				}
-			}
-		} else {
-		//Check for empty settings
-			foreach ($appStore_defaults as $defaultName => $defaultValue) {
-				$settingsValue = $appStore_savedOptions[$defaultName];
-				if($settingsValue == "") {
-					$appStore_options[$defaultName] = $defaultValue;
-				}
+	$PostedValues = $_REQUEST;
+	$appStore_options = $appStore_savedOptions;
+	
+	
+	// Changes values from form
+	if($PostedValues['action'] == "update" && is_array($PostedValues['appStore_options'])) {
+		foreach ($appStore_defaults as $defaultName => $defaultValue) {
+			$settingsValue = $PostedValues['appStore_options'][$defaultName];
+			if($settingsValue != "") {
+				$appStore_options[$defaultName] = $settingsValue;
 			}
 		}
-		
-		//echo "-----UPDATE------[<pre>".print_r($PostedValues,true)."</pre>]-------------";
-		
-
-		update_option('appStore_options', $appStore_options);
-		
-		
+	} else {
+	//Check for empty settings
+		foreach ($appStore_defaults as $defaultName => $defaultValue) {
+			$settingsValue = $appStore_savedOptions[$defaultName];
+			if($settingsValue == "") {
+				$appStore_options[$defaultName] = $defaultValue;
+			}
+		}
+	}
+	
+	//echo "-----UPDATE------[<pre>".print_r($PostedValues,true)."</pre>]-------------";
+	update_option('appStore_options', $appStore_options);
 }
-// ------------------------------------------------------------------------------
-// CALLBACK FUNCTION FOR: add_action('admin_init', 'appStore_init' )
-// ------------------------------------------------------------------------------
-// THIS FUNCTION RUNS WHEN THE 'admin_init' HOOK FIRES, AND REGISTERS YOUR PLUGIN
-// SETTING WITH THE WORDPRESS SETTINGS API. YOU WON'T BE ABLE TO USE THE SETTINGS
-// API UNTIL YOU DO.
-// ------------------------------------------------------------------------------
 
 // Init plugin options to white list our options
 function appStore_init(){
 	$settings = get_option('appStore_options');
 	appStore_add_defaults(); // Also checks for new settings that haven't been set before
 	register_setting( 'appStore_plugin_options', 'appStore_options', 'appStore_validate_options' );
+}
+
+function appStore_add_admin_scripts() {
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('jquery-ui-tabs' );
 	wp_enqueue_script('jquery-ui-sortable');
@@ -187,26 +211,210 @@ function appStore_init(){
 	wp_enqueue_script('jquery-ui-tabs');
 	wp_enqueue_style( 'farbtastic' );
 	wp_enqueue_script('farbtastic' );
+ 	wp_enqueue_script('jquerymenusstart', plugins_url('js_functions/jquerymenusstart.js',ASA_MAIN_FILE), null, null, true);
+	wp_enqueue_script('jscolor', plugins_url('js_functions/jscolor/jscolor.js',ASA_MAIN_FILE), null, null, true);
 }
-// ------------------------------------------------------------------------------
-// CALLBACK FUNCTION FOR: add_action('admin_menu', 'appStore_add_options_page');
-// ------------------------------------------------------------------------------
-// THIS FUNCTION RUNS WHEN THE 'admin_menu' HOOK FIRES, AND ADDS A NEW OPTIONS
-// PAGE FOR YOUR PLUGIN TO THE SETTINGS MENU.
-// ------------------------------------------------------------------------------
 
+function appStore_add_admin_stylesheets() {
+	wp_register_style('appStore-admin-styles', plugins_url( 'css/appStore-admin.css', ASA_MAIN_FILE ));
+	wp_enqueue_style( 'appStore-admin-styles');
+}
 
-
-// Add menu page
+// Add menus
 function appStore_add_options_page() {
-	add_options_page('AppStore Assistant', 'AppStore Assistant', 'manage_options', ASA_MAIN_FILE, 'appStore_render_form');
-	add_menu_page( 'AppStore Assistant', 'AppStore Asst', 'manage_options', ASA_MAIN_FILE, 'appStore_render_form', plugins_url( 'images/app-store-logo.png', ASA_MAIN_FILE ) );
+	//add_options_page('AppStore Assistant', 'AppStore Assistant', 'manage_options', ASA_MAIN_FILE, 'appStore_sm_general');
+	add_menu_page( 'AppStore Assistant', 'AppStore Asst', 'manage_options', 'appStore_sm_general', 'appStore_displayAdminOptionsPage', plugins_url( 'images/app-store-logo.png', ASA_MAIN_FILE ) );
+	add_submenu_page( 'appStore_sm_general', 'General Settings', 'General', 'manage_options', 'appStore_sm_general', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'Visual Settings', 'Visual', 'manage_options', 'appStore_sm_visual', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'App Store Settings', 'App Store', 'manage_options', 'appStore_sm_appstore', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'iTunes Store Settings', 'iTunes Store', 'manage_options', 'appStore_sm_itunes', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'Amazon.com Settings', 'Amazon.com', 'manage_options', 'appStore_sm_amazon', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'Utilities', 'Utilities', 'manage_options', 'appStore_sm_utilities', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'Affiliate', 'Affiliate Programs', 'manage_options', 'appStore_sm_affiliate', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'Help', 'Help', 'manage_options', 'appStore_sm_help', 'appStore_displayAdminOptionsPage');
 
-	add_menu_page( 'New Apps', 'New App Post', 'edit_posts', "appStore_IDsearch", 'appStore_search_form', plugins_url( 'images/app-store-logo.png', ASA_MAIN_FILE ) );
+	add_menu_page( 'New Apps', 'New App Post', 'edit_posts', "appStore_IDsearch", 'appStore_search_form', plugins_url( 'images/new-app-post.png', ASA_MAIN_FILE ) );
 }
 
+function appStore_displayAdminOptionsPage() {
+	global $requestedPage;
+	$upload_dir = wp_upload_dir();
+	$options = get_option('appStore_options');
+	$affiliatepartnerid = $options['affiliatepartnerid'];
+	$requestedPage = $_REQUEST['page'];
+	$settingsUpdated = $_REQUEST['settings-updated'];
+	
+	if ( !current_user_can( 'manage_options' ) )  {
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+	if ( isset ( $_GET['tab'] ) ) {
+		$currentTab = $_GET['tab'];
+	} else {
+		$currentTab = "defaultTab";
+	}
+	switch ( $requestedPage ){
+		case 'appStore_sm_general' :
+			$appStoreOptionsTitle = __("General Settings",appStoreAssistant);
+			$appStoreOptionsPage = "options_general_$currentTab.php";
+			break;
+		case 'appStore_sm_visual' :
+			$appStoreOptionsTitle = __("Visual Settings",appStoreAssistant);
+			$appStoreOptionsPage = "options_visual_$currentTab.php";
+			break;
+		case 'appStore_sm_appstore' :
+			$appStoreOptionsTitle = __("iOS & Mac App Store Settings",appStoreAssistant);
+			$appStoreOptionsPage = "options_appstore_$currentTab.php";
+			break;
+		case 'appStore_sm_itunes' :
+			$appStoreOptionsTitle = __("iTunes Store Settings",appStoreAssistant);
+			$appStoreOptionsPage = "options_itunes_$currentTab.php";
+			break;
+		case 'appStore_sm_amazon' :
+			$appStoreOptionsTitle = __("Amazon.com Settings",appStoreAssistant);
+			$appStoreOptionsPage = "options_amazon_$currentTab.php";
+			break;
+		case 'appStore_sm_utilities' :
+			$appStoreOptionsTitle = __("Utilities",appStoreAssistant);
+			$appStoreOptionsPage = "options_utils_$currentTab.php";
+			break;
+		case 'appStore_sm_help' :
+			$appStoreOptionsTitle = __("Help Page",appStoreAssistant);
+			$appStoreOptionsPage = "options_help_$currentTab.php";
+			break;
+		case 'appStore_sm_affiliate' :
+			$appStoreOptionsTitle = __("Affiliate Program",appStoreAssistant);
+			$appStoreOptionsPage = "options_affiliate_$currentTab.php";
+			break;
+	}
+	
+	if($options['ResetCheckOne']=="DoIt" && $options['ResetCheckTwo']=="DoIt" && $options['ResetCheckThree']=="DoIt") {
+		appStore_add_defaults();
+		$OptionsReset = true;
+		$options = get_option('appStore_options');
+		appStore_ShowMessage("All settings have been reset to their defaults!",true);
+	}
 
-function createPostFromAppID($appShortCode,$appTitle,$appCategories,$appID) {
+	if($options['AddFeaturedImages']=="DoIt" ) {
+		$options["AddFeaturedImages"] = "NoWay";		
+		update_option('appStore_options', $options);	
+
+		$MyResults = appStore_get_shortcode_posts();
+		$postCounter = 1;
+		foreach($MyResults as $MyResult) {
+			//echo $postCounter.') ------------------------------<br />';
+			appStore_addFeaturedImage($MyResult);
+			$postCounter++;
+		}
+		$options = get_option('appStore_options');
+		appStore_ShowMessage("We did it!",true);
+	}
+
+	if($options['RemoveCachedItem']=="DoIt" ) {
+		$appIDtoRemove = $options["RemoveCachedItemID"];
+		$asinToRemove = $options["RemoveCachedItemASIN"];
+		$options["RemoveCachedItem"] = "NoWay";		
+		$options["RemoveCachedItemID"] = "";		
+		$options["RemoveCachedItemASIN"] = "";		
+		update_option('appStore_options', $options);	
+
+		$returnMessage = appStore_ClearSpecificItemCache($appIDtoRemove,$asinToRemove);		
+		appStore_ShowMessage($returnMessage,true);
+	}
+
+	if($options['ResetCacheOne']=="DoIt" && $options['ResetCacheTwo']=="DoIt") {
+		appStore_ClearAppCache();		
+		$options = get_option('appStore_options');
+		$options["ResetCacheOne"] = "NoWay";
+		$options["ResetCacheTwo"] = "NoWay";		
+		update_option('appStore_options', $options);	
+		appStore_ShowMessage("The App data cache has been cleared!",true);
+	}
+
+	
+	
+	echo '<!-- Display Plugin Icon, Header, and Description -->';
+	echo '<div class="asa_admin_icon">';
+	echo "<h2>AppStore Assistant $appStoreOptionsTitle</h2></div>";
+	echo '<p>Below is a collection of controls you can use to customize the App Store Assistant plugin.</p>';
+	//echo "<hr>--------------------".appStore_setting('validated')."----------------------<hr>";
+	appStore_checkCacheFolder();
+	if($settingsUpdated) appStore_ShowMessage(__("Settings Updated!",appStoreAssistant),true);
+	appStore_displayAdminTabs($requestedPage,$currentTab,$affiliatepartnerid);
+	echo '<form method="post" action="options.php">';
+	settings_fields('appStore_plugin_options');
+	require_once(ASA_PLUGIN_INCLUDES_PATH."options_pages/$appStoreOptionsPage");
+	echo '<p class="submit">';
+	echo '<input type="submit" class="button-primary" value="';
+	_e('Save Changes');
+	echo '" />';
+	echo '</p>';
+	echo '</form>';
+
+	require_once(ASA_PLUGIN_INCLUDES_PATH."donateform.inc");
+	return;
+}
+
+function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliatepartnerid ) {
+	global $requestedPage;
+	switch ( $tabSet ){
+	  case 'appStore_sm_general' :
+		$tabs_array = array ('defaultTab' => 'Descriptions','excerpts' => 'Excerpts','createpost' => 'Create Posts','miscellaneous' => 'Miscellaneous');
+	  break;
+	  case 'appStore_sm_visual' :
+		$tabs_array = array ('defaultTab' => 'Stars','buybutton' => 'Buy Button','miscellaneous' => 'Miscellaneous');
+	  break;
+	  case 'appStore_sm_appstore' :
+		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','appicon' => 'App Icon','graphics' => 'App Store Graphics');
+	  break;
+	  case 'appStore_sm_itunes' :
+		//$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','graphics' => 'App Store Graphics');
+		$tabs_array = array ('defaultTab' => 'Single Post','graphics' => 'App Store Graphics');
+	  break;
+	  case 'appStore_sm_amazon' :
+		$tabs_array = array ('defaultTab' => 'Product Images','linktext' => 'Text Link Defaults');
+	  break;
+	  case 'appStore_sm_utilities' :
+		$tabs_array = array ('defaultTab' => 'Add Featured Images','clearitem' => 'Clear an Item','clearcache' => 'Clear Cache','reset' => 'Reset Defaults');
+	  break;
+	  case 'appStore_sm_help' :
+		$tabs_array = array ('defaultTab' => 'Getting Started','shortcodes' => 'Shortcodes','editor' => 'Post Editor');
+	  break;
+	  case 'appStore_sm_affiliate' :
+		$tabs_start = array ('defaultTab' => 'Amazon.com');
+		switch ( $affiliatepartnerid ){
+		  case '999' :
+			//$tabs_end = array ('affiliate' => 'LinkShare');
+		  break;
+		  case '30' :
+			$tabs_end = array ('linkshare' => 'LinkShare');
+		  break;
+		  case '2003' :
+			$tabs_end = array ('td' => 'TradeDoubler');
+		  break;
+		  case '1002' :
+			$tabs_end = array ('dgm' => 'DGM');
+		  break;
+		}
+		if(is_array($tabs_end)) {
+			$tabs_array = array_merge($tabs_start, $tabs_end);
+		} else {
+			$tabs_array = $tabs_start;
+		}
+	  break;
+	}
+
+
+	echo '<h2 class="nav-tab-wrapper">';
+	foreach( $tabs_array as $tab => $name ){
+	   $class = ( $tab == $currentTab ) ? ' nav-tab-active' : '';
+	   echo "<a class='nav-tab$class' href='?page=$requestedPage&tab=$tab'>$name</a>";
+	}
+	echo '</h2>';
+
+
+
+}
+function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$appID) {
 	global $current_user;
 	get_currentuserinfo();
 	
@@ -277,7 +485,7 @@ function createPostFromAppID($appShortCode,$appTitle,$appCategories,$appID) {
 	echo "<br /><br /></div>";
 }
 
-function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
+function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 	GLOBAL $masterList,$checkForDuplicates;
 	$i = $startKey;
 	foreach ($listOfApps as $appData) {
@@ -325,7 +533,7 @@ function buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 	}
 }
 
-function getSearchResultsFromApple($entity){
+function appStore_getSearchResultsFromApple($entity){
 
 	$url  = "https://itunes.apple.com/search?term=";
 	$url .= urlencode($_POST['appname'])."&country=us&entity=$entity";
@@ -380,7 +588,7 @@ function appStore_search_form() {
 		
 		if(!empty($_POST['createPost'])) {
 	
-			createPostFromAppID($_POST['shortcode'],$_POST['postTitle'],$_POST['postCategories'],$_POST['appID']);
+			appStore_createPostFromAppID($_POST['shortcode'],$_POST['postTitle'],$_POST['postCategories'],$_POST['appID']);
 	
 		}
 	} else {
@@ -405,11 +613,11 @@ function appStore_search_form() {
 	if (!empty($_POST)) {
 
 		$checkForDuplicates[] = "000000000"; //Setup array for later use
-		$listOfApps = getSearchResultsFromApple($entity);
-		buildListOfFoundApps($listOfApps,"1",$shortCodeStart);
+		$listOfApps = appStore_getSearchResultsFromApple($entity);
+		appStore_buildListOfFoundApps($listOfApps,"1",$shortCodeStart);
 		if($_POST['type'] == "iOS") {
-			$biggerListOfApps = getSearchResultsFromApple("iPadSoftware");
-			buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart);
+			$biggerListOfApps = appStore_getSearchResultsFromApple("iPadSoftware");
+			appStore_buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart);
 		}
 		if(is_array($masterList)){
 		echo "<h2>$Searchtype</h2>";
@@ -433,8 +641,7 @@ function appStore_search_form() {
 }
 
 //------------------------------TEST-----------------------------------------------
-function wpse49871_shortcode_query_filter( $where )
-{
+function wpse49871_shortcode_query_filter( $where ){
     global $wpdb;
 
     // Lets be on the safe side, escape and such.
@@ -448,8 +655,7 @@ function wpse49871_shortcode_query_filter( $where )
 
     return $new_where;
 }
-function appStore_get_shortcode_posts()
-{
+function appStore_get_shortcode_posts() {
     add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
     $posts = get_posts( array('posts_per_page'  => 550
         // Do your query in here. See "Taxonomy Query" args above for example [,'meta_key'=>'-_thumbnail_id']
@@ -578,162 +784,7 @@ function appStore_addFeaturedImage ($postData) {
 	return;
 }
 
-
-function appStore_render_form() {
-	$upload_dir = wp_upload_dir();
-
-	if ( !current_user_can( 'manage_options' ) )  {
-		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-	}
-	global $pagenow;
-	$options = get_option('appStore_options');
-	
-	if($options['ResetCheckOne']=="DoIt" && $options['ResetCheckTwo']=="DoIt" && $options['ResetCheckThree']=="DoIt") {
-		appStore_add_defaults();
-		$OptionsReset = true;
-		$options = get_option('appStore_options');
-		appStoreShowMessage("All settings have been reset to their defaults!",true);
-	}
-
-	if($options['AddFeaturedImages']=="DoIt" ) {
-		$options["AddFeaturedImages"] = "NoWay";		
-		update_option('appStore_options', $options);	
-
-		$MyResults = appStore_get_shortcode_posts();
-		$postCounter = 1;
-		foreach($MyResults as $MyResult) {
-			//echo $postCounter.') ------------------------------<br />';
-			appStore_addFeaturedImage($MyResult);
-			$postCounter++;
-
-		}
-		$options = get_option('appStore_options');
-		appStoreShowMessage("We did it!",true);
-	}
-
-	if($options['RemoveCachedItem']=="DoIt" ) {
-		$appIDtoRemove = $options["RemoveCachedItemID"];
-		$asinToRemove = $options["RemoveCachedItemASIN"];
-		$options["RemoveCachedItem"] = "NoWay";		
-		$options["RemoveCachedItemID"] = "";		
-		$options["RemoveCachedItemASIN"] = "";		
-		update_option('appStore_options', $options);	
-
-		$returnMessage = appStore_ClearSpecificItemCache($appIDtoRemove,$asinToRemove);		
-
-
-		appStoreShowMessage($returnMessage,true);
-	}
-
-
-
-
-	if($options['ResetCacheOne']=="DoIt" && $options['ResetCacheTwo']=="DoIt") {
-		appStore_ClearAppCache();		
-		$options = get_option('appStore_options');
-		$options["ResetCacheOne"] = "NoWay";
-		$options["ResetCacheTwo"] = "NoWay";		
-		update_option('appStore_options', $options);	
-		appStoreShowMessage("The App data cache has been cleared!",true);
-	}
-
-
-	echo '<!-- Display Plugin Icon, Header, and Description -->';
-	echo '<div class="icon32" id="icon-options-general"><br></div>';
-	echo '<h2>AppStore Assistant Page Settings</h2>';
-	echo '<p>Below is a collection of controls you can use to customize the App Store Assistant plugin.</p>';
-	checkCacheFolder();
-	
-	//echo "<hr>--------------------".appStore_setting('validated')."----------------------<hr>";
-	//echo "<hr>--------------------".appStore_setting('appDetailsOrder')."----------------------<hr>";
-	
-	if ( isset ( $_GET['tab'] ) ) appStore_admin_tabs($_GET['tab']);
-	else appStore_admin_tabs('generaloptions');
-
-	echo '<form method="post" action="options.php">';
-	settings_fields('appStore_plugin_options');
-		
-	if ( ($pagenow == 'options-general.php' || $pagenow == 'admin.php') && $_GET['page'] == 'app-store-assistant/app-store-assistant.php' ){
-		//echo $_GET['tab'];
-		if ( isset ( $_GET['tab'] ) ) $tab = $_GET['tab'];
-		else $tab = 'generaloptions';
-		switch ( $tab ){
-			case 'generaloptions' :
-				$appStoreOptionsPage = "options_general.php";
-				break;
-			case 'visual' :
-				$appStoreOptionsPage = "options_visual.php";
-				break;
-			case 'appstore' :
-				$appStoreOptionsPage = "options_appstore.php";
-				break;
-			case 'itunes' :
-				$appStoreOptionsPage = "options_itunes.php";
-				break;
-			case 'amazon' :
-				$appStoreOptionsPage = "options_amazon.php";
-				break;
-			case 'affiliate' :
-				if ($options['affiliatepartnerid'] == "999") $appStoreOptionsPage = "options_affiliate.php";
-				if ($options['affiliatepartnerid'] == "30") $appStoreOptionsPage = "options_affiliate_linkshare.php";
-				if ($options['affiliatepartnerid'] == "2003") $appStoreOptionsPage = "options_affiliate_td.php";
-				if ($options['affiliatepartnerid'] == "1002") $appStoreOptionsPage = "options_affiliate_dgm.php";
-				break;
-			case 'help' :
-				$appStoreOptionsPage = "options_help.php";
-				break;
-			case 'utils' :
-				$appStoreOptionsPage = "options_utils.php";
-				break;
-		}
-		require_once(ASA_PLUGIN_INCLUDES_PATH."options_pages/$appStoreOptionsPage");
-	}
-
-	echo '<p class="submit">';
-	echo '<input type="submit" class="button-primary" value="';
-	_e('Save Changes');
-	echo '" />';
-	echo '</p>';
-	echo '</form>';
-	
-	require_once(ASA_PLUGIN_INCLUDES_PATH."donateform.inc");
-	
-}
-
-function appStore_admin_tabs( $current = 'generaloptions' ) {
-	$options = get_option('appStore_options');
-
-	$tabs_start = array( 'generaloptions' => 'General', 'visual' => 'Visual Elements', 'appstore' => 'App Store', 'itunes' => 'iTunes Store', 'amazon' => 'Amazon.com' );
-	
-	switch ( $options['affiliatepartnerid'] ){
-	  case '999' :
-		$tabs_middle = array ('affiliate' => 'LinkShare');
-	  break;
-	  case '30' :
-		$tabs_middle = array ('affiliate' => 'LinkShare');
-	  break;
-	  case '2003' :
-		$tabs_middle = array ('affiliate' => 'TradeDoubler');
-	  break;
-	  case '1002' :
-		$tabs_middle = array ('affiliate' => 'DGM');
-	  break;
-	}
-	$tabs_end = array ('help' => 'Help','utils' => 'Utilities' );
-	if ($options['affiliatepartnerid'] == "999") {
-		$tabs = array_merge($tabs_start, $tabs_end);
-	} else {
-		$tabs = array_merge($tabs_start,$tabs_middle, $tabs_end);
-	}
-	echo '<h2 class="nav-tab-wrapper">';
-	foreach( $tabs as $tab => $name ){
-	   $class = ( $tab == $current ) ? ' nav-tab-active' : '';
-	   echo "<a class='nav-tab$class' href='?page=app-store-assistant/app-store-assistant.php&tab=$tab'>$name</a>";
-	}
-	echo '</h2>';
-}
-
-function checkCacheFolder() {
+function appStore_checkCacheFolder() {
 	$upload_dir = wp_upload_dir();
 	$appStore_cacheFolder = $upload_dir['basedir'] . '/appstoreassistant_cache';
 
@@ -814,7 +865,7 @@ function requires_wordpress_version() {
 function appStore_plugin_action_links( $links, $file ) {
 
 	if ( $file == plugin_basename( ASA_MAIN_FILE ) ) {
-		$appStore_links = '<a href="'.get_admin_url().'options-general.php?page=app-store-assistant/app-store-assistant.php">'.__('Settings').'</a>';
+		$appStore_links = '<a href="'.get_admin_url().'admin.php?page=appStore_sm_general">'.__('Settings').'</a>';
 		// make the 'Settings' link appear first
 		array_unshift( $links, $appStore_links );
 	}
@@ -840,15 +891,6 @@ function appStore_validate_options($input) {
 	return $options;
 }
 
-function appStore_load_admin_js_files() {
- 	wp_enqueue_script('jquerymenusstart', plugins_url('js_functions/jquerymenusstart.js',ASA_MAIN_FILE), null, null, true);
-	wp_enqueue_script('jscolor', plugins_url('js_functions/jscolor/jscolor.js',ASA_MAIN_FILE), null, null, true);
-}
-
-function appStore_admin_page_add_stylesheet() {
-	wp_register_style('appStore-admin-styles', plugins_url( 'css/appStore-admin.css', ASA_MAIN_FILE ));
-	wp_enqueue_style( 'appStore-admin-styles');
-}
 
 function appStore_ClearSpecificItemCache($appIDtoRemove,$asinToRemove) {
 	global $wpdb;
@@ -920,7 +962,7 @@ function rrmdir($dir) {
 	}
 } 
 
-function appStoreShowMessage($message, $errormsg = false)
+function appStore_ShowMessage($message, $errormsg = false)
 {
 	if ($errormsg) {
 		echo '<div id="message" class="error">';

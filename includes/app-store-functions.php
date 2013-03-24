@@ -1,7 +1,17 @@
 <?php
-function appStore_load_js_files() {
+function appStore_add_scripts() {
 	wp_enqueue_script('lightbox', plugins_url('js_functions/lightbox/js/lightbox.js',ASA_MAIN_FILE), null, null, true);
 }
+
+function appStore_add_stylesheets() {
+	wp_register_style('appStore-styles', plugins_url( 'css/appStore-styles.css', ASA_MAIN_FILE ));
+	wp_enqueue_style( 'appStore-styles');
+	wp_register_style('appStore-googlefont','http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600');
+	wp_enqueue_style( 'appStore-googlefont');
+	wp_register_style('lightbox-styles', plugins_url( 'js_functions/lightbox/css/lightbox.css', ASA_MAIN_FILE ));
+	wp_enqueue_style( 'lightbox-styles');
+}
+
 
 function asa_load_translation_file() {
 	// relative path to WP_PLUGIN_DIR where the translation files will sit:
@@ -274,6 +284,17 @@ function appStore_css_hook() {
 	margin-top: 8px;
 
 }
+.appStore-Button:hover {
+	<?php if(appStore_setting('hide_button_background_hover') != "yes") { ?>
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonHoverStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonHoverStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonHoverStart') ?> 5%, #<?php echo appStore_setting('color_buttonHoverStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonHoverStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonHoverStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonHoverStart') ?>;
+	<?php } ?>
+	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
+	text-decoration:none;
+}
+
 
 .appStore-MoreInfoButton {
 	padding: 2px 10px 2px 10px;
@@ -311,16 +332,6 @@ function appStore_css_hook() {
 	text-decoration:none;
 }
 
-.appStore-Button:hover {
-	<?php if(appStore_setting('hide_button_background_hover') != "yes") { ?>
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonHoverStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonHoverStop') ?>) );
-	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonHoverStart') ?> 5%, #<?php echo appStore_setting('color_buttonHoverStop') ?> 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonHoverStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonHoverStop') ?>');
-	background-color:#<?php echo appStore_setting('color_buttonHoverStart') ?>;
-	<?php } ?>
-	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
-	text-decoration:none;
-}
 
 .iTunesStore-Button {
 	padding: 5px 20px 5px 20px;
@@ -329,10 +340,10 @@ function appStore_css_hook() {
 	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
 	<?php
 	if(appStore_setting('hide_button_background') != "yes") { ?>
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79BBFF), color-stop(1, #378DE5) );
-	background:-moz-linear-gradient( center top, #79BBFF 5%, #378DE5 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79BBFF', endColorstr='#378DE5');
-	background-color:#79BBFF;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
+	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>');
+	background-color:#<?php echo appStore_setting('color_buttonStart') ?>;
 	<?php } ?>
 	-moz-border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
 	-webkit-border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
@@ -461,13 +472,78 @@ function appStore_app_link_handler( $atts,$content=null, $code="") {
 	if($app) {
 		$appURL = getAffiliateURL($app->trackViewUrl);
 		if ($text == '') $text = $app->trackName;
-		$appURL = '<a href="'.$appURL.'">'.$text.'</a>';
+		$appURL = '<a href="'.$appURL.'"';
+		if(appStore_setting('open_links_externally') == "yes") $appURL .= ' target="_blank"';
+		$appURL .= '>'.$text.'</a>';
 		return $appURL;
 	} else {
 		echo "";
 		//wp_die('No valid data for app id: ' . $id);
 	}
 }
+
+
+function appStore_app_element_handler($atts,$content=null, $code="",$platform="ios_app") {
+	GLOBAL $is_iphone;
+
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array(
+		'id' => '',
+		'elements' => ''
+	), $atts ) );
+
+	//Don't do anything if the ID is blank or non-numeric
+	if($id == "" || !is_numeric($id))return;	
+
+	//Get the App Data
+	$app = appStore_get_data($id);
+
+	$app->TheAppPrice = format_price($app->price);
+	$app->appURL = getAffiliateURL($app->trackViewUrl);
+	if(appStore_setting('smaller_buy_button_iOS') == "yes" && $is_iphone) {
+		$app->buttonText = $app->TheAppPrice." ";
+	} else {
+		$app->buttonText = $app->TheAppPrice." - ".__("View in App Store",appStoreAssistant)." ";
+	}
+	$app->mode = $mode;
+	$app->more_info_text = $more_info_text;
+	$app->platform = $platform;
+
+	$appElements_available = explode(",","appName,appIcon,appDescription,appBadge,appDetails,appGCIcon,appScreenshots,appDeviceList,appBuyButton,appRating,appPrice");
+	if($app) {
+			$appElements = explode(",", $elements);
+			$appElements = array_filter($appElements, 'strlen');
+			foreach($appElements as $appElement) {
+			
+				if (in_array($appElement, $appElements_available)) {
+					$displayFunction = "displayAppStore_".$appElement;				
+					$displayFunction($app,true);
+				} else {
+					echo "<h1>Invalid Element attribute: $appElement </h1>";
+				}
+			}
+	
+	} else {
+		echo "";
+		//wp_die('No valid data for app id: ' . $id);
+	}
+	
+	
+
+	
+	
+	
+	
+	
+	
+}
+
+
+
+
+
+
+
 
 function iTunesStore_link_handler( $atts,$content=null, $code="") {
 	// Get App ID and more_info_text from shortcode
@@ -743,32 +819,32 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 	<div id="iTunesStore-icon-container">
 		<a href="<?php echo $iTunesURL; ?>" ><img class="iTunesStore-icon" src="<?php echo $artwork_url; ?>" width="<?php echo $newImageWidth; ?>" height="<?php echo $newImageHeight; ?>" /></a>
 		<div class="iTunesStore-purchase">
-			<a type="button" href="<?php echo $iTunesURL; ?>" value="" class="iTunesStore-Button BuyButton"><?PHP echo $buttonText; ?></a></br>
+			<a type="button" href="<?php echo $iTunesURL; ?>" value="" class="iTunesStore-Button BuyButton"><?PHP echo $buttonText; ?></a><br />
 		</div>
 
 	</div>
 	<?php
 	
 	if ((appStore_setting('displayitunestitle') == "yes" AND !empty($iTunesName)) OR $mode != "internal") {
-		echo '<span class="iTunesStore-title">'.$iTunesName.'</span></br>';
+		echo '<span class="iTunesStore-title">'.$iTunesName.'</span><br />';
 	}
 	if (appStore_setting('displayitunestrackcount') == "yes" AND !empty($trackCount)) {
-		echo '<span class="iTunesStore-trackcount">'.$trackType.': '.$trackCount.'</span></br>';
+		echo '<span class="iTunesStore-trackcount">'.$trackType.': '.$trackCount.'</span><br />';
 	}
 	if (appStore_setting('displayitunesartistname') == "yes" AND !empty($artistName)) {
-		echo '<span class="iTunesStore-artistname">'.$artistType.': '.$artistName.'</span></br>';
+		echo '<span class="iTunesStore-artistname">'.$artistType.': '.$artistName.'</span><br />';
 	}
 	if (appStore_setting('displayfromalbum') == "yes" AND !empty($fromAlbum)) {
-		echo '<span class="iTunesStore-fromalbum">'.__("From",appStoreAssistant).': '.$fromAlbum.'</span></br>';
+		echo '<span class="iTunesStore-fromalbum">'.__("From",appStoreAssistant).': '.$fromAlbum.'</span><br />';
 	}
 	if (appStore_setting('displayitunesgenre') == "yes" AND !empty($iTunesCategory)) {
-		echo '<span class="iTunesStore-genre">'.__("Genre",appStoreAssistant).': '.$iTunesCategory.'</span></br>';
+		echo '<span class="iTunesStore-genre">'.__("Genre",appStoreAssistant).': '.$iTunesCategory.'</span><br />';
 	}
 	if (appStore_setting('displayadvisoryrating') == "yes" AND !empty($contentAdvisoryRating)) {
-		echo '<span class="iTunesStore-advisoryrating">'.$cavType.': '.$contentAdvisoryRating.'</span></br>';
+		echo '<span class="iTunesStore-advisoryrating">'.$cavType.': '.$contentAdvisoryRating.'</span><br />';
 	}	
 	if (appStore_setting('displayitunesreleasedate') == "yes" AND !empty($releaseDate)) {
-		echo '<span class="iTunesStore-releasedate">'.__("Released",appStoreAssistant).': '.$releaseDate.'</span></br>';
+		echo '<span class="iTunesStore-releasedate">'.__("Released",appStoreAssistant).': '.$releaseDate.'</span><br />';
 	}
 
 	if (appStore_setting('displayitunesexplicitwarning') == "yes" AND $isExplicit == "explicit") {
@@ -777,9 +853,9 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$
 	if (appStore_setting('displayitunesdescription') == "yes" AND !empty($description)) {	
 		echo '	<div class="iTunesStore-description">';
 		echo nl2br($description);
-		echo '</br></div>';
+		echo '<br /></div>';
 	}
-		echo '</br>';
+		echo '<br />';
 
 		echo '<div class="appStore-badge"><a href="'.$iTunesURL.'" >';
 		$badgeImage = 'images/Badges/';
@@ -835,19 +911,23 @@ function appStore_page_output($app, $more_info_text,$mode="internal",$platform="
 	return $return;
 }
 
-function displayAppStore_appName ($app) {
+function displayAppStore_appName ($app,$forceDisplay=false) {
+	if($forceDisplay) {
+		echo $app->trackName;
+		return;
+	}
 	if ((appStore_setting('displayapptitle') == "yes" AND !empty($app->trackName)) OR $app->mode != "internal") {
 		echo '<span class="appStore-title">'.$app->trackName.'</span><br />';
 	}
 }
 
-function displayAppStore_appScreenshots($app) {
+function displayAppStore_appScreenshots($app,$forceDisplay=false) {
 	$appIDcode = $app->trackId;
 	if (is_single()) {
 		// Display iPhone Screenshots
-		if(appStore_setting('displayscreenshots') == "yes") {
+		if(appStore_setting('displayscreenshots') == "yes" || $forceDisplay) {
 			if(count($app->screenshotUrls) > 0) {
-				echo '	<div class="appStore-screenshots-iphone">';
+				if (!$forceDisplay) echo '	<div class="appStore-screenshots-iphone">';
 				echo '		<h2>';
 				if($app->platform=="mac_app") _e("Mac",appStoreAssistant);
 				if($app->platform=="ios_app") _e("iPhone",appStoreAssistant);
@@ -861,14 +941,13 @@ function displayAppStore_appScreenshots($app) {
 					echo $ssurl . '" width="' . appStore_setting('ss_size') . '" /></a></li>';
 				}
 				echo '		</ul>';
-				echo '</div>';
-				echo '	<div style="clear:left;">&nbsp;</div>';
+				if (!$forceDisplay) echo '</div>	<div style="clear:left;">&nbsp;</div>';
 			}
 
 			// Display iPad Screenshots
 			if(count($app->ipadScreenshotUrls) > 0) {
 
-				echo '	<div class="appStore-screenshots-iPad">';
+				if (!$forceDisplay) echo '	<div class="appStore-screenshots-iPad">';
 				echo '		<h2>'.__("iPad",appStoreAssistant).' '.__("Screenshots",appStoreAssistant).':</h2>';
 				echo '		<ul class="appStore-screenshots">';
 				foreach($app->ipadScreenshotUrls as $ssurl) {	
@@ -878,15 +957,58 @@ function displayAppStore_appScreenshots($app) {
 					echo $ssurl . '" width="' . appStore_setting('ss_size') . '" /></a></li>';
 				}
 				echo '		</ul>';
-				echo '</div>';
+				if (!$forceDisplay) echo '</div>';
 			}
 		}
-		echo '	<div style="clear:left;">&nbsp;</div>';		
+		if (!$forceDisplay) echo '	<div style="clear:left;">&nbsp;</div>';		
 	}		
 }
 
-function displayAppStore_appDescription($app) {
-	if (appStore_setting('displayappdescription') == "yes") {
+function displayAppStore_appBadge($app,$forceDisplay=false) {
+	$appLink = '<a href="'.$app->appURL.'"';
+	if(appStore_setting('open_links_externally') == "yes") $appLink .= ' target="_blank"';
+	$appLink .= '>';
+
+
+
+
+	$badgeImage = 'images/Badges/';
+	if(appStore_setting('appStore_store_badge_type') == "download") {
+		$badgeImage .= "Download_on_the_";
+	} else {
+		$badgeImage .= "Available_on_the_";
+	}
+	if($app->platform=="mac_app") $badgeImage .= "Mac_App_Store_Badge_";
+	if($app->platform=="ios_app") $badgeImage .= "App_Store_Badge_";
+
+	if(appStore_setting('store_badge_language')) {
+		$badgeImage .= appStore_setting('store_badge_language');
+	} else {
+		$badgeImage .= "US-UK";
+	}
+	if($app->platform=="mac_app") $badgeImage .= "_165x40.png";
+	if($app->platform=="ios_app") $badgeImage .= "_135x40.png";
+
+	if($forceDisplay) {
+		echo $appLink;
+		echo '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a>';
+		return;
+	}
+
+	if (appStore_setting('displayappbadge') == "yes") {
+		echo '<div class="appStore-badge">'.$appLink;
+		echo '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a></div>';
+		echo '</div>';
+	}
+}
+
+
+function displayAppStore_appDescription($app,$forceDisplay=false) {
+	if($forceDisplay) {
+		echo nl2br($app->description);
+		return;
+	}
+	if (appStore_setting('displayappdescription') == "yes" || $forceDisplay) {
 
 		$smallDescription = shortenDescription($app->description);
 	
@@ -897,26 +1019,7 @@ function displayAppStore_appDescription($app) {
 			} else {
 				echo nl2br($app->description);
 			}
-			echo '</br>';
-			echo '<div class="appStore-badge"><a href="'.$app->appURL.'" >';
-			$badgeImage = 'images/Badges/';
-			if(appStore_setting('appStore_store_badge_type') == "download") {
-				$badgeImage .= "Download_on_the_";
-			} else {
-				$badgeImage .= "Available_on_the_";
-			}
-			if($app->platform=="mac_app") $badgeImage .= "Mac_App_Store_Badge_";
-			if($app->platform=="ios_app") $badgeImage .= "App_Store_Badge_";
-	
-			if(appStore_setting('store_badge_language')) {
-				$badgeImage .= appStore_setting('store_badge_language');
-			} else {
-				$badgeImage .= "US-UK";
-			}
-			if($app->platform=="mac_app") $badgeImage .= "_165x40.png";
-			if($app->platform=="ios_app") $badgeImage .= "_135x40.png";
-			echo '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;"/></a></div>';
-			echo '</div>';
+			echo '<br />';
 		} else {
 			echo '	<div class="appStore-description">';
 			if (appStore_setting('use_shortDesc_on_multiple') == "yes") {
@@ -939,15 +1042,31 @@ function displayAppStore_appDescription($app) {
 	}
 }
 
-function displayAppStore_appBuyButton($app) {
-	echo '	<div class="appStore-purchase-center">';
-	echo '		<a type="button" href="'.$app->appURL.'" value="" class="appStore-Button BuyButton">'.$app->TheAppPrice.' - ';
-	_e("View in App Store",appStoreAssistant);
-	echo '</a></br>';
-	echo '	</div>';
+function displayAppStore_appBuyButton($app,$forceDisplay=false) {
+	$appLink = '<a type="button" href="'.$app->appURL.'" value="" class="appStore-Button BuyButton"';
+	if(appStore_setting('open_links_externally') == "yes") $appLink .= ' target="_blank"';
+	$appLink .= '>'.$app->TheAppPrice.' - ';
+	$appLink .= __("View in App Storez",appStoreAssistant);
+	$appLink .= '</a>';
+
+ 
+	if($forceDisplay) {
+		echo $appLink;
+		return;
+	}
+
+	if (appStore_setting('displayappbuybutton') == "yes") {
+		echo '	<div class="appStore-purchase-center">';
+		echo $appLink.'<br />';
+		echo '	</div>';
+	}
 }
 
-function displayAppStore_appDeviceList($app){
+function displayAppStore_appPrice($app,$forceDisplay=false) {
+		echo $app->TheAppPrice;
+}
+
+function displayAppStore_appDeviceList($app,$forceDisplay=false){
 	if (is_array($app->supportedDevices)) {
 		$SupportedDecices = $app->supportedDevices;
 		sort($SupportedDecices);
@@ -957,21 +1076,32 @@ function displayAppStore_appDeviceList($app){
 			echo ': '.implode(", ", $SupportedDecices)."</span><br />";
 		}
 		if (appStore_setting('displaysupporteddeviceIcons') == "yes") {
+		
+			switch (appStore_setting('displayappdetailsasliststyle')) {
+			case "color":
+				$list_icon_folder = "iDevices";
+				$list_icon_height = "64";
+				break;
+			default:
+				$list_icon_folder = "iDevicesBW";
+				$list_icon_height = "82";
+				break;
+			}
 			$SupportedDecices = $app->supportedDevices;
 			sort($SupportedDecices);
 			foreach ($SupportedDecices as $device):
-				echo '<img src="'.plugins_url( 'images/iDevices/'.$device.'.png' , ASA_MAIN_FILE ).'" height="64" alt="'.$device.'" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';					
+				echo '<img src="'.plugins_url( 'images/'.$list_icon_folder.'/'.$device.'.png' , ASA_MAIN_FILE ).'" height="'.$list_icon_height.'" alt="'.$device.'" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';					
 			endforeach;
 		}	
 	}
 }
 
-function displayAppStore_appDetails($app) {
+function displayAppStore_appDetails($app,$forceDisplay=false) {
 	//App Category
 	$appCategory = $app->genres;
 	$appCategoryList = implode(', ', $appCategory);
 	$AppFeatures = $app->features;
-	echo '<div class="appStore-addDetails">';
+	if (!$forceDisplay) echo '<div class="appStore-addDetails">';
 	echo '<ul class="appStore-addDetails">';
 	if (appStore_setting('displayversion') == "yes" AND !empty($app->version)) {
 		echo '<li class="appStore-version">'.__("Version",appStoreAssistant).': '.$app->version.'</li>';
@@ -1012,16 +1142,17 @@ function displayAppStore_appDetails($app) {
 		}
 		echo '</li>';
 	}
-	 echo '</ul></div><div style="clear:left;">&nbsp;</div>';
+	 echo '</ul>';
+	 if (!$forceDisplay) echo '</div><div style="clear:left;">&nbsp;</div>';
 }
 
-function displayAppStore_appGCIcon($app){
-	if (appStore_setting('displaygamecenterenabled') == "yes" AND $app->isGameCenterEnabled == 1) {
+function displayAppStore_appGCIcon($app,$forceDisplay=false){
+	if ((appStore_setting('displaygamecenterenabled') == "yes" AND $app->isGameCenterEnabled == 1) || $forceDisplay) {
 		echo '<img src="'.plugins_url( 'images/gamecenter.jpg' , ASA_MAIN_FILE ).'" width="88" height="92" alt="gamecenter" />';
 	}
 }
 
-function displayAppStore_appRating($app) {
+function displayAppStore_appRating($app,$forceDisplay=false) {
 	$averageRating = $app->averageUserRating;
 	$ratingCount = $app->userRatingCount;
 	//App Rating
@@ -1031,7 +1162,7 @@ function displayAppStore_appRating($app) {
 		$appRating = 0;
 	}
 
-	if(isset($ratingCount) AND appStore_setting('displaystarrating') == "yes") {
+	if(isset($ratingCount) AND (appStore_setting('displaystarrating') == "yes" || $forceDisplay)) {
 		echo '<div class="appStore-rating">';
 		echo '	<span class="appStore-rating_bar" title="Rating '.$averageRating.' stars">';
 		echo '	<span style="width:'.$appRating.'%"></span>';
@@ -1041,22 +1172,27 @@ function displayAppStore_appRating($app) {
 	}
 }
 
-function displayAppStore_appIcon ($app){
+function displayAppStore_appIcon ($app,$forceDisplay=false){
+	// App Artwork
+	switch (appStore_setting('appstoreicon_to_use')) {
+		case "60":
+			$artwork_url = $app->artworkUrl60;
+			break;
+		case "512":
+			$artwork_url = $app->artworkUrl512;
+			break;
+	}
+		
+	if($forceDisplay) {
+		echo '<a href="'.$app->appURL.'" target="_blank"><img class="appStore-icon" src="'.$artwork_url.'" /></a>';
+		return;
+	}
 	if (appStore_setting('displayappicon') == "yes") {
-		// App Artwork
-		switch (appStore_setting('appstoreicon_to_use')) {
-			case "60":
-				$artwork_url = $app->artworkUrl60;
-				break;
-			case "512":
-				$artwork_url = $app->artworkUrl512;
-				break;
-		}
 		echo '<div id="appStore-icon-container">';
 		echo '<a href="'.$app->appURL.'" target="_blank"><img class="appStore-icon" src="'.$artwork_url.'" /></a><br />';
 		if (appStore_setting('displayappiconbuybutton') == "yes") {
 			echo '	<div class="appStore-purchase">';
-			echo '	<a type="button" href="'.$app->appURL.'" value="" class="appStore-Button BuyButton" target="_blank">'.$app->buttonText.'</a></br>';
+			echo '	<a type="button" href="'.$app->appURL.'" value="" class="appStore-Button BuyButton" target="_blank">'.$app->buttonText.'</a><br />';
 			echo '	</div>';
 		}
 		echo '</div>';
@@ -1136,12 +1272,6 @@ function appStore_getIDs_from_feed($atomurl) {
 	return $appIDs;
 }
 
-function appStore_page_add_stylesheet() {
-	wp_register_style('appStore-styles', plugins_url( 'css/appStore-styles.css', ASA_MAIN_FILE ));
-	wp_enqueue_style( 'appStore-styles');
-	wp_register_style('lightbox-styles', plugins_url( 'js_functions/lightbox/css/lightbox.css', ASA_MAIN_FILE ));
-	wp_enqueue_style( 'lightbox-styles');
-}
 
 function appStore_page_get_json($id) {
 	if(function_exists('file_get_contents') && ini_get('allow_url_fopen'))

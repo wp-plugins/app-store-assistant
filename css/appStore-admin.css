@@ -5,6 +5,16 @@
 
 /* Basic Admin Panel layout
 ----------------------------------*/
+
+.asa_admin_icon
+{
+	background-image: url('../images/asa_settings.png');
+	background-repeat: no-repeat;
+	margin-top: 10px;
+	padding: 2px 2px 2px 50px;
+}
+
+
 .asa_admin_table {
 }
 

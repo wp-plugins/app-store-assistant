@@ -1,12 +1,4 @@
-<h2 class="asa_admin">Getting Started</h2>
-	<p>The easiest way to insert a shortcode for an item from the App Store or Mac App Store is to use the "New App Post" botton to the left. This will allow you to search for the app you want. Once found, it will create a shorcode or give you the option to create a post from the found app. If you choose to create a post, it will insert the shortcode, add a featured image from the App's icon or iTunes Artwork, add the categories and create a new post. In the settings you can choose whether the post should be saved as a Draft, Pending of Published post.</p>
-
-
-<h2 class="asa_admin">Using the Shortcode buttons on editor toolbar</h2>
-<p>Look for the buttons at the top of the Post or Page Editor. These will help you insert Shortcodes.</p>
-<img src="<?php echo plugins_url( 'screenshot-6.png' , ASA_MAIN_FILE ) ?>" alt="Editor Toolbar" /><br /><br />
-
-<h2 class="asa_admin">Shortcodes</h2>
+<h2>Shortcodes</h2>
 
 <h3 class="asa_admin">Display a single item:</h3>
 
@@ -102,5 +94,30 @@
 </li>
 </ul>
 
-</div>
+<h3 class="asa_admin">Display elements from an item:</h3>
+
+<ul>
+	<li>[ios_app_link id="568903335" elements="App Name"]<p>Displays a text only link to the iOS App</p>
+	<ul>
+	<li>id: The iOS app's App Store ID<p>This can be found in the copied link from the iTunes App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i></p></li>
+	<li>elements: One or more of the following items:<br />
+	
+<ul>
+<li>appName</li>
+<li>appIcon</li>
+<li>appDescription</li>
+<li>appBadge</li>
+<li>appDetails</li>
+<li>appGCIcon</li>
+<li>appScreenshots</li>
+<li>appDeviceList</li>
+<li>appBuyButton</li>
+<li>appRating</li>
+<li>appPrice</li>
+</ul>
+	
+	</p></li>
+	</ul>
+</li>
+</ul></div>
 
