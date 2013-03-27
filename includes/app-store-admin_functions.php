@@ -168,6 +168,7 @@ function appStore_add_defaults() {
 		"RemoveCachedItemID" => "",
 		"RemoveCachedItemASIN" => "",
 
+		"displayLinkToFooter" => "yes",
 		"versionInstalled" => "5"
 		);
 	$PostedValues = $_REQUEST;

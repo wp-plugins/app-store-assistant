@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 6.0.2
+Stable tag: 6.0.3
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -97,6 +97,15 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 6.0.3 =
+* Added: New smaller App Store badge element "appBadgeSm" for the ios_app_elements shortcode [Thanks beakernet]
+* Fixed: An issue ios_app_elements that had spaces in the elements list
+* Fixed: An issue ios_app_elements that multiple elements (introduced in 6.0.1)
+* Fixed: Had a "z" in the button name [Thanks beakernet]
+* Fixed: Issue with href tag ending. Fixed for HTML5 compatibility
+* Fixed: Issue with empty Value attribute in href tag. Fixed for HTML5 compatibility
+* Fixed: Two images were missing from the enlarged screenshots overlay. [Thanks snurnberg]
 
 = 6.0.2 =
 * Fixed: An issue where the ios_app_elements shortcode was returning data out of order  [Thanks beakernet]

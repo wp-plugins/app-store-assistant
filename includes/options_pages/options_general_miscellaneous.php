@@ -1,4 +1,4 @@
-<input type="hidden" name="appStore_options[checkboxedoptions]" value="cache_images_locally,open_links_externally" />
+<input type="hidden" name="appStore_options[checkboxedoptions]" value="cache_images_locally,open_links_externally,displayLinkToFooter" />
 
 <h2 class="asa_admin">Localization</h2>
 	<div class="asa_admin">
@@ -85,5 +85,7 @@
 			</select>
 		</div>
 		<div class="asa_admin_element">Open links in new window: <input type="checkbox" name="appStore_options[open_links_externally]" value="yes" <?php if ($options['open_links_externally'] == "yes") echo 'checked'; ?> />
+		</div>
+		<div class="asa_admin_element">Show link to plugin site in footer: <input type="checkbox" name="appStore_options[displayLinkToFooter]" value="yes" <?php if ($options['displayLinkToFooter'] == "yes") echo 'checked'; ?> />
 		</div>
 	</div>
