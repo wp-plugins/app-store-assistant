@@ -1,25 +1,66 @@
 === App Store Assistant ===
 Contributors: sealsystems 
 Donate link:http://theiphoneappslist.com/donate/
-TTags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music
+Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
-Tested up to: 3.5
-Stable tag: 5.0
+Tested up to: 3.5.1
+Stable tag: 6.0.4
+License: GPLv3 or later
 
-The App Store Assistent adds 8 shortcodes to display an ATOM feed or the detail of an item from Apple's App or iTunes Stores. Affiliate ready.
+Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
 
 == Description ==
 
-This Wordpress plugin displays a list of iOS or Mac apps from an ATOM feed (http://itunes.apple.com/rss) or the detail for Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos or Apps via the item's ID. It also converts the items's link to use your affiliate program. The App Store Assistant plugin adds 4 shortcodes to display an ATOM feed or the detail of an item from Apple's App Store or the iTunes Store. It also has the ability to use an affiliate program to earn commissions on click-throughs. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an ATOM feed (http://iTunes.apple.com/rss) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
 
-Works with the LinkShare/Linksynergy, TradeDoubler and DGM Affiliate Programs.
+**Features**
 
-You can also add a shortcode to a Private page and have your own quick search function. Searches for iOS or Mac apps. Displays the shortcode already filled out.
+* Find an App ID fast with the "New App Post" button in the Admin area
+	* Auto-creates new POST or Shortcode
+	* Adds App Title
+	* Choose from Draft, Publish or Pending
+	* Auto creates Featured Image from app icon
+	* Adds App Categories to Post
+	* Can auto create Categories based on App Categories
+* Displays detailed item information or links
+	* Apple App Store
+	* Mac App Store
+	* Amazon.com
+	* iTunes Store
+		* Songs
+		* Albums
+		* Movies
+		* Short Films
+		* TV Episodes or Seasons
+		* Music Videos
+* Arrange the order of App elements via drag and drop
+* You can now display individual item elements via new shortcode
+* Multi-country support
+* I18n aka Localization is supported via POT file
+* Earn Money with Affiliate Programs
+	* LinkShare/Linksynergy
+	* TradeDoubler
+	* Amazon Affiliates
+	* DGM
+* Customizable
+	* Choose from different Star rating colors
+	* Button colors and style
+	* Choose which detail elements to display and their order
+	* Adjust App Icon image size
+* Cache detail and images locally for quicker page load times
+* Remove the whole cache or individual items
+* Widget to show ATOM/RSS Feed of Apps
+* Use custom Excerpts or let App Store Assistant auto-create an excerpt
+* Tested with over 300 Themes
+* Screenshot Lightbox support
+
+*-----[Amazon.com functionality is a beta release. **Use this feature with caution!!!**]-----*
+
+There is now a built-in quick search function. It searches for iOS or Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST already titled with the appropriate shortcode already entered.
 
 You can also Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
 
-Please let us know of any features you would like added or bugs that need squashing in the Wordpress fourms <http://wordpress.org/support/plugin/app-store-assistant>
-
+Please let us know of any features you would like added or bugs that need squashing in the Wordpress forums <http://wordpress.org/support/plugin/app-store-assistant>
 
 == Installation ==
 
@@ -31,210 +72,336 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Available Shortcodes ==
 
-* [asaf_atomfeed atomurl="http://itunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]
-	* atomurl: feed URL supplied by Apple RSS Generator
-	* mode: [iOS or iTunes]
-	* more_info_text: Button text'
+* [ios_app]: Displays a single iOS app
+* [mac_app]: Displays a single Mac app
+* [itunes_store]: Displays a single item from the iTunes Store
+* [amazon_item]: Displays a single item from Amazon.com
+* [asaf_atomfeed]: Displays the items from the ATOm feed in a formatted view with the modes iOS, Mac or iTunes
+* [ios_app_list]: Displays Several iOS apps on a single page or post with the modes iOS, Mac, Mixed or iTunes
+* [ios_app_link]: Displays a text only link to the iOS App
+* [ios_app_elements]: Displays any single element of the iOS Apps details
+* [mac_app_link]: Displays a text only link to the Mac App
+* [itunes_store_link]: Displays a text only link to the iTunes item
+* [amazon_item_link]: Displays a button or text only link to the Amazon Item with the modes text,button or textPrice]. The mode "textPrice" displays "Available from Amazon.com for" ending with price or "View on Amazon.com" if there is no price."
 
-* [ios_app id="123456789" more_info_text="open in App Store..."]
-	* id: The iOS app's App Store ID
-	* more_info_text: Button text
-
-* [ios_app_list ids="123456789,123456789,123456789,123456789" more_info_text="open in App Store..." mode="iOS"]
-	* ids: Comma separated list iOS app's App Store IDs
-	* mode: [iOS, Mac, Mixed or iTunes] (Mixed displays both iOS and Mac apps)
-	* more_info_text: Button text
-
-* [ios_app_link id="123456789" text="App Name"]
-	* id: The iOS app's App Store ID
-	* text: Link text
-
-* [mac_app id="123456789" more_info_text="open in Mac App Store..."]
-	* id: The Mac App Store ID
-	* more_info_text: Button text
-
-* [mac_app_link id="123456789" text="App Name"]
-	* id: The Mac App Store ID
-	* text: Link text
-
-* [itunes_store id="123456789" more_info_text="open in iTunes..."]
-	* id: The iTunes Store ID (works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos)
-
-* [appStore_IDsearch]
-	* Add this short code to a Private page/post in Wordpress to have your own admin quick search function. Searches for iPhone/iPod, iPad or Mac apps. Displays Name, Price, Developer, Categories and a copyable shortcode already filled out.
+*Full help for shortcodes is displayed in the settings area.*
 
 == Screenshots ==
 
-1. Options Page for changing Visual Elements
-2. Options Page for changing some of the text elements on the App Store detail
+1. Settings Page for changing Visual Elements
+2. Settings Page for changing some of the text elements on the App Store detail
 3. Single item from a page of multiple apps
 4. ATOM Feed listing
-5. General Options
+5. General Settings
 6. Shortcode buttons on editor toolbar
+7. The Search Screen
 
 == Changelog ==
 
-= 5.0 =
-* Added some WP 3.5 API coolness
-* Added ability to turn off screenshots [Thanks jack89ita]
-* Added screenshot of buttons on toolbar [Thanks crazymikesapps]
-* Now ready for Localization
-* No creates an Auto Except if no manual excerpt exists
-* Rewritten and optimized
-	* Options section
+= 6.0.4 =
+* Added: Link in Admin Bar to create new post from a found App
+* Added: Choose which elements show on a App List (ATOM feed or App List)
+* Added: Release Notes are now available as an element or part of a post
+* Added: "Offers In-App Purchases" warning (When Available)
+* Added: You can now use the short description on ATOM Feed displays
+* Added: "Supported Devices Minimal Icons" now just shows iPad, iPod, iPhone or iPad mini icons [Thanks snurnberg]
+* Changed: App Titles in ATOM Feed displays now uses your Themes H2 style
+* Fixed: Renamed a couple badges for the ES Localization that we incorrectly tagged
+* Fixed: Icon not showing on ATOM Feed display
+* Fixed: Icons added for New iDevices
+* Changed: Device list now uses descriptive text rather than device code
+* Changed: Device list uses new output method for better compatibility with themes
+
+= 6.0.3 =
+* Added: New smaller App Store badge element "appBadgeSm" for the ios_app_elements shortcode [Thanks beakernet]
+* Fixed: An issue ios_app_elements that had spaces in the elements list
+* Fixed: An issue ios_app_elements that multiple elements (introduced in 6.0.1)
+* Fixed: Had a "z" in the button name [Thanks beakernet]
+* Fixed: Issue with href tag ending. Fixed for HTML5 compatibility
+* Fixed: Issue with empty Value attribute in href tag. Fixed for HTML5 compatibility
+* Fixed: Two images were missing from the enlarged screenshots overlay. [Thanks snurnberg]
+
+= 6.0.2 =
+* Fixed: An issue where the ios_app_elements shortcode was returning data out of order  [Thanks beakernet]
+
+= 6.0.0 =
+* Added: You can now display individual elements via new shortcode "ios_app_elements" [Thanks beakernet & snurnberg]
+* Changed: New Simplified Settings Pages
+* Changed: Accordian display of description etc
+* Changed: Placement of App Store/iTunes badges now separate from description. [Thanks snurnberg]
+* Added: You now have the option to have link open in a new window [Thanks beakernet]
+* Fixed: The buy button for an iTunes item now render using the custom color selections [Thanks beakernet]
+* Fixed: Issue with iTunes store Post body elements prefs not saving. [Thanks beakernet]
+* Changed: New icons for iDevice types [Thanks snurnberg]
+* Changed: Optimized code 
+* Fixed: iTunes Store Badge Verbage in settings
+
+= 5.7.2 =
+* Fixed: Issue with images not showing in sort view of Admin section [Thanks snurnberg]
+
+= 5.7.1 =
+* Added: OPTIONALLY display "App Icon's buy button" [Thanks snurnberg]
+* Added: OPTIONALLY display the Apps description [Thanks snurnberg]
+* Changed: You can now edit the shortcode before creating a new post
+* Fixed: Sorting of App Elements did not save on some Wordpress setups (broken by JetPack v2.2)
+* Fixed: Compatibility issue with JetPack running shortcode twice
+* Fixed: Issue with "New App Post" creating longer than necessary shortcode
+
+= 5.7.0 =
+* Added: You can now rearrange the order of App elements via drag and drop
+* Added: Now saves Featured Image from app icon when using "New App Post" to create post
+* Added: New Setting for posts created from "New App Post" [Draft, Publish or Pending]
+* Added: New feature to add Featured Images to posts that do not have a Featured Image assigned
+* Added: Option to add App Store categories to posts created from "New App Post"
+* Added: Option to create new categories, if needed, to posts created from "New App Post"
+* Added: Now lists categories and newly created categories upon new post creation
+* Added: New option to not display App Icon in post
+* Added: You can now clear individual items from the Data cache and Cache folders
+* Changed: Now checks for new settings that haven't been set before as sets then them to default (useful on updates)
+* Changed: "Find App ID" is now "New App Post"
+* Updated: Now caches App data and images upon creation of post when using "New App Post"
+* Fixed: Device and "Universal App" icons were showing border in some themes
+* Fixed: Does not load excerpt handler if turned off in settings
+* Changed: New options for the amazon_item_link shortcode (see help section)
+* Changed: Reset page has been changed to Utilities
+* Changed: Cache options have been moved to General
+
+= 5.6.6 =
+* Added: Short code to display a link to an iTunes item
+* Changed: Cleaned up the Shortcode help section and added more descriptive text
+
+= 5.6.5 =
+* Added: Shortcode help section to Settings area
+* Added: Shortcode to display a link to an Amazon.com items
+* Added: amazon_item_link shortcode mode for displaying price after item text
+* Added: amazon_item_link shortcode mode for displaying separate text if item price is unavailable
+* Added: amazon_item_link shortcode mode for displaying any combination of text and button
+* Updated: More text has been added to Localization items for Amazon.com section
+* Fixed: Amazon Links now open in a new Window
+
+= 5.6.4 =
+*Fixed: See Version 5.6.5 
+
+= 5.6.3 =
+* Added: Choose the language of the iTunes/App Store Badges (See General->Localization)
+* Added: Choose the text of the iTunes/App Store Badges (See App Store or iTunes Store)
+* Added: New icons for iTunes and App Store badges as per new Apple Guidelines
+* Changed: Corrected text in iTunes settings section
+* Changed: A few default CSS values based on requests
+
+= 5.6.2 =
+* Fixed: Buy Button Background Gradient Start does not change the color. [Thanks Jeroen]
+
+= 5.6.1 =
+* Added: More options for "More Info" links and buttons
+* Removed: Option to use Custom Featured Image generator, conflicted with too many themes
+* Added: Option to use WordPress or Custom Excerpt generator
+* Updated: New shortcode descriptions for "More Info" text
+* Fixed: "More Info" link is now customizable globally or for each shortcode
+* Fixed: Issue with excerpt not working with certain themes (see new setting on general tab)
+* Fixed: Issue with Featured Image not showing when defined 
+
+= 5.6 =
+* Added: Widget to show ATOM Feeds of Apps
+* Added: Lightbox for display of Screenshots
+* Added: Cacheing of Amazon Product data and images
+* Added: Sends Featured Image to Themes that request it (handy for related posts)
+* Added: option to show thumbnail as app icon or small product image in excerpt
+* Added: option to show "Read More" link in excerpt
+* Updated: Amazon Product code to better handle foreign characters
+* Added: thumbnail support for iTunes products
+* Changed: Unified Cache directory with sub folders for each type of store
+* Changed: Optimized Cacheing system
+* Changed: Optimized image storing
+* Now Tested with over 300 Themes
+
+= 5.5.2 =
+* Added: Many CSS tags for Amazon.com section
+* Fixed: In App list mode, icon was appearing above description
+* Fixed: In Music list mode, icon was appearing above description
+* Fixed: Some amazon.com item's use a description from Editorial Review, which can have odd characters. It now tries to translate them.
+* Changed: Some options have been moved to make more sense
+
+= 5.5.1 =
+* Added: Now displays icons for Supported Devices or List of Supported Devices
+* Added: Localization items for Amazon.com section
+* Fixed: Debug information was showing
+
+= 5.5 =
+* Added: Amazon.com beta feature
+
+= 5.1 =
+* Fixed: Issue with WordPress not recognizing manually entered excerpts
+
+= 5.0.1 =
+* Added: Some WP 3.5 API coolness
+* Added: New App Store Search Screen in Settings
+	* Search for an App ID with copyable shortcode
+	* Auto-Create a post from App Store Search form
+	* Moved the appStore_IDsearch to the Settings section
+* Added: You can now turn off screenshots [Thanks jack89ita]
+* Added: Screenshot of buttons on toolbar [Thanks crazymikesapps]
+* Added: Now ready for Localization
+* Added: Now creates an Auto Except if no manual excerpt exists
+* Added: App Store Asst menu on Admin screen
+* Updated: Rewritten and optimized
+	* Settings section
 	* Removed ios_asaf_atomfeed shortcode
+	* Removed appStore_IDsearch shortcode
 	* Major cleanup of codebase
 	* Now checks for writable image cache folder
 	* Removes cached files and database entries when cache is cleared
-* Fixed error with currency set to US instead of USD
-* Fixed issue with TinyMCE being re-declared in some themes
-* Added App Store Asst menu on Admin screen
+* Fixed: Error with currency set to US instead of USD
+* Fixed: TinyMCE was being re-declared in some themes
+
+= 5.0 =
+* See Version 5.0.1
 
 = 4.7.1 =
 * HTTPS is now supported for Search and Lookup requests to Apple via their updated Search API.
 
 = 4.7 =
-* Added new shortcode [ios_app_list] (Use this shortcode if you are listing **multiple apps** on one page/post.) [Thanks Rodney]
-* AppStore links now open in a new window/tab [Thanks bluesteel124]
-* Fixed AppStore Badge URL (was missing .gif extension)
-* Fixed CSS for iTunes buy buttons
-* Cleaned up and corrected readme.txt
+* Added: New shortcode [ios_app_list] (Use this shortcode if you are listing **multiple apps** on one page/post.) [Thanks Rodney]
+* Added: AppStore links now open in a new window/tab [Thanks bluesteel124]
+* Fixed: AppStore Badge URL (was missing .gif extension)
+* Fixed: CSS for iTunes buy buttons
+* Updated: Cleaned up and corrected readme.txt
 
 = 4.6.1 =
-* Added additional CSS configuration for buttons
-	* Transparent backgounds
+* Added: Additional CSS configuration for buttons
+	* Transparent backgrounds
 	* Gradient Backgrounds
 	* Button Corner Radius
 	* Button Border Width
 
 = 4.6 =
-* Added two new shortcodes to display an affiliate link anywhere in a post [Thanks pwlk]
+* Added: Two new shortcodes to display an affiliate link anywhere in a post [Thanks pwlk]
 
 = 4.5.4 =
-* Fixed cache clearing code
-* Updated Screenshots
+* Fixed: Cache clearing code
+* Updated: Screenshots
 
 = 4.5.3 =
-* Fixed issue with iTunes RSS feeds [Thanks Fredrik]
-* Added "asaf_atomfeed" shortcode option for iTunes or iOS ATOM feeds
-* Changed RSS shortcode button in editor to reflect new option
+* Added: Shortcode "asaf_atomfeed" to display iTunes or iOS ATOM feeds
+* Fixed: Issue with iTunes RSS feeds [Thanks Fredrik]
+* Changed: RSS shortcode button in editor to reflect new shortcode
 
 = 4.5.2 =
-* Added new search functions for "[appStore_IDsearch]" shortcode
-* Improved search results for "[appStore_IDsearch]" shortcode
-* Apple now includes some 1024 x 1024 iOS icons and we have added code to handle this
-* Added option to choose adjust icon size by percentage or set max pixel size
-* Updated CSS for admin page to improve readability
-* Reorganized and cleaned up admin page
+* Added: New search functions for "[appStore_IDsearch]" shortcode
+* Updated: Improved search results for "[appStore_IDsearch]" shortcode
+* Added: Apple now includes some 1024 x 1024 iOS icons and we have added code to handle this
+* Added: Option to choose adjust icon size by percentage or set max pixel size
+* Updated: CSS for admin page changed to improve readability
+* Updated: Reorganized and cleaned up admin page
 
 = 4.5.1 =
-* Added ability to choose which country's store results to display
-* Add feature to delete App information cache
+* Added: Ability to choose which country's store results to display
+* Added: Feature to delete App information cache
 
 = 4.5 =
-* Added Currency options:
+* Added: New Currency options:
 	* US $
 	* Euro &euro;
 	* Norway Krone
 	* Sweden Krona
 	* Japan Yen
 	* UK &pound;
-* Fixed issue with older PHP installations. [Thanks Robert]
+* Fixed: Issue with older PHP installations. [Thanks Robert]
 
 = 4.4.3 =
-* Fixed issue with RSS Feed button in editor. It was inserting "id" instead of "atomurl". [Thanks Fredrik]
-* Added error handling for incorrect tag format.
+* Added: Error handling for incorrect tag format
+* Fixed: Issue with RSS Feed button in editor. It was inserting "id" instead of "atomurl". [Thanks Fredrik]
 
 = 4.4.2 =
-* Fixed issue with new Ratings bar images not being displayed
-* Added ability to use Full or Short description on Single Post page [Thanks Costin]
-* Added ability to use Full or Short description on Multiple Post pages [Thanks Costin]
-* Moved App Store bag to local image folder to reduce page load time
-* Added ability to reset all options to defaults.
-* Changed "More Info" button to better reflect new description options
+* Added: Ability to use Full or Short description on Single Post page [Thanks Costin]
+* Added: Ability to use Full or Short description on Multiple Post pages [Thanks Costin]
+* Added: Ability to reset all settings to defaults.
+* Fixed: Issue with new Ratings bar images not being displayed
+* Changed: Moved App Store badge to local image folder to reduce page load time
+* Changed: "More Info" button now better reflects new description settings
 
 = 4.4.1 =
-* Added 12 additional styles to Ratings bar
-* Added ability to customize button colors
+* Added: 12 additional styles to Ratings bar
+* Added: Ability to customize button colors
 	* Text
 	* Shadows
 	* Gradients etc.
-* Fixed issue with jQuery conflict on Admin pages
-* Removed dependancy on specific version of jQuery
-* Fixed issue with DMG affiliate code
-* Removed legacy code
-* Optimized some code
-* Added Screenshots
+* Fixed: Issue with jQuery conflict on Admin pages
+* Fixed: Issue with DMG affiliate code
+* Updated: Removed dependency on specific version of jQuery
+* Updated: Removed legacy code
+* Updated: Optimized some code
+* Added: Screenshots
 
 = 4.3.2 =
-* Added ability to ID Search for iPhone/iPod OR iPad apps [was just iOS]
-* Updated ID Search for Mac apps [API change]
-* Added title to ID Search based on selected type of search
-* Fixed ID Search form to keep app type selection after search
-* Adjusted box size for shortcode in ID Serach Results for easier copying
-* CSS changes in ID Search Results
+* Added: Ability to ID Search for iPhone/iPod OR iPad apps [was just iOS]
+* Added: Title to ID Search based on selected type of search
+* Updated: ID Search for Mac apps [API change]
+* Updated: Adjusted box size for shortcode in ID Search Results for easier copying
+* Updated: CSS changes in ID Search Results
+* Fixed: ID Search form to keep app type selection after search
 
 = 4.3.1 =
-* Fixed issue with empty Main Stylesheet [Was blank in 4.3]
-* Added better CSS/Layout for ID Search
-* Added Developer/Seller name to ID Search results
-* Cleaned some code for more efficient processing
+* Added: Better CSS/Layout for ID Search
+* Added: Developer/Seller name to ID Search results
+* Fixed: issue with empty Main Stylesheet [Was blank in 4.3]
+* Updated: Cleaned some code for more efficient processing
 
 = 4.3 =
-* Redesigned Settings page for easier setup [Major update]
-* Added Categories display to ID Search results
+* Updated: Redesigned Settings page for easier setup [Major update]
+* Added: Categories display to ID Search results
 
 = 4.2.4 =
-* Added CSS div to details section for compatibility with Google Fonts Plugin
+* Added: CSS div to details section for compatibility with Google Fonts Plugin
 
 = 4.2.3 =
-* Fixed issue where if Apple RSS feed returned an invalid App ID, feed would not display fully.
+* Fixed: Issue where if Apple RSS feed returned an invalid App ID, feed would not display fully.
 
 = 4.2.2 =
-* Added donation link to description
+* Added: Donation link to description
 
 = 4.2.1 =
-* Fixed Issue with search styles
+* Fixed: Issue with search styles
 
 = 4.2 =
-* Added shortcode to have a private search page
+* Added: Shortcode to have a private search page
 
 = 4.1 =
-* Added a button to insert shortcode for
+* Added: A button to insert shortcode for
 	* iTunes Store
 	* App Store
 	* Mac App Store
 	* Apple ATOM feed
 
 = 4.0 =
-* Added a new shortcode for iTunes Store
-* Added ability to display:
+* Added: A new shortcode for iTunes Store
+* Added: Ability to display:
 	* Music Albums, Songs and Music Videos
 	* Movies, Short Films
 	* TV Episodes and Seasons
-* Added choice of:
+* Added: Choice of:
 	* App icon size and % adjust
 	* iTunes icon size and % adjust
-* Can choose different size icons when viewed on iPhone
-* Smaller buy button choice for viewing on iPhone (less text)
-* Fixed iTunes Serach API error issue where "collectionId" is used in Albums rather than specified "collectionID"
+* Added: Can choose different size icons when viewed on iPhone
+* Added: Smaller buy button choice for viewing on iPhone (less text)
+* Fixed: iTunes Search API error issue where "collectionId" is used in Albums rather than specified "collectionID"
 
 = 3.0.2 =
-* Very minor CSS changes
-* Added additional CSS tags
-* Fixed Description
-* Cleanup of PHP & HTML code (no functional changes)
+* Updated: Very minor CSS changes
+* Added: Additional CSS tags
+* Updated: Description
+* Updated: Cleanup of PHP & HTML code (no functional changes)
 
 = 3.0.1 =
-* Change text "Rating" to "Age Rating" for Age Advisory
-* Change background color for app icons div to transparent
+* Updated: Change text "Rating" to "Age Rating" for Age Advisory
+* Changed: Change background color for app icons div to transparent
 
 = 3.0 =
-* Added Affiliate Network support for TradeDoubler and DGM
-* Fixed Affiliate Network support for LinkShare
-* Added Affiliate Network partnerId pulldown menu in preferences
-* Can now be used with out belonging to the Affiliate program (We do strongly suggest you join though, you should be earning this commission.)
-* Added options to display various app details
+* Added: Affiliate Network support for TradeDoubler and DGM
+* Fixed: Affiliate Network support for LinkShare
+* Added: Affiliate Network partnerId pulldown menu in preferences
+* Changed: Can now be used with out belonging to the Affiliate program (We do strongly suggest you join though, you should be earning this commission.)
+* Added: Settings to display, or not, various app details
 	* Title
 	* Version
 	* Developer Name
@@ -249,41 +416,43 @@ Please let us know of any features you would like added or bugs that need squash
 	* Supported Devices list
 
 = 2.6 =
-* Fixed issue where Mac app icons were cut off in CSS
-* Fixed Button Margins
-* Made "Show Full Description" button smaller
-* Softened buttons
-* Made CSS easier to edit for buttons
+* Fixed: Issue where Mac app icons were cut off in CSS
+* Fixed: Button Margins
+* Changed: Made "Show Full Description" button smaller
+* Changed: Softened buttons
+* Updated: Made CSS easier to edit for buttons
 
 = 2.5 =
-* Bug Fix
+* Fixed: Minor Bug Fix
 
 = 2.4 =
-* Fixed issue if Apple returned an invalid image link
-* Added additional CSS entries for customization
+* Fixed: Issue if Apple returned an invalid image link
+* Added: Additional CSS entries for customization
 
 = 2.3 =
 * Initial public release on Wordpress.org
 
 = 2.2 =
 * Initial addition to svn
-* Changed screenshot title to Mac or iPhone depending on shortcode
+* Changed: screenshot title to Mac or iPhone depending on shortcode
 
 = 2.0 =
-* Fixed issues with CSS
-* Updated to use Affiliate links
-* Added separate support shortcode for Mac App Store
-* Added preference for Linkshare affiliate code
+* Fixed: Issues with CSS
+* Updated: Now uses Affiliate links
+* Added: Separate support shortcode for Mac App Store
+* Added: Preference for Linkshare affiliate code
 
 = 1.7 =
-* Fixed icon sizing issue
+* Fixed: Icon sizing issue
 
 = 1.0 =
 * Internal release
 
 == Upgrade Notice ==
 
-None.
+In Version 5.0 the shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page. You should change the shortcode from ios_asaf_atomfeed to *asaf_atomfeed*.
+
+In Version 5.6 the Cacheing system has been replaced. It is recommended that you clear the caches before upgrading.
 
 == Note ==
 
@@ -295,7 +464,7 @@ The App Store Assistant can cache the data from your application in the Wordpres
 Each shortcode is designed to be used just once on a page/post. If you want to have multiple items listed on one page, than I would suggest using the [ios_app_list] shortcode. You can have a comma separated list of items to be displayed.
 
 = I really like the plugin, can I donate to the project? =
-Why, thank you for asking, of course you can. Just click the donate link. <http://theiphoneappslist.com/donate/>
+Why, thank you for asking, of course you can. Just click the [donate link](http://theiphoneappslist.com/donate/ "Donate"). <http://theiphoneappslist.com/donate/>
 
 == License ==
 
