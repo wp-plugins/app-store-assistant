@@ -6,7 +6,8 @@
 <th scope="row"><label>Short Description</label></th>
 <td><input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />  Max characters<br />
 <input type="checkbox" name="appStore_options[use_shortDesc_on_single]" value="yes" <?php if ($options['use_shortDesc_on_single'] == "yes") echo 'checked'; ?> /> Use on Single Post<br />
-<input type="checkbox" name="appStore_options[use_shortDesc_on_multiple]" value="yes" <?php if ($options['use_shortDesc_on_multiple'] == "yes") echo 'checked'; ?> /> Use on Multiple Post Page
+<input type="checkbox" name="appStore_options[use_shortDesc_on_multiple]" value="yes" <?php if ($options['use_shortDesc_on_multiple'] == "yes") echo 'checked'; ?> /> Use on Multiple Post Page<br />
+<input type="checkbox" name="appStore_options[use_shortDesc_on_atomfeed]" value="yes" <?php if ($options['use_shortDesc_on_atomfeed'] == "yes") echo 'checked'; ?> /> Use on ATOM Feed display
 </td>
 </tr>
 <tr valign="top">

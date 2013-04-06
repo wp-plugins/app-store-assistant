@@ -22,30 +22,29 @@ jQuery(function() {
 		<?php
     	$appStoreProperties = array(
      		array('ID' => "-----", 'label' => "Elements"),
-    		array('ID' => "displayapptitle", 'label' => "App Name"),
-    		array('ID' => "displayappdescription", 'label' => "App Description"),
-    		array('ID' => "displayappreleasenotes", 'label' => "App Release Notes"),
-    		array('ID' => "displayappbadge", 'label' => "App Store Badge"),
-    		array('ID' => "displayappicon", 'label' => "App Icon"),
-    		array('ID' => "displayappiconbuybutton", 'label' => "App Icon's buy button"),
+    		array('ID' => "displayATOMapptitle", 'label' => "App Name"),
+    		array('ID' => "displayATOMappdescription", 'label' => "App Description"),
+    		array('ID' => "displayATOMappreleasenotes", 'label' => "App Release Notes"),
+    		array('ID' => "displayATOMappbadge", 'label' => "App Store Badge"),
+    		array('ID' => "displayATOMappicon", 'label' => "App Icon"),
+    		array('ID' => "displayATOMappiconbuybutton", 'label' => "App Icon's buy button"),
      		array('ID' => "-----", 'label' => "Details"),
-  	 		array('ID' => "displayversion", 'label' => "App Version"),
-     		array('ID' => "displaydevelopername", 'label' => "Developer Name"),
-    		array('ID' => "displaysellername", 'label' => "Seller Name"),
-  			array('ID' => "displayreleasedate", 'label' => "Date Released"),
-     		array('ID' => "displayfilesize", 'label' => "File Size"),
-     		array('ID' => "displayuniversal", 'label' => "Universal App icon"),
- 			array('ID' => "displayadvisoryrating", 'label' => "Advisory Rating"),
- 			array('ID' => "displayappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
-   			array('ID' => "displaycategories", 'label' => "App Categories"),
+  	 		array('ID' => "displayATOMversion", 'label' => "App Version"),
+     		array('ID' => "displayATOMdevelopername", 'label' => "Developer Name"),
+    		array('ID' => "displayATOMsellername", 'label' => "Seller Name"),
+  			array('ID' => "displayATOMreleasedate", 'label' => "Date Released"),
+     		array('ID' => "displayATOMfilesize", 'label' => "File Size"),
+     		array('ID' => "displayATOMuniversal", 'label' => "Universal App icon"),
+ 			array('ID' => "displayATOMadvisoryrating", 'label' => "Advisory Rating"),
+ 			array('ID' => "displayATOMappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
+   			array('ID' => "displayATOMcategories", 'label' => "App Categories"),
      		array('ID' => "-----", 'label' => "Additional Elements"),
-     		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon"),
-    		array('ID' => "displayappbuybutton", 'label' => "App Buy Button"),
-    		array('ID' => "displaystarrating", 'label' => "App Star Rating"),
-     		array('ID' => "displayscreenshots", 'label' => "Screen Shots"),
-    		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices list"),
-    		array('ID' => "displaysupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
-     		array('ID' => "displaysupporteddeviceIcons", 'label' => "Supported Device Icons")
+     		array('ID' => "displayATOMgamecenterenabled", 'label' => "Game Center Enabled icon"),
+    		array('ID' => "displayATOMappbuybutton", 'label' => "App Buy Button"),
+    		array('ID' => "displayATOMstarrating", 'label' => "App Star Rating"),
+     		array('ID' => "displayATOMscreenshots", 'label' => "Screen Shots"),
+    		array('ID' => "displayATOMsupporteddevices", 'label' => "Supported Devices list"),
+     		array('ID' => "displayATOMsupporteddeviceIcons", 'label' => "Supported Device Icons")
     	);
     	
  		$hiddenlist = array();
@@ -83,7 +82,7 @@ jQuery(function() {
    			"appStoreDetail_appBuyButton" => "App Buy Button"
    			);
 
-		$appDetailsOrder = explode(",", appStore_setting('appDetailsOrder'));
+		$appDetailsOrder = explode(",", appStore_setting('appATOMDetailsOrder'));
 		$appDetailsOrder = array_filter($appDetailsOrder, 'strlen');
 		
 		if(count($appDetailsOrder) != 11) {
@@ -95,7 +94,7 @@ jQuery(function() {
 			$appElements_StartList = $appElements_DefaultList;
 		} else {
 		
-			$appElements_StartList = appStore_setting('appDetailsOrder');
+			$appElements_StartList = appStore_setting('appATOMDetailsOrder');
 		}
 ?>		
 		
@@ -115,6 +114,6 @@ jQuery(function() {
 	}
 ?>
 </ul>
-<input type="hidden" id="app_elements_order" name="appStore_options[appDetailsOrder]" value="<?php echo $appElements_StartList; ?>" />
+<input type="hidden" id="app_elements_order" name="appStore_options[appATOMDetailsOrder]" value="<?php echo $appElements_StartList; ?>" />
 <div style="clear:both;"></div>
 </div>

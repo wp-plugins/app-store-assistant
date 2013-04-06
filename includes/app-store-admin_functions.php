@@ -26,6 +26,7 @@ function appStore_add_defaults() {
 		"excerpt_moreinfo_text" => "More Info",
 		"excerpt_moreinfo_link" => "button",
 		"use_shortDesc_on_single" => "no",
+		"use_shortDesc_on_atomfeed" => "no",
 		"open_links_externally" => "no",
 		"excerpt_generator" => "wordpress",
 		"featured_image_generator" => "wordpress",
@@ -66,8 +67,10 @@ function appStore_add_defaults() {
 	
 		"displayapptitle" => "no",
 		"displayappdescription" => "yes",
+		"displayappreleasenotes" => "yes",
 		"displayappbadge" => "yes",
 		"displayappicon" => "yes",
+		"displayappinapppurwarning" => "yes",
 		"displayappiconbuybutton" => "yes",
 
 		"displayversion" => "yes",
@@ -85,11 +88,14 @@ function appStore_add_defaults() {
 		"displayscreenshots" => "yes",
 		"displaysupporteddevices" => "no",
 		"displaysupporteddeviceIcons" => "yes",
+		"displaysupporteddevicesMinimal" => "no",
 
 		"displaympapptitle" => "no",
 		"displaympappdescription" => "yes",
+		"displaympappreleasenotes" => "yes",
 		"displaympappbadge" => "yes",
 		"displaympappicon" => "yes",
+		"displaympinapppurwarning" => "yes",
 		"displaympappiconbuybutton" => "yes",
 
 		"displaympversion" => "yes",
@@ -107,6 +113,32 @@ function appStore_add_defaults() {
 		"displaympscreenshots" => "yes",
 		"displaympsupporteddevices" => "no",
 		"displaympsupporteddeviceIcons" => "yes",
+		"displaympsupporteddevicesMinimal" => "no",
+
+		"displayATOMapptitle" => "no",
+		"displayATOMappdescription" => "yes",
+		"displayATOMappreleasenotes" => "yes",
+		"displayATOMappbadge" => "yes",
+		"displayATOMappicon" => "yes",
+		"displayATOMappinapppurwarning" => "yes",
+		"displayATOMappiconbuybutton" => "yes",
+
+		"displayATOMversion" => "yes",
+		"displayATOMdevelopername" => "yes",
+		"displayATOMsellername" => "yes",
+		"displayATOMreleasedate" => "no",
+		"displayATOMfilesize" => "no",
+		"displayATOMuniversal" => "yes",
+		"displayATOMcategories" => "yes",
+		"displayATOMadvisoryrating" => "yes",
+
+		"displayATOMgamecenterenabled" => "yes",
+		"displayATOMappbuybutton" => "yes",
+		"displayATOMstarrating" => "yes",
+		"displayATOMscreenshots" => "yes",
+		"displayATOMsupporteddevices" => "no",
+		"displayATOMsupporteddeviceIcons" => "no",
+		"displayATOMsupporteddevicesMinimal" => "yes",
 
 		"displayexcerptthumbnail" => "yes",
 		"displayexcerptreadmore" => "no",
@@ -120,8 +152,9 @@ function appStore_add_defaults() {
 		"appicon_size_max" => "128",
 		"appicon_iOS_size_max" => "64",
 
-		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
-		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
+		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
+		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
+		"appATOMDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
 
 		"displayitunestitle" => "yes",
 		"displayitunestrackcount" => "yes",
@@ -365,7 +398,7 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		$tabs_array = array ('defaultTab' => 'Stars','buybutton' => 'Buy Button','miscellaneous' => 'Miscellaneous');
 	  break;
 	  case 'appStore_sm_appstore' :
-		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','appicon' => 'App Icon','graphics' => 'App Store Graphics');
+		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','atomfeed' => 'Atom Feed','appicon' => 'App Icon','graphics' => 'App Store Graphics');
 	  break;
 	  case 'appStore_sm_itunes' :
 		//$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','graphics' => 'App Store Graphics');

@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 6.0.3
+Stable tag: 6.0.4
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -97,6 +97,20 @@ Please let us know of any features you would like added or bugs that need squash
 7. The Search Screen
 
 == Changelog ==
+
+= 6.0.4 =
+* Added: Link in Admin Bar to create new post from a found App
+* Added: Choose which elements show on a App List (ATOM feed or App List)
+* Added: Release Notes are now available as an element or part of a post
+* Added: "Offers In-App Purchases" warning (When Available)
+* Added: You can now use the short description on ATOM Feed displays
+* Added: "Supported Devices Minimal Icons" now just shows iPad, iPod, iPhone or iPad mini icons [Thanks snurnberg]
+* Changed: App Titles in ATOM Feed displays now uses your Themes H2 style
+* Fixed: Renamed a couple badges for the ES Localization that we incorrectly tagged
+* Fixed: Icon not showing on ATOM Feed display
+* Fixed: Icons added for New iDevices
+* Changed: Device list now uses descriptive text rather than device code
+* Changed: Device list uses new output method for better compatibility with themes
 
 = 6.0.3 =
 * Added: New smaller App Store badge element "appBadgeSm" for the ios_app_elements shortcode [Thanks beakernet]

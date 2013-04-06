@@ -106,6 +106,7 @@
 <li>appName</li>
 <li>appIcon</li>
 <li>appDescription</li>
+<li>appReleaseNotes</li>
 <li>appBadge</li>
 <li>appDetails</li>
 <li>appGCIcon</li>

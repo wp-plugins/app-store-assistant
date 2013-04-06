@@ -24,6 +24,7 @@ jQuery(function() {
      		array('ID' => "-----", 'label' => "Elements"),
     		array('ID' => "displaympapptitle", 'label' => "App Name"),
     		array('ID' => "displaympappdescription", 'label' => "App Description"),
+    		array('ID' => "displaympappreleasenotes", 'label' => "App Release Notes"),
     		array('ID' => "displaympappbadge", 'label' => "App Store Badge"),
     		array('ID' => "displaympappicon", 'label' => "App Icon"),
     		array('ID' => "displaympappiconbuybutton", 'label' => "App Icon's buy button"),
@@ -35,6 +36,7 @@ jQuery(function() {
      		array('ID' => "displaympfilesize", 'label' => "File Size"),
      		array('ID' => "displaympuniversal", 'label' => "Universal App icon"),
  			array('ID' => "displaympadvisoryrating", 'label' => "Advisory Rating"),
+ 			array('ID' => "displaympappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
    			array('ID' => "displaympcategories", 'label' => "App Categories"),
      		array('ID' => "-----", 'label' => "Additional Elements"),
      		array('ID' => "displaympgamecenterenabled", 'label' => "Game Center Enabled icon"),
@@ -70,6 +72,7 @@ jQuery(function() {
     		"appStoreDetail_appName" => "App Name",
     		"appStoreDetail_appIcon" => "App Icon",
     		"appStoreDetail_appDescription" => "App Description",
+    		"appStoreDetail_appReleaseNotes" => "App ReleaseNotes",
     		"appStoreDetail_appBadge" => "App Store Badge",
     		"appStoreDetail_appDetails" => "App Details",
     		"appStoreDetail_appRating" => "App Star Rating",
@@ -82,9 +85,9 @@ jQuery(function() {
 		$appDetailsOrder = explode(",", appStore_setting('appMPDetailsOrder'));
 		$appDetailsOrder = array_filter($appDetailsOrder, 'strlen');
 		
-		if(count($appDetailsOrder) != 10) {
+		if(count($appDetailsOrder) != 11) {
 			//echo "-----".count($appDetailsOrder)."------[<pre>".print_r($appDetailsOrder,true)."</pre>]-------------";
-			$appElements_DefaultList = "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating";
+			$appElements_DefaultList = "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating";
 			$appDetailsOrder = explode(",",$appElements_DefaultList);
 			$appDetailsOrder = array_filter($appDetailsOrder, 'strlen');
 			//echo "-----".count($appDetailsOrder)."------[<pre>".print_r($appDetailsOrder,true)."</pre>]-------------";
