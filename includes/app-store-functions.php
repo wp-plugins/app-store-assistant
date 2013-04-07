@@ -1169,22 +1169,26 @@ function displayAppStore_appPrice($app,$elementOnly=false) {
 
 function displayAppStore_appDeviceList($app,$elementOnly=false){
 
-	$iDevices = array(	"iPad23G" => array ("name" => "iPad 2 3G", "icon" => "iPad23G"),
+	$iDevices = array(	"all" => array ("name" => "All iOS Devices", "icon" => "all"),
+						"iPadWifi" => array ("name" => "iPad Wifi", "icon" => "iPadWifi"),
 						"iPad2Wifi" => array ("name" => "iPad 2 WiFi", "icon" => "iPad2Wifi"),
+						"iPad23G" => array ("name" => "iPad 2 3G", "icon" => "iPad23G"),
+						"iPadThirdGen" => array ("name" => "iPad 3", "icon" => "iPadThirdGen"),
+						"iPadThirdGen4G" => array ("name" => "iPad 3 4G", "icon" => "iPadThirdGen4G"),
 						"iPadFourthGen" => array ("name" => "iPad 4", "icon" => "iPadFourthGen"),
 						"iPadFourthGen4G" => array ("name" => "iPad 4 4G", "icon" => "iPadFourthGen4G"),
 						"iPadMini" => array ("name" => "iPad mini", "icon" => "iPadMini"),
-						"iPadMini4G" => array ("name" => "iPad mini", "icon" => "iPadMini4G"),
-						"iPadThirdGen" => array ("name" => "iPad 3", "icon" => "iPadThirdGen"),
-						"iPadThirdGen4G" => array ("name" => "iPad 3 4G", "icon" => "iPadThirdGen4G"),
+						"iPadMini4G" => array ("name" => "iPad mini 4G", "icon" => "iPadMini4G"),
+						"iPhone-3G" => array ("name" => "iPad 3G", "icon" => "iPhone-3G"),
+						"iPhone-3GS" => array ("name" => "iPad 3GS", "icon" => "iPhone-3GS"),
 						"iPhone4" => array ("name" => "iPhone 4", "icon" => "iPhone4"),
 						"iPhone4S" => array ("name" => "iPhone 4S", "icon" => "iPhone4S"),
 						"iPhone5" => array ("name" => "iPhone 5", "icon" => "iPhone5"),
 						"iPhone5S" => array ("name" => "iPhone 5S", "icon" => "NewDevice"),
 						"iPhone6" => array ("name" => "iPhone 5", "icon" => "NewDevice"),
 						"iPhone6S" => array ("name" => "iPhone 5S", "icon" => "NewDevice"),
-						"iPodTouchFifthGen" => array ("name" => "iPod Touch 5th Gen", "icon" => "iPodTouchFifthGen"),
-						"iPodTouchourthGen" => array ("name" => "iPod Touch 4th Gen", "icon" => "iPodTouchourthGen")
+						"iPodTouchourthGen" => array ("name" => "iPod Touch 4th Gen", "icon" => "iPodTouchourthGen"),
+						"iPodTouchFifthGen" => array ("name" => "iPod Touch 5th Gen", "icon" => "iPodTouchFifthGen")
 						);
 	// print_r($iDevices);
 
@@ -1192,40 +1196,44 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 
 	if (is_array($app->supportedDevices)) {
 		$SupportedDevices = $app->supportedDevices;
-		sort($SupportedDevices);
+		$allDevices = appStore_substr_in_array("all", $SupportedDevices);
+		foreach ($iDevices as $iDevice => $iDeviceDetail):
+			if(in_array($iDevice, $SupportedDevices)) {
+				$iDeviceList[] = $iDeviceDetail['name'];
+				$iDeviceListIcons[] = $iDeviceDetail['icon'];
+				
+			}
+		endforeach;
 		$element = ''; 
+
 		if (!$elementOnly) {
 			$element .= '	<div class="supporteddevices">';
 			$element .= '		<h2>';
 			$element .= ' '.__("Supported Devices",appStoreAssistant);
 			$element .= '		</h2>';
 		}
+
 		if (appStore_setting('displaysupporteddevices') == "yes") {
 			$element .= '<span class="appStore-supporteddevices">';
 			$element .= __('Supported Devices').': ';
-			foreach ($SupportedDevices as $device):
-				$iDeviceList[] = $iDevices[$device]['name'];
-			endforeach;
+			
 
-			$element .=  ': '.implode(", ", $iDeviceList);
-			//$element .=  ': '.implode(", ", $SupportedDevices);
+			$element .=  implode(", ", $iDeviceList);
+			//$element .=  implode(", ", $SupportedDevices);
 			$element .= "</span><br />";
 		}
 
 		if (appStore_setting('displaysupporteddevicesMinimal') == "yes" || true) {
-			$SupportedDevices = $app->supportedDevices;
-			sort($SupportedDevices);
-			//print_r($SupportedDevices);
-			if (appStore_substr_in_array("iPad", $SupportedDevices)) {
+			if (appStore_substr_in_array("iPad", $SupportedDevices) || $allDevices) {
 				$element .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPad.png' , ASA_MAIN_FILE ).'" height="82" width="56" alt="iPad" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
 			}
-			if (appStore_substr_in_array("iPadMini", $SupportedDevices)) {
+			if (appStore_substr_in_array("iPadMini", $SupportedDevices) || $allDevices) {
 				$element .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPadmini.png' , ASA_MAIN_FILE ).'" height="82" width="39" alt="iPad mini" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
 			}
-			if (appStore_substr_in_array("iPhone", $SupportedDevices)) {
+			if (appStore_substr_in_array("iPhone", $SupportedDevices) || $allDevices) {
 				$element .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPhone.png' , ASA_MAIN_FILE ).'" height="82" width="23" alt="iPhone" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
 			}
-			if (appStore_substr_in_array("iPodTouch", $SupportedDevices)) {
+			if (appStore_substr_in_array("iPodTouch", $SupportedDevices) || $allDevices) {
 				$element .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPod.png' , ASA_MAIN_FILE ).'" height="82" width="23" alt="iPod" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
 			}
 			
@@ -1243,10 +1251,8 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 				$list_icon_height = "82";
 				break;
 			}
-			$SupportedDevices = $app->supportedDevices;
-			sort($SupportedDevices);
-			foreach ($SupportedDevices as $device):
-				$element .= '<img src="'.plugins_url( 'images/'.$list_icon_folder.'/'.$device.'.png' , ASA_MAIN_FILE ).'" height="'.$list_icon_height.'" alt="'.$device.'" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';					
+			foreach ($iDeviceListIcons as $iDeviceIcon):
+				$element .= '<img src="'.plugins_url( 'images/'.$list_icon_folder.'/'.$iDeviceIcon.'.png' , ASA_MAIN_FILE ).'" height="'.$list_icon_height.'" alt="'.$iDeviceIcon.'" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';					
 			endforeach;
 		}
 		if (!$elementOnly) $element .= '	</div>';
@@ -1254,6 +1260,7 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 		return $element;
 	}
 }
+
 function appStore_substr_in_array($needle,$haystack){
  
   $found = ARRAY();
