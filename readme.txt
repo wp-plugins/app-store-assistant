@@ -114,16 +114,16 @@ Please let us know of any features you would like added or bugs that need squash
 * Changed: Updates now show as a yellow background, and errors as red, in the settings panels
 * Removed: Extraneous App Icon CSS
 * Fixed: Supported Devices was displayed even when deselected in the options [Thanks aszabo]
-* Fixed: Extraneous <a> tag in Small Badge tag
+* Fixed: Extraneous a tag in Small Badge tag
 * Changed: Now clears ATOM feed cache when clearing Caches
 * Fixed: Cache directory for SimplePie
 * Changed: Rebuilt ATOM Feed cacheing system
-* Fixed: Extraneous <div> tag, was throwing off some themes
+* Fixed: Extraneous div tag, was throwing off some themes
 * Fixed: Issue with price button button not respecting preference setting
 * Fixed: Amazon.com is now using png and jpg files for product images [Thanks TesterGP]
 
 = 6.0.6 =
-* Fixed: Extraneous <div> tag, was throwing off some themes
+* Fixed: Extraneous div tag, was throwing off some themes
 
 = 6.0.5 =
 * Fixed: Was not displaying Minimal iDevice icons if the app was listing "all" as the supported devices [Thanks snurnberg]
