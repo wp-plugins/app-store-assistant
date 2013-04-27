@@ -44,6 +44,7 @@ jQuery(function() {
     		array('ID' => "displaympstarrating", 'label' => "App Star Rating"),
      		array('ID' => "displaympscreenshots", 'label' => "Screen Shots"),
     		array('ID' => "displaympsupporteddevices", 'label' => "Supported Devices list"),
+    		array('ID' => "displaympsupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
      		array('ID' => "displaympsupporteddeviceIcons", 'label' => "Supported Device Icons")
     	);
     	

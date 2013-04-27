@@ -44,6 +44,7 @@ jQuery(function() {
     		array('ID' => "displayATOMstarrating", 'label' => "App Star Rating"),
      		array('ID' => "displayATOMscreenshots", 'label' => "Screen Shots"),
     		array('ID' => "displayATOMsupporteddevices", 'label' => "Supported Devices list"),
+    		array('ID' => "displayATOMsupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
      		array('ID' => "displayATOMsupporteddeviceIcons", 'label' => "Supported Device Icons")
     	);
     	

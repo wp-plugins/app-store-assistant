@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 6.0.5
+Stable tag: 6.1.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -98,10 +98,37 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
+= 6.1.0 =
+* Added: When using the New App Post feature it lets you know if you already added the app. [Thanks AslanDoma]
+* Changed: Completly rebuilt Image handling. Now much faster and more efficient.
+* Added: Option to resize all featured images
+* Added: Option to reset all featured images to new size. Won't affect custom Featured Images
+* Changed: Icons and Featured Images are now resized in cache for faster loading [Thanks snurnberg]
+* Added: You can now specify exact sizes for Icons and Featured Images
+* Added: Choose different sizes for Featured Images, Images in posts, lists and on iOS devices
+* Added: Screenshots now available on List pages
+* Added: You can now specify different elements to display on Single Posts vs Multiple posts and List pages
+* Changed: Better handling if an app is no longer available in the app store
+* Changed: App Icon uses smaller button, now fits with more themes
+* Changed: App Icon display code Simplified
+* Changed: Updates now show as a yellow background, and errors as red, in the settings panels
+* Removed: Extraneous App Icon CSS
+* Fixed: Supported Devices was displayed even when deselected in the options [Thanks aszabo]
+* Fixed: Extraneous <a> tag in Small Badge tag
+* Changed: Now clears ATOM feed cache when clearing Caches
+* Fixed: Cache directory for SimplePie
+* Changed: Rebuilt ATOM Feed cacheing system
+* Fixed: Extraneous <div> tag, was throwing off some themes
+* Fixed: Issue with price button button not respecting preference setting
+* Fixed: Amazon.com is now using png and jpg files for product images [Thanks TesterGP]
+
+= 6.0.6 =
+* Fixed: Extraneous <div> tag, was throwing off some themes
+
 = 6.0.5 =
 * Fixed: Was not displaying Minimal iDevice icons if the app was listing "all" as the supported devices [Thanks snurnberg]
 * Added: Missing icons for original iPad Wifi, iPhone 3G & 3GS.
-* Added: iDevice icons are now sorted for ascetic design
+* Added: iDevice icons are now sorted for aesthetic design
 
 = 6.0.4 =
 * Added: Link in Admin Bar to create new post from a found App
@@ -458,6 +485,8 @@ Please let us know of any features you would like added or bugs that need squash
 In Version 5.0 the shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page. You should change the shortcode from ios_asaf_atomfeed to *asaf_atomfeed*.
 
 In Version 5.6 the Cacheing system has been replaced. It is recommended that you clear the caches before upgrading.
+
+In Version 6.0.6 the Image system has been replaced. It is recommended that you clear the caches AFTER upgrading.
 
 == Note ==
 

@@ -83,32 +83,17 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 	if ($asin=='') return;
 	
 	
-	$AmazonProductData = appStore_get_amazonData($asin);
-	switch (appStore_setting('amazon_productimage_size')) {
-		case "small":
-			$productImageURL = $AmazonProductData['SmallImage'];
-			break;
-		case "medium":
-			$productImageURL = $AmazonProductData['MediumImage'];
-			break;
-		case "large":
-			$productImageURL = $AmazonProductData['MediumImage'];
-			if ($AmazonProductData['LargeImage']) $productImageURL = $AmazonProductData['LargeImage'];
-			break;
-		default:
-			$productImageURL = $AmazonProductData['MediumImage'];
-	}
-	
+	$AmazonProductData = appStore_get_amazonData($asin);	
 
 	switch ($AmazonProductData['ProductGroup']) {
 	case "Book":
-		$amazonDisplayData = asa_displayAmazonBook($AmazonProductData,$productImageURL);
+		$amazonDisplayData = asa_displayAmazonBook($AmazonProductData);
 		break;
 	case "DVD":
-		$amazonDisplayData = asa_displayAmazonDisc($AmazonProductData,$productImageURL);
+		$amazonDisplayData = asa_displayAmazonDisc($AmazonProductData);
 		break;
 	default:
-		$amazonDisplayData = asa_displayAmazonDefault($AmazonProductData,$productImageURL);
+		$amazonDisplayData = asa_displayAmazonDefault($AmazonProductData);
 	}
 	return $amazonDisplayData;
 }	
@@ -135,10 +120,37 @@ function appStore_get_amazonData($asin) {
 	return $appStore_options['app_data'];
 }
 
+function appStore_getBestAmazonImage($asin) {
+	$filename = false;
+	$firstChoice = CACHE_DIRECTORY."Amazon/".$asin."/LargeImage.png";
+	$secondChoice = CACHE_DIRECTORY."Amazon/".$asin."/LargeImage.jpg";
+	$thirdChoice = CACHE_DIRECTORY."Amazon/".$asin."/MediumImage.png";
+	$fourthChoice = CACHE_DIRECTORY."Amazon/".$asin."/MediumImage.jpg";
+	$fifthChoice = CACHE_DIRECTORY."Amazon/".$asin."/SmallImage.png";
+	$sixthChoice = CACHE_DIRECTORY."Amazon/".$asin."/SmallImage.jpg";
+	$lastChoice = dirname( plugin_basename( __FILE__ ) )."/images/CautionIcon.png";
+
+	if (file_exists($firstChoice)) {
+		$filename = $firstChoice;
+	} elseif(file_exists($secondChoice)) {
+		$filename = $secondChoice;
+	} elseif(file_exists($thirdChoice)) {
+		$filename = $thirdChoice;
+	} elseif(file_exists($fourthChoice)) {
+		$filename = $fourthChoice;
+	} elseif(file_exists($fifthChoice)) {
+		$filename = $fifthChoice;
+	} elseif(file_exists($sixthChoice)) {
+		$filename = $sixthChoice;
+	} elseif(file_exists($lastChoice)) {
+		$filename = $lastChoice;
+	}
+	return $filename;
+}
+
 function appStore_save_amazonImages_locally($productData) {
 	$asin = $productData['ASIN'];	
 
-	
 	if(!is_writeable(CACHE_DIRECTORY)) {
 		//Uploads dir isn't writeable. bummer.
 		appStore_set_setting('cache_images_locally', '0');
@@ -153,8 +165,7 @@ function appStore_save_amazonImages_locally($productData) {
 		$urls_to_cache = array();
 		if($productData['SmallImage']) $urls_to_cache['SmallImage'] = $productData['SmallImage'];
 		if($productData['MediumImage']) $urls_to_cache['MediumImage'] = $productData['MediumImage'];
-		if($productData['LargeImage']) $urls_to_cache['MediumImage'] = $productData['LargeImage'];
-
+		if($productData['LargeImage']) $urls_to_cache['LargeImage'] = $productData['LargeImage'];
 
 		foreach($urls_to_cache as $urlname=>$url) {
 			$content = appStore_fopen_or_curl($url);
@@ -171,6 +182,67 @@ function appStore_save_amazonImages_locally($productData) {
 				appStore_set_setting('cache_images_locally', '0');
 				return;
 			}
+		}
+		
+		$bestFilePath = appStore_getBestAmazonImage($asin);
+		$bestFilePathParts = pathinfo($bestFilePath);
+		$bestFileName = $bestFilePathParts['filename'];
+		$bestFileExt = $bestFilePathParts['extension'];		
+		$editor = wp_get_image_editor( $bestFilePath );
+ 		$size = $editor->get_size();
+
+ 		if(appStore_setting('appicon_size_featured') < $size['width']) {
+ 			$newSize = appStore_setting('appicon_size_featured');
+			$editor->resize( $newSize, $newSize, true );
+			$filename = $editor->generate_filename( 'featured', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
+			$new_image_info = $editor->save($filename);
+			$productData['imageFeatured'] = "Amazon/$asin/".$bestFileName."-featured.".$bestFileExt;
+		} else {
+			$productData['imageFeatured'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		}
+
+ 		if(appStore_setting('appicon_size_ios') < $size['width']) {
+			$editor = wp_get_image_editor( $bestFilePath );
+ 			$newSize = appStore_setting('appicon_size_ios');
+			$editor->resize( $newSize, $newSize, true );
+			$filename = $editor->generate_filename( 'ios', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
+			$new_image_info = $editor->save($filename);		
+			$productData['imageiOS'] = "Amazon/$asin/".$bestFileName."-ios.".$bestFileExt;
+		} else {
+			$productData['imageiOS'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		}
+
+ 		if(appStore_setting('appicon_size_lists') < $size['width']) {
+			$editor = wp_get_image_editor( $bestFilePath );
+ 			$newSize = appStore_setting('appicon_size_lists');
+			$editor->resize( $newSize, $newSize, true );
+			$filename = $editor->generate_filename( 'list', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
+			$new_image_info = $editor->save($filename);		
+			$productData['imageLists'] = "Amazon/$asin/".$bestFileName."-list.".$bestFileExt;
+		} else {
+			$productData['imageLists'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		}
+
+ 		if(appStore_setting('appicon_size_posts') < $size['width']) {
+			$editor = wp_get_image_editor( $bestFilePath );
+ 			$newSize = appStore_setting('appicon_size_posts');
+			$editor->resize( $newSize, $newSize, true );
+			$filename = $editor->generate_filename( 'post', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
+			$new_image_info = $editor->save($filename);		
+			$productData['imagePosts'] = "Amazon/$asin/".$bestFileName."-post.".$bestFileExt;
+		} else {
+			$productData['imagePosts'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		}
+
+ 		if(appStore_setting('appicon_size_element') < $size['width']) {
+			$editor = wp_get_image_editor( $bestFilePath );
+ 			$newSize = appStore_setting('appicon_size_element');
+			$editor->resize( $newSize, $newSize, true );
+			$filename = $editor->generate_filename( 'element', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
+			$new_image_info = $editor->save($filename);		
+			$productData['imageElements'] = "Amazon/$asin/".$bestFileName."-element.".$bestFileExt;
+		} else {
+			$productData['imageElements'] = "Amazon/$asin/$bestFileName.$bestFileExt";
 		}
 	}
 	return $productData;
@@ -265,12 +337,12 @@ function appStore_page_get_amazonXML($asin) {
 }
 
 
-function asa_displayAmazonDisc($Data,$productImageURL){
+function asa_displayAmazonDisc($Data){
 	$displayAmazonDisc = "<!-- Disc Listing -->";
 
 	$displayAmazonDisc .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonDisc .= '	<div id="amazonStore-icon-container">';
-	$displayAmazonDisc .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
+	$displayAmazonDisc .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.CACHE_DIRECTORY_URL.$Data['imagePosts'].'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	$displayAmazonDisc .= '</div>';
 
 
@@ -315,12 +387,12 @@ function asa_displayAmazonDisc($Data,$productImageURL){
 	return $displayAmazonDisc;
 
 }
-function asa_displayAmazonBook($Data,$productImageURL){
+function asa_displayAmazonBook($Data){
 	$displayAmazonBook = "<!-- Book Listing -->";
 
 	$displayAmazonBook .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonBook .= '	<div id="amazonStore-icon-container">';
-	$displayAmazonBook .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$productImageURL.'" alt="'.$Data['Title'].'" width="'.appStore_setting('amazon_productimage_maxwidth').'" border="0" style="float: right; margin: 10px;" /></a>';
+	$displayAmazonBook .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.CACHE_DIRECTORY_URL.$Data['imagePosts'].'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	$displayAmazonBook .= '</div>';
 
 	$displayAmazonBook .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
@@ -363,11 +435,11 @@ function asa_displayAmazonBook($Data,$productImageURL){
 	return $displayAmazonBook;
 }
 
-function asa_displayAmazonDefault($Data,$productImageURL){
+function asa_displayAmazonDefault($Data){
 	$displayAmazonDefault = "<!-- Default Listing -->";
 	$displayAmazonDefault .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonDefault .= '	<div id="amazonStore-icon-container">';
-	$displayAmazonDefault .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$productImageURL.'" alt="'.$Data['Title'].'" border="0" width="'.appStore_setting('amazon_productimage_maxwidth').'" style="float: right; margin: 10px;" /></a>';
+	$displayAmazonDefault .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.CACHE_DIRECTORY_URL.$Data['imagePosts'].'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	$displayAmazonDefault .= '</div>';
 	$displayAmazonDefault .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
 	if ($Data['Description']) {

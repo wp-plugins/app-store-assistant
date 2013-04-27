@@ -17,6 +17,10 @@ jQuery(function() {
 	jQuery( "#sortable" ).disableSelection();
 });
 </script>
+<?PHP
+appStore_CreateListOfAppsUsedInPosts();
+?>
+
 <h2 class="asa_admin">Show in Post body</h2>
 <div class="asa_admin">
 		<?php
