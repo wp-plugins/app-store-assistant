@@ -68,6 +68,7 @@ function appStore_add_defaults() {
 		"displayapptitle" => "no",
 		"displayappdescription" => "yes",
 		"displayappreleasenotes" => "yes",
+		"displayappdetailssection" => "yes",
 		"displayappbadge" => "yes",
 		"displayappicon" => "yes",
 		"displayappinapppurwarning" => "yes",
@@ -149,6 +150,7 @@ function appStore_add_defaults() {
 		"appicon_size_featured" => "256",
 		"appicon_size_ios" => "256",
 		"appicon_size_lists" => "128",
+		"appicon_size_widget" => "64",
 		"appicon_size_posts" => "128",
 		"appicon_size_element" => "200",
 		
@@ -234,12 +236,12 @@ function appStore_init(){
 
 function appStore_add_admin_scripts() {
 	wp_enqueue_script('jquery');
-	wp_enqueue_script('jquery-ui-tabs' );
-	wp_enqueue_script('jquery-ui-sortable');
 	wp_enqueue_script('jquery-ui-core');//enables UI
 	wp_enqueue_script('jquery-ui-tabs');
-	wp_enqueue_style( 'farbtastic' );
-	wp_enqueue_script('farbtastic' );
+	wp_enqueue_script('jquery-ui-sortable');
+	wp_enqueue_script('jquery-ui-tabs');
+	wp_enqueue_style( 'farbtastic');
+	wp_enqueue_script('farbtastic');
  	wp_enqueue_script('jquerymenusstart', plugins_url('js_functions/jquerymenusstart.js',ASA_MAIN_FILE), null, null, true);
 	wp_enqueue_script('jscolor', plugins_url('js_functions/jscolor/jscolor.js',ASA_MAIN_FILE), null, null, true);
 }
@@ -532,6 +534,10 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 function appStore_CreateListOfAppsUsedInPosts() {
 	$MyResults = appStore_get_shortcode_posts();
 	$postCounter = 1;
+	$arrayOfIDs['iOS'][] = "000000000";
+	$arrayOfIDs['iTunes'][] = "000000000";
+	$arrayOfIDs['Amazon'][] = "000000000";
+
 	foreach($MyResults as $MyResult) {
 		$appIDs = preg_match_all('/_app\ id=\"([^\"]*?)\"/', $MyResult->post_content, $app_matches);
 		$iTunesIDs = preg_match_all('/itunes_store\ id=\"([^\"]*?)\"/', $MyResult->post_content, $iTunes_matches);
@@ -551,7 +557,7 @@ function appStore_CreateListOfAppsUsedInPosts() {
 }
 
 
-function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
+function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$type){
 	GLOBAL $masterList,$checkForDuplicates;
 	$i = $startKey;
 	$listOfAlreadyAddedIDs = appStore_CreateListOfAppsUsedInPosts();
@@ -593,14 +599,17 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 			$masterList[$i] .= '<input type="hidden" name="postTitle" value="'.$appData->trackName.'">';
 			$masterList[$i] .= '<input type="hidden" name="appID" value="'.$appData->trackId.'">';
 			$masterList[$i] .= '<input type="hidden" name="postCategories" value="'.$CategoriesNS.'">';
+			$masterList[$i] .= '<input type="hidden" name="type" value="'.$type.'">';
 			$masterList[$i] .= '<input type="hidden" name="createPost" value="true">';
-			if (in_array($appData->trackId, $listOfAlreadyAddediOSIDs)) {
-				$masterList[$i] .= '<br /><font color="red"><b>'.__("You have already added this app.").'</b></font>';
-			} else {
-				$masterList[$i] .= '<br /><button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
+			if (is_array($listOfAlreadyAddediOSIDs)) {
+				if (in_array($appData->trackId, $listOfAlreadyAddediOSIDs)) {
+					$masterList[$i] .= '<br /><font color="red"><b>'.__("You have already added this app.").'</b></font>';
+				} else {
+					$masterList[$i] .= '<br /><button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
+				}
 			}
 			$masterList[$i] .= "</p></form>";
-			$masterList[$i] .= '</li>';
+			$masterList[$i] .= '</li>'."\r\n<!-- App -->\r\n";
 		}
 		
 		$checkForDuplicates[] = $appData->trackId;
@@ -688,10 +697,10 @@ function appStore_search_form() {
 
 		$checkForDuplicates[] = "000000000"; //Setup array for later use
 		$listOfApps = appStore_getSearchResultsFromApple($entity);
-		appStore_buildListOfFoundApps($listOfApps,"1",$shortCodeStart);
+		appStore_buildListOfFoundApps($listOfApps,"1",$shortCodeStart,$_POST['type']);
 		if($_POST['type'] == "iOS") {
 			$biggerListOfApps = appStore_getSearchResultsFromApple("iPadSoftware");
-			appStore_buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart);
+			appStore_buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart,$_POST['type']);
 		}
 		if(is_array($masterList)){
 		echo "<h2>$Searchtype</h2>";
@@ -731,8 +740,9 @@ function wpse49871_shortcode_query_filter( $where ){
 }
 function appStore_get_shortcode_posts() {
     add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
-    $posts = get_posts( array('posts_per_page'  => 550
-        // Do your query in here. See "Taxonomy Query" args above for example [,'meta_key'=>'-_thumbnail_id']
+    $posts = get_posts( array(	'posts_per_page'  => 550,
+    							'post_status' => 'any'
+
     ) );
 
     remove_filter( 'posts_where', 'appStore_shortcode_query_filter' );
@@ -742,7 +752,7 @@ function appStore_get_shortcode_posts() {
 
 function appStore_get_shortcode_posts_featuredImages() {
     add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
-    $posts = get_posts( array('posts_per_page'  => 550,'meta_key' => '_thumbnail_id'
+    $posts = get_posts( array('posts_per_page'  => 550,'meta_key' => '_thumbnail_id','post_status' => 'any'
     ) );
 
     remove_filter( 'posts_where', 'appStore_shortcode_query_filter' );
@@ -768,10 +778,11 @@ function appStore_addFeaturedImage ($postData) {
 	}
 	
 	$appIDs = preg_match_all('/_app\ id=\"([^\"]*?)\"/', $postData->post_content, $app_matches);
+	$applinks = preg_match_all('/_app\ link=\"([^\"]*?)\"/', $postData->post_content, $applink_matches);
 	$iTunesIDs = preg_match_all('/itunes_store\ id=\"([^\"]*?)\"/', $postData->post_content, $iTunes_matches);
 	$amazonIDs = preg_match_all('/amazon_item\ asin=\"([^\"]*?)\"/', $postData->post_content, $amazon_matches);
 	//echo $postData->post_content."<br />";
-	if(!$appIDs && !$amazonIDs && !$iTunesIDs) {
+	if(!$appIDs && !$amazonIDs && !$iTunesIDs && !$applinks) {
 		echo '<font color="red">Skipping</font>: '.__('No App IDs or Amazon ASINs found for post',appStoreAssistant).' ('.$newPostID.')<br />';
 		return;
 	}
@@ -786,14 +797,31 @@ function appStore_addFeaturedImage ($postData) {
 
 	$shortcodeData = "";
 
-	if($appIDs || $iTunesIDs) {
+	if($appIDs || $iTunesIDs || $applinks) {
 	
-		if($iTunesIDs) $matchesToCheck = $iTunes_matches;
-		if($appIDs) $matchesToCheck = $app_matches;
-	
-		echo __("App IDs Found",appStoreAssistant)."<br />";
-		foreach ($matchesToCheck[1] as $shortcodeID) {
-			$shortcodeData[] = $shortcodeID;
+		if($iTunesIDs) {
+			$matchesToCheck = $iTunes_matches;
+			echo __("iTunes IDs Found",appStoreAssistant)."<br />";
+			foreach ($matchesToCheck[1] as $shortcodeID) {
+				$shortcodeData[] = $shortcodeID;
+			}
+		}
+		if($applinks) {
+			$matchesToCheck = $applink_matches;
+			echo __("App ID via Link Found",appStoreAssistant)."<br />";
+			foreach ($matchesToCheck[1] as $link) {
+				$pattern = '(id[0-9]+)';
+				preg_match($pattern, $link, $matches, PREG_OFFSET_CAPTURE, 3);
+				$appIDs = substr($matches[0][0], 2);		
+				$shortcodeData[] = $appIDs;
+			}
+		}
+		if($appIDs) {
+			$matchesToCheck = $app_matches;
+			echo __("App IDs Found",appStoreAssistant)."<br />";
+			foreach ($matchesToCheck[1] as $shortcodeID) {
+				$shortcodeData[] = $shortcodeID;
+			}
 		}
 		$appID = $shortcodeData[0];
 		

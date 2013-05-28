@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.1.0
+Version: 6.2.0
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -44,7 +44,7 @@ add_filter('plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
 
 // Load Scripts & Styles
 add_action('wp_print_scripts', 'appStore_add_scripts');
-add_action('wp_print_styles',  'appStore_add_stylesheets');
+add_action('wp_print_styles', 'appStore_add_stylesheets');
 
 // Load Admin Scripts & Styles
 add_action('admin_print_scripts', 'appStore_add_admin_scripts');
@@ -98,8 +98,6 @@ define('CACHE_DIRECTORY_URL',$upload_dir['baseurl'] . '/appstoreassistant_cache/
 // Setup Widget
 // ------------------------------------------------------------------------
 
-
-
 class ASA_Widget1 extends WP_Widget {
 	function ASA_Widget1() {
 		parent::WP_Widget( false, $name = 'ASA Top 5 iOS' );
@@ -107,7 +105,9 @@ class ASA_Widget1 extends WP_Widget {
 
 	function widget( $args, $instance ) {
 		extract( $args );
+		$artwork_url_start = CACHE_DIRECTORY_URL;
 		//Widget Title
+				
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		if(!$title) $title = __('Top 5 iOS Apps');
 		echo $before_widget;
@@ -136,11 +136,14 @@ class ASA_Widget1 extends WP_Widget {
 		foreach($appIDs as $appID) {	
 			if($appID == "" || !is_numeric($appID)) return;
 			$app = appStore_get_data($appID);
+			// App Artwork
+			$imageTag = $app->imageWidget;
+
 			$appURL = getAffiliateURL($app->trackViewUrl);
 			if($app) {
 				echo "<li>";
 				echo '<a href="'.$appURL.'">';
-				echo '<img src="'.$app->artworkUrl60.'" alt="'.$app->title.'" align="left" width="40"/>';
+				echo '<img src="'.$artwork_url_start.$imageTag.'" alt="'.$app->title.'" align="left"/>';
 				echo '</a>';
 				echo '<h4>'.$app->trackName.'</h4>';
 				echo "<p>";

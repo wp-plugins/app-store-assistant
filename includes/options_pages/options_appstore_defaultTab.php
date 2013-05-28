@@ -21,18 +21,29 @@ jQuery(function() {
 appStore_CreateListOfAppsUsedInPosts();
 ?>
 
-<h2 class="asa_admin">Show in Post body</h2>
+<h2 class="asa_admin">Show the following elements in the body of a Single Post</h2>
 <div class="asa_admin">
 		<?php
-    	$appStoreProperties = array(
-     		array('ID' => "-----", 'label' => "Elements"),
-    		array('ID' => "displayapptitle", 'label' => "App Name"),
+    	$appStoreSections = array(
+     		array('ID' => "-----", 'label' => "Collapsible Elements"),
     		array('ID' => "displayappdescription", 'label' => "App Description"),
     		array('ID' => "displayappreleasenotes", 'label' => "App Release Notes"),
-    		array('ID' => "displayappbadge", 'label' => "App Store Badge"),
+    		array('ID' => "displayappdetailssection", 'label' => "Details Section"),
+      		array('ID' => "displayscreenshots", 'label' => "Screen Shots"),
+    		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices list"),
+    		array('ID' => "displaysupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
+     		array('ID' => "displaysupporteddeviceIcons", 'label' => "Supported Device Icons")
+    	);
+    	$appStoreDetails = array(
+    		array('ID' => "-----", 'label' => "Single Elements"),
+    		array('ID' => "displayapptitle", 'label' => "App Name"),
     		array('ID' => "displayappicon", 'label' => "App Icon"),
     		array('ID' => "displayappiconbuybutton", 'label' => "App Icon's buy button"),
-     		array('ID' => "-----", 'label' => "Details"),
+    		array('ID' => "displayappbadge", 'label' => "App Store Badge"),
+     		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon"),
+    		array('ID' => "displayappbuybutton", 'label' => "App Buy Button"),
+    		array('ID' => "displaystarrating", 'label' => "App Star Rating"),
+     		array('ID' => "-----", 'label' => "Details Elements"),
   	 		array('ID' => "displayversion", 'label' => "App Version"),
      		array('ID' => "displaydevelopername", 'label' => "Developer Name"),
     		array('ID' => "displaysellername", 'label' => "Seller Name"),
@@ -42,35 +53,75 @@ appStore_CreateListOfAppsUsedInPosts();
  			array('ID' => "displayadvisoryrating", 'label' => "Advisory Rating"),
  			array('ID' => "displayappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
    			array('ID' => "displaycategories", 'label' => "App Categories"),
-     		array('ID' => "-----", 'label' => "Additional Elements"),
-     		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon"),
-    		array('ID' => "displayappbuybutton", 'label' => "App Buy Button"),
-    		array('ID' => "displaystarrating", 'label' => "App Star Rating"),
-     		array('ID' => "displayscreenshots", 'label' => "Screen Shots"),
-    		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices list"),
-    		array('ID' => "displaysupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
-     		array('ID' => "displaysupporteddeviceIcons", 'label' => "Supported Device Icons")
-    	);
-    	
- 		$hiddenlist = array();
-
-		foreach($appStoreProperties as $appStoreProperty) {
+    	);  	
+ 		echo '<div class="appStore_datagrid">';
+		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
+		foreach($appStoreSections as $appStoreProperty) {
 			if($appStoreProperty['ID'] == "-----") {
-				echo "<b> - ".$appStoreProperty['label']."</b><br />";
+				echo '<tr class="alt"><td colspan="5">';
+				echo "- ".$appStoreProperty['label']." -";
+				echo '</tr>';
 			} else {
-				array_push($hiddenlist, $appStoreProperty['ID']);
-				echo '<input type="checkbox" name="appStore_options[';
+				echo '<tr><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="no"';
+				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
 				echo $appStoreProperty['ID'];
 				echo ']" value="yes"';
 				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
-				echo ' /> '.$appStoreProperty['label']."<br />\r";
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="open"';
+				if ($options[$appStoreProperty['ID']] == "open") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="closed"';
+				if ($options[$appStoreProperty['ID']] == "closed") echo ' checked';
+				echo ' />';
+				echo '</td><td class="alt">';
+				echo $appStoreProperty['label']."</td></tr>\r";
 			}
 		}
-		
-		$hiddenlistcsv = implode(',', $hiddenlist);
-		echo '<input type="hidden" name="appStore_options[checkboxedoptions]" value="'.$hiddenlistcsv.'" />'
+		foreach($appStoreDetails as $appStoreProperty) {
+			if($appStoreProperty['ID'] == "-----") {
+				echo '<tr class="alt"><td colspan="5">';
+				echo "- ".$appStoreProperty['label']." -";
+				echo '</tr>';
+			} else {
+				echo '<tr><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="no"';
+				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="yes"';
+				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '</td><td>';
+				echo '</td><td class="alt">';
+				echo $appStoreProperty['label']."</td></tr>\r";
+			}
+		}
+		echo '</tbody></table></div>';
 		
 		?>
+<b>Hide</b>: Do not show the element.<br />
+<b>Regular</b>: Show the element in regular text display.<br />
+<b>Open</b>: Show the element in an Accordion (starting off open).<br />
+<b>Closed</b>: Show the element in an Accordion (starting off closed).<br />
+	
 </div>
 <?php
     	$appStoreProperties = array(
@@ -104,7 +155,7 @@ appStore_CreateListOfAppsUsedInPosts();
 ?>		
 		
 		
-<h2 class="asa_admin">Order of Post Elements</h2>
+<h2 class="asa_admin">Order of Elements</h2>
 	<div class="asa_admin">
 		Drag the elements into the order you would like them displayed<br />
 <ul id="sortable">

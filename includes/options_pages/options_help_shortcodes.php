@@ -28,7 +28,21 @@
 	<li>more_info_text: Excerpt "more info" link text (optional)</li>
 	</ul>
 </li>
+<li>[ios_app link="https://itunes.apple.com/us/app/1password/id568903335?mt=8" more_info_text="More Info on this App..."]<p>Displays a single iOS app using a link*</p>
+	<ul>
+	<li>link: The iOS app's App Store ID<p>This special shortcode was created for users of wp-o-matic.<br />For example: <i>https://itunes.apple.com/us/app/1password/id568903335?mt=8</i></p></li>
+	<li>more_info_text: Excerpt "more info" link text (optional)</li>
+	</ul>
+</li>
+<li>[mac_app link="https://itunes.apple.com/us/app/1password-password-manager/id443987910?mt=12" more_info_text="More Info on this Mac App..."]<p>Displays a single Mac app using a link*</p>
+	<ul>
+	<li>link: The Mac App Store ID<p>This special shortcode was created for users of wp-o-matic.<br />For example: <i>https://itunes.apple.com/us/app/1password-password-manager/id443987910?mt=12</i></p></li>
+	<li>more_info_text: Excerpt "more info" link text (optional)</li>
+	</ul>
+</li>
+*(You will still need to run the Add Featured Images Function, if you want the Featured Image.)<br /><br />
 </ul>
+
 
 <h3 class="asa_admin">Display several items from a ATOM/RSS Feed:</h3>
 	
@@ -97,9 +111,9 @@
 <h3 class="asa_admin">Display elements from an item:</h3>
 
 <ul>
-	<li>[ios_app_link id="568903335" elements="App Name"]<p>Displays a text only link to the iOS App</p>
+	<li>[ios_app_elements id="568903335" elements="appName"]<p>Displays the element or elements for the iOS or Mac App</p>
 	<ul>
-	<li>id: The iOS app's App Store ID<p>This can be found in the copied link from the iTunes App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i></p></li>
+	<li>id: The iOS or Mac app's App Store ID<p>This can be found in the copied link from the iTunes App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i></p></li>
 	<li>elements: One or more of the following items:<br />
 	
 <ul>

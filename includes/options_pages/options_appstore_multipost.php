@@ -17,27 +17,18 @@ jQuery(function() {
 	jQuery( "#sortable" ).disableSelection();
 });
 </script>
-<h2 class="asa_admin">Show in Post body</h2>
+<h2 class="asa_admin">Show the following elements in each section of a page with Multiple Posts</h2>
 <div class="asa_admin">
 		<?php
-    	$appStoreProperties = array(
-     		array('ID' => "-----", 'label' => "Elements"),
+    	$appStoreSections = array(
+     		array('ID' => "-----", 'label' => "Main Elements"),
     		array('ID' => "displaympapptitle", 'label' => "App Name"),
     		array('ID' => "displaympappdescription", 'label' => "App Description"),
     		array('ID' => "displaympappreleasenotes", 'label' => "App Release Notes"),
     		array('ID' => "displaympappbadge", 'label' => "App Store Badge"),
     		array('ID' => "displaympappicon", 'label' => "App Icon"),
     		array('ID' => "displaympappiconbuybutton", 'label' => "App Icon's buy button"),
-     		array('ID' => "-----", 'label' => "Details"),
-  	 		array('ID' => "displaympversion", 'label' => "App Version"),
-     		array('ID' => "displaympdevelopername", 'label' => "Developer Name"),
-    		array('ID' => "displaympsellername", 'label' => "Seller Name"),
-  			array('ID' => "displaympreleasedate", 'label' => "Date Released"),
-     		array('ID' => "displaympfilesize", 'label' => "File Size"),
-     		array('ID' => "displaympuniversal", 'label' => "Universal App icon"),
- 			array('ID' => "displaympadvisoryrating", 'label' => "Advisory Rating"),
- 			array('ID' => "displaympappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
-   			array('ID' => "displaympcategories", 'label' => "App Categories"),
+    		array('ID' => "displaympappdetailssection", 'label' => "Details Section"),
      		array('ID' => "-----", 'label' => "Additional Elements"),
      		array('ID' => "displaympgamecenterenabled", 'label' => "Game Center Enabled icon"),
     		array('ID' => "displaympappbuybutton", 'label' => "App Buy Button"),
@@ -47,26 +38,86 @@ jQuery(function() {
     		array('ID' => "displaympsupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
      		array('ID' => "displaympsupporteddeviceIcons", 'label' => "Supported Device Icons")
     	);
-    	
- 		$hiddenlist = array();
-
-		foreach($appStoreProperties as $appStoreProperty) {
+    	$appStoreDetails = array(
+     		array('ID' => "-----", 'label' => "Details Elements"),
+  	 		array('ID' => "displaympversion", 'label' => "App Version"),
+     		array('ID' => "displaympdevelopername", 'label' => "Developer Name"),
+    		array('ID' => "displaympsellername", 'label' => "Seller Name"),
+  			array('ID' => "displaympreleasedate", 'label' => "Date Released"),
+     		array('ID' => "displaympfilesize", 'label' => "File Size"),
+     		array('ID' => "displaympuniversal", 'label' => "Universal App icon"),
+ 			array('ID' => "displaympadvisoryrating", 'label' => "Advisory Rating"),
+ 			array('ID' => "displaympappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
+   			array('ID' => "displaympcategories", 'label' => "App Categories"),
+    	);  	
+ 		echo '<div class="appStore_datagrid">';
+		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
+		foreach($appStoreSections as $appStoreProperty) {
 			if($appStoreProperty['ID'] == "-----") {
-				echo "<b> - ".$appStoreProperty['label']."</b><br />";
+				echo '<tr class="alt"><td colspan="5">';
+				echo "- ".$appStoreProperty['label']." -";
+				echo '</tr>';
 			} else {
-				array_push($hiddenlist, $appStoreProperty['ID']);
-				echo '<input type="checkbox" name="appStore_options[';
+				echo '<tr><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="no"';
+				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
 				echo $appStoreProperty['ID'];
 				echo ']" value="yes"';
 				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
-				echo ' /> '.$appStoreProperty['label']."<br />\r";
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="open"';
+				if ($options[$appStoreProperty['ID']] == "open") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="closed"';
+				if ($options[$appStoreProperty['ID']] == "closed") echo ' checked';
+				echo ' />';
+				echo '</td><td class="alt">';
+				echo $appStoreProperty['label']."</td></tr>\r";
 			}
 		}
-		
-		$hiddenlistcsv = implode(',', $hiddenlist);
-		echo '<input type="hidden" name="appStore_options[checkboxedoptions]" value="'.$hiddenlistcsv.'" />'
+		foreach($appStoreDetails as $appStoreProperty) {
+			if($appStoreProperty['ID'] == "-----") {
+				echo '<tr class="alt"><td colspan="5">';
+				echo "- ".$appStoreProperty['label']." -";
+				echo '</tr>';
+			} else {
+				echo '<tr><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="no"';
+				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="yes"';
+				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '</td><td>';
+				echo '</td><td class="alt">';
+				echo $appStoreProperty['label']."</td></tr>\r";
+			}
+		}
+		echo '</tbody></table></div>';
 		
 		?>
+<b>Hide</b>: Do not show the element.<br />
+<b>Regular</b>: Show the element in regular text display.<br />
+<b>Open</b>: Show the element in an Accordion (starting off open).<br />
+<b>Closed</b>: Show the element in an Accordion (starting off closed).<br />
+	
 </div>
 <?php
     	$appStoreProperties = array(
@@ -100,7 +151,7 @@ jQuery(function() {
 ?>		
 		
 		
-<h2 class="asa_admin">Order of Post Elements</h2>
+<h2 class="asa_admin">Order of Elements</h2>
 	<div class="asa_admin">
 		Drag the elements into the order you would like them displayed<br />
 <ul id="sortable">

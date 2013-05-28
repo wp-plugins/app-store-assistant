@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 6.1.0
+Stable tag: 6.2.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -12,6 +12,8 @@ Lets you display the detail of an item or an ATOM feed from Apple's App Store, i
 == Description ==
 
 The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an ATOM feed (http://iTunes.apple.com/rss) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+
+When upgrading to a new versin of the plug-in, it is recomment that you rebuild the cache. There is an option in the Utilities tab that will do this for you.
 
 **Features**
 
@@ -47,12 +49,14 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 	* Button colors and style
 	* Choose which detail elements to display and their order
 	* Adjust App Icon image size
+	* Elements can be displayed in an Accordian (show/hide)
 * Cache detail and images locally for quicker page load times
 * Remove the whole cache or individual items
 * Widget to show ATOM/RSS Feed of Apps
 * Use custom Excerpts or let App Store Assistant auto-create an excerpt
 * Tested with over 300 Themes
 * Screenshot Lightbox support
+* wp-o-matic plugin support
 
 *-----[Amazon.com functionality is a beta release. **Use this feature with caution!!!**]-----*
 
@@ -96,11 +100,37 @@ Please let us know of any features you would like added or bugs that need squash
 6. Shortcode buttons on editor toolbar
 7. The Search Screen
 
+== Feature Request List ==
+
+* Added: Have an ATOM feed auto create posts from app List
+* Changed: I18n aka Localization is supported via POT file for admin area
+* Added: iTunes breakout of elements
+* Added: Bulk import of Apps [Thanks TesterGP]
+* Added: Change file type to png if tiff supplied by app store
+* Added: Random Post generator (randomally picks an app that you don't already have a post for) [Thanks AslanDoma]
+* Added: Shortcode tags can now overide the Store/Language chosen [Thanks crisf86]
+* Added: Option to add a position number for the results from a ATOM feed [Thanks 2020media]
+
 == Changelog ==
+
+= 6.2.0 =
+* Added: You can now display elements in an open/closable accordion view
+* Changed: Simpler settings for which elements display
+* Added: Color icons for new iOS devices
+* Added: Special "wp-o-matic" shortcodes for auto creation of posts [Thanks Aslan Guseinov]
+* Fixed: Add Featured Images function only added images to published posts, not to drafts or scheduled  [Thanks AslanDoma]
+* Fixed: Documentation for Elements shortcode tag
+* Fixed: Widget not pulling proper images  (Cache must be reset once for new setting)
+* Added: You can now specify the image size used in the Widget (Cache must be reset once for new setting)
+* Fixed: Wrong icon showing in ATOM feed list
+
+= 6.1.1 =
+* Fixed: After searching AND creating a Draft for an app the "App Type" selector retains previous selection [Thanks AslanDoma]
+* Changed: Also includes drafts and scheduled posts when checking for duplicates [Thanks AslanDoma]
 
 = 6.1.0 =
 * Added: When using the New App Post feature it lets you know if you already added the app. [Thanks AslanDoma]
-* Changed: Completly rebuilt Image handling. Now much faster and more efficient.
+* Changed: Completely rebuilt Image handling. Now much faster and more efficient.
 * Added: Option to resize all featured images
 * Added: Option to reset all featured images to new size. Won't affect custom Featured Images
 * Changed: Icons and Featured Images are now resized in cache for faster loading [Thanks snurnberg]
@@ -159,14 +189,13 @@ Please let us know of any features you would like added or bugs that need squash
 = 6.0.0 =
 * Added: You can now display individual elements via new shortcode "ios_app_elements" [Thanks beakernet & snurnberg]
 * Changed: New Simplified Settings Pages
-* Changed: Accordian display of description etc
 * Changed: Placement of App Store/iTunes badges now separate from description. [Thanks snurnberg]
 * Added: You now have the option to have link open in a new window [Thanks beakernet]
 * Fixed: The buy button for an iTunes item now render using the custom color selections [Thanks beakernet]
 * Fixed: Issue with iTunes store Post body elements prefs not saving. [Thanks beakernet]
 * Changed: New icons for iDevice types [Thanks snurnberg]
 * Changed: Optimized code 
-* Fixed: iTunes Store Badge Verbage in settings
+* Fixed: iTunes Store Badge text in settings
 
 = 5.7.2 =
 * Fixed: Issue with images not showing in sort view of Admin section [Thanks snurnberg]
