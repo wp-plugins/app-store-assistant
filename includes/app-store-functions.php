@@ -1064,9 +1064,10 @@ function displayAppStore_appBadgeSm($app,$elementOnly=false) {
 }
 
 function getAccordionCode ($DisplayElement,$cssClass,$accState, $Description="Section") {
+	$baseCSSClass = "accordion-$cssClass";
 	$cssClass = $cssClass.'-'.rand();
 	$AccordionCode = "";
-	if ($accState == "open" || $accState = "closed") {
+	if ($accState == "open" || $accState == "closed") {
 		$AccordionCode = "<script>\r";
 		$AccordionCode .= "jQuery(function() {\r";
 		$AccordionCode .= '	jQuery( "#accordion-';
@@ -1077,11 +1078,13 @@ function getAccordionCode ($DisplayElement,$cssClass,$accState, $Description="Se
 		$AccordionCode .= '});'."\r";
 		$AccordionCode .= "</script>\r";
 		$AccordionCode .= '<div style="clear:left;">&nbsp;</div>';
+		$AccordionCode .= '<div class="'.$baseCSSClass.'">';
 		$AccordionCode .= '<div id="accordion-'.$cssClass.'">';
 		$AccordionCode .= "<h3>$Description</h3>";
 		$AccordionCode .= '<div class="'.$cssClass.'">';
 		$AccordionCode .=  $DisplayElement;
-		$AccordionCode .= '</div></div>';
+		$AccordionCode .= '</div></div></div>';
+
 	} elseif($accState == "yes") {
 		$AccordionCode = '<div style="clear:left;">&nbsp;</div>';
 		//$AccordionCode .= '<b>'.$Description.':</b><br />';
@@ -1395,8 +1398,7 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 	 $element .=  '</ul>';
 	 
 	 if ($elementOnly) return $element;
-	 return getAccordionCode ($element,"appStore-appDetails",appStore_setting('displayappdetailssection'),"App Details");
-
+	 return getAccordionCode ($element,"appStore-appDetails",appStore_setting('displayappdetailssection'),__('App Details',appStoreAssistant));
 }
 
 function displayAppStore_appGCIcon($app,$elementOnly=false){

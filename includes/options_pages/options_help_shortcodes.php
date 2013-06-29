@@ -49,7 +49,7 @@
 <ul>
 <li>[asaf_atomfeed atomurl="http://iTunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]<p>Displays the items from the ATOM feed in a formatted view</p>
 	<ul>
-	<li>atomurl: feed URL supplied by Apple RSS Generator<p>These feeds can be generated here: <i>http://itunes.apple.com/rss</i>.</p></li>
+	<li>atomurl: feed URL supplied by Apple RSS Generator<p>These feeds can be generated here: <i>https://rss.itunes.apple.com/</i>.</p></li>
 	<li>mode: [iOS, Mac or iTunes]</li>
 	<li>more_info_text: Excerpt "more info" link text (optional)</li>
 	</ul>

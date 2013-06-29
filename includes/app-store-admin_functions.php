@@ -774,7 +774,7 @@ function appStore_addFeaturedImage ($postData) {
 		//$returnData = '<font color="orange">Skipping</font> ('.$newPostID.'): Post Already has Featured Image<br />';
 		return;
 	} else {
-		echo "<hr>"._('No Featured Image Found',appStoreAssistant)."<br />";
+		echo "<hr>".__('No Featured Image Found',appStoreAssistant)."<br />";
 	}
 	
 	$appIDs = preg_match_all('/_app\ id=\"([^\"]*?)\"/', $postData->post_content, $app_matches);

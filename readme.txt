@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 6.2.0
+Stable tag: 6.2.1
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -112,6 +112,11 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Option to add a position number for the results from a ATOM feed [Thanks 2020media]
 
 == Changelog ==
+
+= 6.2.1 =
+* Updated: Apple's RSS generator is now at https://rss.itunes.apple.com/
+* Fixed: Issue with Display element without accordian was not respecting setting [Thanks Aslan Guseinov & broetchen]
+* Fixed: 'No Featured Image Found' was not displaying properly when adding Featured Images [Thanks doone]
 
 = 6.2.0 =
 * Added: You can now display elements in an open/closable accordion view
