@@ -1,3 +1,4 @@
+<h2 class="asa_admin">iTunes Store Badge</h2>
 <table class="form-table">
 <tr valign="top">
 <th scope="row"><label>iTunes Store Badge Verbage</label></th>

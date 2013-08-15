@@ -17,18 +17,26 @@ jQuery(function() {
 	jQuery( "#sortable" ).disableSelection();
 });
 </script>
-<h2 class="asa_admin">Show in Post body</h2>
+<h2 class="asa_admin">Show the following elements in each section of a page with Multiple Posts</h2>
 <div class="asa_admin">
 		<?php
-    	$appStoreProperties = array(
-     		array('ID' => "-----", 'label' => "Elements"),
-    		array('ID' => "displaympapptitle", 'label' => "App Name"),
+    	$appStoreSections = array(
+     		array('ID' => "-----", 'label' => "Collapsible Elements"),
     		array('ID' => "displaympappdescription", 'label' => "App Description"),
     		array('ID' => "displaympappreleasenotes", 'label' => "App Release Notes"),
-    		array('ID' => "displaympappbadge", 'label' => "App Store Badge"),
+    		array('ID' => "displaympappdetailssection", 'label' => "Details Section"),
+      		array('ID' => "displaympscreenshots", 'label' => "Screen Shots"),
+    	);
+    	$appStoreDetails = array(
+    		array('ID' => "-----", 'label' => "Single Elements"),
+    		array('ID' => "displaympapptitle", 'label' => "App Name"),
     		array('ID' => "displaympappicon", 'label' => "App Icon"),
     		array('ID' => "displaympappiconbuybutton", 'label' => "App Icon's buy button"),
-     		array('ID' => "-----", 'label' => "Details"),
+    		array('ID' => "displaympappbadge", 'label' => "App Store Badge"),
+     		array('ID' => "displaympgamecenterenabled", 'label' => "Game Center Enabled icon"),
+    		array('ID' => "displaympappbuybutton", 'label' => "App Buy Button"),
+    		array('ID' => "displaympstarrating", 'label' => "App Star Rating"),
+     		array('ID' => "-----", 'label' => "Details Elements"),
   	 		array('ID' => "displaympversion", 'label' => "App Version"),
      		array('ID' => "displaympdevelopername", 'label' => "Developer Name"),
     		array('ID' => "displaympsellername", 'label' => "Seller Name"),
@@ -38,34 +46,118 @@ jQuery(function() {
  			array('ID' => "displaympadvisoryrating", 'label' => "Advisory Rating"),
  			array('ID' => "displaympappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
    			array('ID' => "displaympcategories", 'label' => "App Categories"),
-     		array('ID' => "-----", 'label' => "Additional Elements"),
-     		array('ID' => "displaympgamecenterenabled", 'label' => "Game Center Enabled icon"),
-    		array('ID' => "displaympappbuybutton", 'label' => "App Buy Button"),
-    		array('ID' => "displaympstarrating", 'label' => "App Star Rating"),
-     		array('ID' => "displaympscreenshots", 'label' => "Screen Shots"),
-    		array('ID' => "displaympsupporteddevices", 'label' => "Supported Devices list"),
-     		array('ID' => "displaympsupporteddeviceIcons", 'label' => "Supported Device Icons")
-    	);
-    	
- 		$hiddenlist = array();
-
-		foreach($appStoreProperties as $appStoreProperty) {
+    	);  	
+ 		echo '<div class="appStore_datagrid">';
+		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>No Title</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
+		foreach($appStoreSections as $appStoreProperty) {
 			if($appStoreProperty['ID'] == "-----") {
-				echo "<b> - ".$appStoreProperty['label']."</b><br />";
+				echo '<tr class="alt"><td colspan="6">';
+				echo "- ".$appStoreProperty['label']." -";
+				echo '</tr>';
 			} else {
-				array_push($hiddenlist, $appStoreProperty['ID']);
-				echo '<input type="checkbox" name="appStore_options[';
+				echo '<tr><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="no"';
+				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
 				echo $appStoreProperty['ID'];
 				echo ']" value="yes"';
 				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
-				echo ' /> '.$appStoreProperty['label']."<br />\r";
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="notitle"';
+				if ($options[$appStoreProperty['ID']] == "notitle") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="open"';
+				if ($options[$appStoreProperty['ID']] == "open") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="closed"';
+				if ($options[$appStoreProperty['ID']] == "closed") echo ' checked';
+				echo ' />';
+				echo '</td><td class="alt">';
+				echo $appStoreProperty['label']."</td></tr>\r";
 			}
 		}
 		
-		$hiddenlistcsv = implode(',', $hiddenlist);
-		echo '<input type="hidden" name="appStore_options[checkboxedoptions]" value="'.$hiddenlistcsv.'" />'
+		echo '<tr><td>';
+		echo '<input type="radio" name="appStore_options[displaympsupporteddevices]" value="no"';
+		if ($options['displaympsupporteddevices'] == "no") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaympsupporteddevices]" value="yes"';
+		if ($options['displaympsupporteddevices'] == "yes") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaympsupporteddevices]" value="notitle"';
+		if ($options['displaympsupporteddevices'] == "notitle") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaympsupporteddevices]" value="open"';
+		if ($options['displaympsupporteddevices'] == "open") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaympsupporteddevices]" value="closed"';
+		if ($options['displaympsupporteddevices'] == "closed") echo ' checked';
+		echo ' />';
+		echo '</td><td class="alt">Supported Devices: Mode: ';
+		echo '<select name="appStore_options[displaympsupporteddevicesType]">';
+		echo '<option value="List" ';
+		if ($options['displaympsupporteddevicesType'] == "List") echo 'selected';
+		echo '>Text List</option>';
+		echo '<option value="Minimal" ';
+		if ($options['displaympsupporteddevicesType'] == "Minimal") echo 'selected';
+		echo '>Minimal Icons</option>';
+		echo '<option value="Normal" ';
+		if ($options['displaympsupporteddevicesType'] == "Normal") echo 'selected';
+		echo '>Normal Icons</option>';
+		echo '</select>';
+		echo "</td></tr>\r";
+
+		foreach($appStoreDetails as $appStoreProperty) {
+			if($appStoreProperty['ID'] == "-----") {
+				echo '<tr class="alt"><td colspan="6">';
+				echo "- ".$appStoreProperty['label']." -";
+				echo '</tr>';
+			} else {
+				echo '<tr><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="no"';
+				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="yes"';
+				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '</td><td>';
+				echo '</td><td>';
+				echo '</td><td class="alt">';
+				echo $appStoreProperty['label']."</td></tr>\r";
+			}
+		}
+		echo '</tbody></table></div>';
 		
 		?>
+<b>Hide</b>: Do not show the element.<br />
+<b>Regular</b>: Show the element in regular text display.<br />
+<b>No Title</b>: Same as Regular except the title is omitted. (Handy for themes that remove formatting.)<br />
+<b>Open</b>: Show the element in an Accordion (starting off open).<br />
+<b>Closed</b>: Show the element in an Accordion (starting off closed).<br />
+	
 </div>
 <?php
     	$appStoreProperties = array(
@@ -99,7 +191,7 @@ jQuery(function() {
 ?>		
 		
 		
-<h2 class="asa_admin">Order of Post Elements</h2>
+<h2 class="asa_admin">Order of Elements</h2>
 	<div class="asa_admin">
 		Drag the elements into the order you would like them displayed<br />
 <ul id="sortable">
