@@ -1,10 +1,10 @@
 === App Store Assistant ===
 Contributors: sealsystems 
 Donate link:http://theiphoneappslist.com/donate/
-Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
-Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 6.2.1
+Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
+Requires at least: 3.6
+Tested up to: 3.6
+Stable tag: 6.3.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -40,10 +40,9 @@ When upgrading to a new versin of the plug-in, it is recomment that you rebuild 
 * Multi-country support
 * I18n aka Localization is supported via POT file
 * Earn Money with Affiliate Programs
-	* LinkShare/Linksynergy
+	* PHG
 	* TradeDoubler
 	* Amazon Affiliates
-	* DGM
 * Customizable
 	* Choose from different Star rating colors
 	* Button colors and style
@@ -106,16 +105,35 @@ Please let us know of any features you would like added or bugs that need squash
 * Changed: I18n aka Localization is supported via POT file for admin area
 * Added: iTunes breakout of elements
 * Added: Bulk import of Apps [Thanks TesterGP]
-* Added: Change file type to png if tiff supplied by app store
+* Added: Change file type to png if tiff supplied by app store WP_Image_Editor
 * Added: Random Post generator (randomally picks an app that you don't already have a post for) [Thanks AslanDoma]
 * Added: Shortcode tags can now overide the Store/Language chosen [Thanks crisf86]
 * Added: Option to add a position number for the results from a ATOM feed [Thanks 2020media]
+* Changed: Switch to included SimplePie
+* Changed: Sped up Reset of Featured Images (Using log system)
+* Changed: Accepted jpeg for images
+* Changed: All images now saved as png
+		http://bhoover.com/wp_image_editor-wordpress-image-editing-tutorial/
+* Changed: Reset Featured Images now saves to log
+* Added: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 
 == Changelog ==
 
+= 6.3.0 =
+* Changed: Apple has changed from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply)
+* REMOVED: LinkShare/linksynergy & DGM Affiliate Programs
+* Added: No Title element mode: Same as Regular except the title is omitted. (Handy for themes that remove formatting.)
+* Fixed: Screenshots not displaying because of a broken URL
+* Changed: Processing of elements order, there is now just SingleApp or ListOfApps
+* Changed: Order of elements in preferences (Collapsable items are now listed together)
+* Added: Icon support for iPhone 5S & iPhone 6
+* Changed: Simplified "Supported Devices" layout and settings
+* Changed: Rewrite the output routine that displays app elements.
+* Fixed: Game Center icon placement
+
 = 6.2.1 =
 * Updated: Apple's RSS generator is now at https://rss.itunes.apple.com/
-* Fixed: Issue with Display element without accordian was not respecting setting [Thanks Aslan Guseinov & broetchen]
+* Fixed: Issue with Display element without accordion was not respecting setting [Thanks Aslan Guseinov & broetchen]
 * Fixed: 'No Featured Image Found' was not displaying properly when adding Featured Images [Thanks doone]
 
 = 6.2.0 =
@@ -521,6 +539,8 @@ In Version 5.0 the shortcodes appStore_IDsearch and ios_asaf_atomfeed have been 
 In Version 5.6 the Cacheing system has been replaced. It is recommended that you clear the caches before upgrading.
 
 In Version 6.0.6 the Image system has been replaced. It is recommended that you clear the caches AFTER upgrading.
+
+In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply)
 
 == Note ==
 

@@ -79,8 +79,10 @@
 		<div class="asa_admin_element">Display <input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" /> apps from ATOM feed</div>
 		<div class="asa_admin_element">Affiliate Network: <select name="appStore_options[affiliatepartnerid]">
 			<option value="999" <?php if ($options['affiliatepartnerid'] == "999") echo 'selected'; ?>>None</option>
-			<option value="30" <?php if ($options['affiliatepartnerid'] == "30") echo 'selected'; ?>>LinkShare</option>
+			<option value="2013" <?php if ($options['affiliatepartnerid'] == "2013") echo 'selected'; ?>>PHG</option>
 			<option value="2003" <?php if ($options['affiliatepartnerid'] == "2003") echo 'selected'; ?>>TradeDoubler</option>
+			<option value="999" <?php if ($options['affiliatepartnerid'] == "999") echo 'selected'; ?>>-- Discontinued Programs --</option>
+			<option value="30" <?php if ($options['affiliatepartnerid'] == "30") echo 'selected'; ?>>LinkShare</option>
 			<option value="1002" <?php if ($options['affiliatepartnerid'] == "1002") echo 'selected'; ?>>DGM</option>
 			</select>
 		</div>

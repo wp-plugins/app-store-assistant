@@ -88,12 +88,12 @@ function appStore_add_defaults() {
 		"displaystarrating" => "yes",
 		"displayscreenshots" => "yes",
 		"displaysupporteddevices" => "no",
-		"displaysupporteddeviceIcons" => "yes",
-		"displaysupporteddevicesMinimal" => "no",
+		"displaysupporteddevicesType" => "Normal",
 
 		"displaympapptitle" => "no",
 		"displaympappdescription" => "yes",
 		"displaympappreleasenotes" => "yes",
+		"displaympappdetailssection" => "yes",
 		"displaympappbadge" => "yes",
 		"displaympappicon" => "yes",
 		"displaympinapppurwarning" => "yes",
@@ -113,12 +113,12 @@ function appStore_add_defaults() {
 		"displaympstarrating" => "yes",
 		"displaympscreenshots" => "yes",
 		"displaympsupporteddevices" => "no",
-		"displaympsupporteddeviceIcons" => "yes",
-		"displaympsupporteddevicesMinimal" => "no",
+		"displaympsupporteddeviceType" => "Normal",
 
 		"displayATOMapptitle" => "no",
 		"displayATOMappdescription" => "yes",
 		"displayATOMappreleasenotes" => "yes",
+		"displayATOMappdetailssection" => "yes",
 		"displayATOMappbadge" => "yes",
 		"displayATOMappicon" => "yes",
 		"displayATOMappinapppurwarning" => "yes",
@@ -138,8 +138,7 @@ function appStore_add_defaults() {
 		"displayATOMstarrating" => "yes",
 		"displayATOMscreenshots" => "yes",
 		"displayATOMsupporteddevices" => "no",
-		"displayATOMsupporteddeviceIcons" => "no",
-		"displayATOMsupporteddevicesMinimal" => "yes",
+		"displayATOMsupporteddeviceType" => "Normal",
 
 		"displayexcerptthumbnail" => "yes",
 		"displayexcerptreadmore" => "no",
@@ -154,9 +153,9 @@ function appStore_add_defaults() {
 		"appicon_size_posts" => "128",
 		"appicon_size_element" => "200",
 		
-		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
-		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
-		"appATOMDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
+		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
+		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
+		"appATOMDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appBadge,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
 
 		"displayitunestitle" => "yes",
 		"displayitunestrackcount" => "yes",
@@ -197,7 +196,7 @@ function appStore_add_defaults() {
 		"RemoveCachedItem" => "NoWay",
 		"RemoveCachedItemID" => "",
 		"RemoveCachedItemASIN" => "",
-
+		
 		"displayLinkToFooter" => "yes",
 		"versionInstalled" => "5"
 		);
@@ -225,6 +224,7 @@ function appStore_add_defaults() {
 	
 	//echo "-----UPDATE------[<pre>".print_r($PostedValues,true)."</pre>]-------------";
 	update_option('appStore_options', $appStore_options);
+	update_option('appStore_FI_maxItemsToProcess', "100");
 }
 
 // Init plugin options to white list our options
@@ -367,7 +367,6 @@ function appStore_displayAdminOptionsPage() {
 		$options["ResetFITwo"] = "NoWay";		
 		update_option('appStore_options', $options);	
 		appStore_ClearFeaturedImages();		
-		appStore_ShowMessage("The Featured Images have been updated!",true);
 	}
 	
 	
@@ -403,7 +402,7 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		$tabs_array = array ('defaultTab' => 'Stars','imagesizes' => 'Image Sizes','buybutton' => 'Buy Button','miscellaneous' => 'Miscellaneous');
 	  break;
 	  case 'appStore_sm_appstore' :
-		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','atomfeed' => 'Atom Feed','graphics' => 'App Store Graphics');
+		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Posts','atomfeed' => 'List/Atom Feed','graphics' => 'App Store Graphics');
 	  break;
 	  case 'appStore_sm_itunes' :
 		//$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','graphics' => 'App Store Graphics');
@@ -432,6 +431,9 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		  break;
 		  case '1002' :
 			$tabs_end = array ('dgm' => 'DGM');
+		  break;
+		  case '2013' :
+			$tabs_end = array ('phg' => 'PHG');
 		  break;
 		}
 		if(is_array($tabs_end)) {
@@ -751,13 +753,36 @@ function appStore_get_shortcode_posts() {
 }
 
 function appStore_get_shortcode_posts_featuredImages() {
-    add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
-    $posts = get_posts( array('posts_per_page'  => 550,'meta_key' => '_thumbnail_id','post_status' => 'any'
-    ) );
+	$MaxItemsToProcess = get_option('appStore_FI_maxItemsToProcess');
+	$currentPostsList = get_option('appStore_appData_PostsList');
+	$useSavedList = False;
+	if(is_array($currentPostsList)) {
+		$useSavedList = True;
+		if (count($currentPostsList) < 1) {
+			$useSavedList = False;
+		}
+	}
+	$postsList = "";
+	if($useSavedList) {
+		$postsList = $currentPostsList;
+	}else{
+		add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
+		$posts = get_posts( array('posts_per_page'  => 1550,'meta_key' => '_thumbnail_id','post_status' => 'any' ) );
+		//$posts = get_posts( array('meta_key' => '_thumbnail_id','post_status' => 'any' ) );
+		remove_filter( 'posts_where', 'appStore_shortcode_query_filter' );
+		foreach($posts as $MyResult) {
+				$postsList[] = $MyResult->ID;
+		}
+		
+		$ItemsLeft = count($postsList);
+		$RoundsLeft = round($ItemsLeft/$MaxItemsToProcess)+1;
+		update_option('appStore_FI_RoundsLeft', $RoundsLeft);
 
-    remove_filter( 'posts_where', 'appStore_shortcode_query_filter' );
-
-    return $posts;
+		
+		
+	}
+	$postsList= array_values($postsList);
+    return $postsList;
 }
 //------------------------------TEST-----------------------------------------------
 
@@ -1021,8 +1046,40 @@ function appStore_ClearSpecificItemCache($appIDtoRemove,$asinToRemove) {
 }
 
 function appStore_ClearFeaturedImages() {
-		$MyResults = appStore_get_shortcode_posts_featuredImages();		
+	$MaxItemsToProcess = get_option('appStore_FI_maxItemsToProcess');
+	$currentPostsList = appStore_get_shortcode_posts_featuredImages();
+	$ItemsLeft = count($currentPostsList);
+	$RoundsLeft = round($ItemsLeft/$MaxItemsToProcess)+1;
+	
+	
+		if($RoundsLeft == 0) {
+			appStore_ShowMessage("The Featured Images have been updated!",true);
+		} else {
+			appStore_ShowMessage("You will need to run this step $RoundsLeft more times!",true);
+		}
+		
+		
+		
+		echo "There are $ItemsLeft Posts with featured Images to change.<br />";
 		$postCounter = 1;
+		foreach($currentPostsList as $key => $PostID) {
+			echo "[$key] $PostID <br>";
+			
+			
+			unset($currentPostsList[$key]);
+			$postCounter ++;
+			if($postCounter >$MaxItemsToProcess) break;
+		}
+		//echo "-------".count($currentPostsList)."-------".print_r($currentPostsList,true)."<hr>";
+
+		//echo "[WERE HERE]";
+		$currentPostsList= array_values($currentPostsList);
+		//echo "-------".count($currentPostsList)."-------".print_r($currentPostsList,true)."<hr>";
+
+		update_option('appStore_appData_PostsList', $currentPostsList);	
+		
+		//print_r($MyResults);
+		return;
 		foreach($MyResults as $MyResult) {
 			$postID = $MyResult->ID;
 			$post_thumbnail_id = get_post_thumbnail_id($postID );

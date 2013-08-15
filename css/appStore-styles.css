@@ -135,7 +135,19 @@ img.appStore_ThumbIcon
 	float: right;
 	text-align: center;
 }
-
+#appStore-icon-container-left
+{
+	float: left;
+	text-align: center;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+img.appStore-gamecentericon
+{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
 #appStore-icon-container a img
 {
 	border: 0px;
@@ -225,3 +237,13 @@ div.asaf-entry img {
 	font-weight: normal;
 	padding: 4px 8px;
 }
+.asadebug
+{
+	background-color: #FC6;
+	color: #F00;
+	font-size: 12px;
+	border: 1px purple dashed;
+	padding: 7px;
+white-space: pre;
+  font-family: monospace;
+  display: block;}

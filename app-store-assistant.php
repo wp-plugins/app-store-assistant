@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.2.1
+Version: 6.3.0
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -66,16 +66,16 @@ add_action('admin_bar_init', 'appStore_admin_bar_render' );
 // ------------------------------------------------------------------------
 // REGISTER SHORTCODES, ADD EDITOR BUTTONS
 // ------------------------------------------------------------------------
-add_shortcode("asaf_atomfeed", "appStore_atomfeed_handler");
-add_shortcode("ios_app_list", "appStore_list_handler");
-add_shortcode('ios_app', 'appStore_app_handler');
-add_shortcode('ios_app_link', 'appStore_app_link_handler');
+add_shortcode("asaf_atomfeed", "appStore_handler_feed");
+add_shortcode("ios_app_list", "appStore_handler_list");
+add_shortcode('ios_app', 'appStore_handler_app');
+add_shortcode('ios_app_link', 'appStore_handler_appLink');
 add_shortcode('ios_app_elements', 'appStore_app_element_handler');
 add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('itunes_store_link', 'iTunesStore_link_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
-add_shortcode('mac_app', 'appStore_app_handler');
-add_shortcode('mac_app_link', 'appStore_app_link_handler');
+add_shortcode('mac_app', 'appStore_handler_app');
+add_shortcode('mac_app_link', 'appStore_handler_appLink');
 add_shortcode('amazon_item', 'appStore_amazon_handler');
 add_shortcode('amazon_item_link', 'appStore_amazon_link_handler');
 add_action('init', 'add_asa_mce_button');

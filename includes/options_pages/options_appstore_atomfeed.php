@@ -21,24 +21,21 @@ jQuery(function() {
 <div class="asa_admin">
 		<?php
     	$appStoreSections = array(
-     		array('ID' => "-----", 'label' => "Main Elements"),
-    		array('ID' => "displayATOMapptitle", 'label' => "App Name"),
+     		array('ID' => "-----", 'label' => "Collapsible Elements"),
     		array('ID' => "displayATOMappdescription", 'label' => "App Description"),
     		array('ID' => "displayATOMappreleasenotes", 'label' => "App Release Notes"),
-    		array('ID' => "displayATOMappbadge", 'label' => "App Store Badge"),
+    		array('ID' => "displayATOMappdetailssection", 'label' => "Details Section"),
+      		array('ID' => "displayATOMscreenshots", 'label' => "Screen Shots"),
+    	);
+    	$appStoreDetails = array(
+    		array('ID' => "-----", 'label' => "Single Elements"),
+    		array('ID' => "displayATOMapptitle", 'label' => "App Name"),
     		array('ID' => "displayATOMappicon", 'label' => "App Icon"),
     		array('ID' => "displayATOMappiconbuybutton", 'label' => "App Icon's buy button"),
-    		array('ID' => "displayATOMappdetailssection", 'label' => "Details Section"),
-     		array('ID' => "-----", 'label' => "Additional Elements"),
+    		array('ID' => "displayATOMappbadge", 'label' => "App Store Badge"),
      		array('ID' => "displayATOMgamecenterenabled", 'label' => "Game Center Enabled icon"),
     		array('ID' => "displayATOMappbuybutton", 'label' => "App Buy Button"),
     		array('ID' => "displayATOMstarrating", 'label' => "App Star Rating"),
-     		array('ID' => "displayATOMscreenshots", 'label' => "Screen Shots"),
-    		array('ID' => "displayATOMsupporteddevices", 'label' => "Supported Devices list"),
-    		array('ID' => "displayATOMsupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
-     		array('ID' => "displayATOMsupporteddeviceIcons", 'label' => "Supported Device Icons")
-    	);
-    	$appStoreDetails = array(
      		array('ID' => "-----", 'label' => "Details Elements"),
   	 		array('ID' => "displayATOMversion", 'label' => "App Version"),
      		array('ID' => "displayATOMdevelopername", 'label' => "Developer Name"),
@@ -51,10 +48,10 @@ jQuery(function() {
    			array('ID' => "displayATOMcategories", 'label' => "App Categories"),
     	);  	
  		echo '<div class="appStore_datagrid">';
-		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
+		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>No Title</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
 		foreach($appStoreSections as $appStoreProperty) {
 			if($appStoreProperty['ID'] == "-----") {
-				echo '<tr class="alt"><td colspan="5">';
+				echo '<tr class="alt"><td colspan="6">';
 				echo "- ".$appStoreProperty['label']." -";
 				echo '</tr>';
 			} else {
@@ -69,6 +66,12 @@ jQuery(function() {
 				echo $appStoreProperty['ID'];
 				echo ']" value="yes"';
 				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="notitle"';
+				if ($options[$appStoreProperty['ID']] == "notitle") echo ' checked';
 				echo ' />';
 				echo '</td><td>';
 				echo '<input type="radio" name="appStore_options[';
@@ -86,9 +89,44 @@ jQuery(function() {
 				echo $appStoreProperty['label']."</td></tr>\r";
 			}
 		}
+		
+		echo '<tr><td>';
+		echo '<input type="radio" name="appStore_options[displayATOMsupporteddevices]" value="no"';
+		if ($options['displayATOMsupporteddevices'] == "no") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displayATOMsupporteddevices]" value="yes"';
+		if ($options['displayATOMsupporteddevices'] == "yes") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displayATOMsupporteddevices]" value="notitle"';
+		if ($options['displayATOMsupporteddevices'] == "notitle") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displayATOMsupporteddevices]" value="open"';
+		if ($options['displayATOMsupporteddevices'] == "open") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displayATOMsupporteddevices]" value="closed"';
+		if ($options['displayATOMsupporteddevices'] == "closed") echo ' checked';
+		echo ' />';
+		echo '</td><td class="alt">Supported Devices: Mode: ';
+		echo '<select name="appStore_options[displayATOMsupporteddevicesType]">';
+		echo '<option value="List" ';
+		if ($options['displayATOMsupporteddevicesType'] == "List") echo 'selected';
+		echo '>Text List</option>';
+		echo '<option value="Minimal" ';
+		if ($options['displayATOMsupporteddevicesType'] == "Minimal") echo 'selected';
+		echo '>Minimal Icons</option>';
+		echo '<option value="Normal" ';
+		if ($options['displayATOMsupporteddevicesType'] == "Normal") echo 'selected';
+		echo '>Normal Icons</option>';
+		echo '</select>';
+		echo "</td></tr>\r";
+
 		foreach($appStoreDetails as $appStoreProperty) {
 			if($appStoreProperty['ID'] == "-----") {
-				echo '<tr class="alt"><td colspan="5">';
+				echo '<tr class="alt"><td colspan="6">';
 				echo "- ".$appStoreProperty['label']." -";
 				echo '</tr>';
 			} else {
@@ -106,6 +144,7 @@ jQuery(function() {
 				echo ' />';
 				echo '</td><td>';
 				echo '</td><td>';
+				echo '</td><td>';
 				echo '</td><td class="alt">';
 				echo $appStoreProperty['label']."</td></tr>\r";
 			}
@@ -115,6 +154,7 @@ jQuery(function() {
 		?>
 <b>Hide</b>: Do not show the element.<br />
 <b>Regular</b>: Show the element in regular text display.<br />
+<b>No Title</b>: Same as Regular except the title is omitted. (Handy for themes that remove formatting.)<br />
 <b>Open</b>: Show the element in an Accordion (starting off open).<br />
 <b>Closed</b>: Show the element in an Accordion (starting off closed).<br />
 	

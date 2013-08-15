@@ -29,10 +29,7 @@ appStore_CreateListOfAppsUsedInPosts();
     		array('ID' => "displayappdescription", 'label' => "App Description"),
     		array('ID' => "displayappreleasenotes", 'label' => "App Release Notes"),
     		array('ID' => "displayappdetailssection", 'label' => "Details Section"),
-      		array('ID' => "displayscreenshots", 'label' => "Screen Shots"),
-    		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices list"),
-    		array('ID' => "displaysupporteddevicesMinimal", 'label' => "Supported Devices Minimal Icons"),
-     		array('ID' => "displaysupporteddeviceIcons", 'label' => "Supported Device Icons")
+      		array('ID' => "displayscreenshots", 'label' => "Screen Shots")
     	);
     	$appStoreDetails = array(
     		array('ID' => "-----", 'label' => "Single Elements"),
@@ -55,10 +52,10 @@ appStore_CreateListOfAppsUsedInPosts();
    			array('ID' => "displaycategories", 'label' => "App Categories"),
     	);  	
  		echo '<div class="appStore_datagrid">';
-		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
+		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>No Title</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
 		foreach($appStoreSections as $appStoreProperty) {
 			if($appStoreProperty['ID'] == "-----") {
-				echo '<tr class="alt"><td colspan="5">';
+				echo '<tr class="alt"><td colspan="6">';
 				echo "- ".$appStoreProperty['label']." -";
 				echo '</tr>';
 			} else {
@@ -73,6 +70,12 @@ appStore_CreateListOfAppsUsedInPosts();
 				echo $appStoreProperty['ID'];
 				echo ']" value="yes"';
 				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
+				echo ' />';
+				echo '</td><td>';
+				echo '<input type="radio" name="appStore_options[';
+				echo $appStoreProperty['ID'];
+				echo ']" value="notitle"';
+				if ($options[$appStoreProperty['ID']] == "notitle") echo ' checked';
 				echo ' />';
 				echo '</td><td>';
 				echo '<input type="radio" name="appStore_options[';
@@ -90,9 +93,44 @@ appStore_CreateListOfAppsUsedInPosts();
 				echo $appStoreProperty['label']."</td></tr>\r";
 			}
 		}
+		
+		echo '<tr><td>';
+		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="no"';
+		if ($options['displaysupporteddevices'] == "no") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="yes"';
+		if ($options['displaysupporteddevices'] == "yes") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="notitle"';
+		if ($options['displaysupporteddevices'] == "notitle") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="open"';
+		if ($options['displaysupporteddevices'] == "open") echo ' checked';
+		echo ' />';
+		echo '</td><td>';
+		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="closed"';
+		if ($options['displaysupporteddevices'] == "closed") echo ' checked';
+		echo ' />';
+		echo '</td><td class="alt">Supported Devices: Mode: ';
+		echo '<select name="appStore_options[displaysupporteddevicesType]">';
+		echo '<option value="List" ';
+		if ($options['displaysupporteddevicesType'] == "List") echo 'selected';
+		echo '>Text List</option>';
+		echo '<option value="Minimal" ';
+		if ($options['displaysupporteddevicesType'] == "Minimal") echo 'selected';
+		echo '>Minimal Icons</option>';
+		echo '<option value="Normal" ';
+		if ($options['displaysupporteddevicesType'] == "Normal") echo 'selected';
+		echo '>Normal Icons</option>';
+		echo '</select>';
+		echo "</td></tr>\r";
+
 		foreach($appStoreDetails as $appStoreProperty) {
 			if($appStoreProperty['ID'] == "-----") {
-				echo '<tr class="alt"><td colspan="5">';
+				echo '<tr class="alt"><td colspan="6">';
 				echo "- ".$appStoreProperty['label']." -";
 				echo '</tr>';
 			} else {
@@ -110,6 +148,7 @@ appStore_CreateListOfAppsUsedInPosts();
 				echo ' />';
 				echo '</td><td>';
 				echo '</td><td>';
+				echo '</td><td>';
 				echo '</td><td class="alt">';
 				echo $appStoreProperty['label']."</td></tr>\r";
 			}
@@ -119,6 +158,7 @@ appStore_CreateListOfAppsUsedInPosts();
 		?>
 <b>Hide</b>: Do not show the element.<br />
 <b>Regular</b>: Show the element in regular text display.<br />
+<b>No Title</b>: Same as Regular except the title is omitted. (Handy for themes that remove formatting.)<br />
 <b>Open</b>: Show the element in an Accordion (starting off open).<br />
 <b>Closed</b>: Show the element in an Accordion (starting off closed).<br />
 	

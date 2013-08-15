@@ -54,6 +54,12 @@
 	<li>more_info_text: Excerpt "more info" link text (optional)</li>
 	</ul>
 </li>
+</ul>
+
+
+<h3 class="asa_admin">Display several items from a list of IDs:</h3>
+	
+<ul>
 
 <li>[ios_app_list ids="568903335,62101268,443987910,568903335" more_info_text="open in App Store..." mode="iOS"]<p>Displays Several iOS apps on a single page or post</p>
 	<ul>
