@@ -1,10 +1,10 @@
 === App Store Assistant ===
 Contributors: sealsystems 
 Donate link:http://theiphoneappslist.com/donate/
-Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
-Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 6.0.5
+Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
+Requires at least: 3.6
+Tested up to: 3.6
+Stable tag: 6.3.1
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -12,6 +12,8 @@ Lets you display the detail of an item or an ATOM feed from Apple's App Store, i
 == Description ==
 
 The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an ATOM feed (http://iTunes.apple.com/rss) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+
+When upgrading to a new versin of the plug-in, it is recomment that you rebuild the cache. There is an option in the Utilities tab that will do this for you.
 
 **Features**
 
@@ -38,21 +40,22 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 * Multi-country support
 * I18n aka Localization is supported via POT file
 * Earn Money with Affiliate Programs
-	* LinkShare/Linksynergy
+	* PHG
 	* TradeDoubler
 	* Amazon Affiliates
-	* DGM
 * Customizable
 	* Choose from different Star rating colors
 	* Button colors and style
 	* Choose which detail elements to display and their order
 	* Adjust App Icon image size
+	* Elements can be displayed in an Accordian (show/hide)
 * Cache detail and images locally for quicker page load times
 * Remove the whole cache or individual items
 * Widget to show ATOM/RSS Feed of Apps
 * Use custom Excerpts or let App Store Assistant auto-create an excerpt
 * Tested with over 300 Themes
 * Screenshot Lightbox support
+* wp-o-matic plugin support
 
 *-----[Amazon.com functionality is a beta release. **Use this feature with caution!!!**]-----*
 
@@ -96,12 +99,98 @@ Please let us know of any features you would like added or bugs that need squash
 6. Shortcode buttons on editor toolbar
 7. The Search Screen
 
+== Feature Request List ==
+
+* Added: Have an ATOM feed auto create posts from app List
+* Changed: I18n aka Localization is supported via POT file for admin area
+* Added: iTunes breakout of elements
+* Added: Bulk import of Apps [Thanks TesterGP]
+* Added: Change file type to png if tiff supplied by app store WP_Image_Editor
+* Added: Random Post generator (randomally picks an app that you don't already have a post for) [Thanks AslanDoma]
+* Added: Shortcode tags can now overide the Store/Language chosen [Thanks crisf86]
+* Added: Option to add a position number for the results from a ATOM feed [Thanks 2020media]
+* Changed: Sped up Reset of Featured Images (Using log system)
+* Changed: Accepted jpeg for images
+* Changed: All images now saved as png
+		http://bhoover.com/wp_image_editor-wordpress-image-editing-tutorial/
+* Changed: Reset Featured Images now saves to log
+* Added: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
+
 == Changelog ==
+
+= 6.3.1 =
+* Changed: Requires WordPress 3.6 or higher (Older installations please use version 6.2.1)
+* Added: Now handles new Apple RSS link formats
+* Fixed: Description of Mac Screenshots no longer reads iPhone Screenshots
+* Fixed: Recognition of Mac apps
+* Changed: Uses size_format instead of internal function (Requires WP3.6+)
+* Changed: Switch to WordPress included version of SimplePie
+* Fixed: Error displayed if you had the wrong mode tag in the asaf_atomfeed shortcode
+* Fixed: Cacheing of RSS Feed data
+
+= 6.3.0 =
+* Changed: Apple has changed from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply)
+* REMOVED: LinkShare/linksynergy & DGM Affiliate Programs
+* Added: No Title element mode: Same as Regular except the title is omitted. (Handy for themes that remove formatting.)
+* Fixed: Screenshots not displaying because of a broken URL
+* Changed: Processing of elements order, there is now just SingleApp or ListOfApps
+* Changed: Order of elements in preferences (Collapsable items are now listed together)
+* Added: Icon support for iPhone 5S & iPhone 6
+* Changed: Simplified "Supported Devices" layout and settings
+* Changed: Rewrite the output routine that displays app elements.
+* Fixed: Game Center icon placement
+
+= 6.2.1 =
+* Updated: Apple's RSS generator is now at https://rss.itunes.apple.com/
+* Fixed: Issue with Display element without accordion was not respecting setting [Thanks Aslan Guseinov & broetchen]
+* Fixed: 'No Featured Image Found' was not displaying properly when adding Featured Images [Thanks doone]
+
+= 6.2.0 =
+* Added: You can now display elements in an open/closable accordion view
+* Changed: Simpler settings for which elements display
+* Added: Color icons for new iOS devices
+* Added: Special "wp-o-matic" shortcodes for auto creation of posts [Thanks Aslan Guseinov]
+* Fixed: Add Featured Images function only added images to published posts, not to drafts or scheduled  [Thanks AslanDoma]
+* Fixed: Documentation for Elements shortcode tag
+* Fixed: Widget not pulling proper images  (Cache must be reset once for new setting)
+* Added: You can now specify the image size used in the Widget (Cache must be reset once for new setting)
+* Fixed: Wrong icon showing in ATOM feed list
+
+= 6.1.1 =
+* Fixed: After searching AND creating a Draft for an app the "App Type" selector retains previous selection [Thanks AslanDoma]
+* Changed: Also includes drafts and scheduled posts when checking for duplicates [Thanks AslanDoma]
+
+= 6.1.0 =
+* Added: When using the New App Post feature it lets you know if you already added the app. [Thanks AslanDoma]
+* Changed: Completely rebuilt Image handling. Now much faster and more efficient.
+* Added: Option to resize all featured images
+* Added: Option to reset all featured images to new size. Won't affect custom Featured Images
+* Changed: Icons and Featured Images are now resized in cache for faster loading [Thanks snurnberg]
+* Added: You can now specify exact sizes for Icons and Featured Images
+* Added: Choose different sizes for Featured Images, Images in posts, lists and on iOS devices
+* Added: Screenshots now available on List pages
+* Added: You can now specify different elements to display on Single Posts vs Multiple posts and List pages
+* Changed: Better handling if an app is no longer available in the app store
+* Changed: App Icon uses smaller button, now fits with more themes
+* Changed: App Icon display code Simplified
+* Changed: Updates now show as a yellow background, and errors as red, in the settings panels
+* Removed: Extraneous App Icon CSS
+* Fixed: Supported Devices was displayed even when deselected in the options [Thanks aszabo]
+* Fixed: Extraneous a tag in Small Badge tag
+* Changed: Now clears ATOM feed cache when clearing Caches
+* Fixed: Cache directory for SimplePie
+* Changed: Rebuilt ATOM Feed cacheing system
+* Fixed: Extraneous div tag, was throwing off some themes
+* Fixed: Issue with price button button not respecting preference setting
+* Fixed: Amazon.com is now using png and jpg files for product images [Thanks TesterGP]
+
+= 6.0.6 =
+* Fixed: Extraneous div tag, was throwing off some themes
 
 = 6.0.5 =
 * Fixed: Was not displaying Minimal iDevice icons if the app was listing "all" as the supported devices [Thanks snurnberg]
 * Added: Missing icons for original iPad Wifi, iPhone 3G & 3GS.
-* Added: iDevice icons are now sorted for ascetic design
+* Added: iDevice icons are now sorted for aesthetic design
 
 = 6.0.4 =
 * Added: Link in Admin Bar to create new post from a found App
@@ -132,14 +221,13 @@ Please let us know of any features you would like added or bugs that need squash
 = 6.0.0 =
 * Added: You can now display individual elements via new shortcode "ios_app_elements" [Thanks beakernet & snurnberg]
 * Changed: New Simplified Settings Pages
-* Changed: Accordian display of description etc
 * Changed: Placement of App Store/iTunes badges now separate from description. [Thanks snurnberg]
 * Added: You now have the option to have link open in a new window [Thanks beakernet]
 * Fixed: The buy button for an iTunes item now render using the custom color selections [Thanks beakernet]
 * Fixed: Issue with iTunes store Post body elements prefs not saving. [Thanks beakernet]
 * Changed: New icons for iDevice types [Thanks snurnberg]
 * Changed: Optimized code 
-* Fixed: iTunes Store Badge Verbage in settings
+* Fixed: iTunes Store Badge text in settings
 
 = 5.7.2 =
 * Fixed: Issue with images not showing in sort view of Admin section [Thanks snurnberg]
@@ -458,6 +546,10 @@ Please let us know of any features you would like added or bugs that need squash
 In Version 5.0 the shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page. You should change the shortcode from ios_asaf_atomfeed to *asaf_atomfeed*.
 
 In Version 5.6 the Cacheing system has been replaced. It is recommended that you clear the caches before upgrading.
+
+In Version 6.0.6 the Image system has been replaced. It is recommended that you clear the caches AFTER upgrading.
+
+In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply). THIS VERSION REQUIRES WordPress 3.6 or later!!!!!
 
 == Note ==
 

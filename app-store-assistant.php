@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.0.5
+Version: 6.3.1
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -21,7 +21,7 @@ define( 'ASA_MAIN_FILE', plugin_dir_path( __FILE__ )."app-store-assistant.php" )
 // ------------------ FUNCTIONS ---------------------------------------------------------
 // --------------------------------------------------------------------------------------
 require_once(ASA_PLUGIN_INCLUDES_PATH.'app-store-functions.php');
-require_once(ASA_PLUGIN_INCLUDES_PATH.'simplepie.inc');
+//require_once(ASA_PLUGIN_INCLUDES_PATH.'simplepie.inc');
 require_once(ASA_PLUGIN_INCLUDES_PATH.'app-store-admin_functions.php');
 require_once(ASA_PLUGIN_INCLUDES_PATH.'app-store-amazon_functions.php');
 require_once(ASA_PLUGIN_INCLUDES_PATH.'sha256.inc.php');
@@ -44,7 +44,7 @@ add_filter('plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
 
 // Load Scripts & Styles
 add_action('wp_print_scripts', 'appStore_add_scripts');
-add_action('wp_print_styles',  'appStore_add_stylesheets');
+add_action('wp_print_styles', 'appStore_add_stylesheets');
 
 // Load Admin Scripts & Styles
 add_action('admin_print_scripts', 'appStore_add_admin_scripts');
@@ -66,16 +66,16 @@ add_action('admin_bar_init', 'appStore_admin_bar_render' );
 // ------------------------------------------------------------------------
 // REGISTER SHORTCODES, ADD EDITOR BUTTONS
 // ------------------------------------------------------------------------
-add_shortcode("asaf_atomfeed", "appStore_atomfeed_handler");
-add_shortcode("ios_app_list", "appStore_list_handler");
-add_shortcode('ios_app', 'appStore_app_handler');
-add_shortcode('ios_app_link', 'appStore_app_link_handler');
+add_shortcode("asaf_atomfeed", "appStore_handler_feed");
+add_shortcode("ios_app_list", "appStore_handler_list");
+add_shortcode('ios_app', 'appStore_handler_app');
+add_shortcode('ios_app_link', 'appStore_handler_appLink');
 add_shortcode('ios_app_elements', 'appStore_app_element_handler');
 add_shortcode('itunes_store', 'iTunesStore_handler');
 add_shortcode('itunes_store_link', 'iTunesStore_link_handler');
 add_shortcode('ibooks_store', 'iBooksStore_handler');
-add_shortcode('mac_app', 'appStore_app_handler');
-add_shortcode('mac_app_link', 'appStore_app_link_handler');
+add_shortcode('mac_app', 'appStore_handler_app');
+add_shortcode('mac_app_link', 'appStore_handler_appLink');
 add_shortcode('amazon_item', 'appStore_amazon_handler');
 add_shortcode('amazon_item_link', 'appStore_amazon_link_handler');
 add_action('init', 'add_asa_mce_button');
@@ -98,8 +98,6 @@ define('CACHE_DIRECTORY_URL',$upload_dir['baseurl'] . '/appstoreassistant_cache/
 // Setup Widget
 // ------------------------------------------------------------------------
 
-
-
 class ASA_Widget1 extends WP_Widget {
 	function ASA_Widget1() {
 		parent::WP_Widget( false, $name = 'ASA Top 5 iOS' );
@@ -107,7 +105,9 @@ class ASA_Widget1 extends WP_Widget {
 
 	function widget( $args, $instance ) {
 		extract( $args );
+		$artwork_url_start = CACHE_DIRECTORY_URL;
 		//Widget Title
+				
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		if(!$title) $title = __('Top 5 iOS Apps');
 		echo $before_widget;
@@ -136,11 +136,14 @@ class ASA_Widget1 extends WP_Widget {
 		foreach($appIDs as $appID) {	
 			if($appID == "" || !is_numeric($appID)) return;
 			$app = appStore_get_data($appID);
+			// App Artwork
+			$imageTag = $app->imageWidget;
+
 			$appURL = getAffiliateURL($app->trackViewUrl);
 			if($app) {
 				echo "<li>";
 				echo '<a href="'.$appURL.'">';
-				echo '<img src="'.$app->artworkUrl60.'" alt="'.$app->title.'" align="left" width="40"/>';
+				echo '<img src="'.$artwork_url_start.$imageTag.'" alt="'.$app->title.'" align="left"/>';
 				echo '</a>';
 				echo '<h4>'.$app->trackName.'</h4>';
 				echo "<p>";
