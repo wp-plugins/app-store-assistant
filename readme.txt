@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
 Requires at least: 3.6
 Tested up to: 3.6
-Stable tag: 6.3.0
+Stable tag: 6.3.1
 License: GPLv3 or later
 
 Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -109,7 +109,6 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Random Post generator (randomally picks an app that you don't already have a post for) [Thanks AslanDoma]
 * Added: Shortcode tags can now overide the Store/Language chosen [Thanks crisf86]
 * Added: Option to add a position number for the results from a ATOM feed [Thanks 2020media]
-* Changed: Switch to included SimplePie
 * Changed: Sped up Reset of Featured Images (Using log system)
 * Changed: Accepted jpeg for images
 * Changed: All images now saved as png
@@ -118,6 +117,16 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 
 == Changelog ==
+
+= 6.3.1 =
+* Changed: Requires WordPress 3.6 or higher (Older installations please use version 6.2.1)
+* Added: Now handles new Apple RSS link formats
+* Fixed: Description of Mac Screenshots no longer reads iPhone Screenshots
+* Fixed: Recognition of Mac apps
+* Changed: Uses size_format instead of internal function (Requires WP3.6+)
+* Changed: Switch to WordPress included version of SimplePie
+* Fixed: Error displayed if you had the wrong mode tag in the asaf_atomfeed shortcode
+* Fixed: Cacheing of RSS Feed data
 
 = 6.3.0 =
 * Changed: Apple has changed from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply)
@@ -540,7 +549,7 @@ In Version 5.6 the Cacheing system has been replaced. It is recommended that you
 
 In Version 6.0.6 the Image system has been replaced. It is recommended that you clear the caches AFTER upgrading.
 
-In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply)
+In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply). THIS VERSION REQUIRES WordPress 3.6 or later!!!!!
 
 == Note ==
 

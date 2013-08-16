@@ -539,6 +539,7 @@ function appStore_app_element_handler($atts,$content=null, $code="",$platform="i
 	}
 	$app->mode = $mode;
 	$app->more_info_text = $more_info_text;
+	if($app->kind == 'mac-software') $platform = 'mac_app';
 	$app->platform = $platform;
 	$element = "";
 	$appElements_available = explode(",","appName,appIcon,appDescription,appBadge,appDetails,appGCIcon,appScreenshots,appDeviceList,appBuyButton,appRating,appPrice,appBadgeSm,appReleaseNotes");
@@ -689,20 +690,28 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 	} else {
 		$platform = $mode.'_app';
 	}
+	$originalatomurl = $atomurl;
+
+	if(substr($atomurl,-7,7) == "rss.xml" || substr($atomurl,-8,8) == "rss.xml/") {
+		if(substr($atomurl,-8,8) == "rss.xml/") $atomurl = substr($atomurl,0,-1);
+	} else {
+		$last = $atomurl[strlen($atomurl)-1];
+		if($last != "/") $AddSlash = "/";
+		$atomurl = $atomurl.$AddSlash."xml";
+	}
 	
-	$last = $atomurl[strlen($atomurl)-1];
-	if($last != "/") $AddSlash = "/";
-	$RSS_Feed = $atomurl.$AddSlash."xml";
+	//$overidecache = true;
+	
 	
 	//Check to see if feed is available cached
-	$appStore_feedID = "appStore_rssfeed_".hash('md2', $RSS_Feed);
+	$appStore_feedID = "appStore_rssfeed_".hash('md2', $atomurl);
 	$appStore_feedOptions = get_option($appStore_feedID, '');		
 	
-	if($appStore_feedOptions == '' || $appStore_feedOptions['next_check'] < time()) {
+	if($appStore_feedOptions == '' || $appStore_feedOptions['next_check'] < time() || $overidecache) {
 		$STAT = "REBUILT CACHE";
 		// Get Array of AppIDs for ATOM Feed
-		$appIDs = appStore_getIDs_from_feed($RSS_Feed);
-		$appStore_feedOptions = array('next_check' => time() + appStore_setting('cache_time_select_box'), 'feedURL' => $RSS_Feed, 'appIDs' => $appIDs);
+		$appIDs = appStore_getIDs_from_feed($atomurl);
+		$appStore_feedOptions = array('next_check' => time() + appStore_setting('cache_time_select_box'), 'feedURL' => $atomurl, 'appIDs' => $appIDs);
 		update_option($appStore_feedID, $appStore_feedOptions);
 	} else {
 		$STAT = "From CACHE";
@@ -711,15 +720,15 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 
 	//Pair down array to number of apps preference
 	array_splice($appIDs, appStore_setting('qty_of_apps'));
-
 	//Load App data
 	$appListDisplay = '';
 	foreach($appIDs as $appID) {
 		//$appListDisplay .= "<hr><<<<<<<[$appID]>>>>>>><br />";
-		if($appID == "" || !is_numeric($appID)) return;
+		if($appID == "" || !is_numeric($appID)) return "This list is currently empty.";
 		$app = appStore_get_data($appID);
+				
 		if($app) {
-			if(stristr($mode, 'itunes')) {
+			if($platform == 'itunes') {
 				$appListDisplay .= iTunesStore_page_output($app,$more_info_text,"ListOfApps",$platform).'<hr>';
 			} else {
 				if(gettype($app) =="object") $appListDisplay .= appStore_page_output($app,$more_info_text,"ListOfApps",$platform).'<hr>';
@@ -732,8 +741,10 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 }
 
 // ------------START OF MAIN FUNCTIONS-----------------
-function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="internal",$platform="itunes") {
+function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="SingleApp",$platform="itunes") {
 	GLOBAL $is_iphone;
+	
+	
 	// Start capturing output so the text in the post comes first.
 	ob_start();
 
@@ -897,6 +908,7 @@ function appStore_page_output($app, $more_info_text,$mode="SingleApp",$platform=
 		$app->buttonText = $app->TheAppPrice." - ".__("View in App Store",appStoreAssistant)." ";
 	}
 	$app->more_info_text = $more_info_text;
+	if($app->kind == 'mac-software') $platform = 'mac_app';
 	$app->platform = $platform;
 	$app->mode = $mode;
 	if(is_single()) $mode .= "_one";
@@ -982,8 +994,8 @@ function displayAppStore_appScreenshots($app,$elementOnly=false) {
 	// Get iPhone Screenshots
 	if(count($app->screenshotUrls) > 0) {
 		
-			if($app->platform=="mac_app") $title_iPhone = __("Mac Screenshots",appStoreAssistant);
-			if($app->platform=="ios_app") $title_iPhone = __("iPhone Screenshots",appStoreAssistant);
+			if($app->platform == "mac_app") $title_iPhone = __("Mac Screenshots",appStoreAssistant);
+			if($app->platform == "ios_app") $title_iPhone = __("iPhone Screenshots",appStoreAssistant);
 			
 			// appStore-screenshots-iphone
 			$elementLoop_iPhone = '		<ul class="appStore-screenshots">';
@@ -1022,6 +1034,7 @@ function displayAppStore_appScreenshots($app,$elementOnly=false) {
 			if($valid_Screenshots_iPad) $element .= "<h3>$title_iPad</h3>".$elementLoop_iPad;
 			return $element;
 		}
+		
 		if($valid_Screenshots_iPhone) $element .= getAccordionCode ($elementLoop_iPhone, "appStore-screenshots-iphone", $displayMode,$title_iPhone);
 		if($valid_Screenshots_iPad) $element .= getAccordionCode ($elementLoop_iPad, "appStore-screenshots-ipad", $displayMode,$title_iPad);
 		return $element;
@@ -1406,7 +1419,7 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 	}
 	$elementFileSize = '';
 	if (!empty($app->fileSizeBytes)) {
-		$elementFileSize =  '<li class="appStore-filesize">'.__("File Size",appStoreAssistant).': '.filesizeinfo($app->fileSizeBytes).'</li>';
+		$elementFileSize =  '<li class="appStore-filesize">'.__("File Size",appStoreAssistant).': '.size_format($app->fileSizeBytes).'</li>';
 	}
 	$elementUniversal = '';
 	if ($AppFeatures[0] == "iosUniversal") {
@@ -1419,7 +1432,7 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 	$elementCategories = '';
 	$appCategory = $app->genres;
 	$appCategoryPrime = $app->primaryGenreName;
-	$appCategoryList = implode(', ', $appCategory);
+	if(is_array($appCategory)) $appCategoryList = implode(', ', $appCategory);
 	if (!empty($appCategory)) {
 		$wordForCategories = sprintf( _n('Category', 'Categories', count($appCategory), appStoreAssistant), count($appCategory) );
 		$elementCategories .=  '<li class="appStore-categories">'.$wordForCategories.": ";
@@ -1645,16 +1658,24 @@ function appStore_get_data( $id ) {
 	return $appStore_options['app_data'];
 }
 
+function appStore_cache_seconds($seconds) {
+	return appStore_setting('cache_time_select_box');
+}
+
+
 function appStore_getIDs_from_feed($atomurl) {
-	$last = $atomurl[strlen($atomurl)-1];
-	if($last != "/") $AddSlash = "/";
-	$urlEnd = 'xml';
-	$RSS_Feed = $atomurl.$AddSlash.$urlEnd;
-	$feed = new SimplePie();
-	$feed->set_feed_url($RSS_Feed);
-	$feed->init();
-	$feed->handle_content_type();
-	foreach ($feed->get_items() as $item):
+
+	add_filter( 'wp_feed_cache_transient_lifetime' , 'appStore_cache_seconds' );
+	$rss = fetch_feed($atomurl);
+	remove_filter( 'wp_feed_cache_transient_lifetime' , 'appStore_cache_seconds' );
+	if ( ! is_wp_error( $rss ) ) : // Checks that the object is created correctly
+		// Figure out how many total items there are, but limit it to appStore_setting('qty_of_apps'). 
+		$maxitems = $rss->get_item_quantity( appStore_setting('qty_of_apps') );
+		// Build an array of all the items, starting with element 0 (first element).
+		$rss_items = $rss->get_items( 0, $maxitems );
+	endif;
+		
+	foreach ($rss_items as $item):
 		$appID =  $item->get_id();
 		$pattern = '(id[0-9]+)';
 		preg_match($pattern, $appID, $matches, PREG_OFFSET_CAPTURE, 3);
@@ -1662,7 +1683,6 @@ function appStore_getIDs_from_feed($atomurl) {
 	endforeach;
 	return $appIDs;
 }
-
 
 function appStore_page_get_json($id) {
 	if(function_exists('file_get_contents') && ini_get('allow_url_fopen'))
@@ -1931,16 +1951,5 @@ function shortenDescription($string){
      $string = substr($string,0,appStore_setting('max_description'));
      $string = substr($string,0,strrpos($string," "));
      return $string;
-}
-
-function filesizeinfo($fs) { 
-	$bytes = array('KB', 'KB', 'MB', 'GB', 'TB'); 
-	// values are always displayed in at least 1 kilobyte: 
-	if ($fs <= 999) $fs = 1; 
-	for ($i = 0; $fs > 999; $i++) { 
-		$fs /= 1024; 
-	}
-	
-	return ceil($fs)." ".$bytes[$i]; 
 }
 ?>

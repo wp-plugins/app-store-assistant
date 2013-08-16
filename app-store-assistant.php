@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.3.0
+Version: 6.3.1
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -21,7 +21,7 @@ define( 'ASA_MAIN_FILE', plugin_dir_path( __FILE__ )."app-store-assistant.php" )
 // ------------------ FUNCTIONS ---------------------------------------------------------
 // --------------------------------------------------------------------------------------
 require_once(ASA_PLUGIN_INCLUDES_PATH.'app-store-functions.php');
-require_once(ASA_PLUGIN_INCLUDES_PATH.'simplepie.inc');
+//require_once(ASA_PLUGIN_INCLUDES_PATH.'simplepie.inc');
 require_once(ASA_PLUGIN_INCLUDES_PATH.'app-store-admin_functions.php');
 require_once(ASA_PLUGIN_INCLUDES_PATH.'app-store-amazon_functions.php');
 require_once(ASA_PLUGIN_INCLUDES_PATH.'sha256.inc.php');

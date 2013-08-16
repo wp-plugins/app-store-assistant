@@ -973,10 +973,10 @@ function requires_wordpress_version() {
 	$plugin = plugin_basename( ASA_MAIN_FILE );
 	$plugin_data = get_plugin_data( ASA_MAIN_FILE, false );
 
-	if ( version_compare($wp_version, "3.3", "<" ) ) {
+	if ( version_compare($wp_version, "3.6", "<" ) ) {
 		if( is_plugin_active($plugin) ) {
 			deactivate_plugins( $plugin );
-			wp_die( "'".$plugin_data['Name']."' requires WordPress 3.3 or higher, and has been deactivated! Please upgrade WordPress and try again.<br /><br />Back to <a href='".admin_url()."'>WordPress admin</a>." );
+			wp_die( "'".$plugin_data['Name']."' requires WordPress 3.6 or higher, and has been deactivated! Please upgrade WordPress and try again.<br /><br />(Older installations please use version 6.2.1)<br /><br />Back to <a href='".admin_url()."'>WordPress admin</a>." );
 		}
 	}
 }
