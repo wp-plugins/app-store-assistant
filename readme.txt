@@ -1,17 +1,19 @@
 === App Store Assistant ===
 Contributors: sealsystems 
 Donate link:http://theiphoneappslist.com/donate/
-Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon
+Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
 Tested up to: 3.6
-Stable tag: 6.3.1
+Stable tag: 6.3.2
 License: GPLv3 or later
 
-Lets you display the detail of an item or an ATOM feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
+Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
 
 == Description ==
 
-The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an ATOM feed (http://iTunes.apple.com/rss) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an RSS feed (https://rss.itunes.apple.com/us/) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+
+Built-in search for automated Post creation.
 
 When upgrading to a new versin of the plug-in, it is recomment that you rebuild the cache. There is an option in the Utilities tab that will do this for you.
 
@@ -108,7 +110,6 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Change file type to png if tiff supplied by app store WP_Image_Editor
 * Added: Random Post generator (randomally picks an app that you don't already have a post for) [Thanks AslanDoma]
 * Added: Shortcode tags can now overide the Store/Language chosen [Thanks crisf86]
-* Added: Option to add a position number for the results from a ATOM feed [Thanks 2020media]
 * Changed: Sped up Reset of Featured Images (Using log system)
 * Changed: Accepted jpeg for images
 * Changed: All images now saved as png
@@ -117,6 +118,10 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 
 == Changelog ==
+
+= 6.3.2 =
+* Added: Option to display a Position Number for the results from a ATOM feed [Thanks 2020media]
+* Added: You can specify the characters before and after the Position Number ie "# 5", "5)" etc.
 
 = 6.3.1 =
 * Changed: Requires WordPress 3.6 or higher (Older installations please use version 6.2.1)

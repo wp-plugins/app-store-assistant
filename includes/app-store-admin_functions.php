@@ -43,6 +43,9 @@ function appStore_add_defaults() {
 		"iTunes_store_badge_type" => "available",
 		"store_country" => "US",
 	
+		"PrePositionNumber" => "# ",
+		"PostPositionNumber" => ") ",
+	
 		"full_star_color" => "blue",
 		"empty_star_color" => "clear",
 		"color_buttonStart" => "79bbff",
@@ -116,6 +119,7 @@ function appStore_add_defaults() {
 		"displaympsupporteddeviceType" => "Normal",
 
 		"displayATOMapptitle" => "no",
+		"displayATOMappPositionNumber" => "no",
 		"displayATOMappdescription" => "yes",
 		"displayATOMappreleasenotes" => "yes",
 		"displayATOMappdetailssection" => "yes",
@@ -568,7 +572,7 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$ty
 	foreach ($listOfApps as $appData) {
 		$masterList[$i] = "";
 		if (!array_search($appData->trackId, $checkForDuplicates)) {
-			$TheAppPrice = format_price($appData->price);
+			$TheAppPrice = appStore_format_price($appData->price);
 						
 			$Categories = implode(", ", $appData->genres);
 			$CategoriesNS = implode(",", $appData->genres);
@@ -996,18 +1000,33 @@ function appStore_plugin_action_links( $links, $file ) {
 // Sanitize and validate input. Accepts an array, return a sanitized array.
 function appStore_validate_options($input) {
 	$options = get_option('appStore_options');
+	
 	if(isset($input['checkboxedoptions'])) {
 		$checkboxedoptions = explode(",", $input['checkboxedoptions']);
 		foreach($checkboxedoptions as $checkboxedoption) {
 			$options[$checkboxedoption] = "no";
 		}
 	}
+
+	if(isset($input['textboxoptions'])) {
+		$textboxoptions = explode(",", $input['textboxoptions']);
+		foreach($textboxoptions as $textboxoption) {
+			$options[$textboxoption] = "EMP";
+		}
+	}
+	
+	
+	
+	
 	foreach( $input as $optionName => $optionValue ){
-		$options[$optionName] = $optionValue;
+		if($optionValue != "") $options[$optionName] = $optionValue;
 	}	
 	
+	//print_r($options);
 	
 	$options['validated'] = "You Betcha! - ".date('r');
+	
+	
 	return $options;
 }
 

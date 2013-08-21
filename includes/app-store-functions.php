@@ -429,7 +429,7 @@ function plugin_get_version() {
 	return $plugin_folder[$plugin_file]['Version'];
 }
 
-function format_price($unformattedPrice) {
+function appStore_format_price($unformattedPrice) {
 	//Check to see if the app is free, or under a dollar
 	if($unformattedPrice == 0) {
 		$thePrice = __("Free!",appStoreAssistant);
@@ -530,7 +530,7 @@ function appStore_app_element_handler($atts,$content=null, $code="",$platform="i
 	//Get the App Data
 	$app = appStore_get_data($id);
 
-	$app->TheAppPrice = format_price($app->price);
+	$app->TheAppPrice = appStore_format_price($app->price);
 	$app->appURL = getAffiliateURL($app->trackViewUrl);
 	if(appStore_setting('smaller_buy_button_iOS') == "yes" && $is_iphone) {
 		$app->buttonText = $app->TheAppPrice." ";
@@ -722,11 +722,13 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 	array_splice($appIDs, appStore_setting('qty_of_apps'));
 	//Load App data
 	$appListDisplay = '';
+	$appPositionNumber = 1;
 	foreach($appIDs as $appID) {
 		//$appListDisplay .= "<hr><<<<<<<[$appID]>>>>>>><br />";
 		if($appID == "" || !is_numeric($appID)) return "This list is currently empty.";
 		$app = appStore_get_data($appID);
-				
+		$app->PositionNumber = $appPositionNumber;
+		$appPositionNumber ++;
 		if($app) {
 			if($platform == 'itunes') {
 				$appListDisplay .= iTunesStore_page_output($app,$more_info_text,"ListOfApps",$platform).'<hr>';
@@ -810,7 +812,7 @@ function iTunesStore_page_output($iTunesItem, $more_info_text,$mode="SingleApp",
 			break;
 	}
 	
-	$iTunesPrice = format_price($unformattedPrice);
+	$iTunesPrice = appStore_format_price($unformattedPrice);
 
 	// iTunes Artwork
 	$artwork_url = CACHE_DIRECTORY_URL.$iTunesItem->imagePosts;
@@ -900,7 +902,7 @@ function appStore_page_output($app, $more_info_text,$mode="SingleApp",$platform=
 
 	GLOBAL $is_iphone;	
 	
-	$app->TheAppPrice = format_price($app->price);
+	$app->TheAppPrice = appStore_format_price($app->price);
 	$app->appURL = getAffiliateURL($app->trackViewUrl);
 	if(appStore_setting('smaller_buy_button_iOS') == "yes" && $is_iphone) {
 		$app->buttonText = $app->TheAppPrice." ";
@@ -953,6 +955,15 @@ function displayAppStore_appName ($app,$elementOnly=false) {
 	if(!empty($app->trackName)) {
 		$trackName = $app->trackName;
 		if($elementOnly) return $trackName;
+
+	if ($app->mode == "ListOfApps" && appStore_setting('displayATOMappPositionNumber') == "yes") {
+		$trackName = "";
+		if(appStore_setting('PrePositionNumber') != "EMP") $trackName .= appStore_setting('PrePositionNumber');
+		$trackName .= $app->PositionNumber;
+		if(appStore_setting('PostPositionNumber') != "EMP") $trackName .= appStore_setting('PostPositionNumber');
+		$trackName .= $app->trackName;
+	}
+
 
 		switch ($app->mode) {
 			case "SingleApp":
@@ -1162,7 +1173,7 @@ function getAccordionCode ($DisplayElement,$cssClass,$accState, $SectionTitle="S
 
 function displayAppStore_appDescription($app,$elementOnly=false) {
 	if(empty($app->description)) return '';
-	$smallDescription = nl2br(shortenDescription($app->description));
+	$smallDescription = nl2br(appStore_shortenDescription($app->description));
 	$fullDescription = nl2br($app->description);
 	
 	$element = "";
@@ -1623,8 +1634,8 @@ function getAffiliateURL($iTunesURL){
 		}
         break;
     default:
-		$phgCampaignvalue = "v".plugin_get_version()."s".$_SERVER['SERVER_NAME'];
-		$phgCampaignvalue = preg_replace("/[^A-Za-z0-9 ]/", '', $phgCampaignvalue);
+		$phgCampaignvalue = "v".preg_replace("/[^0-9]/",'',plugin_get_version())."_".$_SERVER['SERVER_NAME'];
+		$phgCampaignvalue = preg_replace("/[^A-Za-z0-9_\. ]/", '', $phgCampaignvalue);
 		$phgCampaignvalue = substr($phgCampaignvalue,0,42);
 
 
@@ -1947,7 +1958,7 @@ function appStore_set_setting($name, $value) {
 	$appStore_settings[$name] = $value;
 }
 
-function shortenDescription($string){
+function appStore_shortenDescription($string){
      $string = substr($string,0,appStore_setting('max_description'));
      $string = substr($string,0,strrpos($string," "));
      return $string;

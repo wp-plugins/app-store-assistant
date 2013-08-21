@@ -30,6 +30,7 @@ jQuery(function() {
     	$appStoreDetails = array(
     		array('ID' => "-----", 'label' => "Single Elements"),
     		array('ID' => "displayATOMapptitle", 'label' => "App Name"),
+    		array('ID' => "displayATOMappPositionNumber", 'label' => "App Position Number"),
     		array('ID' => "displayATOMappicon", 'label' => "App Icon"),
     		array('ID' => "displayATOMappiconbuybutton", 'label' => "App Icon's buy button"),
     		array('ID' => "displayATOMappbadge", 'label' => "App Store Badge"),
