@@ -75,15 +75,17 @@
 		
 <h2 class="asa_admin">Other</h2>
 	<div class="asa_admin">
-		
-		<div class="asa_admin_element">Display <input type="text" size="3" name="appStore_options[qty_of_apps]" value="<?php echo $options['qty_of_apps']; ?>" maxlength="3" /> apps from ATOM feed</div>
 		<div class="asa_admin_element">Affiliate Network: <select name="appStore_options[affiliatepartnerid]">
 			<option value="999" <?php if ($options['affiliatepartnerid'] == "999") echo 'selected'; ?>>None</option>
-			<option value="30" <?php if ($options['affiliatepartnerid'] == "30") echo 'selected'; ?>>LinkShare</option>
+			<option value="2013" <?php if ($options['affiliatepartnerid'] == "2013") echo 'selected'; ?>>PHG</option>
 			<option value="2003" <?php if ($options['affiliatepartnerid'] == "2003") echo 'selected'; ?>>TradeDoubler</option>
+			<option value="999" <?php if ($options['affiliatepartnerid'] == "999") echo 'selected'; ?>>-- Discontinued Programs --</option>
+			<option value="30" <?php if ($options['affiliatepartnerid'] == "30") echo 'selected'; ?>>LinkShare</option>
 			<option value="1002" <?php if ($options['affiliatepartnerid'] == "1002") echo 'selected'; ?>>DGM</option>
 			</select>
 		</div>
+		
+		
 		<div class="asa_admin_element">Open links in new window: <input type="checkbox" name="appStore_options[open_links_externally]" value="yes" <?php if ($options['open_links_externally'] == "yes") echo 'checked'; ?> />
 		</div>
 		<div class="asa_admin_element">Show link to plugin site in footer: <input type="checkbox" name="appStore_options[displayLinkToFooter]" value="yes" <?php if ($options['displayLinkToFooter'] == "yes") echo 'checked'; ?> />

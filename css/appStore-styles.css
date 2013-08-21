@@ -130,11 +130,26 @@ img.appStore_ThumbIcon
 	text-align: left;
 }
 
-#appStore-icon-container {
+#appStore-icon-container
+{
 	float: right;
+	text-align: center;
 }
-
-#appStore-icon-container img {
+#appStore-icon-container-left
+{
+	float: left;
+	text-align: center;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+img.appStore-gamecentericon
+{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+#appStore-icon-container a img
+{
 	border: 0px;
 	margin: 0px;
 	border-radius: 20px;
@@ -206,14 +221,14 @@ div.asaf-entry img {
 }
 
 .appStore-purchase {
-	width: 100%;
-	margin: 20px auto 20px auto;
+	margin: 8px auto 8px auto;
 	text-align: right;
 }
 
-.appStore-purchase-center {
+.appStore-purchase-center
+{
 	width: 100%;
-	margin: 20px auto 20px auto;
+	margin: 8px auto 8px auto;
 	text-align: center;
 }
 
@@ -222,3 +237,13 @@ div.asaf-entry img {
 	font-weight: normal;
 	padding: 4px 8px;
 }
+.asadebug
+{
+	background-color: #FC6;
+	color: #F00;
+	font-size: 12px;
+	border: 1px purple dashed;
+	padding: 7px;
+white-space: pre;
+  font-family: monospace;
+  display: block;}

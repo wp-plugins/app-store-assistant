@@ -4,7 +4,7 @@
 <tr valign="top">
 <th scope="row"><label>Excerpt Generator</label></th>
 <td><input type="radio" name="appStore_options[excerpt_generator]" value="wordpress" <?php if ($options['excerpt_generator'] == "wordpress") echo 'checked'; ?> /> WordPress<br />
-<input type="radio" name="appStore_options[excerpt_generator]" value="asa" <?php if ($options['excerpt_generator'] == "asa") echo 'checked'; ?> /> App Store Assistent<br />
+<input type="radio" name="appStore_options[excerpt_generator]" value="asa" <?php if ($options['excerpt_generator'] == "asa") echo 'checked'; ?> /> App Store Assistant<br />
 	<p class="asa_admin_warning">This feature may negatively affect your theme. Most themes do not expect an image in the excerpt.</p></td>
 </tr>
 <tr valign="top">

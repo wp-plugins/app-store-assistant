@@ -43,6 +43,9 @@ function appStore_add_defaults() {
 		"iTunes_store_badge_type" => "available",
 		"store_country" => "US",
 	
+		"PrePositionNumber" => "# ",
+		"PostPositionNumber" => ") ",
+	
 		"full_star_color" => "blue",
 		"empty_star_color" => "clear",
 		"color_buttonStart" => "79bbff",
@@ -68,6 +71,7 @@ function appStore_add_defaults() {
 		"displayapptitle" => "no",
 		"displayappdescription" => "yes",
 		"displayappreleasenotes" => "yes",
+		"displayappdetailssection" => "yes",
 		"displayappbadge" => "yes",
 		"displayappicon" => "yes",
 		"displayappinapppurwarning" => "yes",
@@ -87,12 +91,12 @@ function appStore_add_defaults() {
 		"displaystarrating" => "yes",
 		"displayscreenshots" => "yes",
 		"displaysupporteddevices" => "no",
-		"displaysupporteddeviceIcons" => "yes",
-		"displaysupporteddevicesMinimal" => "no",
+		"displaysupporteddevicesType" => "Normal",
 
 		"displaympapptitle" => "no",
 		"displaympappdescription" => "yes",
 		"displaympappreleasenotes" => "yes",
+		"displaympappdetailssection" => "yes",
 		"displaympappbadge" => "yes",
 		"displaympappicon" => "yes",
 		"displaympinapppurwarning" => "yes",
@@ -112,12 +116,13 @@ function appStore_add_defaults() {
 		"displaympstarrating" => "yes",
 		"displaympscreenshots" => "yes",
 		"displaympsupporteddevices" => "no",
-		"displaympsupporteddeviceIcons" => "yes",
-		"displaympsupporteddevicesMinimal" => "no",
+		"displaympsupporteddeviceType" => "Normal",
 
 		"displayATOMapptitle" => "no",
+		"displayATOMappPositionNumber" => "no",
 		"displayATOMappdescription" => "yes",
 		"displayATOMappreleasenotes" => "yes",
+		"displayATOMappdetailssection" => "yes",
 		"displayATOMappbadge" => "yes",
 		"displayATOMappicon" => "yes",
 		"displayATOMappinapppurwarning" => "yes",
@@ -137,24 +142,24 @@ function appStore_add_defaults() {
 		"displayATOMstarrating" => "yes",
 		"displayATOMscreenshots" => "yes",
 		"displayATOMsupporteddevices" => "no",
-		"displayATOMsupporteddeviceIcons" => "no",
-		"displayATOMsupporteddevicesMinimal" => "yes",
+		"displayATOMsupporteddeviceType" => "Normal",
 
 		"displayexcerptthumbnail" => "yes",
 		"displayexcerptreadmore" => "no",
 		"displayappdetailsaslist" => "yes",
 		
 		"displayappdetailsasliststyle" => "bw",
-		"appstoreicon_to_use" => "512",
-		"appstoreicon_size_adjust_type" => "percent",
-		"appicon_size_adjust" => "25",
-		"appicon_iOS_size_adjust" => "12",
-		"appicon_size_max" => "128",
-		"appicon_iOS_size_max" => "64",
 
-		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
-		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
-		"appATOMDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating",
+		"appicon_size_featured" => "256",
+		"appicon_size_ios" => "256",
+		"appicon_size_lists" => "128",
+		"appicon_size_widget" => "64",
+		"appicon_size_posts" => "128",
+		"appicon_size_element" => "200",
+		
+		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
+		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
+		"appATOMDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appBadge,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
 
 		"displayitunestitle" => "yes",
 		"displayitunestrackcount" => "yes",
@@ -164,15 +169,7 @@ function appStore_add_defaults() {
 		"displayitunesreleasedate" => "yes",
 		"displayitunesdescription" => "yes",
 		"displayitunesexplicitwarning" => "yes",
-		"itunesicon_size_adjust_type" => "percent",
-		"itunesicon_to_use" => "100",
-		"itunesicon_size_adjust" => "100",		
-		"itunesicon_iOS_size_adjust" => "50",		
-		"itunesicon_size_max" => "100",
-		"itunesicon_iOS_size_max" => "50",
 
-		"amazon_productimage_maxwidth" => "200",
-		"amazon_productimage_size" => "medium",
 		"AWS_PARTNER_DOMAIN" => "com",
 		"AWS_API_KEY" => "",
 		"AWS_API_SECRET_KEY" => "",
@@ -197,10 +194,13 @@ function appStore_add_defaults() {
 		"ResetCacheOne" => "NoWay",
 		"ResetCacheTwo" => "NoWay",
 		
+		"ResetFIOne" => "NoWay",
+		"ResetFITwo" => "NoWay",
+
 		"RemoveCachedItem" => "NoWay",
 		"RemoveCachedItemID" => "",
 		"RemoveCachedItemASIN" => "",
-
+		
 		"displayLinkToFooter" => "yes",
 		"versionInstalled" => "5"
 		);
@@ -228,6 +228,7 @@ function appStore_add_defaults() {
 	
 	//echo "-----UPDATE------[<pre>".print_r($PostedValues,true)."</pre>]-------------";
 	update_option('appStore_options', $appStore_options);
+	update_option('appStore_FI_maxItemsToProcess', "100");
 }
 
 // Init plugin options to white list our options
@@ -239,12 +240,12 @@ function appStore_init(){
 
 function appStore_add_admin_scripts() {
 	wp_enqueue_script('jquery');
-	wp_enqueue_script('jquery-ui-tabs' );
-	wp_enqueue_script('jquery-ui-sortable');
 	wp_enqueue_script('jquery-ui-core');//enables UI
 	wp_enqueue_script('jquery-ui-tabs');
-	wp_enqueue_style( 'farbtastic' );
-	wp_enqueue_script('farbtastic' );
+	wp_enqueue_script('jquery-ui-sortable');
+	wp_enqueue_script('jquery-ui-tabs');
+	wp_enqueue_style( 'farbtastic');
+	wp_enqueue_script('farbtastic');
  	wp_enqueue_script('jquerymenusstart', plugins_url('js_functions/jquerymenusstart.js',ASA_MAIN_FILE), null, null, true);
 	wp_enqueue_script('jscolor', plugins_url('js_functions/jscolor/jscolor.js',ASA_MAIN_FILE), null, null, true);
 }
@@ -325,7 +326,7 @@ function appStore_displayAdminOptionsPage() {
 		appStore_add_defaults();
 		$OptionsReset = true;
 		$options = get_option('appStore_options');
-		appStore_ShowMessage("All settings have been reset to their defaults!",true);
+		appStore_ShowMessage("All settings have been reset to their defaults!",false);
 	}
 
 	if($options['AddFeaturedImages']=="DoIt" ) {
@@ -340,7 +341,7 @@ function appStore_displayAdminOptionsPage() {
 			$postCounter++;
 		}
 		$options = get_option('appStore_options');
-		appStore_ShowMessage("We did it!",true);
+		appStore_ShowMessage("We did it!",false);
 	}
 
 	if($options['RemoveCachedItem']=="DoIt" ) {
@@ -364,22 +365,29 @@ function appStore_displayAdminOptionsPage() {
 		appStore_ShowMessage("The App data cache has been cleared!",true);
 	}
 
+	if($options['ResetFIOne']=="DoIt" && $options['ResetFITwo']=="DoIt") {
+		$options = get_option('appStore_options');
+		$options["ResetFIOne"] = "NoWay";
+		$options["ResetFITwo"] = "NoWay";		
+		update_option('appStore_options', $options);	
+		appStore_ClearFeaturedImages();		
+	}
 	
 	
 	echo '<!-- Display Plugin Icon, Header, and Description -->';
 	echo '<div class="asa_admin_icon">';
 	echo "<h2>AppStore Assistant $appStoreOptionsTitle</h2></div>";
-	echo '<p>Below is a collection of controls you can use to customize the App Store Assistant plugin.</p>';
+	echo '<p>'.__('Below is a collection of controls you can use to customize the App Store Assistant plugin',appStoreAssistant).'.</p>';
 	//echo "<hr>--------------------".appStore_setting('validated')."----------------------<hr>";
 	appStore_checkCacheFolder();
-	if($settingsUpdated) appStore_ShowMessage(__("Settings Updated!",appStoreAssistant),true);
+	if($settingsUpdated) appStore_ShowMessage(__("Settings Updated!",appStoreAssistant),false);
 	appStore_displayAdminTabs($requestedPage,$currentTab,$affiliatepartnerid);
 	echo '<form method="post" action="options.php">';
 	settings_fields('appStore_plugin_options');
 	require_once(ASA_PLUGIN_INCLUDES_PATH."options_pages/$appStoreOptionsPage");
 	echo '<p class="submit">';
 	echo '<input type="submit" class="button-primary" value="';
-	_e('Save Changes');
+	_e('Save Changes',appStoreAssistant);
 	echo '" />';
 	echo '</p>';
 	echo '</form>';
@@ -395,20 +403,20 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		$tabs_array = array ('defaultTab' => 'Descriptions','excerpts' => 'Excerpts','createpost' => 'Create Posts','miscellaneous' => 'Miscellaneous');
 	  break;
 	  case 'appStore_sm_visual' :
-		$tabs_array = array ('defaultTab' => 'Stars','buybutton' => 'Buy Button','miscellaneous' => 'Miscellaneous');
+		$tabs_array = array ('defaultTab' => 'Stars','imagesizes' => 'Image Sizes','buybutton' => 'Buy Button','miscellaneous' => 'Miscellaneous');
 	  break;
 	  case 'appStore_sm_appstore' :
-		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','atomfeed' => 'Atom Feed','appicon' => 'App Icon','graphics' => 'App Store Graphics');
+		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Posts','atomfeed' => 'List/Atom Feed','graphics' => 'App Store Graphics');
 	  break;
 	  case 'appStore_sm_itunes' :
 		//$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Post','graphics' => 'App Store Graphics');
-		$tabs_array = array ('defaultTab' => 'Single Post','graphics' => 'App Store Graphics');
+		$tabs_array = array ('defaultTab' => 'Single Post','graphics' => 'iTunes Store Graphics');
 	  break;
 	  case 'appStore_sm_amazon' :
-		$tabs_array = array ('defaultTab' => 'Product Images','linktext' => 'Text Link Defaults');
+		$tabs_array = array ('defaultTab' => 'Text Link Defaults');
 	  break;
 	  case 'appStore_sm_utilities' :
-		$tabs_array = array ('defaultTab' => 'Add Featured Images','clearitem' => 'Clear an Item','clearcache' => 'Clear Cache','reset' => 'Reset Defaults');
+		$tabs_array = array ('defaultTab' => 'Add Featured Images','clearitem' => 'Clear an Item','clearcache' => 'Clear Cache','reset_featured' => 'Reset Featured','reset' => 'Reset Defaults');
 	  break;
 	  case 'appStore_sm_help' :
 		$tabs_array = array ('defaultTab' => 'Getting Started','shortcodes' => 'Shortcodes','editor' => 'Post Editor');
@@ -427,6 +435,9 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		  break;
 		  case '1002' :
 			$tabs_end = array ('dgm' => 'DGM');
+		  break;
+		  case '2013' :
+			$tabs_end = array ('phg' => 'PHG');
 		  break;
 		}
 		if(is_array($tabs_end)) {
@@ -468,7 +479,7 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 	);
 	
 	$newPostID = wp_insert_post( $my_post );
-	echo "Creating Post...<br />";
+	_e("Creating Post...",appStoreAssistant)."<br />";
 	if(appStore_setting('newPost_addCategories')=="yes") {
 		$appCategories = explode(",",$appCategories);
 		foreach($appCategories as $appCategory) {
@@ -485,12 +496,13 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 		}
 		wp_set_post_terms( $newPostID, $postCategories, 'category',false);	
 	}
-	echo "Caching App data...<br />";
+	_e( "Caching App data...",appStoreAssistant)."<br />";
 
 	appStore_get_data( $appID );
-	echo "Saving Default Featured Image...<br />";
+	_e( "Saving Default Featured Image...",appStoreAssistant)."<br />";
 	
-	$filename = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl100.png";
+	$filename = appStore_getBestIcon($appID);
+	
 	$wp_filetype = wp_check_filetype(basename($filename), null ); 
 	$wp_upload_dir = wp_upload_dir();
 	$attachment = array(
@@ -505,27 +517,62 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 	
 	echo '<div class="updated settings-error">';
 	if($newPostID) {
-		echo "<h3>Your $postStatus POST has been created for <b>$appTitle</b>!</h3>";
-		echo '<a href="post.php?post='.$newPostID.'&amp;action=edit">Click here to edit the new post.</a><br><br>';
+		echo "<h3>";
+		_e("Your",appStoreAssistant);
+		echo $postStatus.' ';
+		_e("POST has been created for",appStoreAssistant);
+		echo " <b>$appTitle</b>!</h3>";
+		echo '<a href="post.php?post='.$newPostID.'&amp;action=edit">';
+		_e('Click here to edit the new post',appStoreAssistant);
+		echo '.</a><br><br>';
 		if(is_array($postCategoriesList)) {
-			echo "In the following categories:<br />";
+			_e( "In the following categories",appStoreAssistant).":<br />";
 			foreach($postCategoriesList as $category) echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $category <br />";
 		}
 		
 		
 	} else {
-		echo "There was an error creating your post for <b>$appTitle</b>!";
+		_e( "There was an error creating your post for",appStoreAssistant)." <b>$appTitle</b>!";
 	}
 	echo "<br /><br /></div>";
 }
 
-function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
+function appStore_CreateListOfAppsUsedInPosts() {
+	$MyResults = appStore_get_shortcode_posts();
+	$postCounter = 1;
+	$arrayOfIDs['iOS'][] = "000000000";
+	$arrayOfIDs['iTunes'][] = "000000000";
+	$arrayOfIDs['Amazon'][] = "000000000";
+
+	foreach($MyResults as $MyResult) {
+		$appIDs = preg_match_all('/_app\ id=\"([^\"]*?)\"/', $MyResult->post_content, $app_matches);
+		$iTunesIDs = preg_match_all('/itunes_store\ id=\"([^\"]*?)\"/', $MyResult->post_content, $iTunes_matches);
+		$amazonIDs = preg_match_all('/amazon_item\ asin=\"([^\"]*?)\"/', $MyResult->post_content, $amazon_matches);
+
+
+		if($app_matches[1][0] != "") $arrayOfIDs['iOS'][] = $app_matches[1][0];
+		if($iTunes_matches[1][0] != "") $arrayOfIDs['iTunes'][] = $iTunes_matches[1][0];
+		if($amazon_matches[1][0] != "") $arrayOfIDs['Amazon'][] = $amazon_matches[1][0];
+
+	
+		//appStore_addFeaturedImage($MyResult);
+		$postCounter++;
+	}
+	//echo "<hr>------RESULT-----[<pre>".print_r($arrayOfIDs,true)."</pre>]-------------<hr>";
+	return $arrayOfIDs;
+}
+
+
+function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$type){
 	GLOBAL $masterList,$checkForDuplicates;
 	$i = $startKey;
+	$listOfAlreadyAddedIDs = appStore_CreateListOfAppsUsedInPosts();
+	$listOfAlreadyAddediOSIDs = $listOfAlreadyAddedIDs['iOS'];
+
 	foreach ($listOfApps as $appData) {
 		$masterList[$i] = "";
 		if (!array_search($appData->trackId, $checkForDuplicates)) {
-			$TheAppPrice = format_price($appData->price);
+			$TheAppPrice = appStore_format_price($appData->price);
 						
 			$Categories = implode(", ", $appData->genres);
 			$CategoriesNS = implode(",", $appData->genres);
@@ -538,7 +585,9 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 			$masterList[$i] .= "<li class='appStore-search-result' ";
 			$masterList[$i] .= "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
 			$masterList[$i] .= '<form action="admin.php?page=appStore_IDsearch" method="POST"><p>';
-			$masterList[$i] .= "<span class='appStore-search-title'>".$appData->trackName."</span>";
+			$masterList[$i] .= "<span class='appStore-search-title'>";
+			$masterList[$i] .= $appData->trackName;
+			$masterList[$i] .= "</span>";
 			$masterList[$i] .= " (".$appData->version.")<br />";
 			
 			$masterList[$i] .= " by ".$appData->artistName."/".$appData->sellerName."<br />";
@@ -556,10 +605,17 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart){
 			$masterList[$i] .= '<input type="hidden" name="postTitle" value="'.$appData->trackName.'">';
 			$masterList[$i] .= '<input type="hidden" name="appID" value="'.$appData->trackId.'">';
 			$masterList[$i] .= '<input type="hidden" name="postCategories" value="'.$CategoriesNS.'">';
+			$masterList[$i] .= '<input type="hidden" name="type" value="'.$type.'">';
 			$masterList[$i] .= '<input type="hidden" name="createPost" value="true">';
-			$masterList[$i] .= '<br /><button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
+			if (is_array($listOfAlreadyAddediOSIDs)) {
+				if (in_array($appData->trackId, $listOfAlreadyAddediOSIDs)) {
+					$masterList[$i] .= '<br /><font color="red"><b>'.__("You have already added this app.").'</b></font>';
+				} else {
+					$masterList[$i] .= '<br /><button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
+				}
+			}
 			$masterList[$i] .= "</p></form>";
-			$masterList[$i] .= '</li>';
+			$masterList[$i] .= '</li>'."\r\n<!-- App -->\r\n";
 		}
 		
 		$checkForDuplicates[] = $appData->trackId;
@@ -583,8 +639,8 @@ function appStore_search_form() {
 	GLOBAL $masterList,$checkForDuplicates;
 	
 	echo '<div class="icon32" id="icon-tools"><br></div>';
-	echo '<h2>Find an App from the App Store or Mac App Store</h2>';
-	echo '<p>This will generate a shortcode that you can paste into your POST. You will also have the option to <b>auto-create a post</b> which will include a Featured Image, App Title, Shortcode and Categories. After creation, you will be given a link to edit the post.</p>';
+	echo '<h2>'.__('Find an App from the App Store or Mac App Store',appStoreAssistant).'</h2>';
+	echo '<p>'.__('This will generate a shortcode that you can paste into your POST. You will also have the option to <b>auto-create a post</b> which will include a Featured Image, App Title, Shortcode and Categories. After creation, you will be given a link to edit the post.',appStoreAssistant).'</p>';
 
 	if (!empty($_POST)) {
 		switch ($_POST['type']) {
@@ -621,9 +677,7 @@ function appStore_search_form() {
 		$SearchTerm = $_POST['appname'];
 		
 		if(!empty($_POST['createPost'])) {
-	
 			appStore_createPostFromAppID($_POST['shortcode'],$_POST['postTitle'],$_POST['postCategories'],$_POST['appID']);
-	
 		}
 	} else {
 		$SearchTerm = "";
@@ -646,12 +700,13 @@ function appStore_search_form() {
 	echo '</div>';
 	if (!empty($_POST)) {
 
+
 		$checkForDuplicates[] = "000000000"; //Setup array for later use
 		$listOfApps = appStore_getSearchResultsFromApple($entity);
-		appStore_buildListOfFoundApps($listOfApps,"1",$shortCodeStart);
+		appStore_buildListOfFoundApps($listOfApps,"1",$shortCodeStart,$_POST['type']);
 		if($_POST['type'] == "iOS") {
 			$biggerListOfApps = appStore_getSearchResultsFromApple("iPadSoftware");
-			appStore_buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart);
+			appStore_buildListOfFoundApps($biggerListOfApps,"2",$shortCodeStart,$_POST['type']);
 		}
 		if(is_array($masterList)){
 		echo "<h2>$Searchtype</h2>";
@@ -691,14 +746,47 @@ function wpse49871_shortcode_query_filter( $where ){
 }
 function appStore_get_shortcode_posts() {
     add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
-    $posts = get_posts( array('posts_per_page'  => 550
-        // Do your query in here. See "Taxonomy Query" args above for example [,'meta_key'=>'-_thumbnail_id']
+    $posts = get_posts( array(	'posts_per_page'  => 550,
+    							'post_status' => 'any'
+
     ) );
 
-    // Don't need it anymore after this run
     remove_filter( 'posts_where', 'appStore_shortcode_query_filter' );
 
     return $posts;
+}
+
+function appStore_get_shortcode_posts_featuredImages() {
+	$MaxItemsToProcess = get_option('appStore_FI_maxItemsToProcess');
+	$currentPostsList = get_option('appStore_appData_PostsList');
+	$useSavedList = False;
+	if(is_array($currentPostsList)) {
+		$useSavedList = True;
+		if (count($currentPostsList) < 1) {
+			$useSavedList = False;
+		}
+	}
+	$postsList = "";
+	if($useSavedList) {
+		$postsList = $currentPostsList;
+	}else{
+		add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
+		$posts = get_posts( array('posts_per_page'  => 1550,'meta_key' => '_thumbnail_id','post_status' => 'any' ) );
+		//$posts = get_posts( array('meta_key' => '_thumbnail_id','post_status' => 'any' ) );
+		remove_filter( 'posts_where', 'appStore_shortcode_query_filter' );
+		foreach($posts as $MyResult) {
+				$postsList[] = $MyResult->ID;
+		}
+		
+		$ItemsLeft = count($postsList);
+		$RoundsLeft = round($ItemsLeft/$MaxItemsToProcess)+1;
+		update_option('appStore_FI_RoundsLeft', $RoundsLeft);
+
+		
+		
+	}
+	$postsList= array_values($postsList);
+    return $postsList;
 }
 //------------------------------TEST-----------------------------------------------
 
@@ -715,90 +803,92 @@ function appStore_addFeaturedImage ($postData) {
 		//$returnData = '<font color="orange">Skipping</font> ('.$newPostID.'): Post Already has Featured Image<br />';
 		return;
 	} else {
-		echo "<hr>No Featured Image Found<br />";
+		echo "<hr>".__('No Featured Image Found',appStoreAssistant)."<br />";
 	}
 	
 	$appIDs = preg_match_all('/_app\ id=\"([^\"]*?)\"/', $postData->post_content, $app_matches);
+	$applinks = preg_match_all('/_app\ link=\"([^\"]*?)\"/', $postData->post_content, $applink_matches);
 	$iTunesIDs = preg_match_all('/itunes_store\ id=\"([^\"]*?)\"/', $postData->post_content, $iTunes_matches);
 	$amazonIDs = preg_match_all('/amazon_item\ asin=\"([^\"]*?)\"/', $postData->post_content, $amazon_matches);
 	//echo $postData->post_content."<br />";
-	if(!$appIDs && !$amazonIDs && !$iTunesIDs) {
-		echo '<font color="red">Skipping</font>: No App IDs or Amazon ASINs found for post ('.$newPostID.')<br />';
+	if(!$appIDs && !$amazonIDs && !$iTunesIDs && !$applinks) {
+		echo '<font color="red">Skipping</font>: '.__('No App IDs or Amazon ASINs found for post',appStoreAssistant).' ('.$newPostID.')<br />';
 		return;
 	}
 	
 	$postTitle = $postData->post_title;
 	if(!$postTitle) {
-		echo '<font color="red">Error</font>: No Post Title Found for post ('.$newPostID.')<br />';
+		echo '<font color="red">Error</font>: '.__('No Post Title Found for post',appStoreAssistant).' ('.$newPostID.')<br />';
 		return;
 	} else {
-		echo 'Post Title Found ('.$postTitle.')<br />';
+		echo __('Post Title Found',appStoreAssistant).' ('.$postTitle.')<br />';
 	}
 
 	$shortcodeData = "";
 
-	if($appIDs || $iTunesIDs) {
+	if($appIDs || $iTunesIDs || $applinks) {
 	
-		if($iTunesIDs) $matchesToCheck = $iTunes_matches;
-		if($appIDs) $matchesToCheck = $app_matches;
-	
-		echo "App IDs Found<br />";
-		foreach ($matchesToCheck[1] as $shortcodeID) {
-			$shortcodeData[] = $shortcodeID;
+		if($iTunesIDs) {
+			$matchesToCheck = $iTunes_matches;
+			echo __("iTunes IDs Found",appStoreAssistant)."<br />";
+			foreach ($matchesToCheck[1] as $shortcodeID) {
+				$shortcodeData[] = $shortcodeID;
+			}
+		}
+		if($applinks) {
+			$matchesToCheck = $applink_matches;
+			echo __("App ID via Link Found",appStoreAssistant)."<br />";
+			foreach ($matchesToCheck[1] as $link) {
+				$pattern = '(id[0-9]+)';
+				preg_match($pattern, $link, $matches, PREG_OFFSET_CAPTURE, 3);
+				$appIDs = substr($matches[0][0], 2);		
+				$shortcodeData[] = $appIDs;
+			}
+		}
+		if($appIDs) {
+			$matchesToCheck = $app_matches;
+			echo __("App IDs Found",appStoreAssistant)."<br />";
+			foreach ($matchesToCheck[1] as $shortcodeID) {
+				$shortcodeData[] = $shortcodeID;
+			}
 		}
 		$appID = $shortcodeData[0];
 		
-		echo "First App ID Found (".$appID.")<br />";	
-		if(!appStore_get_data( $appID )) {
-			echo '<font color="red">Error</font>: Could Not Cache Data for App ID '.$appID.'<br />';
+		echo __("First App ID Found",appStoreAssistant)." ($appID)<br />";
+		
+		$app_data=appStore_get_data( $appID );
+		if(!is_array($app_data) && !is_object($app_data)) {
+			echo '<font color="red">Error</font>: '.__('Could Not Cache Data for App ID',appStoreAssistant).' '.$appID.'<br />';
 			return;
 		} else {
-			echo 'Caching App data for ('.$newPostID.') - '.$postTitle.'...<br />';
+			echo __('Caching App data for',appStoreAssistant).' ('.$newPostID.') - '.$postTitle.'...<br />';
 		}
 
-		$filename = false;
-		$firstChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl100.png";
-		$secondChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl100.jpg";
-		$thirdChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl512.png";
-		$fourthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl512.jpg";
-		$fifthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl60.png";
-
-		if (file_exists($fifthChoice)) $filename = $fifthChoice;
-		if (file_exists($fourthChoice)) $filename = $fourthChoice;
-		if (file_exists($thirdChoice)) $filename = $thirdChoice;
-		if (file_exists($secondChoice)) $filename = $secondChoice;
-		if (file_exists($firstChoice)) $filename = $firstChoice;
-
-
+		$filename = CACHE_DIRECTORY.$app_data->imageFeatured;
 
 	} elseif($amazonIDs) {
-		echo "Amazon ASINs Found<br />";
+		echo __("Amazon ASINs Found",appStoreAssistant)."<br />";
 		foreach ($amazon_matches[1] as $shortcodeID) {
 			$shortcodeData[] = $shortcodeID;
 		}
 		$asin = $shortcodeData[0];
-		echo "First Amazon ASIN Found ($asin)<br />";
-
-		$filename = false;
-		$firstChoice = CACHE_DIRECTORY."Amazon/".$asin."/MediumImage.jpg";
-		$secondChoice = CACHE_DIRECTORY."Amazon/".$asin."/SmallImage.jpg";
-
-		if (file_exists($secondChoice)) $filename = $secondChoice;
-		if (file_exists($firstChoice)) $filename = $firstChoice;
-
+		echo __("First Amazon ASIN Found",appStoreAssistant)." ($asin)<br />";
+		$AmazonProductData = appStore_get_amazonData($asin);
+		$filename = CACHE_DIRECTORY.$AmazonProductData['imageFeatured'];
+		
 	} else {
-		echo '<font color="red">Error</font>: Could Not Process Featured Image URL for Post ('.$newPostID.')<br />';
+		echo '<font color="red">Error</font>: '.__('Could Not Process Featured Image URL for Post',appStoreAssistant).' ('.$newPostID.')<br />';
 
 	}
 	
 	
 
 	if(!$filename) {
-		echo '<font color="red">Error</font>: No Thumbnails found for App ID '.$appID.'<br /> - - Images may be missing or in the wrong format.';
+		echo '<font color="red">Error</font>: '.__('No Thumbnails found for App ID',appStoreAssistant).' '.$appID.'<br /> - - '.__('Images may be missing or in the wrong format.',appStoreAssistant);
 		return;
 	} else {
-		echo "Thumbnails Found<br />";
-		echo "$filename<br />";
+		_e( "Thumbnails Found",appStoreAssistant);
+		echo "<br />$filename<br />";
 	}
 
 	$wp_filetype = wp_check_filetype(basename($filename), null ); 
@@ -826,10 +916,10 @@ function appStore_checkCacheFolder() {
 	if(@is_dir($upload_dir['basedir'])) {
 		if(!@is_writable(stripslashes($upload_dir['basedir']))) {
 			echo '<li><font color="red">';
-			echo "The Uploads folder is not WRITABLE. Please CHMOD the folder  ";
+			_e( "The Uploads folder is not WRITABLE. Please CHMOD the folder  ",appStoreAssistant);
 			echo '<font color="blue"><b>'.WP_CONTENT_DIR."/uploads/</b>".'</font>';
 			echo " to '777'.<br />";
-			echo "Images will not load without this folder, if you have \"Cache Images Locally\" turned on.";
+			_e( 'Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
 			echo '</font>';
 			echo '</li>';
 		} else {
@@ -838,9 +928,9 @@ function appStore_checkCacheFolder() {
 					appStore_set_setting('cache_images_locally', '0');
 				} else {
 					echo '<li><font color="green">';
-					echo "The Cache folder ";
+					_e( "The Cache folder ",appStoreAssistant);
 					echo '<b>'.WP_CONTENT_DIR."/uploads/appstoreassistant_cache</b>";
-					echo " has been created successfully!";
+					_e( " has been created successfully!",appStoreAssistant);
 					echo '</font>';
 					echo '</li>';
 				}
@@ -848,10 +938,10 @@ function appStore_checkCacheFolder() {
 		}
 	} else {
 		echo '<li><font color="red">';
-		echo "The Cache folder does NOT exist. Please create ";
+		_e( "The Cache folder does NOT exist. Please create ",appStoreAssistant);
 		echo '<font color="blue">'.WP_CONTENT_DIR."/uploads".'</font>';
-		echo " folder and CHMOD it to '777'.<br />";
-		echo "Images will not load without this folder, if you have \"Cache Images Locally\" turned on.";
+		_e(" folder and CHMOD it to '777'",appStoreAssistant).".<br />";
+		_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
 		echo '</font>';
 		echo '</li>';
 	}
@@ -859,21 +949,21 @@ function appStore_checkCacheFolder() {
 	if(@is_dir($appStore_cacheFolder)) {
 		if(!@is_writable(stripslashes($appStore_cacheFolder))) {
 			echo '<li><font color="red">';
-			echo "The Cache folder is not WRITABLE. Please CHMOD the folder  ";
+			_e( "The Cache folder is not WRITABLE. Please CHMOD the folder",appStoreAssistant)."  ";
 			echo '<font color="blue"><b>'.WP_CONTENT_DIR."/uploads/appstoreassistant_cache</b>".'</font>';
 			echo " to '777'.<br />";
-			echo "Images will not load without this folder, if you have \"Cache Images Locally\" turned on.";
+			_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
 			echo '</font>';
 			echo '</li>';
 		}
 	} else {
 		echo '<li><font color="red">';
-		echo "The Cache folder does NOT exist. Please create ";
+		_e( "The Cache folder does NOT exist. Please create ",appStoreAssistant);
 		echo '<font color="blue">'."<b>'appstoreassistant_cache'</b>".'</font>';
-		echo " folder in ";
+		_e( " folder in ",appStoreAssistant);
 		echo '<font color="blue">'.WP_CONTENT_DIR."/uploads".'</font>';
-		echo " folder and CHMOD it to '777'.<br />";
-		echo "Images will not load without this folder, if you have \"Cache Images Locally\" turned on.";
+		_e( " folder and CHMOD it to '777'",appStoreAssistant).".<br />";
+		_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
 		echo '</font>';
 		echo '</li>';
 	}
@@ -887,10 +977,10 @@ function requires_wordpress_version() {
 	$plugin = plugin_basename( ASA_MAIN_FILE );
 	$plugin_data = get_plugin_data( ASA_MAIN_FILE, false );
 
-	if ( version_compare($wp_version, "3.3", "<" ) ) {
+	if ( version_compare($wp_version, "3.6", "<" ) ) {
 		if( is_plugin_active($plugin) ) {
 			deactivate_plugins( $plugin );
-			wp_die( "'".$plugin_data['Name']."' requires WordPress 3.3 or higher, and has been deactivated! Please upgrade WordPress and try again.<br /><br />Back to <a href='".admin_url()."'>WordPress admin</a>." );
+			wp_die( "'".$plugin_data['Name']."' requires WordPress 3.6 or higher, and has been deactivated! Please upgrade WordPress and try again.<br /><br />(Older installations please use version 6.2.1)<br /><br />Back to <a href='".admin_url()."'>WordPress admin</a>." );
 		}
 	}
 }
@@ -899,7 +989,7 @@ function requires_wordpress_version() {
 function appStore_plugin_action_links( $links, $file ) {
 
 	if ( $file == plugin_basename( ASA_MAIN_FILE ) ) {
-		$appStore_links = '<a href="'.get_admin_url().'admin.php?page=appStore_sm_general">'.__('Settings').'</a>';
+		$appStore_links = '<a href="'.get_admin_url().'admin.php?page=appStore_sm_general">'.__('Settings',appStoreAssistant).'</a>';
 		// make the 'Settings' link appear first
 		array_unshift( $links, $appStore_links );
 	}
@@ -910,18 +1000,33 @@ function appStore_plugin_action_links( $links, $file ) {
 // Sanitize and validate input. Accepts an array, return a sanitized array.
 function appStore_validate_options($input) {
 	$options = get_option('appStore_options');
+	
 	if(isset($input['checkboxedoptions'])) {
 		$checkboxedoptions = explode(",", $input['checkboxedoptions']);
 		foreach($checkboxedoptions as $checkboxedoption) {
 			$options[$checkboxedoption] = "no";
 		}
 	}
+
+	if(isset($input['textboxoptions'])) {
+		$textboxoptions = explode(",", $input['textboxoptions']);
+		foreach($textboxoptions as $textboxoption) {
+			$options[$textboxoption] = "EMP";
+		}
+	}
+	
+	
+	
+	
 	foreach( $input as $optionName => $optionValue ){
-		$options[$optionName] = $optionValue;
+		if($optionValue != "") $options[$optionName] = $optionValue;
 	}	
 	
+	//print_r($options);
 	
 	$options['validated'] = "You Betcha! - ".date('r');
+	
+	
 	return $options;
 }
 
@@ -959,7 +1064,91 @@ function appStore_ClearSpecificItemCache($appIDtoRemove,$asinToRemove) {
 	return $returnMessage;
 }
 
+function appStore_ClearFeaturedImages() {
+	$MaxItemsToProcess = get_option('appStore_FI_maxItemsToProcess');
+	$currentPostsList = appStore_get_shortcode_posts_featuredImages();
+	$ItemsLeft = count($currentPostsList);
+	$RoundsLeft = round($ItemsLeft/$MaxItemsToProcess)+1;
+	
+	
+		if($RoundsLeft == 0) {
+			appStore_ShowMessage("The Featured Images have been updated!",true);
+		} else {
+			appStore_ShowMessage("You will need to run this step $RoundsLeft more times!",true);
+		}
+		
+		
+		
+		echo "There are $ItemsLeft Posts with featured Images to change.<br />";
+		$postCounter = 1;
+		foreach($currentPostsList as $key => $PostID) {
+			echo "[$key] $PostID <br>";
+			
+			
+			unset($currentPostsList[$key]);
+			$postCounter ++;
+			if($postCounter >$MaxItemsToProcess) break;
+		}
+		//echo "-------".count($currentPostsList)."-------".print_r($currentPostsList,true)."<hr>";
 
+		//echo "[WERE HERE]";
+		$currentPostsList= array_values($currentPostsList);
+		//echo "-------".count($currentPostsList)."-------".print_r($currentPostsList,true)."<hr>";
+
+		update_option('appStore_appData_PostsList', $currentPostsList);	
+		
+		//print_r($MyResults);
+		return;
+		foreach($MyResults as $MyResult) {
+			$postID = $MyResult->ID;
+			$post_thumbnail_id = get_post_thumbnail_id($postID );
+			$url = wp_get_attachment_thumb_url( $post_thumbnail_id );
+			$data = preg_match("~/appstoreassistant_cache/AppStore/([0-9]+)/~", $url, $matches);
+			$newCheck = preg_match("~featured~", $url, $featuredmatches);
+			$appID = $matches[1];
+			if($appID == "" || !is_numeric($appID)) {
+				echo '<font color="red">';
+				echo $postCounter."- ++++++++++++SKIPPING:CUSTOM Featured Image - $url ($postID)($post_thumbnail_id)($appID)";
+				echo "</font><hr>";
+			} elseif($featuredmatches[0] == "featured") {	
+				echo '<font color="blue">';
+				echo $postCounter."- ++++++++++++SKIPPING: Already updated Feature Image - $url ($postID)($post_thumbnail_id)($appID)";
+				echo "</font><hr>";
+			} else {
+				$app_data = appStore_get_data( $appID );
+				if($app_data->kind == "software") {
+					$newFileExtension = $app_data->artworkUrl512_ext;
+					$newFeaturedImageURL = CACHE_DIRECTORY_URL.$app_data->imageFeatured;
+					$newFeaturedImagePath = CACHE_DIRECTORY.$app_data->imageFeatured;
+					echo '<font color="green">';
+					echo $postCounter."- ($postID)($post_thumbnail_id)($appID)<br />";
+					echo "- Old Featured Image - $url<br />";
+					echo "- New Featured Image - $newFeaturedImageURL<br />";
+					//print_r($app_data);
+					echo "</font><hr>";
+					
+					$wp_filetype = wp_check_filetype($newFeaturedImagePath, null );
+					$mime_type = $wp_filetype[type];
+					$attachment = array(
+									'post_mime_type' => $wp_filetype['type'],
+									'post_title' => preg_replace('/\.[^.]+$/', '', basename($newFeaturedImagePath)),
+									'post_name' => preg_replace('/\.[^.]+$/', '', basename($newFeaturedImagePath)),
+									'post_content' => '',
+									'post_parent' => $postID,
+									'post_excerpt' => $thumb_credit,
+									'post_status' => 'inherit'
+									);
+					$attachment_id = wp_insert_attachment($attachment, $newFeaturedImagePath, $postID);
+					if($attachment_id != 0) {
+						$attachment_data = wp_generate_attachment_metadata($attachment_id, $newFeaturedImagePath);
+						wp_update_attachment_metadata($attachment_id, $attach_data);
+						update_post_meta($postID, '_thumbnail_id', $attachment_id);
+					}
+				}
+			}
+			$postCounter++;
+		}
+}
 
 function appStore_ClearAppCache() {
 	global $wpdb;
@@ -967,6 +1156,13 @@ function appStore_ClearAppCache() {
 
 	//Clear AppStore Cache
 	$options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'appStore_appData_%'");
+	if ( is_null($options) ) return false;
+	foreach( $options as $option ) {
+		delete_option( $option->option_name );
+ 	} 
+
+	//Clear ATOM Feed Cache
+	$options = $wpdb->get_results( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE 'appStore_rssfeed_%'");
 	if ( is_null($options) ) return false;
 	foreach( $options as $option ) {
 		delete_option( $option->option_name );
