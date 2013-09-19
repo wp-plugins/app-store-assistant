@@ -4,3 +4,6 @@
 
 <div class="asa_admin"><input type="checkbox" value="DoIt" name="appStore_options[AddFeaturedImages]" /> Checking this box and clicking Save below will start the process.
 </div>	
+
+
+<p class="asa_admin_warning">(Cache MUST be ENABLED for this function to work!. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_general&tab=miscellaneous"; ?>">General -> Miscellaneous section</a></b>.)</p>
