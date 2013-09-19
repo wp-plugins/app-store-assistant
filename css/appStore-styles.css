@@ -148,6 +148,13 @@ img.appStore-gamecentericon
 	margin-left: auto;
 	margin-right: auto;
 }
+
+div.appStore-gamecenter
+{
+	text-align: center;
+}
+
+
 #appStore-icon-container a img
 {
 	border: 0px;

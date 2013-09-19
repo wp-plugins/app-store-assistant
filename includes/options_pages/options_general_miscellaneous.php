@@ -21,7 +21,7 @@
 					}
 				?>
 				</select><br />
-				<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b>Utilities section</b>.)</p>
+				<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
 		</div>
 		<div class="asa_admin_element">iTunes/App Stores Badge Language: <select name='appStore_options[store_badge_language]'>
 			<option value="US-UK" <?php if ($options['store_badge_language'] == "US-UK") echo 'selected'; ?>>English</option>
@@ -70,6 +70,8 @@
 		</div>
 		<div class="asa_admin_element">Cache images locally: <input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /><br />
 			<p class="asa_admin_explain">This will load icons, screenshots, etc. from this server instead of using Apple's CDN server.<br />The <b><?php echo $upload_dir['basedir']; ?></b> directory MUST be writeable for this option to have any effect.</p>
+			<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
+
 		</div>
 	</div>
 		
