@@ -115,6 +115,10 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
+= 6.4.1 =
+* Fixed: Issue with icon not displaying properly in some themes
+* Updated: Screenshots
+
 = 6.4.0 =
 * Added: New universal type shortcodes [asa_item,asa_list,asa_link,asa_elements]
 * Added: iOS 7 Style Dot Ratings

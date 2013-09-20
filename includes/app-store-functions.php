@@ -1629,13 +1629,14 @@ function displayAppStore_appRating($app,$elementOnly=false) {
 function displayAppStore_appIcon ($app,$elementOnly=false){
 	GLOBAL $is_iphone;
 	// App Artwork	
+	
 	if($elementOnly) {
 		if(appStore_setting('cache_images_locally') == '1') {
-			$imageTag = $itemInfo->imageElements_cached;
-			if($is_iphone) $imageTag = $itemInfo->imageiOS_cached;
+			$imageTag = $app->imageElements_cached;
+			if($is_iphone) $imageTag = $app->imageiOS_cached;
 		} else {
-			$imageTag = $itemInfo->imageElements;
-			if($is_iphone) $imageTag = $itemInfo->imageiOS;
+			$imageTag = $app->imageElements;
+			if($is_iphone) $imageTag = $app->imageiOS;
 		}		
 		$element = '<a href="'.$app->appURL.'" target="_blank"><img class="appStore-icon" src="'.$imageTag.'" alt="'.$app->trackName.'" /></a>';
 		return $element;
@@ -1649,11 +1650,11 @@ function displayAppStore_appIcon ($app,$elementOnly=false){
 				if (appStore_setting('displaympappicon') == "no") return;
 			}
 			if(appStore_setting('cache_images_locally') == '1') {
-				$imageTag = $itemInfo->imagePosts_cached;
-				if($is_iphone) $imageTag = $itemInfo->imageiOS_cached;
+				$imageTag = $app->imagePosts_cached;
+				if($is_iphone) $imageTag = $app->imageiOS_cached;
 			} else {
-				$imageTag = $itemInfo->imagePosts;
-				if($is_iphone) $imageTag = $itemInfo->imageiOS;
+				$imageTag = $app->imagePosts;
+				if($is_iphone) $imageTag = $app->imageiOS;
 			}		
 			$element = '<div id="appStore-icon-container">';
 			$element .= '<a href="'.$app->appURL.'" target="_blank">';
@@ -1670,11 +1671,11 @@ function displayAppStore_appIcon ($app,$elementOnly=false){
 		case "ListOfApps":
 			if (appStore_setting('displayATOMappicon') == "no") return;
 			if(appStore_setting('cache_images_locally') == '1') {
-				$imageTag = $itemInfo->imageLists_cached;
-				if($is_iphone) $imageTag = $itemInfo->imageiOS_cached;
+				$imageTag = $app->imageLists_cached;
+				if($is_iphone) $imageTag = $app->imageiOS_cached;
 			} else {
-				$imageTag = $itemInfo->imageLists;
-				if($is_iphone) $imageTag = $itemInfo->imageiOS;
+				$imageTag = $app->imageLists;
+				if($is_iphone) $imageTag = $app->imageiOS;
 			}		
 			$element = '<div id="appStore-icon-container-left">';
 			$element .= '<a href="'.$app->appURL.'" target="_blank"><img src="'.$imageTag.'"  alt="'.$app->trackName.'" /></a><br />';
