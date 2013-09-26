@@ -23,6 +23,52 @@ function appStore_addLinkToFooter () {
     }
 }
 
+function appStore_icon_in_rss($originalContent) {
+	global $post;
+	$postContent = $post->post_content;
+	$postURL = $post->guid;
+	
+	$pattern = get_shortcode_regex();
+	preg_match('/'.$pattern.'/s', $post->post_content, $matches);
+	$firstShortcode = $matches[2];
+	$atts = shortcode_parse_atts( $matches[3] );
+	
+	//return print_r($atts,true);
+
+
+
+	
+	
+	if ($firstShortcode == "asa_item" || $firstShortcode == "ios_app" || $firstShortcode == "mac_app" || $firstShortcode == "itunes_store") {
+		$id = $atts['id'];	
+		if(!empty($atts['link'])) {
+			$pattern = '(id[0-9]+)';
+			preg_match($pattern, $atts['link'], $matches, PREG_OFFSET_CAPTURE, 3);
+			$appIDs[] = substr($matches[0][0], 2);		
+			$id = $appIDs[0];
+		}
+		if($id == "" || !is_numeric($id)) return;	
+		$app = appStore_get_data($id);
+		$appIcon_url = $app->imageRSS_cached;
+		$smallDescription = nl2br(appStore_shortenDescription($app->description,"rss"));
+	} elseif($firstShortcode == "amazon_item") {
+		$asin = $atts['asin'];	
+		if($asin == "")return;	
+		$amazonProduct = appStore_get_amazonData($asin);
+		$appIcon_url = $amazonProduct['imageRSS'];
+		$smallDescription = nl2br(appStore_shortenDescription($amazonProduct['Description'],"rss"));
+	}
+
+	$content = '<img alt="Icon" src="';
+	$content .= $appIcon_url;
+	$content .= '" style="float: left; margin-right: 5px;">'.$originalContent." ".$smallDescription;
+	$content .= '&hellip; <a href="'.$postURL.'">'.__('Read more',appStoreAssistant).'</a>';
+		
+	return $content;
+}
+
+
+
 function appStore_admin_bar_render() {
 	// Is the user sufficiently leveled, or has the bar been disabled?
 	if (!is_super_admin() || !is_admin_bar_showing() )
@@ -1889,6 +1935,8 @@ function appStore_process_imagedata($app) {
 	$app->imageiOS_cached = $bestImage;
 	$app->imageWidget = $bestImage;
 	$app->imageWidget_cached = $bestImage;
+	$app->imageRSS = $bestImage;
+	$app->imageRSS_cached = $bestImage;
 	$app->imageLists = $bestImage;
 	$app->imageLists_cached = $bestImage;
 	$app->imagePosts = $bestImage;
@@ -1978,6 +2026,16 @@ function appStore_process_imagedata($app) {
 			$app->imageWidget_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
 		}
 
+ 		if(appStore_setting('appicon_size_rss') < $size['width']) {
+			$editor = wp_get_image_editor( $bestFilePath );
+ 			$newSize = appStore_setting('appicon_size_rss');
+			$editor->resize( $newSize, $newSize, true );
+			$filename = $editor->generate_filename( 'rss', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
+			$new_image_info = $editor->save($filename);		
+			$app->imageRSS_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-rss.".$bestFileExt;
+		} else {
+			$app->imageRSS_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
+		}
 
  		if(appStore_setting('appicon_size_lists') < $size['width']) {
 			$editor = wp_get_image_editor( $bestFilePath );
@@ -2083,8 +2141,13 @@ function appStore_set_setting($name, $value) {
 	$appStore_settings[$name] = $value;
 }
 
-function appStore_shortenDescription($string){
-     $string = substr($string,0,appStore_setting('max_description'));
+function appStore_shortenDescription($string,$mode="normal"){
+	if($mode == "rss") {
+		$maxLength = appStore_setting('max_description_rss');
+	} else {
+		$maxLength = appStore_setting('max_description');
+	}
+     $string = substr($string,0,$maxLength);
      $string = substr($string,0,strrpos($string," "));
      return $string;
 }

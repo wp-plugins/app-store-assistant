@@ -21,5 +21,8 @@
 <tr valign="top">
 <th scope="row"><label>Image size for Widgets</label></th>
 <td><input type="text" size="4" name="appStore_options[appicon_size_widget]" value="<?php echo $options['appicon_size_widget']; ?>" />px</td></tr>
+<tr valign="top">
+<th scope="row"><label>Image size for RSS/ATOM feeds</label></th>
+<td><input type="text" size="4" name="appStore_options[appicon_size_rss]" value="<?php echo $options['appicon_size_rss']; ?>" />px</td></tr>
 
 </table>

@@ -22,6 +22,9 @@ function appStore_add_defaults() {
 
 	$appStore_defaults = array(
 		"max_description" => "400",
+		"max_description_rss" => "400",
+		"rss_showIcon" => "yes",
+		"rss_showShortDescription" => "yes",
 		"excerpt_max_chars" => "55",
 		"excerpt_moreinfo_text" => "More Info",
 		"excerpt_moreinfo_link" => "button",
@@ -156,6 +159,7 @@ function appStore_add_defaults() {
 		"appicon_size_widget" => "64",
 		"appicon_size_posts" => "128",
 		"appicon_size_element" => "200",
+		"appicon_size_rss" => "128",
 		
 		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
 		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
@@ -202,7 +206,7 @@ function appStore_add_defaults() {
 		"RemoveCachedItemASIN" => "",
 		
 		"displayLinkToFooter" => "yes",
-		"versionInstalled" => "5"
+		"versionInstalled" => "6.4"
 		);
 	$PostedValues = $_REQUEST;
 	$appStore_options = $appStore_savedOptions;

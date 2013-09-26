@@ -1,4 +1,17 @@
-<input type="hidden" name="appStore_options[checkboxedoptions]" value="cache_images_locally,open_links_externally,displayLinkToFooter" />
+<input type="hidden" name="appStore_options[checkboxedoptions]" value="cache_images_locally,open_links_externally,displayLinkToFooter,rss_showIcon,rss_showShortDescription" />
+
+
+
+<h2 class="asa_admin">Site's RSS/ATOM Feed</h2>
+	<div class="asa_admin">
+		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[rss_showIcon]" value="yes" <?php if ($options['rss_showIcon'] == "yes") echo 'checked'; ?> /> Add Item icon to feed</div>
+		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[rss_showShortDescription]" value="yes" <?php if ($options['rss_showShortDescription'] == "yes") echo 'checked'; ?> /> Add Item short description to feed</div>
+
+	</div>
+
+
+
+
 
 <h2 class="asa_admin">Localization</h2>
 	<div class="asa_admin">
@@ -68,7 +81,7 @@
 			}?></select><br />
 		<p class="asa_admin_explain">This option determines how long before the plugin requests new data from Apple's servers. You can clear the cached app data via the Utilities section.</p>
 		</div>
-		<div class="asa_admin_element">Cache images locally: <input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /><br />
+		<div class="asa_admin_element"><input name="appStore_options[cache_images_locally]" type="checkbox" value="1" <?php if (isset($options['cache_images_locally'])) { checked('1', $options['cache_images_locally']); } ?> /> Cache images locally<br />
 			<p class="asa_admin_explain">This will load icons, screenshots, etc. from this server instead of using Apple's CDN server.<br />The <b><?php echo $upload_dir['basedir']; ?></b> directory MUST be writeable for this option to have any effect.</p>
 			<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
 
@@ -88,8 +101,6 @@
 		</div>
 		
 		
-		<div class="asa_admin_element">Open links in new window: <input type="checkbox" name="appStore_options[open_links_externally]" value="yes" <?php if ($options['open_links_externally'] == "yes") echo 'checked'; ?> />
-		</div>
-		<div class="asa_admin_element">Show link to plugin site in footer: <input type="checkbox" name="appStore_options[displayLinkToFooter]" value="yes" <?php if ($options['displayLinkToFooter'] == "yes") echo 'checked'; ?> />
-		</div>
+		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[open_links_externally]" value="yes" <?php if ($options['open_links_externally'] == "yes") echo 'checked'; ?> /> Open links in new window</div>
+		<div class="asa_admin_element"><input type="checkbox" name="appStore_options[displayLinkToFooter]" value="yes" <?php if ($options['displayLinkToFooter'] == "yes") echo 'checked'; ?> /> Show link to plugin site in footer</div>
 	</div>

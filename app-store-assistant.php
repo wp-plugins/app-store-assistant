@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.4.1
+Version: 6.4.2
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -41,6 +41,11 @@ register_uninstall_hook(__FILE__, 'appStore_delete_plugin_options');
 add_action('admin_init', 'appStore_init' );
 add_action('admin_menu', 'appStore_add_options_page');
 add_filter('plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
+
+//Feed Icon Hooks
+add_filter('the_excerpt_rss', 'appStore_icon_in_rss', 1000, 1);
+add_filter('the_content_feed', 'appStore_icon_in_rss', 1000, 1);
+
 
 // Load Scripts & Styles
 add_action('wp_print_scripts', 'appStore_add_scripts');

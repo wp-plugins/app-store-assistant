@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
 Tested up to: 3.6
-Stable tag: 6.4.1
+Stable tag: 6.4.2
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -39,6 +39,7 @@ When upgrading to a new version of the plug-in, it is recommend that you rebuild
 		* Music Videos
 * Arrange the order of App elements via drag and drop
 * You can now display individual item elements via new shortcode
+* Display an item's icon and short description in RSS/ATOM feed
 * Multi-country support
 * I18n aka Localization is supported via POT file
 * Earn Money with Affiliate Programs
@@ -58,8 +59,6 @@ When upgrading to a new version of the plug-in, it is recommend that you rebuild
 * Tested with over 300 Themes
 * Screenshot Lightbox support
 * wp-o-matic plugin support
-
-*-----[Amazon.com functionality is a beta release. **Use this feature with caution!!!**]-----*
 
 There is now a built-in quick search function. It searches for iOS or Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST already titled with the appropriate shortcode already entered.
 
@@ -114,6 +113,12 @@ Please let us know of any features you would like added or bugs that need squash
 * Request: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 
 == Changelog ==
+
+= 6.4.2 =
+* Added: Ability to add an Item's icon to your RSS/ATOM feed
+* Added: Ability to add an Item's short description to your RSS/ATOM feed
+* Added: Choose the icon size for RSS/ATOM feed
+* Changed: Clarified some text on the settings panels
 
 = 6.4.1 =
 * Fixed: Issue with icon not displaying properly in some themes
