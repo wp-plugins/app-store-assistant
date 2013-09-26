@@ -3,7 +3,7 @@
 		
 <table class="form-table">
 <tr valign="top">
-<th scope="row"><label>Short Description</label></th>
+<th scope="row"><label>Short Description for Posts</label></th>
 <td><input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />  Max characters<br />
 <input type="checkbox" name="appStore_options[use_shortDesc_on_single]" value="yes" <?php if ($options['use_shortDesc_on_single'] == "yes") echo 'checked'; ?> /> Use on pages with a Single Post<br />
 <input type="checkbox" name="appStore_options[use_shortDesc_on_multiple]" value="yes" <?php if ($options['use_shortDesc_on_multiple'] == "yes") echo 'checked'; ?> /> Use on pages with Multiple Posts<br />
@@ -21,4 +21,8 @@
 <td><input type="text" size="20" name="appStore_options[shortDesc_screenshot_text]" value="<?php echo $options['shortDesc_screenshot_text']; ?>" maxlength="30" /> "Show Screenshots"<br />
 <input type="text" size="35" name="appStore_options[shortDesc_fullDesc_text]" value="<?php echo $options['shortDesc_fullDesc_text']; ?>" maxlength="45" /> "Show Full Description"</td>
 </tr>
-</table>	
+<tr valign="top">
+<th scope="row"><label>Short Description for RSS/ATOM feed</label></th>
+<td><input type="text" size="4" name="appStore_options[max_description_rss]" value="<?php echo $options['max_description_rss']; ?>" maxlength="4" />  Max characters
+</td>
+</tr></table>	

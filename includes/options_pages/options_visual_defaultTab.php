@@ -1,5 +1,5 @@
 <?php
-    	$starColors = array("clear", "black", "blue","bronze","faded","gold","green","grey","orange","pink","purple","red");
+    	$starColors = array("lt-blue","clear", "black", "blue","yellow","orange-yellow","gold","green","orange","pink","purple","red");
     	?>
 
     	<h2 class="asa_admin">Full Star</h2>
@@ -8,10 +8,10 @@
     		echo '<input type="radio" ';
     		echo 'name="appStore_options[full_star_color]" ';
     		echo 'value="'.$starColor.'"';
-    		if ($options['full_star_color'] == $starColor) echo 'checked';
+    		if ($options['full_star_color'] == $starColor) echo ' checked';
     		echo ' />';
     		echo '<img src="';
-    		echo plugins_url( 'images/star-rating-'.$starColor.'.png', ASA_MAIN_FILE );
+    		echo plugins_url( 'images/rating/star-rating-'.$starColor.'.png', ASA_MAIN_FILE );
     		echo '" alt="'.$starColor.' Star" />';
     		echo '&nbsp;&nbsp;&nbsp;';    	
 		}
@@ -21,13 +21,50 @@
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';
     		echo 'name="appStore_options[empty_star_color]" ';
-    		echo 'value="'.$starColor.'"';
-    		if ($options['empty_star_color'] == $starColor) echo 'checked';
+    		echo 'value="'.$starColor.'-empty"';
+    		if ($options['empty_star_color'] == $starColor."-empty") echo ' checked';
     		echo ' />';
     		echo '<img src="';
-    		echo plugins_url( 'images/star-rating-'.$starColor.'.png', ASA_MAIN_FILE );
+    		echo plugins_url( 'images/rating/star-rating-'.$starColor.'-empty.png', ASA_MAIN_FILE );
+    		echo '" alt="'.$starColor.' Star" />';
+    		echo '&nbsp;&nbsp;&nbsp;';    	
+		}
+
+    	?>
+
+    	<h2 class="asa_admin">Full Rating iOS 7 style</h2>
+		<?php
+    	$starColors = array("dot-green","dot-orange","dot-blue", "dot-melon","dot-pink","dot-purple","dot-yellow");
+    	foreach ($starColors as $starColor) {
+    		echo '<input type="radio" ';
+    		echo 'name="appStore_options[full_star_color]" ';
+    		echo 'value="'.$starColor.'"';
+    		if ($options['full_star_color'] == $starColor) echo ' checked';
+    		echo ' />';
+    		echo '<img src="';
+    		echo plugins_url( 'images/rating/star-rating-'.$starColor.'.png', ASA_MAIN_FILE );
     		echo '" alt="'.$starColor.' Star" />';
     		echo '&nbsp;&nbsp;&nbsp;';    	
 		}
 		?>
+		<h2 class="asa_admin">Empty Rating iOS 7 style</h2>
+		<?php
+    	foreach ($starColors as $starColor) {
+    		echo '<input type="radio" ';
+    		echo 'name="appStore_options[empty_star_color]" ';
+    		echo 'value="'.$starColor.'-empty"';
+    		if ($options['empty_star_color'] == $starColor."-empty") echo ' checked';
+    		echo ' />';
+    		echo '<img src="';
+    		echo plugins_url( 'images/rating/star-rating-'.$starColor.'-empty.png', ASA_MAIN_FILE );
+    		echo '" alt="'.$starColor.' Star" />';
+    		echo '&nbsp;&nbsp;&nbsp;';    	
+		}
+
+
+
+
+
+
+?>
 		

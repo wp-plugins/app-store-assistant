@@ -22,6 +22,9 @@ function appStore_add_defaults() {
 
 	$appStore_defaults = array(
 		"max_description" => "400",
+		"max_description_rss" => "400",
+		"rss_showIcon" => "yes",
+		"rss_showShortDescription" => "yes",
 		"excerpt_max_chars" => "55",
 		"excerpt_moreinfo_text" => "More Info",
 		"excerpt_moreinfo_link" => "button",
@@ -156,6 +159,7 @@ function appStore_add_defaults() {
 		"appicon_size_widget" => "64",
 		"appicon_size_posts" => "128",
 		"appicon_size_element" => "200",
+		"appicon_size_rss" => "128",
 		
 		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
 		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon",
@@ -202,7 +206,7 @@ function appStore_add_defaults() {
 		"RemoveCachedItemASIN" => "",
 		
 		"displayLinkToFooter" => "yes",
-		"versionInstalled" => "5"
+		"versionInstalled" => "6.4"
 		);
 	$PostedValues = $_REQUEST;
 	$appStore_options = $appStore_savedOptions;
@@ -332,16 +336,21 @@ function appStore_displayAdminOptionsPage() {
 	if($options['AddFeaturedImages']=="DoIt" ) {
 		$options["AddFeaturedImages"] = "NoWay";		
 		update_option('appStore_options', $options);	
+		if(appStore_setting('cache_images_locally') != '1') {
+			$options = get_option('appStore_options');
+			appStore_ShowMessage("Cache MUST be ENABLED for this function to work!",true);
+		} else {
 
-		$MyResults = appStore_get_shortcode_posts();
-		$postCounter = 1;
-		foreach($MyResults as $MyResult) {
-			//echo $postCounter.') ------------------------------<br />';
-			appStore_addFeaturedImage($MyResult);
-			$postCounter++;
-		}
+			$MyResults = appStore_get_shortcode_posts();
+			$postCounter = 1;
+			foreach($MyResults as $MyResult) {
+				//echo $postCounter.') ------------------------------<br />';
+				appStore_addFeaturedImage($MyResult);
+				$postCounter++;
+			}
 		$options = get_option('appStore_options');
 		appStore_ShowMessage("We did it!",false);
+		}
 	}
 
 	if($options['RemoveCachedItem']=="DoIt" ) {
@@ -403,7 +412,7 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		$tabs_array = array ('defaultTab' => 'Descriptions','excerpts' => 'Excerpts','createpost' => 'Create Posts','miscellaneous' => 'Miscellaneous');
 	  break;
 	  case 'appStore_sm_visual' :
-		$tabs_array = array ('defaultTab' => 'Stars','imagesizes' => 'Image Sizes','buybutton' => 'Buy Button','miscellaneous' => 'Miscellaneous');
+		$tabs_array = array ('defaultTab' => 'Ratings','imagesizes' => 'Image Sizes','buybutton' => 'Buy Button','miscellaneous' => 'Miscellaneous');
 	  break;
 	  case 'appStore_sm_appstore' :
 		$tabs_array = array ('defaultTab' => 'Single Post','multipost' => 'Multiple Posts','atomfeed' => 'List/Atom Feed','graphics' => 'App Store Graphics');
@@ -519,7 +528,7 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 	if($newPostID) {
 		echo "<h3>";
 		_e("Your",appStoreAssistant);
-		echo $postStatus.' ';
+		echo ' '.$postStatus.' ';
 		_e("POST has been created for",appStoreAssistant);
 		echo " <b>$appTitle</b>!</h3>";
 		echo '<a href="post.php?post='.$newPostID.'&amp;action=edit">';
@@ -568,14 +577,19 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$ty
 	$i = $startKey;
 	$listOfAlreadyAddedIDs = appStore_CreateListOfAppsUsedInPosts();
 	$listOfAlreadyAddediOSIDs = $listOfAlreadyAddedIDs['iOS'];
-
 	foreach ($listOfApps as $appData) {
 		$masterList[$i] = "";
-		if (!array_search($appData->trackId, $checkForDuplicates)) {
+		$count = count(get_object_vars($appData));
+		if (!array_search($appData->trackId, $checkForDuplicates) && $count > 10) {
 			$TheAppPrice = appStore_format_price($appData->price);
-						
-			$Categories = implode(", ", $appData->genres);
-			$CategoriesNS = implode(",", $appData->genres);
+			
+			if(is_array($appData->genres)) {
+				$Categories = implode(", ", $appData->genres);
+				$CategoriesNS = implode(",", $appData->genres);
+			} else {
+				$Categories = "Unknown";
+				$CategoriesNS = "Unknown";
+			}				
 			
 			$theShortCode = $shortCodeStart.' id=&quot;'.$appData->trackId.'&quot;';
 			if(appStore_setting('newPost_defaultTextShow') == "yes") $theShortCode .= ' more_info_text=&quot;'.appStore_setting('newPost_defaultText').'&quot;';
@@ -632,7 +646,6 @@ function appStore_getSearchResultsFromApple($entity){
 	$foundApps = json_decode($contents);
 	$listOfApps = $foundApps->results;
 	return $listOfApps;
-
 }
 
 function appStore_search_form() {
@@ -791,6 +804,7 @@ function appStore_get_shortcode_posts_featuredImages() {
 //------------------------------TEST-----------------------------------------------
 
 function appStore_addFeaturedImage ($postData) {
+
 	$newPostID = $postData->ID;
 	if(!$newPostID) {
 		echo '<font color="red">Skipping</font>: No Post ID Found<br />';
@@ -863,8 +877,7 @@ function appStore_addFeaturedImage ($postData) {
 		} else {
 			echo __('Caching App data for',appStoreAssistant).' ('.$newPostID.') - '.$postTitle.'...<br />';
 		}
-
-		$filename = CACHE_DIRECTORY.$app_data->imageFeatured;
+		$filename = $app->imageFeatured_path;
 
 	} elseif($amazonIDs) {
 		echo __("Amazon ASINs Found",appStoreAssistant)."<br />";
@@ -1118,8 +1131,8 @@ function appStore_ClearFeaturedImages() {
 				$app_data = appStore_get_data( $appID );
 				if($app_data->kind == "software") {
 					$newFileExtension = $app_data->artworkUrl512_ext;
-					$newFeaturedImageURL = CACHE_DIRECTORY_URL.$app_data->imageFeatured;
-					$newFeaturedImagePath = CACHE_DIRECTORY.$app_data->imageFeatured;
+					$newFeaturedImageURL = $app_data->imageFeatured_cached;
+					$newFeaturedImagePath = $app_data->imageFeatured_path;
 					echo '<font color="green">';
 					echo $postCounter."- ($postID)($post_thumbnail_id)($appID)<br />";
 					echo "- Old Featured Image - $url<br />";

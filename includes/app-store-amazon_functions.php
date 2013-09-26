@@ -223,6 +223,17 @@ function appStore_save_amazonImages_locally($productData) {
 			$productData['imageLists'] = "Amazon/$asin/$bestFileName.$bestFileExt";
 		}
 
+ 		if(appStore_setting('appicon_size_rss') < $size['width']) {
+			$editor = wp_get_image_editor( $bestFilePath );
+ 			$newSize = appStore_setting('appicon_size_rss');
+			$editor->resize( $newSize, $newSize, true );
+			$filename = $editor->generate_filename( 'rss', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
+			$new_image_info = $editor->save($filename);		
+			$productData['imageRSS'] = CACHE_DIRECTORY_URL."Amazon/$asin/".$bestFileName."-rss.".$bestFileExt;
+		} else {
+			$productData['imageRSS'] = CACHE_DIRECTORY_URL."Amazon/$asin/$bestFileName.$bestFileExt";
+		}
+
  		if(appStore_setting('appicon_size_posts') < $size['width']) {
 			$editor = wp_get_image_editor( $bestFilePath );
  			$newSize = appStore_setting('appicon_size_posts');

@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.3.2
+Version: 6.4.2
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -42,6 +42,11 @@ add_action('admin_init', 'appStore_init' );
 add_action('admin_menu', 'appStore_add_options_page');
 add_filter('plugin_action_links', 'appStore_plugin_action_links', 10, 2 );
 
+//Feed Icon Hooks
+add_filter('the_excerpt_rss', 'appStore_icon_in_rss', 1000, 1);
+add_filter('the_content_feed', 'appStore_icon_in_rss', 1000, 1);
+
+
 // Load Scripts & Styles
 add_action('wp_print_scripts', 'appStore_add_scripts');
 add_action('wp_print_styles', 'appStore_add_stylesheets');
@@ -67,19 +72,31 @@ add_action('admin_bar_init', 'appStore_admin_bar_render' );
 // REGISTER SHORTCODES, ADD EDITOR BUTTONS
 // ------------------------------------------------------------------------
 add_shortcode("asaf_atomfeed", "appStore_handler_feed");
-add_shortcode("ios_app_list", "appStore_handler_list");
-add_shortcode('ios_app', 'appStore_handler_app');
-add_shortcode('ios_app_link', 'appStore_handler_appLink');
-add_shortcode('ios_app_elements', 'appStore_app_element_handler');
-add_shortcode('itunes_store', 'iTunesStore_handler');
-add_shortcode('itunes_store_link', 'iTunesStore_link_handler');
-add_shortcode('ibooks_store', 'iBooksStore_handler');
-add_shortcode('mac_app', 'appStore_handler_app');
-add_shortcode('mac_app_link', 'appStore_handler_appLink');
+add_shortcode('asa_item', 'appStore_handler_item');
+add_shortcode("asa_list", "appStore_handler_list");
+add_shortcode('asa_link', 'appStore_handler_itemLink');
+add_shortcode('asa_elements', 'appStore_handler_app_element');
+
 add_shortcode('amazon_item', 'appStore_amazon_handler');
 add_shortcode('amazon_item_link', 'appStore_amazon_link_handler');
+
+// Deprecated shortcodes
+add_shortcode('ios_app', 'appStore_handler_item');
+add_shortcode('mac_app', 'appStore_handler_item');
+add_shortcode('itunes_store', 'appStore_handler_item');
+add_shortcode('ibooks_store', 'appStore_handler_item');
+add_shortcode("ios_app_list", "appStore_handler_list");
+add_shortcode('ios_app_link', 'appStore_handler_itemLink');
+add_shortcode('mac_app_link', 'appStore_handler_itemLink');
+add_shortcode('itunes_store_link', 'appStore_handler_itemLink');
+add_shortcode('ios_app_elements', 'appStore_handler_app_element');
+
+// ------------------------------------------------------------------------
+// Setup for Editor additions
+// ------------------------------------------------------------------------
 add_action('init', 'add_asa_mce_button');
 add_filter( 'tiny_mce_version', 'appStore_refresh_mce');
+
 // ------------------------------------------------------------------------
 // Setup for Localization
 // ------------------------------------------------------------------------
@@ -153,13 +170,6 @@ class ASA_Widget1 extends WP_Widget {
 				echo "</p>";
 				echo "</li>";
 
-			/*
-				if(stristr($mode, 'itunes')) {
-					echo iTunesStore_page_output($app,$more_info_text,"external",$code);
-				} else {
-					echo appStore_page_output($app,$more_info_text,"external",$code);
-				}
-			*/
 			} else {
 				echo "No valid data for app id";
 				//wp_die('No valid data for app id: ' . $id);
