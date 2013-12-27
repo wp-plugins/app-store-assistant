@@ -3,7 +3,7 @@
 
 <table class="form-table">
 <tr valign="top">
-<th scope="row"><label>Create New posts a</label></th>
+<th scope="row"><label>Create New posts as</label></th>
 <td><input type="radio" name="appStore_options[newPost_status]" value="draft" <?php if ($options['newPost_status'] == "draft") echo 'checked'; ?> /> Draft<br />
 <input type="radio" name="appStore_options[newPost_status]" value="publish" <?php if ($options['newPost_status'] == "publish") echo 'checked'; ?> /> Publish<br />
 <input type="radio" name="appStore_options[newPost_status]" value="pending" <?php if ($options['newPost_status'] == "pending") echo 'checked'; ?> /> Pending
