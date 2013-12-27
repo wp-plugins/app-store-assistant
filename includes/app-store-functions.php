@@ -1,6 +1,6 @@
 <?php
 function appStore_add_scripts() {
-	wp_enqueue_script('lightbox', plugins_url('js_functions/lightbox/js/lightbox.js',ASA_MAIN_FILE), null, null, true);
+	if(appStore_setting('enable_lightbox') == "yes") wp_enqueue_script('lightbox', plugins_url('js_functions/lightbox/js/lightbox-2.6.min.js',ASA_MAIN_FILE), null, null, true);
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('jquery-ui-core');//enables UI
 	wp_enqueue_script('jquery-ui-accordion');
@@ -13,13 +13,15 @@ function appStore_add_stylesheets() {
 	wp_enqueue_style( 'appStore-jquery-accordian');
 	wp_register_style('appStore-googlefont', 'http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600');
 	wp_enqueue_style( 'appStore-googlefont');
-	wp_register_style('lightbox-styles', plugins_url( 'js_functions/lightbox/css/lightbox.css', ASA_MAIN_FILE ));
-	wp_enqueue_style( 'lightbox-styles');
+	if(appStore_setting('enable_lightbox') == "yes")  {
+		wp_register_style('lightbox-styles', plugins_url( 'js_functions/lightbox/css/lightbox.css', ASA_MAIN_FILE ));
+		wp_enqueue_style( 'lightbox-styles');
+	}
 }
 
 function appStore_addLinkToFooter () {
 	if (appStore_setting('displayLinkToFooter') != "no") {
-		echo '<p style="padding-left: 20px;">Assisted by <a href="http://theiphoneappslist.com/index.php?v='.urlencode(plugin_get_version())."&ac=".urlencode(appStore_setting('affiliatepartnerid')).'&link='.urlencode(get_permalink()).'">App Store Assistant</a></p>';
+		echo '<p style="padding-left: 20px;">'.__("Assisted by",appStoreAssistant).' <a href="http://theiphoneappslist.com/index.php?v='.urlencode(plugin_get_version())."&ac=".urlencode(appStore_setting('affiliatepartnerid')).'&link='.urlencode(get_permalink()).'">App Store Assistant</a></p>';
     }
 }
 
@@ -32,12 +34,6 @@ function appStore_icon_in_rss($originalContent) {
 	preg_match('/'.$pattern.'/s', $post->post_content, $matches);
 	$firstShortcode = $matches[2];
 	$atts = shortcode_parse_atts( $matches[3] );
-	
-	//return print_r($atts,true);
-
-
-
-	
 	
 	if ($firstShortcode == "asa_item" || $firstShortcode == "ios_app" || $firstShortcode == "mac_app" || $firstShortcode == "itunes_store") {
 		$id = $atts['id'];	
@@ -67,8 +63,6 @@ function appStore_icon_in_rss($originalContent) {
 	return $content;
 }
 
-
-
 function appStore_admin_bar_render() {
 	// Is the user sufficiently leveled, or has the bar been disabled?
 	if (!is_super_admin() || !is_admin_bar_showing() )
@@ -84,28 +78,30 @@ function appStore_admin_bar_links() {
 	
 	// Links to add, in the form: 'Label' => 'URL'
 	$links = array(
-		'iPhone App Site' => 'http://theiphoneappslist.com/',
-		'Mac App Site' => 'http://themacappslist.com/'
+		'Search for App and create new Post' => 'admin.php?page=appStore_IDsearch',
+		'Clear the Cache' => "admin.php?page=appStore_sm_utilities&tab=clearcache",
+		'Clear the Cache for a single item' => 'admin.php?page=appStore_sm_utilities&tab=clearitem',
+		'Help with Shortcodes' => 'admin.php?page=appStore_sm_help&tab=shortcodes'
 	);
 	
 	// Add the Parent link.
 	$wp_admin_bar->add_menu( array(
 		'title' => '+ New App Post',
+		'id' => 'asa_newapppost',
 		'href' => 'admin.php?page=appStore_IDsearch',
 		'parent' => false
 	));
 	
-	/**
-	 * Add the submenu links.
+	//Add the submenu links.
 	foreach ($links as $label => $url) {
 		$wp_admin_bar->add_menu( array(
 			'title' => $label,
 			'href' => $url,
-			'parent' => 'stats',
-			'meta' => array('target' => '_blank') // array of any of the following options: array( 'html' => '', 'class' => '', 'onclick' => '', target => '', title => '' );
+			'parent' => 'asa_newapppost'
+			//'meta' => array('target' => '_blank') // array of any of the following options: array( 'html' => '', 'class' => '', 'onclick' => '', target => '', title => '' );
 		));
 	}
-	 */
+	 
 
 }
 
@@ -174,6 +170,13 @@ function appStore_post_thumbnail_html( $html) {
 function appStore_get_icon_desc($shortcodeData) {
 
 	switch ($shortcodeData['shortcode']) {
+	case "asa_item":
+		$id = $shortcodeData['atts']['id'];	
+		if($id == "" || !is_numeric($id))return;	
+		$app = appStore_get_data($id);
+		$appFullDescription = $app->description;
+		$appIcon_url = $app->artworkUrl60;
+		break;
 	case "ios_app":
 		$id = $shortcodeData['atts']['id'];	
 		if($id == "" || !is_numeric($id))return;	
@@ -201,6 +204,10 @@ function appStore_get_icon_desc($shortcodeData) {
 		$iTunesItem = appStore_get_data($id);
 		$appFullDescription = $iTunesItem->longDescription;
 		$appIcon_url = $iTunesItem->artworkUrl60;
+		break;
+	case "asa_item":
+		$appFullDescription = __('A List of items',appStoreAssistant);
+		$appIcon_url = plugins_url( 'images/MusicList.png', ASA_MAIN_FILE );
 		break;
 	case "iTunes_list":
 		$appFullDescription = __('A List of music from iTunes',appStoreAssistant);
@@ -271,7 +278,7 @@ function appStore_excerpt_filter($text, $excerpt="") {
 function getShortcodeDataFromPost(){
 	global $post;
 	$postContent = substr($post->post_content,1, 400);
-	$shortcodes = array("ios_app", "itunes_store","ibooks_store","mac_app","amazon_item");
+	$shortcodes = array("asa_item","ios_app", "itunes_store","ibooks_store","mac_app","amazon_item");
 	foreach ($shortcodes as $shortcode) {
 		if (stristr($postContent, $shortcode) !== FALSE) {
 			$shortcodeData['shortcode'] = $shortcode;
@@ -355,9 +362,9 @@ function appStore_css_hook() {
 
 .appStore-Button {
 	padding: 5px 20px 5px 20px;
-	-moz-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
-	box-shadow:inset 0px 1px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	-moz-box-shadow:inset 3px 3px 3px 3px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	-webkit-box-shadow: 3px 3px 3px 3px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	box-shadow: 3px 3px 3px 3px #<?php echo appStore_setting('color_buttonShadow') ?>;
 	<?php
 	if(appStore_setting('hide_button_background') != "yes") { ?>
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
@@ -378,6 +385,7 @@ function appStore_css_hook() {
 	text-decoration:none;
 	text-shadow:1px 1px 0px #<?php echo appStore_setting('color_buttonTextShadow') ?>;
 	margin-top: 8px;
+	margin-bottom: 8px;
 
 }
 .appStore-Button:hover {
@@ -389,6 +397,9 @@ function appStore_css_hook() {
 	<?php } ?>
 	color: #<?php echo appStore_setting('color_buttonHoverText') ?>;
 	text-decoration:none;
+	-moz-box-shadow:inset 2px 2px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	-webkit-box-shadow: 2px 2px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
+	box-shadow: 2px 2px 0px 0px #<?php echo appStore_setting('color_buttonShadow') ?>;
 }
 
 
@@ -743,7 +754,8 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 
 function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode="SingleApp") {
 	GLOBAL $is_iphone;	
-	$itemType = $itemInfo->wrapperType."_".$itemInfo->kind."_".$itemInfo->collectionType;
+	$itemType = $itemInfo->wrapperType."_".$itemInfo->kind."_";
+	if (isset($itemInfo->collectionType)) $itemType .= $itemInfo->collectionType;
 	//echo  "<hr><<<<<<<++[".$itemType."]++>>>>>>><hr>"; //Debug
 	//echo '---------------'.print_r($itemInfo,true).'---------------';//Debug
 
@@ -1040,7 +1052,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 				$displayFunction = "displayAppStore".substr($appDetailOrder, 14);
 				$itemOutput .= $displayFunction($itemInfo);
 			}
-			$itemOutput .= '	</div><!-- END of appStore-wrapper -->';
+			$itemOutput .= '	</div><br /><div style="clear:both;">&nbsp;</div><!-- END of appStore-wrapper -->';
 			break;
 		default:
 			$itemOutput = "<b>$itemOutput</b>";
@@ -1065,36 +1077,31 @@ function displayAppStore_appName ($app,$elementOnly=false) {
 		switch ($app->mode) {
 			case "SingleApp":
 				if(is_single()) {
-					if (appStore_setting('displayapptitle') == "no") return;
-					$displayMode = 'notitle';
+					$displayMode = appStore_setting('displayapptitle');
 				} else {
-					if (appStore_setting('displaympapptitle') == "no") return;
-					$displayMode = 'notitle';
+					$displayMode = appStore_setting('displaympapptitle');
 				}
 				break;
 			case "ListOfApps":
-				if (appStore_setting('displayATOMapptitle') == "no") return;
-				$displayMode = 'headline';
+				$displayMode = 'HEADLINE';
 				break;
 			}
-		$element = getAccordionCode ($trackName,"appStore-title",$displayMode,"App Name ");
+		$element = getDisplayCode ($trackName,"appStore-title",$displayMode,"App Name");
 		return $element;		
 	}
 }
 
 function displayAppStore_appScreenshots($app,$elementOnly=false) {
+	$appIDcode = $app->trackId;
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displayscreenshots') == "no") return '';
 				$displayMode = appStore_setting('displayscreenshots');
 			} else {
-				if (appStore_setting('displaympappdetailssection') == "no") return '';
 				$displayMode = appStore_setting('displaympappdetailssection');
 			}
 			break;
 		case "ListOfApps":
-				if (appStore_setting('displayATOMappdetailssection') == "no") return '';
 				$displayMode = appStore_setting('displayATOMappdetailssection');
 			break;
 	}
@@ -1113,7 +1120,7 @@ function displayAppStore_appScreenshots($app,$elementOnly=false) {
 			foreach($iPhoneScreenShots as $ssurl) {
 
 				$elementLoop_iPhone .= '<li class="appStore-screenshot"><a href="';
-				$elementLoop_iPhone .= $ssurl . '" rel="lightbox['.$appIDcode.']"><img src="';
+				$elementLoop_iPhone .= $ssurl . '" data-lightbox="'.$appIDcode.'"><img src="';
 				$elementLoop_iPhone .= $ssurl . '" width="' . appStore_setting('ss_size') . '" alt="Screenshot" /></a></li>';
 			}
 		$elementLoop_iPhone .= '		</ul>';
@@ -1132,7 +1139,7 @@ function displayAppStore_appScreenshots($app,$elementOnly=false) {
 		foreach($iPadScreenShots as $ssurl) {	
 
 			$elementLoop_iPad .= '<li class="appStore-screenshot"><a href="';
-			$elementLoop_iPad .= $ssurl . '" rel="lightbox['.$appIDcode.'iPad]"><img src="';
+			$elementLoop_iPad .= $ssurl . '" data-lightbox="'.$appIDcode.'iPad"><img src="';
 			$elementLoop_iPad .= $ssurl . '" width="' . appStore_setting('ss_size') . '" alt="Screenshot" /></a></li>';
 		}
 		$elementLoop_iPad .= '		</ul>';
@@ -1148,26 +1155,26 @@ function displayAppStore_appScreenshots($app,$elementOnly=false) {
 			return $element;
 		}
 		
-		if($valid_Screenshots_iPhone) $element .= getAccordionCode ($elementLoop_iPhone, "appStore-screenshots-iphone", $displayMode,$title_iPhone);
-		if($valid_Screenshots_iPad) $element .= getAccordionCode ($elementLoop_iPad, "appStore-screenshots-ipad", $displayMode,$title_iPad);
+		if($valid_Screenshots_iPhone) $element .= getDisplayCode ($elementLoop_iPhone, "appStore-screenshots-iphone", $displayMode,$title_iPhone);
+		if($valid_Screenshots_iPad) $element .= getDisplayCode ($elementLoop_iPad, "appStore-screenshots-ipad", $displayMode,$title_iPad);
 		return $element;
 	}
 }
 
 function displayAppStore_appBadge($app,$elementOnly=false) {
-
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displayappbadge') == "no") return;
+				$displayMode = appStore_setting('displayappbadge');
 			} else {
-				if (appStore_setting('displaympappbadge') == "no") return;
+				$displayMode = appStore_setting('displaympappbadge');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMappbadge') == "no") return;
+			$displayMode = appStore_setting('displayATOMappbadge');
 			break;
 	}
+	if($elementOnly) $displayMode = "INLINE";
 
 	// Create URL
 	$appLink = '<a href="'.$app->appURL.'"';
@@ -1193,12 +1200,8 @@ function displayAppStore_appBadge($app,$elementOnly=false) {
 	if($app->platform=="ios_app") $badgeImage .= "_135x40.png";
 	$badgeImgTag = '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;" />';
 
-	if($elementOnly) {
-		$element = $appLink.$badgeImgTag.'</a>';
-		return $element;
-	}
-	
-	$element = '<div class="appStore-badge">'.$appLink.$badgeImgTag.'</a></div>';
+	$element = $appLink.$badgeImgTag.'</a>';
+	$element = getDisplayCode ($element,"appStore-badge",$displayMode,"AppStore Badge");
 	return $element;
 }
 
@@ -1206,15 +1209,16 @@ function displayAppStore_appBadgeSm($app,$elementOnly=false) {
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displayappbadge') == "no") return;
+				$displayMode = appStore_setting('displayappbadge');
 			} else {
-				if (appStore_setting('displaympappbadge') == "no") return;
+				$displayMode = appStore_setting('displaympappbadge');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMappbadge') == "no") return;
+			$displayMode = appStore_setting('displayATOMappbadge');
 			break;
 	}
+	if($elementOnly) $displayMode = "INLINE";
 
 	$appLink = '<a href="'.$app->appURL.'"';
 	if(appStore_setting('open_links_externally') == "yes") $appLink .= ' target="_blank"';
@@ -1222,56 +1226,96 @@ function displayAppStore_appBadgeSm($app,$elementOnly=false) {
 	$badgeImage = 'images/Badges/badge_appstore-sm.gif';
 	$badgeImgTag = '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" width="61" height="15" alt="App Store" style="border: 0;" /></a>';
 
-	if($elementOnly) {
-		$element =  $appLink.$badgeImgTag;
-		return $element;
-	}
-
-	$element = '<div class="appStore-badge">'.$appLink.$badgeImgTag.'</div>';
+	$element =  $appLink.$badgeImgTag;
+	$element = getDisplayCode ($element,"appStore-badge",$displayMode,"AppStore Badge");
 	return $element;	
 }
 
-function getAccordionCode ($DisplayElement,$cssClass,$accState, $SectionTitle="Section") {
+function getDisplayCode ($DisplayElement,$cssClass,$displayMode, $SectionTitle="Section") {
 	$baseCSSClass = "accordion-$cssClass";
-	$AccordionCode = "";
-	if ($accState == "open" || $accState == "closed") {
-		$cssClass = $cssClass.'-'.rand();
-		$AccordionCode = "<script>\r";
-		$AccordionCode .= "jQuery(function() {\r";
-		$AccordionCode .= '	jQuery( "#accordion-';
-		$AccordionCode .= $cssClass;
-		$AccordionCode .= '" ).accordion({ heightStyle: "content",collapsible: true';
-		if($accState == "closed") $AccordionCode .= ',active: 2';
-		$AccordionCode .= ' });'."\r";
-		$AccordionCode .= '});'."\r";
-		$AccordionCode .= "</script>\r";
-		$AccordionCode .= '<div style="clear:left;">&nbsp;</div>';
-		$AccordionCode .= '<div class="'.$baseCSSClass.'">';
-		$AccordionCode .= '<div id="accordion-'.$cssClass.'">';
-		$AccordionCode .= "<h3>$SectionTitle</h3>";
-		$AccordionCode .= '<div class="'.$cssClass.'">';
-		$AccordionCode .=  $DisplayElement;
-		$AccordionCode .= '</div></div></div>';
-
-	} elseif($accState == "yes") {
-		$AccordionCode = '<div style="clear:left;">&nbsp;</div>';
-		$AccordionCode .= '<h3>'.$SectionTitle.':</h3>';
-		$AccordionCode .= '<div class="'.$cssClass.'">';
-		$AccordionCode .=  $DisplayElement;
-		$AccordionCode .= '</div>';
-	} elseif($accState == "notitle") {
-		$AccordionCode = '<br />';
-		$AccordionCode .= '<span class="'.$cssClass.'">';
-		$AccordionCode .=  $DisplayElement;
-		$AccordionCode .= '</span><br />';
-	} elseif($accState == "headline") {
-		$AccordionCode = '<h1>';
-		$AccordionCode .=  $DisplayElement;
-		$AccordionCode .= '</h1>';
+	$displayCode = "";	
+	
+	switch ($displayMode) {
+		case "HIDE":
+			return "\r<!-- $SectionTitle Hidden -->\r";
+			break;
+		case "NORM_TITLE":
+			$displayCode = "\r<!-- START $SectionTitle -->\r";
+			$displayCode .= '<div style="clear:left;">&nbsp;</div>';
+			$displayCode .= '<div class="'.$cssClass.'">';
+			$displayCode .= '<h3>'.$SectionTitle.':</h3>';
+			$displayCode .=  $DisplayElement;
+			$displayCode .= '</div>';
+			break;
+		case "HEADLINE":
+			$displayCode = "\r<!-- START $SectionTitle -->\r";
+			$displayCode .= '<h1>';
+			$displayCode .=  $DisplayElement;
+			$displayCode .= '</h1>';
+			break;
+		case "NORM_NOTITLE":
+			$displayCode = "\r<!-- START $SectionTitle -->\r";
+			$displayCode .= '<div style="clear:left;">&nbsp;</div>';
+			$displayCode .= '<div class="'.$cssClass.'">';
+			$displayCode .=  $DisplayElement;
+			$displayCode .= '</div>';
+			break;
+		case "INLINE_TITLE":
+			$displayCode = "\r<!-- START $SectionTitle -->\r";
+			$displayCode .= '<span class="'.$cssClass.'">';
+			$displayCode .= '<b>'.$SectionTitle.':</b> ';
+			$displayCode .=  $DisplayElement;
+			$displayCode .= '</span>';
+			break;
+		case "INLINE_NOTITLE":
+			$displayCode = "\r<!-- START $SectionTitle -->\r";
+			$displayCode .= '<span class="'.$cssClass.'">';
+			$displayCode .=  $DisplayElement;
+			$displayCode .= '</span>';
+			break;
+		case "CLOSED":
+			$cssClass = $cssClass.'-'.rand();
+			$displayCode = "\r<!-- START $SectionTitle -->\r";
+			$displayCode .= "<script>\r";
+			$displayCode .= "jQuery(function() {\r";
+			$displayCode .= '	jQuery( "#accordion-';
+			$displayCode .= $cssClass;
+			$displayCode .= '" ).accordion({ heightStyle: "content",collapsible: true';
+			$displayCode .= ',active: 2';
+			$displayCode .= ' });'."\r";
+			$displayCode .= '});'."\r";
+			$displayCode .= "</script>\r";
+			$displayCode .= '<div style="clear:left;">&nbsp;</div>';
+			$displayCode .= '<div class="'.$baseCSSClass.'">';
+			$displayCode .= '<div id="accordion-'.$cssClass.'">';
+			$displayCode .= "<h3>$SectionTitle</h3>";
+			$displayCode .= '<div class="'.$cssClass.'">';
+			$displayCode .=  $DisplayElement;
+			$displayCode .= '</div></div></div>';
+			break;
+		case "OPEN":
+			$cssClass = $cssClass.'-'.rand();
+			$displayCode = "\r<!-- START $SectionTitle -->\r";
+			$displayCode .= "<script>\r";
+			$displayCode .= "jQuery(function() {\r";
+			$displayCode .= '	jQuery( "#accordion-';
+			$displayCode .= $cssClass;
+			$displayCode .= '" ).accordion({ heightStyle: "content",collapsible: true';
+			$displayCode .= ' });'."\r";
+			$displayCode .= '});'."\r";
+			$displayCode .= "</script>\r";
+			$displayCode .= '<div style="clear:left;">&nbsp;</div>';
+			$displayCode .= '<div class="'.$baseCSSClass.'">';
+			$displayCode .= '<div id="accordion-'.$cssClass.'">';
+			$displayCode .= "<h3>$SectionTitle</h3>";
+			$displayCode .= '<div class="'.$cssClass.'">';
+			$displayCode .=  $DisplayElement;
+			$displayCode .= '</div></div></div>';
+			break;
 	}
-	return $AccordionCode;
+	$displayCode .= "\r<!-- END $SectionTitle -->\r";
+	return $displayCode;
 }
-
 
 function displayAppStore_appDescription($app,$elementOnly=false) {
 	if(empty($app->description)) return '';
@@ -1279,7 +1323,7 @@ function displayAppStore_appDescription($app,$elementOnly=false) {
 	$fullDescription = nl2br($app->description);
 	
 	$element = "";
-	if($elementOnly) return $fullDescription;
+	if($elementOnly) return getDisplayCode ($fullDescription,"appStore-description","INLINE","Description");
 
 	switch (appStore_setting('shortDesc_link')) {
 		case "text":
@@ -1304,15 +1348,14 @@ function displayAppStore_appDescription($app,$elementOnly=false) {
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displayappdescription') == "no") return '';
+				$displayMode = appStore_setting('displayappdescription');
 				if (appStore_setting('use_shortDesc_on_single') == "yes") {
 					$element .= $smallDescription."&hellip;";
 				} else {
 					$element .= $fullDescription;
 				}
-				$displayMode = appStore_setting('displayappdescription');
 			} else {
-				if (appStore_setting('displaympappdescription') == "no") return '';
+				$displayMode = appStore_setting('displaympappdescription');
 				if (appStore_setting('use_shortDesc_on_multiple') == "yes") {
 					$element .= $smallDescription;
 					$element .= $ReadMore_fullDesc;
@@ -1320,20 +1363,18 @@ function displayAppStore_appDescription($app,$elementOnly=false) {
 					$element .= $fullDescription;
 					$element .= $ReadMore_screenshot;
 				}
-				$displayMode = appStore_setting('displaympappdescription');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMappdescription') == "no") return '';
+			$displayMode = appStore_setting('displayATOMappdescription');
 			if (appStore_setting('use_shortDesc_on_atomfeed') == "yes") {
 				$element .= nl2br($smallDescription);
 			} else {
 				$element .= nl2br($app->description);
 			}
-			$displayMode = appStore_setting('displayATOMappdescription');
 			break;
 	}
-	$element = getAccordionCode ($element,"appStore-description",$displayMode,"Description ");
+	$element = getDisplayCode ($element,"appStore-description",$displayMode,"Description");
 	return $element;		
 }
 
@@ -1341,24 +1382,21 @@ function displayAppStore_appReleaseNotes($app,$elementOnly=false) {
 	if(empty($app->releaseNotes)) return '';
 	$releaseNotes = nl2br($app->releaseNotes);
 	$element = "";
-	if($elementOnly) return $releaseNotes;
 
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displayappreleasenotes') == "no") return '';
 				$displayMode = appStore_setting('displayappreleasenotes');
 			} else {
-				if (appStore_setting('displaympappreleasenotes') == "no") return '';
 				$displayMode = appStore_setting('displaympappreleasenotes');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMappreleasenotes') == "no") return '';
 			$displayMode = appStore_setting('displayATOMappreleasenotes');
 			break;
 	}
-	$element = getAccordionCode ($releaseNotes,"appStore-releasenotes",$displayMode,__('Release Notes',appStoreAssistant));
+	if($elementOnly) $displayMode = "INLINE";
+	$element = getDisplayCode ($releaseNotes,"appStore-releasenotes",$displayMode,__('Release Notes',appStoreAssistant));
 	return $element;		
 }
 
@@ -1366,26 +1404,24 @@ function displayAppStore_appBuyButton($app,$elementOnly=false) {
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displayappbuybutton') == "no") return;
+				$displayMode = appStore_setting('displayappbuybutton');
 			} else {
-				if (appStore_setting('displaympappbuybutton') == "no") return;
+				$displayMode = appStore_setting('displaympappbuybutton');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMappbuybutton') == "no") return;
+			$displayMode = appStore_setting('displayATOMappbuybutton');
 			break;
 	}
+	if($elementOnly) $displayMode = "INLINE";
 
 	$appLink = '<a type="button" href="'.$app->appURL.'" value="App Store Buy Button" class="appStore-Button BuyButton"';
 	if(appStore_setting('open_links_externally') == "yes") $appLink .= ' target="_blank"';
 	$appLink .= '>'.$app->TheAppPrice;
 	$appLink .= ' - '.__("View in App Store",appStoreAssistant);
 	$appLink .= '</a>';
- 
-	if($elementOnly) return $appLink;
-	$element = '<div style="clear:left;">&nbsp;</div>	<div class="appStore-purchase-center">';
-	$element .= $appLink.'<br />';
-	$element .= '	</div>';
+	
+	$element = getDisplayCode ($appLink,"appStore-purchase-center",$displayMode,"AppStore Buy Button");	
 	return $element;
 }
 
@@ -1398,18 +1434,16 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displaysupporteddevices') == "no") return '';
 				$displayMode = appStore_setting('displaysupporteddevices');
 			} else {
-				if (appStore_setting('displaympsupporteddevices') == "no") return '';
 				$displayMode = appStore_setting('displaympsupporteddevices');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMsupporteddevices') == "no") return '';
 			$displayMode = appStore_setting('displayATOMsupporteddevices');
 			break;
 	}
+	if($elementOnly) $displayMode = "INLINE";
 	$displayType = appStore_setting('displaysupporteddevicesType');
 	
 	// List all iDevices here
@@ -1436,6 +1470,8 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 						"iPodTouchFifthGen" => array ("name" => "iPod Touch 5th Gen", "icon" => "iPodTouchFifthGen")
 						);
 	// print_r($iDevices);
+	
+
 	if (is_array($app->supportedDevices)) {
 		$SupportedDevices = $app->supportedDevices;
 		$allDevices = appStore_substr_in_array("all", $SupportedDevices);
@@ -1446,10 +1482,10 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 			}
 		endforeach;
 	} else {
-		return "";
+		$displayMode = "HIDE";
 	}
 	
-	
+	$SupportedDevicesElement = "";
 	switch ($displayType){
 		case 'List' :
 			$SupportedDevicesElement =  implode(", ", $iDeviceList);
@@ -1482,8 +1518,7 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 			break;
 	}
 	
-	if ($elementOnly) return $SupportedDevicesElement;
-	$element = getAccordionCode ($SupportedDevicesElement,"appStore-supportedDevices",$displayMode,__('Supported Devices',appStoreAssistant));
+	$element = getDisplayCode($SupportedDevicesElement,"appStore-supportedDevices",$displayMode,__('Supported Devices',appStoreAssistant));
 	return $element;		
 }
 
@@ -1510,102 +1545,143 @@ function appStore_substr_in_array($needle,$haystack){
 }
 
 function displayAppStore_appDetails($app,$elementOnly=false) {
-
-	$elementVersion = '';
-	if (!empty($app->version)) {
-		$elementVersion =  '<li class="appStore-version">'.__("Version",appStoreAssistant).': '.$app->version.'</li>';
+		switch ($app->mode) {
+		case "SingleApp":
+			if(is_single()) {
+				if (appStore_setting('displayappdetailssection') == "HIDE") return getDisplayCode ("","appStore-appDetails","HIDE","AppStore Details Section");
+				$displayMode = appStore_setting('displayappdetailssection');
+				$detailsList['version']['mode'] = appStore_setting('displayversion');
+				$detailsList['developer']['mode'] = appStore_setting('displaydevelopername');
+				$detailsList['seller']['mode'] = appStore_setting('displaysellername');
+				$detailsList['date']['mode'] = appStore_setting('displayreleasedate');
+				$detailsList['size']['mode'] = appStore_setting('displayfilesize');
+				$detailsList['price']['mode'] = appStore_setting('displayprice');
+				$detailsList['universal']['mode'] = appStore_setting('displayuniversal');
+				$detailsList['rating']['mode'] = appStore_setting('displayadvisoryrating');
+				$detailsList['categories']['mode'] = appStore_setting('displaycategories');
+			} else {
+				if (appStore_setting('displaympappdetailssection') == "HIDE") return getDisplayCode ("","appStore-appDetails","HIDE","AppStore Details Section");
+				$displayMode = appStore_setting('displaympappdetailssection');
+				$detailsList['version']['mode'] = appStore_setting('displaympversion');
+				$detailsList['developer']['mode'] = appStore_setting('displaympdevelopername');
+				$detailsList['seller']['mode'] = appStore_setting('displaympsellername');
+				$detailsList['date']['mode'] = appStore_setting('displaympreleasedate');
+				$detailsList['size']['mode'] = appStore_setting('displaympfilesize');
+				$detailsList['price']['mode'] = appStore_setting('displaympprice');
+				$detailsList['universal']['mode'] = appStore_setting('displaympuniversal');
+				$detailsList['rating']['mode'] = appStore_setting('displaympadvisoryrating');
+				$detailsList['categories']['mode'] = appStore_setting('displaympcategories');
+			}
+			break;
+		case "ListOfApps":
+				if (appStore_setting('displayATOMappdetailssection') == "HIDE") return getDisplayCode ("","appStore-appDetails","HIDE","AppStore Details Section");
+				$displayMode = appStore_setting('displayATOMappdetailssection');
+				$detailsList['version']['mode'] = appStore_setting('displayATOMversion');
+				$detailsList['developer']['mode'] = appStore_setting('displayATOMdevelopername');
+				$detailsList['seller']['mode'] = appStore_setting('displayATOMsellername');
+				$detailsList['date']['mode'] = appStore_setting('displayATOMreleasedate');
+				$detailsList['size']['mode'] = appStore_setting('displayATOMfilesize');
+				$detailsList['price']['mode'] = appStore_setting('displayATOMprice');
+				$detailsList['universal']['mode'] = appStore_setting('displayATOMuniversal');
+				$detailsList['rating']['mode'] = appStore_setting('displayATOMadvisoryrating');
+				$detailsList['categories']['mode'] = appStore_setting('displayATOMcategories');
+			break;
 	}
-	$elementDeveloper = '';
-	$elementSellerName = '';
+		
+		$detailsList['version']['title'] = __("Version",appStoreAssistant);
+		$detailsList['date']['title'] = __("Released on",appStoreAssistant);
+		$detailsList['size']['title'] = __("File Size:",appStoreAssistant);
+		$detailsList['price']['title'] = __("Price:",appStoreAssistant);
+		$detailsList['rating']['title'] = __("Age Rating:",appStoreAssistant);
+		$detailsList['seller']['title'] = __("Sold by",appStoreAssistant);
+		$detailsList['developer']['title'] = __("Created by",appStoreAssistant);
+		$detailsList['universal']['title'] = __("Universal Icon",appStoreAssistant);
+	if (!empty($app->version)) {
+		$detailsList['version']['value'] = $app->version;
+	} else {
+		$detailsList['version']['mode'] = 'HIDE';
+	}
+	if (!empty($app->TheAppPrice)) {
+		$detailsList['price']['value'] = $app->TheAppPrice;
+	} else {
+		$detailsList['price']['mode'] = 'HIDE';
+	}
 	if (($app->artistName == $app->sellerName) AND !empty($app->artistName)) {
-			$elementDeveloper =  '<li class="appStore-developername">'.__("Created & Sold by",appStoreAssistant).': '.$app->artistName.'</li>';
+		$detailsList['developer']['title'] = __("Created & Sold by",appStoreAssistant);
+		$detailsList['developer']['value'] = $app->artistName;
+		$detailsList['seller']['mode'] = 'HIDE';
 	} else {
 		if (!empty($app->artistName)) {
-			$elementDeveloper =  '<li class="appStore-developername">'.__("Created by",appStoreAssistant).': '.$app->artistName.'</li>';
+			$detailsList['developer']['title'] = __("Created by",appStoreAssistant);
+			$detailsList['developer']['value'] = $app->artistName;
+		} else {
+			$detailsList['developer']['mode'] = 'HIDE';
 		}
 		if (!empty($app->sellerName)) {
-			$elementSellerName =  '<li class="appStore-sellername">'.__("Sold by",appStoreAssistant).': '.$app->sellerName.'</li>';
+			$detailsList['seller']['value'] = $app->sellerName;
+		} else {
+			$detailsList['seller']['mode'] = 'HIDE';
 		}
 	}
-	$elementReleaseDate = '';
 	if (!empty($app->releaseDate)) {
-		$elementReleaseDate =  '<li class="appStore-releasedate">'.__("Released",appStoreAssistant).': '.date( 'F j, Y', strtotime($app->releaseDate) ).'</li>';
+		$detailsList['date']['value'] = date( 'F j, Y', strtotime($app->releaseDate) );
+	} else {
+		$detailsList['date']['mode'] = 'HIDE';
 	}
-	$elementFileSize = '';
 	if (!empty($app->fileSizeBytes)) {
-		$elementFileSize =  '<li class="appStore-filesize">'.__("File Size",appStoreAssistant).': '.size_format($app->fileSizeBytes).'</li>';
+		$detailsList['size']['value'] = size_format($app->fileSizeBytes);
+	} else {
+		$detailsList['size']['mode'] = 'HIDE';
 	}
-	$elementUniversal = '';
-	if ($AppFeatures[0] == "iosUniversal") {
-		$elementUniversal =  '<li class="appStore-universal"><img src="'.plugins_url( 'images/fat-binary-badge-web.png' , ASA_MAIN_FILE ).'" width="14" height="14" alt="universal" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" /> '.__("This app is designed for both iPhone and iPad",appStoreAssistant).'</li>';
+
+	$appFeatures =  (array) $app->features;
+	if (in_array("iosUniversal", $appFeatures)) {
+		$detailsList['universal']['value'] = '<img src="'.plugins_url( 'images/fat-binary-badge-web.png' , ASA_MAIN_FILE ).'" width="14" height="14" alt="universal" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" /> '.__("This app is designed for both iPhone and iPad",appStoreAssistant);
+	} else {
+		$detailsList['universal']['mode'] = 'HIDE';
 	}
-	$elementAdvisoryRating = '';
 	if (!empty($app->contentAdvisoryRating)) {
-		$elementAdvisoryRating =  '<li class="appStore-advisoryrating">'.__("Age Rating",appStoreAssistant).': '.$app->contentAdvisoryRating.'</li>';
+		$detailsList['rating']['value'] = $app->contentAdvisoryRating;
+	} else {
+		$detailsList['rating']['mode'] = 'HIDE';
 	}
 	$elementCategories = '';
 	$appCategory = $app->genres;
 	$appCategoryPrime = $app->primaryGenreName;
 	if(is_array($appCategory)) $appCategoryList = implode(', ', $appCategory);
+	$detailsList['categories']['title'] = sprintf( _n('Category', 'Categories:', count($appCategory), appStoreAssistant), count($appCategory) );
 	if (!empty($appCategory)) {
-		$wordForCategories = sprintf( _n('Category', 'Categories', count($appCategory), appStoreAssistant), count($appCategory) );
-		$elementCategories .=  '<li class="appStore-categories">'.$wordForCategories.": ";
 		if(count($appCategory) == 1) {
-			$elementCategories .=  $appCategory[0];
+			$detailsList['categories']['value'] =  $appCategory[0];
+		} elseif (count($appCategory) == 2) {
+			$detailsList['categories']['value'] =  $appCategory[0]." & ".$appCategory[1];
 		} elseif (count($appCategory) > 1) {
-			$elementCategories .=  $appCategoryList;
+			$detailsList['categories']['value'] =  $appCategoryList;
 		}
-		$elementCategories .=  '</li>';
+	} else {
+		$detailsList['categories']['mode'] = 'HIDE';
 	}
-	switch ($app->mode) {
-		case "SingleApp":
-			if(is_single()) {
-				if (appStore_setting('displayappdetailssection') == "no") return '';
-				if (appStore_setting('displayversion') == "yes") $detailsList[] = $elementVersion;
-				if (appStore_setting('displaydevelopername') == "yes") $detailsList[] = $elementDeveloper;
-				if (appStore_setting('displaysellername') == "yes") $detailsList[] = $elementSellerName;
-				if (appStore_setting('displayreleasedate') == "yes") $detailsList[] = $elementReleaseDate;
-				if (appStore_setting('displayfilesize') == "yes") $detailsList[] = $elementFileSize;
-				if (appStore_setting('displayuniversal') == "yes") $detailsList[] = $elementUniversal;
-				if (appStore_setting('displayadvisoryrating') == "yes") $detailsList[] = $elementAdvisoryRating;
-				if (appStore_setting('displaycategories') == "yes") $detailsList[] = $elementCategories;
-				$displayMode = appStore_setting('displayappdetailssection');
-			} else {
-				if (appStore_setting('displaympappdetailssection') == "no") return '';
-				if (appStore_setting('displaympversion') == "yes") $detailsList[] = $elementVersion;
-				if (appStore_setting('displaympdevelopername') == "yes") $detailsList[] = $elementDeveloper;
-				if (appStore_setting('displaympsellername') == "yes") $detailsList[] = $elementSellerName;
-				if (appStore_setting('displaympreleasedate') == "yes") $detailsList[] = $elementReleaseDate;
-				if (appStore_setting('displaympfilesize') == "yes") $detailsList[] = $elementFileSize;
-				if (appStore_setting('displaympuniversal') == "yes") $detailsList[] = $elementUniversal;
-				if (appStore_setting('displaympadvisoryrating') == "yes") $detailsList[] = $elementAdvisoryRating;
-				if (appStore_setting('displaympcategories') == "yes") $detailsList[] = $elementCategories;
-				$displayMode = appStore_setting('displaympappdetailssection');
-			}
-			break;
-		case "ListOfApps":
-				if (appStore_setting('displayATOMappdetailssection') == "no") return '';
-				if (appStore_setting('displayATOMversion') == "yes") $detailsList[] = $elementVersion;
-				if (appStore_setting('displayATOMdevelopername') == "yes") $detailsList[] = $elementDeveloper;
-				if (appStore_setting('displayATOMsellername') == "yes") $detailsList[] = $elementSellerName;
-				if (appStore_setting('displayATOMreleasedate') == "yes") $detailsList[] = $elementReleaseDate;
-				if (appStore_setting('displayATOMfilesize') == "yes") $detailsList[] = $elementFileSize;
-				if (appStore_setting('displayATOMuniversal') == "yes") $detailsList[] = $elementUniversal;
-				if (appStore_setting('displayATOMadvisoryrating') == "yes") $detailsList[] = $elementAdvisoryRating;
-				if (appStore_setting('displayATOMcategories') == "yes") $detailsList[] = $elementCategories;
-				$displayMode = appStore_setting('displayATOMappdetailssection');
-			break;
-	}
+	
+	
 		
-	$element .=  '<ul class="appStore-addDetails">'."\r";
+	$element =  '<ul class="appStore-appDetails">'."\r";
 	foreach ($detailsList as $item):
-		$element .= $item."\r";
+	switch ($item['mode']) {
+		case "HIDE":
+			$element .= getDisplayCode ("","appStore-appDetails","HIDE",$item['title']);
+			break;
+		case "INLINE_TITLE":
+			$element .= '<li class="appStore-appDetail">'.$item['title'].' '.$item['value']."</li>\r";
+			break;
+		case "INLINE_NOTITLE":
+			$element .= '<li class="appStore-appDetail">'.$item['value']."</li>\r";
+			break;
+	}
 	endforeach;
 	$element .=  '</ul>';
 	
-	if ($elementOnly) return $element;
 	
-	$element = getAccordionCode ($element,"appStore-appDetails",$displayMode,__('App Details',appStoreAssistant));
+	$element = getDisplayCode ($element,"appStore-appDetails",$displayMode,__('App Details',appStoreAssistant));
 	return $element;		
 
 }
@@ -1614,27 +1690,24 @@ function displayAppStore_appGCIcon($app,$elementOnly=false){
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displaygamecenterenabled') == "no") return;
+				$displayMode = appStore_setting('displaygamecenterenabled');
 			} else {
-				if (appStore_setting('displaympgamecenterenabled') == "no") return;
+				$displayMode = appStore_setting('displaympgamecenterenabled');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMgamecenterenabled') == "no") return;
+				$displayMode = appStore_setting('displayATOMgamecenterenabled');
 			break;
 	}
+	if($elementOnly) $displayMode = "INLINE";
+
 	$element = '';
 	if($app->isGameCenterEnabled == 1) {
-		$element = '<div style="clear:left;">&nbsp;</div><div class="appStore-gamecenter">';
 		$element .= '<img class="appStore-gamecentericon" src="'.plugins_url( 'images/gamecenter.png' , ASA_MAIN_FILE ).'" width="88" height="92" alt="gamecenter" />';
-		$element .= __('Game Center',appStoreAssistant);
-		$element .= '</div>';
-
-
-
-
-
 	}
+	
+	$element = getDisplayCode ($element,"appStore-gamecenter",$displayMode,__('GameCenter Enabled',appStoreAssistant));
+
 	return $element;
 }
 
@@ -1642,13 +1715,13 @@ function displayAppStore_appRating($app,$elementOnly=false) {
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displaystarrating') == "no") return;
+				$displayMode = appStore_setting('displaystarrating');
 			} else {
-				if (appStore_setting('displaympstarrating') == "no") return;
+				$displayMode = appStore_setting('displaympstarrating');
 			}
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMstarrating') == "no") return;
+				$displayMode = appStore_setting('displayATOMstarrating');
 			break;
 	}
 
@@ -1662,78 +1735,116 @@ function displayAppStore_appRating($app,$elementOnly=false) {
 	}
 
 	if(isset($ratingCount)) {
-		$element = '<div style="clear:left;">&nbsp;</div><div class="appStore-rating">';
-		$element .= '	<span class="appStore-rating_bar" title="Rating '.$averageRating.' stars">';
+		$element = '	<span class="appStore-rating_bar" title="Rating '.$averageRating.' stars">';
 		$element .= '	<span style="width:'.$appRating.'%"></span>';
 		$string = sprintf( __('by %d users', appStoreAssistant), $ratingCount );
 		$element .= '	</span><span class="appStore-rating_bar_text"> '.$string."</span>";
-		$element .= '</div>';
 	}
+	$element = getDisplayCode($element,"appStore-rating",$displayMode,__('App Store Rating',appStoreAssistant));
 	return $element;
 }
 
 function displayAppStore_appIcon ($app,$elementOnly=false){
 	GLOBAL $is_iphone;
 	// App Artwork	
-	
-	if($elementOnly) {
-		if(appStore_setting('cache_images_locally') == '1') {
-			$imageTag = $app->imageElements_cached;
-			if($is_iphone) $imageTag = $app->imageiOS_cached;
-		} else {
-			$imageTag = $app->imageElements;
-			if($is_iphone) $imageTag = $app->imageiOS;
-		}		
-		$element = '<a href="'.$app->appURL.'" target="_blank"><img class="appStore-icon" src="'.$imageTag.'" alt="'.$app->trackName.'" /></a>';
-		return $element;
-	}
-	
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
-				if (appStore_setting('displayappicon') == "no") return;
+				$displayMode = appStore_setting('displayappicon');
 			} else {
-				if (appStore_setting('displaympappicon') == "no") return;
+				$displayMode = appStore_setting('displaympappicon');
 			}
 			if(appStore_setting('cache_images_locally') == '1') {
 				$imageTag = $app->imagePosts_cached;
-				if($is_iphone) $imageTag = $app->imageiOS_cached;
 			} else {
 				$imageTag = $app->imagePosts;
-				if($is_iphone) $imageTag = $app->imageiOS;
 			}		
-			$element = '<div id="appStore-icon-container">';
-			$element .= '<a href="'.$app->appURL.'" target="_blank">';
-			$element .= '<img src="'.$imageTag.'" />';
-			$element .= '</a>';
-			if ((appStore_setting('displayappiconbuybutton') == "yes") || (appStore_setting('displaympappiconbuybutton') == "yes")) {
-				$element .= '<br /><a type="button" href="'.$app->appURL.'" value="App Store Buy Button" class="appStore-Button BuyButton" target="_blank">';
-				$element .= ''.$app->TheAppPrice.'</a>';
-			}
-			$element .= '';
-			$element .= '</div>';
-			$element .= '	<div style="clear:left;">&nbsp;</div>';
 			break;
 		case "ListOfApps":
-			if (appStore_setting('displayATOMappicon') == "no") return;
+			$displayMode = appStore_setting('displayATOMappicon');
 			if(appStore_setting('cache_images_locally') == '1') {
 				$imageTag = $app->imageLists_cached;
-				if($is_iphone) $imageTag = $app->imageiOS_cached;
 			} else {
 				$imageTag = $app->imageLists;
-				if($is_iphone) $imageTag = $app->imageiOS;
 			}		
-			$element = '<div id="appStore-icon-container-left">';
-			$element .= '<a href="'.$app->appURL.'" target="_blank"><img src="'.$imageTag.'"  alt="'.$app->trackName.'" /></a><br />';
-			if (appStore_setting('displayATOMappiconbuybutton') == "yes") {
-				$element .= '	<div class="appStore-purchase-center">';
-				$element .= '	<a type="button" href="'.$app->appURL.'" value="App Store Buy Button" class="appStore-Button BuyButton" target="_blank">'.$app->TheAppPrice.'</a><br />';
-				$element .= '	</div>';
-			}
-			$element .= '</div>';
-			$element .= '	<div style="clear:right;">&nbsp;</div>';
 			break;
 	}
+
+	if($elementOnly) {
+		$displayMode = "INLINE";
+		if(appStore_setting('cache_images_locally') == '1') {
+			$imageTag = $app->imageElements_cached;
+		} else {
+			$imageTag = $app->imageElements;
+		}		
+	}
+
+	if(appStore_setting('cache_images_locally') == '1') {
+		if($is_iphone) $imageTag = $app->imageiOS_cached;
+	} else {
+		if($is_iphone) $imageTag = $app->imageiOS;
+	}
+	$element .= '<a href="'.$app->appURL.'" target="_blank">';
+	$element .= '<img class="appStore-icon" src="'.$imageTag.'" alt="'.$app->trackName.'" />';
+	$element .= '</a>';
+
+	$element = getDisplayCode ($element,"appStore-icon",$displayMode,"App Icon");
+
+	return $element;		
+
+}
+
+function displayAppStore_appIconBuyButton ($app,$elementOnly=false){
+	GLOBAL $is_iphone;
+	// App Artwork	
+	switch ($app->mode) {
+		case "SingleApp":
+			if(is_single()) {
+				$displayMode = appStore_setting('displayappiconbuybutton');
+			} else {
+				$displayMode = appStore_setting('displaympappiconbuybutton');
+			}
+			if(appStore_setting('cache_images_locally') == '1') {
+				$imageTag = $app->imagePosts_cached;
+			} else {
+				$imageTag = $app->imagePosts;
+			}		
+			break;
+		case "ListOfApps":
+			$displayMode = appStore_setting('displayATOMappiconbuybutton');
+			if(appStore_setting('cache_images_locally') == '1') {
+				$imageTag = $app->imageLists_cached;
+			} else {
+				$imageTag = $app->imageLists;
+			}		
+			break;
+	}
+
+	if($elementOnly) {
+		$displayMode = "INLINE";
+		if(appStore_setting('cache_images_locally') == '1') {
+			$imageTag = $app->imageElements_cached;
+		} else {
+			$imageTag = $app->imageElements;
+		}		
+	}
+
+	if(appStore_setting('cache_images_locally') == '1') {
+		if($is_iphone) $imageTag = $app->imageiOS_cached;
+	} else {
+		if($is_iphone) $imageTag = $app->imageiOS;
+	}
+
+	$element = '<div id="appStore-icon-container">';
+
+	$element .= '<a href="'.$app->appURL.'" target="_blank">';
+	$element .= '<img class="appStore-icon" src="'.$imageTag.'" alt="'.$app->trackName.'" />';
+	$element .= '</a>';
+	$element .= '<br /><a type="button" href="'.$app->appURL.'" value="App Store Buy Button" class="appStore-Button BuyButton" target="_blank">';
+	$element .= ''.$app->TheAppPrice.'</a>';
+	$element .= '</div>';
+	$element = getDisplayCode ($element,"appStore-icon",$displayMode,"App Icon");
+
 	return $element;		
 
 }
@@ -1886,12 +1997,12 @@ function appStore_fopen_or_curl($url) {
 }
 function appStore_getBestIcon($appID) {
 	$filename = false;
-	$firstChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl512.png";
-	$secondChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl512.jpg";
-	$thirdChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl100.png";
-	$fourthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl100.jpg";
-	$fifthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl60.png";
-	$sixthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkUrl60.jpg";
+	$firstChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_512.png";
+	$secondChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_512.jpg";
+	$thirdChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_100.png";
+	$fourthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_100.jpg";
+	$fifthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_60.png";
+	$sixthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_60.jpg";
 	$lastChoice = dirname( plugin_basename( __FILE__ ) )."/images/CautionIcon.png";
 
 	if (file_exists($firstChoice)) {
@@ -1921,10 +2032,11 @@ function appStore_process_imagedata($app) {
 	//Save Non-Cached Images incase of problem
 	$app->screenshotUrls_cached = $app->screenshotUrls;
 	$app->ipadScreenshotUrls_cached = $app->ipadScreenshotUrls;
-	$app->artworkUrl30_cached = $app->artworkUrl30;
-	$app->artworkUrl60_cached = $app->artworkUrl60;
-	$app->artworkUrl100_cached = $app->artworkUrl100;
-	$app->artworkUrl512_cached = $app->artworkUrl512;
+	$app->artworkOriginal_30_cached = $app->artworkUrl30;
+	$app->artworkOriginal_60_cached = $app->artworkUrl60;
+	$app->artworkOriginal_100_cached = $app->artworkUrl100;
+	$app->artworkOriginal_512_cached = $app->artworkUrl512;
+	//$bestImage = plugins_url( 'images/CautionIcon.png' , ASA_MAIN_FILE ); // Debug
 	if($app->artworkUrl30) $bestImage = $app->artworkUrl30;
 	if($app->artworkUrl60) $bestImage = $app->artworkUrl60;
 	if($app->artworkUrl100) $bestImage = $app->artworkUrl100;
@@ -1944,7 +2056,6 @@ function appStore_process_imagedata($app) {
 	$app->imageElements = $bestImage;
 	$app->imageElements_cached = $bestImage;
 	
-	
 	if(!is_writeable(CACHE_DIRECTORY)) {
 		//Uploads dir isn't writeable. bummer.
 		appStore_set_setting('cache_images_locally', '0');
@@ -1958,12 +2069,12 @@ function appStore_process_imagedata($app) {
 			}
 		}
 		$urls_to_cache = array();
-		if($app->artworkUrl30) $urls_to_cache['artworkUrl30'] = $app->artworkUrl30;
-		if($app->artworkUrl60) $urls_to_cache['artworkUrl60'] = $app->artworkUrl60;
-		if($app->artworkUrl100) $urls_to_cache['artworkUrl100'] = $app->artworkUrl100;
-		if($app->artworkUrl512) $urls_to_cache['artworkUrl512'] = $app->artworkUrl512;
+		if($app->artworkUrl30) $urls_to_cache['artworkOriginal_30'] = $app->artworkUrl30;
+		if($app->artworkUrl60) $urls_to_cache['artworkOriginal_60'] = $app->artworkUrl60;
+		if($app->artworkUrl100) $urls_to_cache['artworkOriginal_100'] = $app->artworkUrl100;
+		if($app->artworkUrl512) $urls_to_cache['artworkOriginal_512'] = $app->artworkUrl512;
 		
-		
+		// Cache the original images with new name
 		foreach($urls_to_cache as $urlname=>$url) {
 			$content = appStore_fopen_or_curl($url);
 			$info = pathinfo(basename($url));
@@ -1984,92 +2095,85 @@ function appStore_process_imagedata($app) {
 			}
 		}
 		
+		//Choose best image and create additional sizes
+		
 		$bestFilePath = appStore_getBestIcon($appID);
 		$bestFilePathParts = pathinfo($bestFilePath);
 		$bestFileName = $bestFilePathParts['filename'];
 		$bestFileExt = $bestFilePathParts['extension'];		
 		$editor = wp_get_image_editor( $bestFilePath );
  		$size = $editor->get_size();
- 		
+ 		$filePrefix = "asaArtwork_";
+		$filePath_Start = CACHE_DIRECTORY."AppStore/". $appID . '/'.$filePrefix;
+		$fileURL_Start = CACHE_DIRECTORY_URL."AppStore/". $appID . '/'.$filePrefix;
+		
  		if(appStore_setting('appicon_size_featured') < $size['width']) {
  			$newSize = appStore_setting('appicon_size_featured');
 			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'featured', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
-			$new_image_info = $editor->save($filename);
-			$app->imageFeatured_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-featured.".$bestFileExt;
-			$app->imageFeatured_path = CACHE_DIRECTORY."AppStore/$appID/".$bestFileName."-featured.".$bestFileExt;
-		} else {
-			$app->imageFeatured_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
-			$app->imageFeatured_path = CACHE_DIRECTORY."AppStore/$appID/$bestFileName.$bestFileExt";
 		}
+		$filename = $filePath_Start."featured.".$bestFileExt;
+		$new_image_info = $editor->save($filename);
+		$app->imageFeatured_cached = $fileURL_Start."featured.".$bestFileExt;
+		$app->imageFeatured_path = $filePath_Start."featured.".$bestFileExt;
 
- 		if(appStore_setting('appicon_size_ios') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
+		$editor = wp_get_image_editor( $bestFilePath );
+		if(appStore_setting('appicon_size_ios') < $size['width']) {
  			$newSize = appStore_setting('appicon_size_ios');
 			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'ios', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
+			$filename = $filePath_Start."ios.".$bestFileExt;
 			$new_image_info = $editor->save($filename);		
-			$app->imageiOS_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-ios.".$bestFileExt;
-		} else {
-			$app->imageiOS_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
 		}
+		$filename = $filePath_Start."ios.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$app->imageiOS_cached = $fileURL_Start."ios.".$bestFileExt;
 
-
+		$editor = wp_get_image_editor( $bestFilePath );
  		if(appStore_setting('appicon_size_widget') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
  			$newSize = appStore_setting('appicon_size_widget');
 			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'widget', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
+			$filename = $filePath_Start."widget.".$bestFileExt;
 			$new_image_info = $editor->save($filename);		
-			$app->imageWidget_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-widget.".$bestFileExt;
-		} else {
-			$app->imageWidget_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
-		}
-
+		} 
+		$filename = $filePath_Start."widget.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$app->imageWidget_cached = $fileURL_Start."widget.".$bestFileExt;
+		
+		$editor = wp_get_image_editor( $bestFilePath );
  		if(appStore_setting('appicon_size_rss') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
  			$newSize = appStore_setting('appicon_size_rss');
 			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'rss', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$app->imageRSS_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-rss.".$bestFileExt;
-		} else {
-			$app->imageRSS_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
-		}
-
+		} 
+		$filename = $filePath_Start."rss.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$app->imageRSS_cached = $fileURL_Start."rss.".$bestFileExt;
+		
+		$editor = wp_get_image_editor( $bestFilePath );
  		if(appStore_setting('appicon_size_lists') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
  			$newSize = appStore_setting('appicon_size_lists');
 			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'list', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$app->imageLists_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-list.".$bestFileExt;
-		} else {
-			$app->imageLists_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
 		}
-
+		$filename = $filePath_Start."list.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$app->imageLists_cached = $fileURL_Start."list.".$bestFileExt;
+		
+		$editor = wp_get_image_editor( $bestFilePath );
  		if(appStore_setting('appicon_size_posts') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
  			$newSize = appStore_setting('appicon_size_posts');
 			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'post', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$app->imagePosts_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-post.".$bestFileExt;
-		} else {
-			$app->imagePosts_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
 		}
-
+		$filename = $filePath_Start."post.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$app->imagePosts_cached = $fileURL_Start."post.".$bestFileExt;
+	
+		$editor = wp_get_image_editor( $bestFilePath );
  		if(appStore_setting('appicon_size_element') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
  			$newSize = appStore_setting('appicon_size_element');
 			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'element', CACHE_DIRECTORY ."AppStore/". $appID . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$app->imageElements_cached = CACHE_DIRECTORY_URL."AppStore/$appID/".$bestFileName."-element.".$bestFileExt;
-		} else {
-			$app->imageElements_cached = CACHE_DIRECTORY_URL."AppStore/$appID/$bestFileName.$bestFileExt";
-		}		
-
+		}
+		$filename = $filePath_Start."element.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$app->imageElements_cached = $fileURL_Start."element.".$bestFileExt;
+			
 		if($app->screenshotUrls) {
 			foreach($app->screenshotUrls as $ssid=>$ssurl) {
 				$content = appStore_fopen_or_curl($ssurl);
@@ -2115,6 +2219,7 @@ function appStore_process_imagedata($app) {
 	
 		}		
 	}
+	$app->appID = $appID;
 	return $app;
 }
 

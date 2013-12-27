@@ -1,4 +1,8 @@
 <input type="hidden" name="appStore_options[checkboxedoptions]" value="AddFeaturedImages" />
+
+<a href="http://sandbox.sealsystems.net/asa/wp-admin/admin.php?page=asa-rebuild-featuredimages">Test Link</a>
+
+
 <p>This feature will first check for any posts that use the <b>ios_app</b>, <b>mac_app</b> or <b>amazon.com</b> shortcodes. It will then check for a Featured Image. If no image is assigned to that post it will then assign a Featured Image based on the icon or product image.</p>
 <p>The size of the image can be set in the respective store's settings.</p>
 

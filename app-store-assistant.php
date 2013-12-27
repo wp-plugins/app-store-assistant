@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.4.2
+Version: 6.5.0
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -10,9 +10,15 @@ Author URI: http://SEALsystems.net/
 */
 
 /**
-Copyright 2013 Scott Immerman
+Copyright 2014 Scott Immerman
 
 */
+//ini_set('display_errors', 'On'); //Debug
+//error_reporting(E_ALL | E_STRICT); // Debug
+//error_reporting(E_ERROR | E_WARNING | E_PARSE); // Debug
+
+
+
 define( 'ASA_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ASA_PLUGIN_INCLUDES_PATH', plugin_dir_path( __FILE__ )."includes/" );
 define( 'ASA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -117,18 +123,21 @@ define('CACHE_DIRECTORY_URL',$upload_dir['baseurl'] . '/appstoreassistant_cache/
 
 class ASA_Widget1 extends WP_Widget {
 	function ASA_Widget1() {
-		parent::WP_Widget( false, $name = 'ASA Top 5 iOS' );
+		parent::WP_Widget( false, $name = 'ASA Top iOS Apps' );
 	}
 
 	function widget( $args, $instance ) {
 		extract( $args );
-		$artwork_url_start = CACHE_DIRECTORY_URL;
 		//Widget Title
 				
 		$title = apply_filters( 'widget_title', $instance['title'] );
-		if(!$title) $title = __('Top 5 iOS Apps');
+		$showamount = apply_filters( 'widget_showamount', $instance['showamount'] );
+		if(!$showamount) $showamount = "5";
+		
+		if(strlen($title) < 5) $title = __('Top '.$showamount.' iOS Apps');
+		
 		echo $before_widget;
-		if ($title) echo $before_title . $title . $after_title;
+		if ($title) echo $before_title . $title. $after_title;
 		
 		//ATOM Feed URL
 		$atomurl = apply_filters( 'widget_atomurl', $instance['atomurl'] );
@@ -137,6 +146,7 @@ class ASA_Widget1 extends WP_Widget {
 			return;
 		}
 		$last = $atomurl[strlen($atomurl)-1];
+		$AddSlash = "";
 		if($last != "/") $AddSlash = "/";
 		$RSS_Feed = $atomurl.$AddSlash."xml";
 		$appStore_option = "appStore_rssfeed_".hash('md2', $RSS_Feed);
@@ -147,29 +157,31 @@ class ASA_Widget1 extends WP_Widget {
 			$appIDs = appStore_getIDs_from_feed($RSS_Feed);
 			update_option($appStore_option, $appIDs);
 		}		
-		array_splice($appIDs, 5);
-	
+		array_splice($appIDs, $showamount);
+
 		echo '<div class="asaWidget1"><ul>';
 		foreach($appIDs as $appID) {	
 			if($appID == "" || !is_numeric($appID)) return;
 			$app = appStore_get_data($appID);
 			// App Artwork
-			$imageTag = $app->imageWidget;
-
+			if(appStore_setting('cache_images_locally') == '1') {
+				$imageTag = $app->imageWidget_cached;
+			} else {
+				$imageTag = $app->imageWidget;
+			}		
 			$appURL = getAffiliateURL($app->trackViewUrl);
 			if($app) {
 				echo "<li>";
-				echo '<a href="'.$appURL.'">';
-				echo '<img src="'.$artwork_url_start.$imageTag.'" alt="'.$app->title.'" align="left"/>';
+				echo '<a href="'.$appURL.'" target="_blank">';
+				echo '<img src="'.$imageTag.'" alt="'.$app->trackName.'" width="'.appStore_setting('appicon_size_widget').'" align="left"/>';
 				echo '</a>';
-				echo '<h4><a href="'.$appURL.'">'.$app->trackName.'</a></h4>';
-				echo "<p>";
-				echo '<a href="'.$appURL.'">';
+				echo '<h4><a href="'.$appURL.'" target="_blank">'.$app->trackName.'</a></h4>';
+				echo '<div style="position:relative;float:right;background-color:#'.appStore_setting('color_buttonStart').';min-width:6em;text-align:center;moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;-moz-box-shadow:inset 3px 3px 3px 3px #'.appStore_setting('color_buttonShadow').';	-webkit-box-shadow: 1px 1px 1px 1px #'.appStore_setting('color_buttonShadow').'; box-shadow: 1px 1px 1px 1px #'.appStore_setting('color_buttonShadow').';margin-right:10px;margin-top:5px;">';
+				echo '<a href="'.$appURL.'" style="padding:2px 8px;text-decoration:none;color:#'. appStore_setting('color_buttonText').';text-shadow:1px 1px 0px #'.appStore_setting('color_buttonTextShadow').';" target="_blank">';
 				echo $app->formattedPrice;
 				echo '</a>';
-				echo "</p>";
+				echo "</div>";
 				echo "</li>";
-
 			} else {
 				echo "No valid data for app id";
 				//wp_die('No valid data for app id: ' . $id);
@@ -181,12 +193,13 @@ class ASA_Widget1 extends WP_Widget {
 	}
 
   function update( $new_instance, $old_instance ) {
-    return $new_instance;
+	return $new_instance;
   }
 
   function form( $instance ) {
     $title = esc_attr( $instance['title'] );
     $atomurl = esc_attr( $instance['atomurl'] );
+    $showamount = esc_attr( $instance['showamount'] );
     ?>
 
     <p>
@@ -199,7 +212,11 @@ class ASA_Widget1 extends WP_Widget {
       <input class="widefat" id="<?php echo $this->get_field_id( 'atomurl' ); ?>" name="<?php echo $this->get_field_name( 'atomurl' ); ?>" type="text" value="<?php echo $atomurl; ?>" />
       </label>
     </p>
-    <?php
+    <p>
+      <label for="<?php echo $this->get_field_id( 'showamount' ); ?>"><?php _e( 'Show this many apps:' ); ?>
+      <input class="widefat" id="<?php echo $this->get_field_id( 'showamount' ); ?>" name="<?php echo $this->get_field_name( 'showamount' ); ?>" type="text" value="<?php echo $showamount; ?>" />
+      </label>
+    </p>    <?php
   }
 }
 

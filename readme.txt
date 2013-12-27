@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
 Tested up to: 3.6
-Stable tag: 6.4.2
+Stable tag: 6.5.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -106,13 +106,48 @@ Please let us know of any features you would like added or bugs that need squash
 * Request: Random Post generator (randomly picks an app that you don't already have a post for) [Thanks AslanDoma]
 * Request: Shortcode tags can now override the Store/Language chosen [Thanks crisf86]
 * Request: Sped up Reset of Featured Images (Using log system)
-* Request: Accepted jpeg for images
 * Request: All images now saved as png
 		http://bhoover.com/wp_image_editor-wordpress-image-editing-tutorial/
 * Request: Reset Featured Images now saves to log
 * Request: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
+* Request: Option to search for Apps no longer available and change post to "Pending Review"
+* Added: ----------------Option to rebuild cache same method as FI Rebuild
 
 == Changelog ==
+
+= 6.5.0 =
+* Changed: New simplified method of choosing which elements to display [IMPORTANT: CHECK YOUR SETTINGS]
+* Added: Description of the "Assisted By" link added to Main Page
+* Changed: The "Assisted By" link is off by default
+* Added: Italian Translation [Thanks to Angelo Furnò (giankikine for the web ;)]
+* Changed: Completely replaced and optimized code to Rebuild Featured Images
+* Added: Additional frequently used items to + New Post menu
+* Added: Omnisearch results, your visitors can now search for any app from the app store. (optional)
+* Updated: Lightbox 2.6 <http://lokeshdhakar.com/projects/lightbox2/>
+* Added: Ability to not include Lightbox (Enabled by default). May be included in other plugins.
+* Changed: Accepted jpeg (as opposed to jpg) for images (did not work with caching system)
+* Removed: References to discontinued Affiliate programs Linkshare & DGM
+* Fixed: Code to remove Featured Images from older versions
+* Added: Now removes all Featured Images set by this plugin
+* Changed: Nicer buttons with shadow
+* Fixed: iosUniversal not displaying properly
+* Fixed: Various PHP 5 strict errors
+* Fixed: Widget icon not showing
+* Fixed: Widget icon not respecting size set in preferences
+* Changed: Widget now uses same button colors & style as posts
+* Added: You can now change the number of apps displayed in widget
+* Fixed: Searching for Mac apps (Actually this was fixed by Apple)
+* Changed: Adjusted size of icon in search results to allow for new larger icons
+* Changed: Optimized code to cache images
+* Changed: Changed file names for cached images
+* Changed: Search/Add now uses new shortcode
+* Added: Check for writeable directory during featured image creation
+* Changed: Featured Images are saved in the cache folder sized to theme specs
+* Fixed: If original item image was too small, various sizes were not created
+* Added: Price now available in Details list
+* Added: Separate App Icon with Buy Button now available
+* Added: Inline elements as option for Single and Multiple posts
+
 
 = 6.4.2 =
 * Added: Ability to add an Item's icon to your RSS/ATOM feed
@@ -592,6 +627,8 @@ In Version 6.0.6 the Image system has been replaced. It is recommended that you 
 In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply). THIS VERSION REQUIRES WordPress 3.6 or later!!!!!
 
 In Version 6.4.0 Deprecated the following shortcodes [ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link]. Deprecated shortcodes are still functional in this version, but REPLACING THEM IS SUGGESTED!!!
+
+In Version 6.5.0 It is NECESSARY to reselect the elements to display.
 
 == Note ==
 
