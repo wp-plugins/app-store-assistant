@@ -1,4 +1,6 @@
-<p>The sizes below set the Maximum size for an image. Most iOS and Mac app icons will be exactly the sizes you set, but most iTunes images only come in smaller sizes. Product images from amazon.com vary in size.</p><p class="asa_admin_warning"><b>The Cache must be cleared for these settings to take effect. (Visit Utilities -> Clear Cache)</b></p>
+<p>The sizes below set the Maximum size for an image. Most iOS and Mac app icons will be exactly the sizes you set, but most iTunes images only come in smaller sizes. Product images from amazon.com vary in size.</p>
+
+<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
 
 <table class="form-table">
 <tr valign="top">
@@ -19,5 +21,8 @@
 <tr valign="top">
 <th scope="row"><label>Image size for Widgets</label></th>
 <td><input type="text" size="4" name="appStore_options[appicon_size_widget]" value="<?php echo $options['appicon_size_widget']; ?>" />px</td></tr>
+<tr valign="top">
+<th scope="row"><label>Image size for RSS/ATOM feeds</label></th>
+<td><input type="text" size="4" name="appStore_options[appicon_size_rss]" value="<?php echo $options['appicon_size_rss']; ?>" />px</td></tr>
 
 </table>
