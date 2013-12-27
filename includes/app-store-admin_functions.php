@@ -222,19 +222,20 @@ function appStore_add_defaults() {
 	
 	
 	// Changes values from form
-	if($PostedValues['action'] == "update" && is_array($PostedValues['appStore_options'])) {
-		foreach ($appStore_defaults as $defaultName => $defaultValue) {
-			$settingsValue = $PostedValues['appStore_options'][$defaultName];
-			if($settingsValue != "") {
-				$appStore_options[$defaultName] = $settingsValue;
+	if (isset($PostedValues['action'])) {
+		if($PostedValues['action'] == "update" && is_array($PostedValues['appStore_options'])) {
+			foreach ($appStore_defaults as $defaultName => $defaultValue) {
+				if(isset($PostedValues['appStore_options'][$defaultName])) {
+					$appStore_options[$defaultName] = $PostedValues['appStore_options'][$defaultName];
+				}
 			}
-		}
-	} else {
-	//Check for empty settings
-		foreach ($appStore_defaults as $defaultName => $defaultValue) {
-			$settingsValue = $appStore_savedOptions[$defaultName];
-			if($settingsValue == "") {
-				$appStore_options[$defaultName] = $defaultValue;
+		} else {
+		//Check for empty settings
+			foreach ($appStore_defaults as $defaultName => $defaultValue) {
+				$settingsValue = $appStore_savedOptions[$defaultName];
+				if($settingsValue == "") {
+					$appStore_options[$defaultName] = $defaultValue;
+				}
 			}
 		}
 	}
@@ -297,7 +298,8 @@ function appStore_displayAdminOptionsPage() {
 	$options = get_option('appStore_options');
 	$affiliatepartnerid = $options['affiliatepartnerid'];
 	$requestedPage = $_REQUEST['page'];
-	$settingsUpdated = $_REQUEST['settings-updated'];
+	$settingsUpdated = "";
+	if(isset($_REQUEST['settings-updated'])) $settingsUpdated = $_REQUEST['settings-updated'];
 	
 	if ( !current_user_can( 'manage_options' ) )  {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
@@ -309,35 +311,35 @@ function appStore_displayAdminOptionsPage() {
 	}
 	switch ( $requestedPage ){
 		case 'appStore_sm_general' :
-			$appStoreOptionsTitle = __("General Settings",appStoreAssistant);
+			$appStoreOptionsTitle = __("General Settings",'appStoreAssistant');
 			$appStoreOptionsPage = "options_general_$currentTab.php";
 			break;
 		case 'appStore_sm_visual' :
-			$appStoreOptionsTitle = __("Visual Settings",appStoreAssistant);
+			$appStoreOptionsTitle = __("Visual Settings",'appStoreAssistant');
 			$appStoreOptionsPage = "options_visual_$currentTab.php";
 			break;
 		case 'appStore_sm_appstore' :
-			$appStoreOptionsTitle = __("iOS & Mac App Store Settings",appStoreAssistant);
+			$appStoreOptionsTitle = __("iOS & Mac App Store Settings",'appStoreAssistant');
 			$appStoreOptionsPage = "options_appstore_$currentTab.php";
 			break;
 		case 'appStore_sm_itunes' :
-			$appStoreOptionsTitle = __("iTunes Store Settings",appStoreAssistant);
+			$appStoreOptionsTitle = __("iTunes Store Settings",'appStoreAssistant');
 			$appStoreOptionsPage = "options_itunes_$currentTab.php";
 			break;
 		case 'appStore_sm_amazon' :
-			$appStoreOptionsTitle = __("Amazon.com Settings",appStoreAssistant);
+			$appStoreOptionsTitle = __("Amazon.com Settings",'appStoreAssistant');
 			$appStoreOptionsPage = "options_amazon_$currentTab.php";
 			break;
 		case 'appStore_sm_utilities' :
-			$appStoreOptionsTitle = __("Utilities",appStoreAssistant);
+			$appStoreOptionsTitle = __("Utilities",'appStoreAssistant');
 			$appStoreOptionsPage = "options_utils_$currentTab.php";
 			break;
 		case 'appStore_sm_help' :
-			$appStoreOptionsTitle = __("Help Page",appStoreAssistant);
+			$appStoreOptionsTitle = __("Help Page",'appStoreAssistant');
 			$appStoreOptionsPage = "options_help_$currentTab.php";
 			break;
 		case 'appStore_sm_affiliate' :
-			$appStoreOptionsTitle = __("Affiliate Program",appStoreAssistant);
+			$appStoreOptionsTitle = __("Affiliate Program",'appStoreAssistant');
 			$appStoreOptionsPage = "options_affiliate_$currentTab.php";
 			break;
 	}
@@ -346,6 +348,10 @@ function appStore_displayAdminOptionsPage() {
 		appStore_add_defaults();
 		$OptionsReset = true;
 		$options = get_option('appStore_options');
+		$options["ResetCheckOne"] = "NoWay";		
+		$options["ResetCheckTwo"] = "NoWay";		
+		$options["ResetCheckThree"] = "NoWay";		
+		update_option('appStore_options', $options);	
 		appStore_ShowMessage("All settings have been reset to their defaults!",false);
 	}
 
@@ -403,19 +409,22 @@ function appStore_displayAdminOptionsPage() {
 	echo '<!-- Display Plugin Icon, Header, and Description -->';
 	echo '<div class="asa_admin_icon">';
 	echo "<h2>AppStore Assistant $appStoreOptionsTitle</h2></div>";
-	echo '<p>'.__('Below is a collection of controls you can use to customize the App Store Assistant plugin',appStoreAssistant).'.</p>';
+	echo '<p>'.__('Below is a collection of controls you can use to customize the App Store Assistant plugin','appStoreAssistant').'.</p>';
 	//echo "<hr>--------------------".appStore_setting('validated')."----------------------<hr>";
 	appStore_checkCacheFolder();
-	if($settingsUpdated) appStore_ShowMessage(__("Settings Updated!",appStoreAssistant),false);
+	if($settingsUpdated) appStore_ShowMessage(__("Settings Updated!",'appStoreAssistant'),false);
 	appStore_displayAdminTabs($requestedPage,$currentTab,$affiliatepartnerid);
 	echo '<form method="post" action="options.php">';
 	settings_fields('appStore_plugin_options');
+	$showSaveChangesButton = true;
 	require_once(ASA_PLUGIN_INCLUDES_PATH."options_pages/$appStoreOptionsPage");
-	echo '<p class="submit">';
-	echo '<input type="submit" class="button-primary" value="';
-	_e('Save Changes',appStoreAssistant);
-	echo '" />';
-	echo '</p>';
+	if($showSaveChangesButton) {
+		echo '<p class="submit">';
+		echo '<input type="submit" class="button-primary" value="';
+		_e('Save Changes','appStoreAssistant');
+		echo '" />';
+		echo '</p>';
+	}
 	echo '</form>';
 
 	require_once(ASA_PLUGIN_INCLUDES_PATH."donateform.inc");
@@ -460,10 +469,9 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 			$tabs_end = array ('phg' => 'PHG');
 		  break;
 		}
-		if(is_array($tabs_end)) {
-			$tabs_array = array_merge($tabs_start, $tabs_end);
-		} else {
-			$tabs_array = $tabs_start;
+		$tabs_array = $tabs_start;
+		if(isset($tabs_end)){
+			if(is_array($tabs_end)) $tabs_array = array_merge($tabs_start, $tabs_end);
 		}
 	  break;
 	}
@@ -503,7 +511,7 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 	);
 	
 	$newPostID = wp_insert_post( $my_post );
-	_e("Creating Post...",appStoreAssistant); echo "<br />";
+	_e("Creating Post...",'appStoreAssistant'); echo "<br />";
 	if(appStore_setting('newPost_addCategories')=="yes") {
 		$appCategories = explode(",",$appCategories);
 		foreach($appCategories as $appCategory) {
@@ -520,13 +528,13 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 		}
 		wp_set_post_terms( $newPostID, $postCategories, 'category',false);	
 	}
-	_e( "Caching App data...",appStoreAssistant); echo "<br />";
+	_e( "Caching App data...",'appStoreAssistant'); echo "<br />";
 
 	$appData = appStore_get_data( $appID );
-	_e( "Finding Default Featured Image...",appStoreAssistant); echo "<br />";
+	_e( "Finding Default Featured Image...",'appStoreAssistant'); echo "<br />";
 
 	$filename = $appData->imageFeatured_path;
-	_e( "Saving Default Featured Image... $filename",appStoreAssistant); echo "<br />";
+	_e( "Saving Default Featured Image... $filename",'appStoreAssistant'); echo "<br />";
 	$wp_filetype = wp_check_filetype(basename($filename), null ); 
 	$wp_upload_dir = wp_upload_dir();
 	if (!is_writable($wp_upload_dir['path'])) {
@@ -548,21 +556,21 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 	echo '<div class="updated settings-error">';
 	if($newPostID) {
 		echo "<h3>";
-		_e("Your",appStoreAssistant);
+		_e("Your",'appStoreAssistant');
 		echo ' '.$postStatus.' ';
-		_e("POST has been created for",appStoreAssistant);
+		_e("POST has been created for",'appStoreAssistant');
 		echo " <b>$appTitle</b>!</h3>";
 		echo '<a href="post.php?post='.$newPostID.'&amp;action=edit">';
-		_e('Click here to edit the new post',appStoreAssistant);
+		_e('Click here to edit the new post','appStoreAssistant');
 		echo '.</a><br><br>';
 		if(is_array($postCategoriesList)) {
-			_e( "In the following categories",appStoreAssistant).":<br />";
+			_e( "In the following categories",'appStoreAssistant').":<br />";
 			foreach($postCategoriesList as $category) echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $category <br />";
 		}
 		
 		
 	} else {
-		_e( "There was an error creating your post for",appStoreAssistant)." <b>$appTitle</b>!";
+		_e( "There was an error creating your post for",'appStoreAssistant')." <b>$appTitle</b>!";
 	}
 	echo "<br /><br /></div>";
 }
@@ -580,9 +588,9 @@ function appStore_CreateListOfAppsUsedInPosts() {
 		$amazonIDs = preg_match_all('/amazon_item\ asin=\"([^\"]*?)\"/', $MyResult->post_content, $amazon_matches);
 
 
-		if($app_matches[1][0] != "") $arrayOfIDs['iOS'][] = $app_matches[1][0];
-		if($iTunes_matches[1][0] != "") $arrayOfIDs['iTunes'][] = $iTunes_matches[1][0];
-		if($amazon_matches[1][0] != "") $arrayOfIDs['Amazon'][] = $amazon_matches[1][0];
+		if(isset($app_matches[1][0])) $arrayOfIDs['iOS'][] = $app_matches[1][0];
+		if(isset($iTunes_matches[1][0])) $arrayOfIDs['iTunes'][] = $iTunes_matches[1][0];
+		if(isset($amazon_matches[1][0])) $arrayOfIDs['Amazon'][] = $amazon_matches[1][0];
 
 	
 		//appStore_addFeaturedImage($MyResult);
@@ -628,7 +636,7 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$ty
 			$masterList[$i] .= " by ".$appData->artistName."/".$appData->sellerName."<br />";
 			$masterList[$i] .= " [".$TheAppPrice."] ";
 			$masterList[$i] .= "<b> [".$Categories."]</b> ";
-			if($startKey == "2") $masterList[$i] .= "<b> [".__('iPad only',appStoreAssistant)."]</b>";
+			if($startKey == "2") $masterList[$i] .= "<b> [".__('iPad only','appStoreAssistant')."]</b>";
 			$masterList[$i] .= "<br /><br />";
 			$masterList[$i] .= '<input id="id'.$appData->trackId.'" type="text" name="shortcode" size="48" value="';
 			$masterList[$i] .= $theShortCode;
@@ -674,37 +682,37 @@ function appStore_search_form() {
 	GLOBAL $masterList,$checkForDuplicates;
 	
 	echo '<div class="icon32" id="icon-tools"><br></div>';
-	echo '<h2>'.__('Find an App from the App Store or Mac App Store',appStoreAssistant).'</h2>';
-	echo '<p>'.__('This will generate a shortcode that you can paste into your POST. You will also have the option to <b>auto-create a post</b> which will include a Featured Image, App Title, Shortcode and Categories. After creation, you will be given a link to edit the post.',appStoreAssistant).'</p>';
-
+	echo '<h2>'.__('Find an App from the App Store or Mac App Store','appStoreAssistant').'</h2>';
+	echo '<p>'.__('This will generate a shortcode that you can paste into your POST. You will also have the option to <b>auto-create a post</b> which will include a Featured Image, App Title, Shortcode and Categories. After creation, you will be given a link to edit the post.','appStoreAssistant').'</p>';
+	$mCK = "";$iCK="";$iPCK="";
 	if (!empty($_POST)) {
 		switch ($_POST['type']) {
     	case "iPhone":
-			$Searchtype = __("iPhone/iPod Software",appStoreAssistant);
+			$Searchtype = __("iPhone/iPod Software",'appStoreAssistant');
 			$shortCodeStart = "[asa_item";
 			$iCK = " checked";
 			$entity = "software";
 			break;
     	case "iOS":
-			$Searchtype = __("All iOS Software",appStoreAssistant);
+			$Searchtype = __("All iOS Software",'appStoreAssistant');
 			$shortCodeStart = "[asa_item";
 			$iOSCK = " checked";
 			$entity = "software";
 			break;
     	case "iPad":
-			$Searchtype = __("iPad Software",appStoreAssistant);
+			$Searchtype = __("iPad Software",'appStoreAssistant');
 			$shortCodeStart = "[asa_item";
 			$iPCK = " checked";
 			$entity = "iPadSoftware";
 			break;
     	case "Mac":
-			$Searchtype = __("Macintosh Software",appStoreAssistant);
+			$Searchtype = __("Macintosh Software",'appStoreAssistant');
 			$shortCodeStart = "[asa_item";
 			$entity = "macSoftware";
 			$mCK = " checked";
 			break;
 		default:
-			$Searchtype = __("iPhone/iPod Software",appStoreAssistant);
+			$Searchtype = __("iPhone/iPod Software",'appStoreAssistant');
 			$iCK = " checked";
 			$shortCodeStart = "[asa_item";		
 			$entity = "software";
@@ -720,15 +728,15 @@ function appStore_search_form() {
 	}
 	echo '<div id="searchForm" class="searchForm">';
 		echo '<form action="admin.php?page=appStore_IDsearch" method="POST">';
-		echo '<b>'.__('App Name',appStoreAssistant).':</b> ';
+		echo '<b>'.__('App Name','appStoreAssistant').':</b> ';
 		
-		$string = __('Find Apps',appStoreAssistant);		
+		$string = __('Find Apps','appStoreAssistant');		
 		echo '<input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="30"> <button class="appStore-search-find" name="'.$string.'" type="submit" value="'.$string.'">'.$string.'</button><br />';
 			
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> '.__("All iOS",appStoreAssistant).'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> '.__("Mac",appStoreAssistant).'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> '.__("Just iPhone/iPod",appStoreAssistant).'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> '.__("Just iPad",appStoreAssistant).'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> '.__("All iOS",'appStoreAssistant').'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> '.__("Mac",'appStoreAssistant').'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> '.__("Just iPhone/iPod",'appStoreAssistant').'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> '.__("Just iPad",'appStoreAssistant').'';
 		//echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
 		//echo '</button>';
 		echo '</form>';
@@ -804,7 +812,7 @@ function appStore_addFeaturedImage ($postData) {
 		//$returnData = '<font color="orange">Skipping</font> ('.$newPostID.'): Post Already has Featured Image<br />';
 		return;
 	} else {
-		echo "<hr>".__('No Featured Image Found',appStoreAssistant)."<br />";
+		echo "<hr>".__('No Featured Image Found','appStoreAssistant')."<br />";
 	}
 	
 	$postContent = $postData->post_content;
@@ -818,7 +826,7 @@ function appStore_addFeaturedImage ($postData) {
 	//echo $postData->post_content."<br />";
 	
 	if(!$appIDs && !$amazonIDs && !$iTunesIDs && !$applinks && !$appOldIDs) {
-		echo '<font color="red">Skipping</font>: '.__('No App IDs or Amazon ASINs found for post',appStoreAssistant).' ('.$newPostID.')<br />';
+		echo '<font color="red">Skipping</font>: '.__('No App IDs or Amazon ASINs found for post','appStoreAssistant').' ('.$newPostID.')<br />';
 		//print_r($app_matches); //DEBUG
 		echo "[$appIDs][".$postContent."]";
 		return;
@@ -826,10 +834,10 @@ function appStore_addFeaturedImage ($postData) {
 	
 	$postTitle = $postData->post_title;
 	if(!$postTitle) {
-		echo '<font color="red">Error</font>: '.__('No Post Title Found for post',appStoreAssistant).' ('.$newPostID.')<br />';
+		echo '<font color="red">Error</font>: '.__('No Post Title Found for post','appStoreAssistant').' ('.$newPostID.')<br />';
 		return;
 	} else {
-		echo __('Post Title Found',appStoreAssistant).' ('.$postTitle.')<br />';
+		echo __('Post Title Found','appStoreAssistant').' ('.$postTitle.')<br />';
 	}
 
 	$shortcodeData = "";
@@ -838,14 +846,14 @@ function appStore_addFeaturedImage ($postData) {
 	
 		if($iTunesIDs) {
 			$matchesToCheck = $iTunes_matches;
-			echo __("iTunes IDs Found",appStoreAssistant)."<br />";
+			echo __("iTunes IDs Found",'appStoreAssistant')."<br />";
 			foreach ($matchesToCheck[1] as $shortcodeID) {
 				$shortcodeData[] = $shortcodeID;
 			}
 		}
 		if($applinks) {
 			$matchesToCheck = $applink_matches;
-			echo __("App ID via Link Found",appStoreAssistant)."<br />";
+			echo __("App ID via Link Found",'appStoreAssistant')."<br />";
 			foreach ($matchesToCheck[1] as $link) {
 				$pattern = '(id[0-9]+)';
 				preg_match($pattern, $link, $matches, PREG_OFFSET_CAPTURE, 3);
@@ -855,51 +863,51 @@ function appStore_addFeaturedImage ($postData) {
 		}
 		if($appIDs) {
 			$matchesToCheck = $app_matches;
-			echo __("App IDs Found",appStoreAssistant)."<br />";
+			echo __("App IDs Found",'appStoreAssistant')."<br />";
 			foreach ($matchesToCheck[1] as $shortcodeID) {
 				$shortcodeData[] = $shortcodeID;
 			}
 		}
 		if($appOldIDs) {
 			$matchesToCheck = $appOld_matches;
-			echo __("App IDs Found",appStoreAssistant)."<br />";
+			echo __("App IDs Found",'appStoreAssistant')."<br />";
 			foreach ($matchesToCheck[1] as $shortcodeID) {
 				$shortcodeData[] = $shortcodeID;
 			}
 		}
 		$appID = $shortcodeData[0];
 		
-		echo __("First App ID Found",appStoreAssistant)." ($appID)<br />";
+		echo __("First App ID Found",'appStoreAssistant')." ($appID)<br />";
 		
 		$app_data=appStore_get_data( $appID );
 		if(!is_array($app_data) && !is_object($app_data)) {
-			echo '<font color="red">Error</font>: '.__('Could Not Cache Data for App ID',appStoreAssistant).' '.$appID.'<br />';
+			echo '<font color="red">Error</font>: '.__('Could Not Cache Data for App ID','appStoreAssistant').' '.$appID.'<br />';
 			return;
 		} else {
-			echo __('Caching App data for',appStoreAssistant).' ('.$newPostID.') - '.$postTitle.'...<br />';
+			echo __('Caching App data for','appStoreAssistant').' ('.$newPostID.') - '.$postTitle.'...<br />';
 		}
 		$filename = $app_data->imageFeatured_path;
 		//echo "[[[[".print_r($app_data,true)."]]]]]";
 	} elseif($amazonIDs) {
-		echo __("Amazon ASINs Found",appStoreAssistant)."<br />";
+		echo __("Amazon ASINs Found",'appStoreAssistant')."<br />";
 		foreach ($amazon_matches[1] as $shortcodeID) {
 			$shortcodeData[] = $shortcodeID;
 		}
 		$asin = $shortcodeData[0];
-		echo __("First Amazon ASIN Found",appStoreAssistant)." ($asin)<br />";
+		echo __("First Amazon ASIN Found",'appStoreAssistant')." ($asin)<br />";
 		$AmazonProductData = appStore_get_amazonData($asin);
 		$filename = CACHE_DIRECTORY.$AmazonProductData['imageFeatured'];
 		
 	} else {
-		echo '<font color="red">Error</font>: '.__('Could Not Process Featured Image URL for Post',appStoreAssistant).' ('.$newPostID.')<br />';
+		echo '<font color="red">Error</font>: '.__('Could Not Process Featured Image URL for Post','appStoreAssistant').' ('.$newPostID.')<br />';
 
 	}
 
 	if(!$filename) {
-		echo '<font color="red">Error</font>: '.__('No Thumbnails found for App ID',appStoreAssistant).' '.$appID.'<br /> - - '.__('Images may be missing or in the wrong format.',appStoreAssistant);
+		echo '<font color="red">Error</font>: '.__('No Thumbnails found for App ID','appStoreAssistant').' '.$appID.'<br /> - - '.__('Images may be missing or in the wrong format.','appStoreAssistant');
 		return;
 	} else {
-		_e( "Featured Image Found",appStoreAssistant);
+		_e( "Featured Image Found",'appStoreAssistant');
 		echo "<br />$filename<br />";
 	}
 
@@ -928,21 +936,21 @@ function appStore_checkCacheFolder() {
 	if(@is_dir($upload_dir['basedir'])) {
 		if(!@is_writable(stripslashes($upload_dir['basedir']))) {
 			echo '<li><font color="red">';
-			_e( "The Uploads folder is not WRITABLE. Please CHMOD the folder  ",appStoreAssistant);
+			_e( "The Uploads folder is not WRITABLE. Please CHMOD the folder  ",'appStoreAssistant');
 			echo '<font color="blue"><b>'.WP_CONTENT_DIR."/uploads/</b>".'</font>';
 			echo " to '777'.<br />";
-			_e( 'Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
+			_e( 'Images will not load without this folder, if you have "Cache Images Locally" turned on.','appStoreAssistant');
 			echo '</font>';
 			echo '</li>';
 		} else {
-			if(!is_dir($upload_dir['basedir'] . '/appstoreassistant_cache/' . $appID)) {
-				if(!mkdir($upload_dir['basedir'] . '/appstoreassistant_cache/' . $appID, 0755, true)) {
+			if(!is_dir($upload_dir['basedir'] . '/appstoreassistant_cache/')) {
+				if(!mkdir($upload_dir['basedir'] . '/appstoreassistant_cache/', 0755, true)) {
 					appStore_set_setting('cache_images_locally', '0');
 				} else {
 					echo '<li><font color="green">';
-					_e( "The Cache folder ",appStoreAssistant);
+					_e( "The Cache folder ",'appStoreAssistant');
 					echo '<b>'.WP_CONTENT_DIR."/uploads/appstoreassistant_cache</b>";
-					_e( " has been created successfully!",appStoreAssistant);
+					_e( " has been created successfully!",'appStoreAssistant');
 					echo '</font>';
 					echo '</li>';
 				}
@@ -950,10 +958,10 @@ function appStore_checkCacheFolder() {
 		}
 	} else {
 		echo '<li><font color="red">';
-		_e( "The Cache folder does NOT exist. Please create ",appStoreAssistant);
+		_e( "The Cache folder does NOT exist. Please create ",'appStoreAssistant');
 		echo '<font color="blue">'.WP_CONTENT_DIR."/uploads".'</font>';
-		_e(" folder and CHMOD it to '777'",appStoreAssistant).".<br />";
-		_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
+		_e(" folder and CHMOD it to '777'",'appStoreAssistant').".<br />";
+		_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.','appStoreAssistant');
 		echo '</font>';
 		echo '</li>';
 	}
@@ -961,21 +969,21 @@ function appStore_checkCacheFolder() {
 	if(@is_dir($appStore_cacheFolder)) {
 		if(!@is_writable(stripslashes($appStore_cacheFolder))) {
 			echo '<li><font color="red">';
-			_e( "The Cache folder is not WRITABLE. Please CHMOD the folder",appStoreAssistant)."  ";
+			_e( "The Cache folder is not WRITABLE. Please CHMOD the folder",'appStoreAssistant')."  ";
 			echo '<font color="blue"><b>'.WP_CONTENT_DIR."/uploads/appstoreassistant_cache</b>".'</font>';
 			echo " to '777'.<br />";
-			_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
+			_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.','appStoreAssistant');
 			echo '</font>';
 			echo '</li>';
 		}
 	} else {
 		echo '<li><font color="red">';
-		_e( "The Cache folder does NOT exist. Please create ",appStoreAssistant);
+		_e( "The Cache folder does NOT exist. Please create ",'appStoreAssistant');
 		echo '<font color="blue">'."<b>'appstoreassistant_cache'</b>".'</font>';
-		_e( " folder in ",appStoreAssistant);
+		_e( " folder in ",'appStoreAssistant');
 		echo '<font color="blue">'.WP_CONTENT_DIR."/uploads".'</font>';
-		_e( " folder and CHMOD it to '777'",appStoreAssistant).".<br />";
-		_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.',appStoreAssistant);
+		_e( " folder and CHMOD it to '777'",'appStoreAssistant').".<br />";
+		_e('Images will not load without this folder, if you have "Cache Images Locally" turned on.','appStoreAssistant');
 		echo '</font>';
 		echo '</li>';
 	}
@@ -1001,7 +1009,7 @@ function requires_wordpress_version() {
 function appStore_plugin_action_links( $links, $file ) {
 
 	if ( $file == plugin_basename( ASA_MAIN_FILE ) ) {
-		$appStore_links = '<a href="'.get_admin_url().'admin.php?page=appStore_sm_general">'.__('Settings',appStoreAssistant).'</a>';
+		$appStore_links = '<a href="'.get_admin_url().'admin.php?page=appStore_sm_general">'.__('Settings','appStoreAssistant').'</a>';
 		// make the 'Settings' link appear first
 		array_unshift( $links, $appStore_links );
 	}
@@ -1244,8 +1252,8 @@ class RebuildFeaturedImages {
 		<?php
 		echo '<!-- Display Plugin Icon, Header, and Description -->';
 		echo '<div class="asa_admin_icon">';
-		echo "<h2>AppStore Assistant $appStoreOptionsTitle</h2></div>";
-		echo '<p>'.__('Below is a collection of controls you can use to customize the App Store Assistant plugin',appStoreAssistant).'.</p>';
+		echo "<h2>AppStore Assistant Rebuild Featured Images</h2></div>";
+		echo '<p>'.__('Below is a collection of controls you can use to customize the App Store Assistant plugin','appStoreAssistant').'.</p>';
 		$requestedPage = 'appStore_sm_utilities';
 
 		appStore_displayAdminTabs('appStore_sm_utilities','defaultTab','');
