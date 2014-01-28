@@ -1,4 +1,3 @@
-<p class="asa_admin_warning"><b>This feature is currently in beta...</b></p>
 <p class="asa_admin_explain">Amazon.com requires you have your own AWS Public and Private Keys. You can get the keys by signing up at <a href="http://aws-portal.amazon.com/gp/aws/developer/account/index.html">http://aws-portal.amazon.com/gp/aws/developer/account/index.html</a>.</p>
 		
 <table class="form-table">
