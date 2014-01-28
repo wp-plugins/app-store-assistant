@@ -3,8 +3,8 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
-Tested up to: 3.6
-Stable tag: 6.5.1
+Tested up to: 3.8.1
+Stable tag: 6.5.2
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -115,8 +115,19 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
+= 6.5.2 =
+* Changed: Added transition to buttons
+* Changed: Replaced custom check for mobile browser with built-in WordPress function
+* Changed: New method to report ASA Version number
+* Added: New check box style for important options (iOS 7 style)
+* Fixed: Issue with iTunes items displayinh when missing item info
+* Fixed: Issue with image cache not saving settings
+* Fixed: Issue with Amazon.com item data cacheing
+* Fixed: Apps without iPad or iPhone screenshots were generating an error
+* Updated: Localization of amazon.com items
+
 = 6.5.1 =
-* Fix: Minor bugs fixed
+* Fixed: Minor bugs fixed
 
 = 6.5.0 =
 * Changed: New simplified method of choosing which elements to display [IMPORTANT: CHECK YOUR SETTINGS]

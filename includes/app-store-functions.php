@@ -21,7 +21,7 @@ function appStore_add_stylesheets() {
 
 function appStore_addLinkToFooter () {
 	if (appStore_setting('displayLinkToFooter') != "no") {
-		echo '<p style="padding-left: 20px;">'.__("Assisted by",'appStoreAssistant').' <a href="http://theiphoneappslist.com/index.php?v='.urlencode(plugin_get_version())."&ac=".urlencode(appStore_setting('affiliatepartnerid')).'&link='.urlencode(get_permalink()).'">App Store Assistant</a></p>';
+		echo '<p style="padding-left: 20px;">'.__("Assisted by",'appStoreAssistant').' <a href="http://theiphoneappslist.com/index.php?v='.ASA_PLUGIN_VERSION."&ac=".urlencode(appStore_setting('affiliatepartnerid')).'&link='.urlencode(get_permalink()).'">App Store Assistant</a></p>';
     }
 }
 
@@ -336,7 +336,7 @@ function appStore_css_hook() {
 ?>
  
 <style type='text/css'>
-/* This site uses App Store Assistant version <?php echo plugin_get_version()." - ".appStore_setting('affiliatepartnerid'); ?> */
+/* This site uses App Store Assistant version <?php echo ASA_PLUGIN_VERSION." - ".appStore_setting('affiliatepartnerid'); ?> */
 
 .appStore-rating_bar
 {
@@ -368,9 +368,16 @@ function appStore_css_hook() {
 	box-shadow: 3px 3px 3px 3px #<?php echo appStore_setting('color_buttonShadow') ?>;
 	<?php
 	if(appStore_setting('hide_button_background') != "yes") { ?>
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(1, #<?php echo appStore_setting('color_buttonStop') ?>) );
-	background:-moz-linear-gradient( center top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>');
+	background: #<?php echo appStore_setting('color_buttonStart') ?>;
+	background:-moz-linear-gradient(top, #<?php echo appStore_setting('color_buttonStart') ?> 5%, #<?php echo appStore_setting('color_buttonStop') ?> 100% );
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(5%, #<?php echo appStore_setting('color_buttonStart') ?>), color-stop(100%, #<?php echo appStore_setting('color_buttonStop') ?>) );
+	
+	background: -webkit-linear-gradient(top, #<?php echo appStore_setting('color_buttonStart') ?> 0%,#<?php echo appStore_setting('color_buttonStop') ?> 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #<?php echo appStore_setting('color_buttonStart') ?> 0%,#<?php echo appStore_setting('color_buttonStop') ?> 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #<?php echo appStore_setting('color_buttonStart') ?> 0%,#<?php echo appStore_setting('color_buttonStop') ?> 100%); /* IE10+ */
+	background: linear-gradient(top, #<?php echo appStore_setting('color_buttonStart') ?> 0%,#<?php echo appStore_setting('color_buttonStop') ?> 100%); /* W3C */
+	
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#<?php echo appStore_setting('color_buttonStart') ?>', endColorstr='#<?php echo appStore_setting('color_buttonStop') ?>',GradientType=0);
 	background-color:#<?php echo appStore_setting('color_buttonStart') ?>;
 	<?php } ?>
 	-moz-border-radius:<?php echo appStore_setting('button_corner_radius') ?>px;
@@ -388,6 +395,11 @@ function appStore_css_hook() {
 	margin-top: 8px;
 	margin-bottom: 8px;
 
+-webkit-transition: all 0.3s linear;
+     -khtml-transition: all 0.3s linear;
+       -moz-transition: all 0.3s linear;
+         -o-transition: all 0.3s linear;
+            transition: all 0.3s linear;
 }
 .appStore-Button:hover {
 	<?php if(appStore_setting('hide_button_background_hover') != "yes") { ?>
@@ -481,13 +493,6 @@ function appStore_css_hook() {
 }
 </style>
 <?php
-}
-
-function plugin_get_version() {
-	if ( ! function_exists( 'get_plugins' ) ) require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-	$plugin_folder = get_plugins( '/' . plugin_basename( dirname( ASA_MAIN_FILE ) ) );
-	$plugin_file = basename( ( ASA_MAIN_FILE ) );
-	return $plugin_folder[$plugin_file]['Version'];
 }
 
 function appStore_format_price($unformattedPrice) {
@@ -595,8 +600,7 @@ function appStore_handler_itemLink( $atts,$content=null, $code="") {
 }
 
 function appStore_handler_app_element($atts,$content=null, $code="",$platform="ios_app") {
-	GLOBAL $is_iphone;
-
+	$mode = "";
 	// Get App ID and more_info_text from shortcode
 	extract( shortcode_atts( array(
 		'id' => '',
@@ -611,13 +615,12 @@ function appStore_handler_app_element($atts,$content=null, $code="",$platform="i
 
 	$app->TheAppPrice = appStore_format_price($app->price);
 	$app->appURL = getAffiliateURL($app->trackViewUrl);
-	if(appStore_setting('smaller_buy_button_iOS') == "yes" && $is_iphone) {
+	if(appStore_setting('smaller_buy_button_iOS') == "yes" && wp_is_mobile()) {
 		$app->buttonText = $app->TheAppPrice." ";
 	} else {
 		$app->buttonText = $app->TheAppPrice." - ".__("View in App Store",'appStoreAssistant')." ";
 	}
 	$app->mode = $mode;
-	$app->more_info_text = $more_info_text;
 	if($app->kind == 'mac-software') $platform = 'mac_app';
 	$app->platform = $platform;
 	$element = "";
@@ -754,8 +757,8 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 }
 
 function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode="SingleApp") {
-	GLOBAL $is_iphone;	
-	$itemType = $itemInfo->wrapperType."_".$itemInfo->kind."_";
+	$itemType = $itemInfo->wrapperType."_";
+	if (isset($itemInfo->kind)) $itemType .= $itemInfo->kind."_";
 	if (isset($itemInfo->collectionType)) $itemType .= $itemInfo->collectionType;
 	//echo  "<hr><<<<<<<++[".$itemType."]++>>>>>>><hr>"; //Debug
 	//echo '---------------'.print_r($itemInfo,true).'---------------';//Debug
@@ -778,7 +781,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$unformattedPrice = $itemInfo->trackPrice;
 			$iTunesID = $itemInfo->trackId;
 			$iTunesName = $itemInfo->trackName;
-			$fromAlbum = $itemInfo->collectionName;
+			if(isset($itemInfo->collectionName)) $fromAlbum = $itemInfo->collectionName;
 			$isExplicit = $itemInfo->trackExplicitness;
 			$trackTime = $itemInfo->trackTimeMillis;
 			$iTunesKind = $itemInfo->kind;
@@ -803,13 +806,13 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$cavType = __("Explicit",'appStoreAssistant');
 			$trackType = __("Track Count",'appStoreAssistant');
 			break;
-    	case "collection__Album":
+    	case "collection_Album":
 			$itemOutput = __("Music Album",'appStoreAssistant');
 			$itemStore = "iTunes";
 			$itemTemplate = "iTunesMain";
 			$unformattedPrice = $itemInfo->collectionPrice;
-			if($itemInfo->collectionID) $iTunesID = $itemInfo->collectionID;
-			if($itemInfo->collectionId) $iTunesID = $itemInfo->collectionId;
+			if(isset($itemInfo->collectionID)) $iTunesID = $itemInfo->collectionID;
+			if(isset($itemInfo->collectionId)) $iTunesID = $itemInfo->collectionId;
 			$iTunesName = $itemInfo->collectionName;
 			$isExplicit = $itemInfo->collectionExplicitness;
 			$trackCount = $itemInfo->trackCount;
@@ -827,7 +830,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$unformattedPrice = $itemInfo->trackPrice;
 			$iTunesID = $itemInfo->trackId;
 			$iTunesName = $itemInfo->trackName;
-			$fromAlbum = $itemInfo->collectionName;
+			if(isset($itemInfo->collectionName)) $fromAlbum = $itemInfo->collectionName;
 			$isExplicit = $itemInfo->trackExplicitness;
 			$trackTime = $itemInfo->trackTimeMillis;
 			$iTunesKind = $itemInfo->kind;
@@ -853,13 +856,13 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
  			$cavType = __("Rated",'appStoreAssistant');
  			$description = $itemInfo->longDescription;
 			break;
-    	case "collection__TV Season":
+    	case "collection_TV Season":
 			$itemOutput = __("TV Season",'appStoreAssistant');
 			$itemStore = "iTunes";
 			$itemTemplate = "iTunesMain";
 			$unformattedPrice = $itemInfo->collectionPrice;
-			if($itemInfo->collectionID) $iTunesID = $itemInfo->collectionID;
-			if($itemInfo->collectionId) $iTunesID = $itemInfo->collectionId;
+			if(isset($itemInfo->collectionID)) $iTunesID = $itemInfo->collectionID;
+			if(isset($itemInfo->collectionId)) $iTunesID = $itemInfo->collectionId;
 			$iTunesName = $itemInfo->collectionName;
 			$isExplicit = $itemInfo->collectionExplicitness;
 			$trackCount = $itemInfo->trackCount;
@@ -883,7 +886,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$unformattedPrice = $itemInfo->price;
  			$description = $itemInfo->description;
 			break;
-    	case "audiobook__":
+    	case "audiobook_":
 			$itemOutput = __("AudioBook",'appStoreAssistant');
 			$itemStore = "iTunes";
 			$itemTemplate = "iTunesMain";
@@ -922,21 +925,21 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$iTunesCategory = $itemInfo->primaryGenreName;
 			$artistName = $itemInfo->artistName;
 			$releaseDate = date( 'F j, Y', strtotime($itemInfo->releaseDate));
-			$contentAdvisoryRating = $itemInfo->contentAdvisoryRating;
+			if(isset($itemInfo->contentAdvisoryRating)) $contentAdvisoryRating = $itemInfo->contentAdvisoryRating;
 			//$itemOutput = "<!-- \r".print_r($itemInfo,true)."\r -->";
 			$itemOutput = "";
 			// iTunes Artwork
 			if(appStore_setting('cache_images_locally') == '1') {
 				$artwork_url = $itemInfo->imagePosts_cached;
-				if($is_iphone) $artwork_url = $itemInfo->imageiOS_cached;
+				if(wp_is_mobile()) $artwork_url = $itemInfo->imageiOS_cached;
 			} else {
 				$artwork_url = $itemInfo->imagePosts;
-				if($is_iphone) $artwork_url = $itemInfo->imageiOS;
+				if(wp_is_mobile()) $artwork_url = $itemInfo->imageiOS;
 			}
 
 			$iTunesURL = getAffiliateURL($iTunesURL);
 	
-			if(appStore_setting('smaller_buy_button_iOS') == "yes" && $is_iphone) {
+			if(appStore_setting('smaller_buy_button_iOS') == "yes" && wp_is_mobile()) {
 				$buttonText = appStore_format_price($unformattedPrice)." ";
 			} else {
 				$buttonText = appStore_format_price($unformattedPrice);
@@ -957,7 +960,9 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 
 			if ((appStore_setting('displayitunestitle') == "yes" AND !empty($iTunesName)) OR $mode != "internal") {
 				$itemOutput .= '<span class="iTunesStore-title">';
-				if ($mode == "ListOfApps" && appStore_setting('displayATOMappPositionNumber') == "yes" && $itemInfo->PositionNumber > 0) {
+				$PositionNumber = 0;
+				if(isset($itemInfo->PositionNumber)) $PositionNumber = $itemInfo->PositionNumber;
+				if ($mode == "ListOfApps" && appStore_setting('displayATOMappPositionNumber') == "yes" && $PositionNumber > 0) {
 					if(appStore_setting('PrePositionNumber') != "EMP") $itemOutput .= appStore_setting('PrePositionNumber');
 					$itemOutput .= $itemInfo->PositionNumber;
 					if(appStore_setting('PostPositionNumber') != "EMP") $itemOutput .= appStore_setting('PostPositionNumber');
@@ -973,7 +978,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			if (appStore_setting('displayitunesartistname') == "yes" AND !empty($artistName)) {
 				$itemOutput .= '<span class="iTunesStore-artistname">'.$artistType.': '.$artistName.'</span><br />';
 			}
-			if (appStore_setting('displayfromalbum') == "yes" AND !empty($fromAlbum)) {
+			if (appStore_setting('displayitunesfromalbum') == "yes" AND !empty($fromAlbum)) {
 				$itemOutput .= '<span class="iTunesStore-fromalbum">'.__("From",'appStoreAssistant').': '.$fromAlbum.'</span><br />';
 			}
 			if (appStore_setting('displayitunesgenre') == "yes" AND !empty($iTunesCategory)) {
@@ -1020,7 +1025,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
     	case "AppStore":
 			$itemInfo->TheAppPrice = appStore_format_price($itemInfo->price);
 			$itemInfo->appURL = getAffiliateURL($itemInfo->trackViewUrl);
-			if(appStore_setting('smaller_buy_button_iOS') == "yes" && $is_iphone) {
+			if(appStore_setting('smaller_buy_button_iOS') == "yes" && wp_is_mobile()) {
 				$itemInfo->buttonText = $itemInfo->TheAppPrice." ";
 			} else {
 				$itemInfo->buttonText = $itemInfo->TheAppPrice." - ".__("View in App Store",'appStoreAssistant')." ";
@@ -1068,8 +1073,9 @@ function displayAppStore_appName ($app,$elementOnly=false) {
 	if(!empty($app->trackName)) {
 		$trackName = $app->trackName;
 		if($elementOnly) return $trackName;
-
-		if ($app->mode == "ListOfApps" && appStore_setting('displayATOMappPositionNumber') == "yes" && $app->PositionNumber > 0) {
+		$PositionNumber = 0;
+		if(isset($itemInfo->PositionNumber)) $PositionNumber = $itemInfo->PositionNumber;
+		if ($app->mode == "ListOfApps" && appStore_setting('displayATOMappPositionNumber') == "yes" && $PositionNumber > 0) {
 			$trackName = "";
 			if(appStore_setting('PrePositionNumber') != "EMP") $trackName .= appStore_setting('PrePositionNumber');
 			$trackName .= $app->PositionNumber;
@@ -1110,46 +1116,64 @@ function displayAppStore_appScreenshots($app,$elementOnly=false) {
 	$valid_Screenshots_iPad = false;
 	$valid_Screenshots_iPhone = false;
 	// Get iPhone Screenshots
-	$iPhoneScreenShots = $app->screenshotUrls;
-	if(appStore_setting('cache_images_locally') == '1') $iPhoneScreenShots = $app->screenshotUrls_cached;
-	
-	if(count($iPhoneScreenShots) > 0) {
-		
-			if($app->platform == "mac_app") $title_iPhone = __("Mac Screenshots",'appStoreAssistant');
-			if($app->platform == "ios_app") $title_iPhone = __("iPhone Screenshots",'appStoreAssistant');
-			
-			// appStore-screenshots-iphone
-			$elementLoop_iPhone = '		<ul class="appStore-screenshots">';
-			foreach($iPhoneScreenShots as $ssurl) {
-
-				$elementLoop_iPhone .= '<li class="appStore-screenshot"><a href="';
-				$elementLoop_iPhone .= $ssurl . '" data-lightbox="'.$appIDcode.'"><img src="';
-				$elementLoop_iPhone .= $ssurl . '" width="' . appStore_setting('ss_size') . '" alt="Screenshot" /></a></li>';
+	if(appStore_setting('cache_images_locally') == '1') {
+		if (is_array($app->screenshotUrls_cached)){
+			if(count($app->screenshotUrls_cached) > 0) {
+				$iPhoneScreenShots = $app->screenshotUrls_cached;
+				$valid_Screenshots_iPhone = true;
 			}
-		$elementLoop_iPhone .= '		</ul>';
-		$valid_Screenshots_iPhone = true;
-	}
-
-	// Get iPad Screenshots
-	if (isset($app->ipadScreenshotUrls)){
-		$iPadScreenShots = $app->ipadScreenshotUrls;
-		if(appStore_setting('cache_images_locally') == '1') $iPadScreenShots = $app->ipadScreenshotUrls_cached;
-		if(count($iPadScreenShots) > 0) {
-
-			$title_iPad = __("iPad Screenshots",'appStoreAssistant');
-
-			//appStore-screenshots-iPad
-			$elementLoop_iPad = '		<ul class="appStore-screenshots">';
-			foreach($iPadScreenShots as $ssurl) {	
-
-				$elementLoop_iPad .= '<li class="appStore-screenshot"><a href="';
-				$elementLoop_iPad .= $ssurl . '" data-lightbox="'.$appIDcode.'iPad"><img src="';
-				$elementLoop_iPad .= $ssurl . '" width="' . appStore_setting('ss_size') . '" alt="Screenshot" /></a></li>';
+		}
+	} else {
+		if (is_array($app->screenshotUrls)){
+			if(count($app->screenshotUrls) > 0) {
+				$iPhoneScreenShots = $app->screenshotUrls;
+				$valid_Screenshots_iPhone = true;
 			}
-			$elementLoop_iPad .= '		</ul>';
-			$valid_Screenshots_iPad = true;
 		}
 	}
+	if($valid_Screenshots_iPhone) {
+		if($app->platform == "mac_app") $title_iPhone = __("Mac Screenshots",'appStoreAssistant');
+		if($app->platform == "ios_app") $title_iPhone = __("iPhone Screenshots",'appStoreAssistant');
+		// appStore-screenshots-iphone
+		$elementLoop_iPhone = '		<ul class="appStore-screenshots">';
+		foreach($iPhoneScreenShots as $ssurl) {
+
+			$elementLoop_iPhone .= '<li class="appStore-screenshot"><a href="';
+			$elementLoop_iPhone .= $ssurl . '" data-lightbox="'.$appIDcode.'"><img src="';
+			$elementLoop_iPhone .= $ssurl . '" width="' . appStore_setting('ss_size') . '" alt="Screenshot" /></a></li>';
+		}
+		$elementLoop_iPhone .= '		</ul>';
+	}	
+
+	// Get iPad Screenshots
+	if(appStore_setting('cache_images_locally') == '1') {
+		if (is_array($app->ipadScreenshotUrls_cached)){
+			if(count($app->ipadScreenshotUrls_cached) > 0) {
+				$iPadScreenShots = $app->ipadScreenshotUrls_cached;
+				$valid_Screenshots_iPad = true;
+			}
+		}
+	} else {
+		if (is_array($app->ipadScreenshotUrls)){
+			if(count($app->ipadScreenshotUrls) > 0) {
+				$iPadScreenShots = $app->ipadScreenshotUrls;
+				$valid_Screenshots_iPad = true;
+			}
+		}
+	}
+	if($valid_Screenshots_iPad) {
+		$title_iPad = __("iPad Screenshots",'appStoreAssistant');
+		//appStore-screenshots-iPad
+		$elementLoop_iPad = '		<ul class="appStore-screenshots">';
+		foreach($iPadScreenShots as $ssurl) {	
+
+			$elementLoop_iPad .= '<li class="appStore-screenshot"><a href="';
+			$elementLoop_iPad .= $ssurl . '" data-lightbox="'.$appIDcode.'iPad"><img src="';
+			$elementLoop_iPad .= $ssurl . '" width="' . appStore_setting('ss_size') . '" alt="Screenshot" /></a></li>';
+		}
+		$elementLoop_iPad .= '		</ul>';	
+	}	
+	
 
 
 	if($valid_Screenshots_iPad || $valid_Screenshots_iPhone) {
@@ -1764,7 +1788,6 @@ function displayAppStore_appRating($app,$elementOnly=false) {
 }
 
 function displayAppStore_appIcon ($app,$elementOnly=false){
-	GLOBAL $is_iphone;
 	// App Artwork	
 	$element ="";
 	switch ($app->mode) {
@@ -1800,9 +1823,9 @@ function displayAppStore_appIcon ($app,$elementOnly=false){
 	}
 
 	if(appStore_setting('cache_images_locally') == '1') {
-		if($is_iphone) $imageTag = $app->imageiOS_cached;
+		if(wp_is_mobile()) $imageTag = $app->imageiOS_cached;
 	} else {
-		if($is_iphone) $imageTag = $app->imageiOS;
+		if(wp_is_mobile()) $imageTag = $app->imageiOS;
 	}
 	$element .= '<a href="'.$app->appURL.'" target="_blank">';
 	$element .= '<img class="appStore-icon" src="'.$imageTag.'" alt="'.$app->trackName.'" />';
@@ -1815,7 +1838,6 @@ function displayAppStore_appIcon ($app,$elementOnly=false){
 }
 
 function displayAppStore_appIconBuyButton ($app,$elementOnly=false){
-	GLOBAL $is_iphone;
 	// App Artwork	
 	switch ($app->mode) {
 		case "SingleApp":
@@ -1850,9 +1872,9 @@ function displayAppStore_appIconBuyButton ($app,$elementOnly=false){
 	}
 
 	if(appStore_setting('cache_images_locally') == '1') {
-		if($is_iphone) $imageTag = $app->imageiOS_cached;
+		if(wp_is_mobile()) $imageTag = $app->imageiOS_cached;
 	} else {
-		if($is_iphone) $imageTag = $app->imageiOS;
+		if(wp_is_mobile()) $imageTag = $app->imageiOS;
 	}
 
 	$element = '<div id="appStore-icon-container">';
@@ -1942,10 +1964,11 @@ function appStore_getIDs_from_feed($atomurl) {
 		$rss_items = $rss->get_items( 0, $maxitems );
 	endif;
 	*/
+	
 	require_once ( ABSPATH . WPINC . '/class-feed.php' );
 	$feed = new SimplePie();
 	$feed->set_feed_url($atomurl);
-	$feed->set_cache_duration(appStore_setting('appStore_cache_seconds'));
+	$feed->set_cache_duration(appStore_setting('cache_time_select_box'));
 	$feed->set_cache_location(CACHE_DIRECTORY."/");
 	$feed->get_item_quantity( appStore_setting('qty_of_apps') );
 	$feed->enable_order_by_date(false);
@@ -2044,23 +2067,31 @@ function appStore_getBestIcon($appID) {
 }
 
 function appStore_process_imagedata($app) {
-	$appID = $app->trackId;
+	if(isset($app->trackId)) $appID = $app->trackId;
 
 	if($app->wrapperType == "audiobook") $appID = $app->collectionId;
 	if($app->wrapperType == "collection") $appID = $app->collectionId;
 
 	//Save Non-Cached Images incase of problem
-	$app->screenshotUrls_cached = $app->screenshotUrls;
-	$app->ipadScreenshotUrls_cached = $app->ipadScreenshotUrls;
-	$app->artworkOriginal_30_cached = $app->artworkUrl30;
-	$app->artworkOriginal_60_cached = $app->artworkUrl60;
-	$app->artworkOriginal_100_cached = $app->artworkUrl100;
-	$app->artworkOriginal_512_cached = $app->artworkUrl512;
+	if(isset($app->screenshotUrls)) $app->screenshotUrls_cached = $app->screenshotUrls;
+	if(isset($app->ipadScreenshotUrls)) $app->ipadScreenshotUrls_cached = $app->ipadScreenshotUrls;
 	//$bestImage = plugins_url( 'images/CautionIcon.png' , ASA_MAIN_FILE ); // Debug
-	if($app->artworkUrl30) $bestImage = $app->artworkUrl30;
-	if($app->artworkUrl60) $bestImage = $app->artworkUrl60;
-	if($app->artworkUrl100) $bestImage = $app->artworkUrl100;
-	if($app->artworkUrl512) $bestImage = $app->artworkUrl512;
+	if(isset($app->artworkUrl30)) {
+		$app->artworkOriginal_30_cached = $app->artworkUrl30;
+		$bestImage = $app->artworkUrl30;
+	}
+	if(isset($app->artworkUrl60)) {
+		$app->artworkOriginal_60_cached = $app->artworkUrl60;
+		$bestImage = $app->artworkUrl60;
+	}
+	if(isset($app->artworkUrl100)) {
+		$app->artworkOriginal_100_cached = $app->artworkUrl100;
+		$bestImage = $app->artworkUrl100;
+	}
+	if(isset($app->artworkUrl512)) {
+		$app->artworkOriginal_512_cached = $app->artworkUrl512;
+		$bestImage = $app->artworkUrl512;
+	}
 	$app->imageFeatured = $bestImage;
 	$app->imageFeatured_cached = $bestImage;
 	$app->imageiOS = $bestImage;
@@ -2089,10 +2120,10 @@ function appStore_process_imagedata($app) {
 			}
 		}
 		$urls_to_cache = array();
-		if($app->artworkUrl30) $urls_to_cache['artworkOriginal_30'] = $app->artworkUrl30;
-		if($app->artworkUrl60) $urls_to_cache['artworkOriginal_60'] = $app->artworkUrl60;
-		if($app->artworkUrl100) $urls_to_cache['artworkOriginal_100'] = $app->artworkUrl100;
-		if($app->artworkUrl512) $urls_to_cache['artworkOriginal_512'] = $app->artworkUrl512;
+		if(isset($app->artworkUrl30)) $urls_to_cache['artworkOriginal_30'] = $app->artworkUrl30;
+		if(isset($app->artworkUrl60)) $urls_to_cache['artworkOriginal_60'] = $app->artworkUrl60;
+		if(isset($app->artworkUrl100)) $urls_to_cache['artworkOriginal_100'] = $app->artworkUrl100;
+		if(isset($app->artworkUrl512)) $urls_to_cache['artworkOriginal_512'] = $app->artworkUrl512;
 		
 		// Cache the original images with new name
 		foreach($urls_to_cache as $urlname=>$url) {
@@ -2194,7 +2225,8 @@ function appStore_process_imagedata($app) {
 		$new_image_info = $editor->save($filename);		
 		$app->imageElements_cached = $fileURL_Start."element.".$bestFileExt;
 			
-		if($app->screenshotUrls) {
+		if(isset($app->screenshotUrls)) {
+			$screenshotUrls = "";
 			foreach($app->screenshotUrls as $ssid=>$ssurl) {
 				$content = appStore_fopen_or_curl($ssurl);
 				$info = pathinfo(basename($ssurl));
@@ -2217,7 +2249,8 @@ function appStore_process_imagedata($app) {
 
 		}
 		
-		if($app->ipadScreenshotUrls) {
+		if(isset($app->ipadScreenshotUrls)) {
+			$iPadScreenshotUrls = "";
 			foreach($app->ipadScreenshotUrls as $ssid=>$ssurl) {
 				$content = appStore_fopen_or_curl($ssurl);
 				$info = pathinfo(basename($ssurl));

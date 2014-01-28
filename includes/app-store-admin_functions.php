@@ -18,6 +18,7 @@ function appStore_delete_plugin_options() {
 // OTHERWISE, THE PLUGIN OPTIONS REMAIN UNCHANGED.
 // ------------------------------------------------------------------------------
 function appStore_add_defaults() {
+	global $wpdb;
 	$appStore_savedOptions = get_option('appStore_options');
 	$phgCampaignvalue = "v".preg_replace("/[^0-9]/",'',plugin_get_version())."_".$_SERVER['SERVER_NAME'];
 	$phgCampaignvalue = preg_replace("/[^A-Za-z0-9_\.]/", '', $phgCampaignvalue);
@@ -242,6 +243,13 @@ function appStore_add_defaults() {
 	
 	//echo "-----UPDATE------[<pre>".print_r($PostedValues,true)."</pre>]-------------";
 	update_option('appStore_options', $appStore_options);
+
+	$amazonCacheTable = $wpdb->prefix . 'amazoncache';
+	$createSQL = "CREATE TABLE IF NOT EXISTS $amazonCacheTable (`Cache_id` int(10) NOT NULL auto_increment, `URL` text NOT NULL, `updated` datetime default NULL, `body` longtext, PRIMARY KEY (`Cache_id`), UNIQUE KEY `URL` (`URL`(255)), KEY `Updated` (`updated`)) ENGINE=MyISAM;";
+	$wpdb->query($createSQL);
+
+
+
 }
 
 // Init plugin options to white list our options
@@ -1628,6 +1636,75 @@ function RebuildFeaturedImages() {
 	$RebuildFeaturedImages = new RebuildFeaturedImages();
 }
 
+// Add Pointers
+add_action( 'admin_enqueue_scripts', 'custom_admin_pointers_header' );
 
+function custom_admin_pointers_header() {
+   if ( custom_admin_pointers_check() ) {
+      add_action( 'admin_print_footer_scripts', 'custom_admin_pointers_footer' );
+
+      wp_enqueue_script( 'wp-pointer' );
+      wp_enqueue_style( 'wp-pointer' );
+   }
+}
+
+function custom_admin_pointers_check() {
+   $admin_pointers = custom_admin_pointers();
+   foreach ( $admin_pointers as $pointer => $array ) {
+      if ( $array['active'] )
+         return true;
+   }
+}
+
+function custom_admin_pointers_footer() {
+   $admin_pointers = custom_admin_pointers();
+   ?>
+<script type="text/javascript">
+/* <![CDATA[ */
+( function($) {
+   <?php
+   foreach ( $admin_pointers as $pointer => $array ) {
+      if ( $array['active'] ) {
+         ?>
+         $( '<?php echo $array['anchor_id']; ?>' ).pointer( {
+            content: '<?php echo $array['content']; ?>',
+            position: {
+            edge: '<?php echo $array['edge']; ?>',
+            align: '<?php echo $array['align']; ?>'
+         },
+            close: function() {
+               $.post( ajaxurl, {
+                  pointer: '<?php echo $pointer; ?>',
+                  action: 'dismiss-wp-pointer'
+               } );
+            }
+         } ).pointer( 'open' );
+         <?php
+      }
+   }
+   ?>
+} )(jQuery);
+/* ]]> */
+</script>
+   <?php
+}
+
+function custom_admin_pointers() {
+   $dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
+   $version = str_replace(".", "_", ASA_PLUGIN_VERSION); // replace all periods in version with an underscore
+   $prefix = 'custom_admin_pointers' . $version . '_';
+   $new_pointer_content = '<h3>' . __( 'Find and Add New App' ) . '</h3>';
+   $new_pointer_content .= '<p>' . __( 'Use this button to search for and easily create a new post with the shortcode and Featured Image for an app.' ) . '</p>';
+
+   return array(
+      $prefix . 'new_items' => array(
+         'content' => $new_pointer_content,
+         'anchor_id' => '#toplevel_page_appStore_IDsearch',
+         'edge' => 'left',
+         'align' => 'right',
+         'active' => ( ! in_array( $prefix . 'new_items', $dismissed ) )
+      ),
+   );
+}
 
 ?>

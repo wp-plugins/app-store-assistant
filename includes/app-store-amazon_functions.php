@@ -51,7 +51,7 @@ function appStore_amazon_link_handler ($atts,$content=null, $code="") {
 		if($showprice=="yes") $itemLinkText .= " $itemPrice";
 
 		// Set Button Image
-		$itemButtonImage .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$asin.'" />';
+		$itemButtonImage = '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$asin.'" />';
 
 		switch ($mode) {
 			case "text":
@@ -101,9 +101,9 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 	
 function appStore_get_amazonData($asin) {
 	//Check to see if we have a cached version of the Amazon Product Data.
-	$appStore_options = get_option('appStore_amazonData_' . $asin, '');		
+	$appStore_options = get_option('appStore_amazonData_' . $asin, 'NODATA');		
 	
-	if($appStore_options == '' || $appStore_options['next_check'] < time()) {
+	if($appStore_options == 'NODATA' || $appStore_options['next_check'] < time()) {
 		$appStore_options_data = appStore_page_get_amazonXML($asin);
 		if($appStore_options_data['Error']) {
 			$nextCheck = 10;
@@ -112,8 +112,10 @@ function appStore_get_amazonData($asin) {
 			if(appStore_setting('cache_images_locally') == '1') {
 				$appStore_options_data = appStore_save_amazonImages_locally($appStore_options_data);
 			}
-		}
+		}		
+		
 		$appStore_options = array('next_check' => $nextCheck, 'app_data' => $appStore_options_data);
+		//echo "------SEALDEBUG----$asin-----".print_r($appStore_options_data,true).'---------------';//Debug
 		update_option('appStore_amazonData_' . $asin, $appStore_options);
 		
 	}
@@ -385,24 +387,24 @@ function asa_displayAmazonDisc($Data){
 		$displayAmazonDisc .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Status']) {
-		$displayAmazonDisc .= '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+		$displayAmazonDisc .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		$displayAmazonDisc .= '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		$displayAmazonDisc .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
 		$displayAmazonDisc .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		$displayAmazonDisc .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		$displayAmazonDisc .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
 		$displayAmazonDisc .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
-	if ($Data->ItemAttributes->ReleaseDate) {
-		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
+	if (isset($Data->ItemAttributes->ReleaseDate)) {
+		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Disc Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
 	}
-	if ($Data->ItemAttributes->TheatricalReleaseDate) {
-		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Theatrical Release",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
+	if (isset($Data->ItemAttributes->TheatricalReleaseDate)) {
+		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Theatrical Release",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
 	}
 	if($Data['Studio']) {
-		$displayAmazonDisc .= '<span class="amazonStore-publisher">'.__("From",appStoreAssistant).': '. $Data['Studio'] .'</span><br />';
+		$displayAmazonDisc .= '<span class="amazonStore-publisher">'.__("From",'appStoreAssistant').': '. $Data['Studio'] .'</span><br />';
 	}
 
 	$displayAmazonDisc .= '<br /><div align="center">';
@@ -416,17 +418,16 @@ function asa_displayAmazonDisc($Data){
 
 }
 function asa_displayAmazonBook($Data){
-	global $is_iphone;
 	$displayAmazonBook = "<!-- Book Listing -->";
 
 	$displayAmazonBook .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonBook .= '	<div id="amazonStore-icon-container">';
 		if(appStore_setting('cache_images_locally') == '1') {
 			$imageTag = $Data['imagePosts_cached'];
-			if($is_iphone) $imageTag = $Data['imageiOS_cached'];
+			if(wp_is_mobile()) $imageTag = $Data['imageiOS_cached'];
 		} else {
 			$imageTag = $Data['imagePosts'];
-			if($is_iphone) $imageTag = $Data['imageiOS'];
+			if(wp_is_mobile()) $imageTag = $Data['imageiOS'];
 		}		
 	$displayAmazonBook .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	$displayAmazonBook .= '</div>';
@@ -441,25 +442,25 @@ function asa_displayAmazonBook($Data){
 		$displayAmazonBook .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Publisher']) {
-		$displayAmazonBook .= '<span class="amazonStore-publisher">'.__("Publisher",appStoreAssistant).': '.$Data['Publisher'].'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-publisher">'.__("Publisher",'appStoreAssistant').': '.$Data['Publisher'].'</span><br />';
 	}
 	if ($Data['Status']) {
-		$displayAmazonBook .= '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		$displayAmazonBook .= '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		$displayAmazonBook .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
 		$displayAmazonBook .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		$displayAmazonBook .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		$displayAmazonBook .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
 		$displayAmazonBook .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
 	if ($Data['ReleaseDate']) {
-		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
 	}
 
 	if ($Data['PublishedDate']) {
-		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Published",appStoreAssistant).': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Published",'appStoreAssistant').': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
 	}
 	$displayAmazonBook .= '<br><div align="center">';
 	$displayAmazonBook .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
@@ -473,6 +474,7 @@ function asa_displayAmazonBook($Data){
 
 function asa_displayAmazonDefault($Data){
 	$displayAmazonDefault = "<!-- Default Listing -->";
+	
 	$displayAmazonDefault .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonDefault .= '	<div id="amazonStore-icon-container">';
 	$displayAmazonDefault .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.CACHE_DIRECTORY_URL.$Data['imagePosts'].'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
@@ -482,24 +484,24 @@ function asa_displayAmazonDefault($Data){
 		$displayAmazonDefault .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Features']) {
-		$displayAmazonDefault .= '<span class="amazonStore-features-desc">'.__("Features",appStoreAssistant).':</span>'.$Data['Features'].'<br />';
+		$displayAmazonDefault .= '<span class="amazonStore-features-desc">'.__("Features",'appStoreAssistant').':</span>'.$Data['Features'].'<br />';
 	}
 	if ($Data['Manufacturer']) {
-		$displayAmazonDefault .= '<span class="amazonStore-publisher">'.__("Manufacturer",appStoreAssistant).': '.$Data['Manufacturer']."</span><br />";
+		$displayAmazonDefault .= '<span class="amazonStore-publisher">'.__("Manufacturer",'appStoreAssistant').': '.$Data['Manufacturer']."</span><br />";
 	}
 	if ($Data['Status']) {
-		$displayAmazonDefault .= '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+		$displayAmazonDefault .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		$displayAmazonDefault .= '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		$displayAmazonDefault .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
 		$displayAmazonDefault .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		$displayAmazonDefault .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		$displayAmazonDefault .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
 		$displayAmazonDefault .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
-	if ($Data->ItemAttributes->ReleaseDate) {
-		$displayAmazonDefault .= '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
+	if (isset($Data->ItemAttributes->ReleaseDate)) {
+		$displayAmazonDefault .= '<span class="amazonStore-date">'.__("Disc Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
 	}
 	$displayAmazonDefault .= '<br><div align="center">';
 	$displayAmazonDefault .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
