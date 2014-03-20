@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
 Tested up to: 3.8.1
-Stable tag: 6.5.2
+Stable tag: 6.6.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -112,15 +112,51 @@ Please let us know of any features you would like added or bugs that need squash
 * Request: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 * Request: Option to search for Apps no longer available and change post to "Pending Review"
 * Added: ----------------Option to rebuild cache same method as FI Rebuild
+* Request: iBooks support [Thanks rnakoneshny]
+* Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleseDate, etc. [Thanks Jomasher]
+* Request: replace far-fetched PHP in get_excerpt_by_id() function with a simple WP function called wp_trim_words()
+
 
 == Changelog ==
+
+= 6.6.0 =
+* Added: Added listing of Tracks for Albums [Thanks kittyj]
+* Added: Tracks names now link to Track preview
+* Added: Now checks for proper PHP version (5.4 or greater)
+* Added: Warning for older PHP versions
+* Added: You can now specify max width and max height for app icons or amazon.com items
+* Added: You can now specify to crop or keey aspect ratio for app icons or amazon.com items
+* Added: Documentation for Amazon.com affiliate program to help section
+* Added: You can now set the Max size for iPad & iPhone screenshots [Thanks tkrones]
+* Added: You can now set the Max size for Amazon.com items
+* Fixed: Amazon.com cached images not displaying after update
+* Added: ProductGroup eBooks for Amazon.com items
+* Fixed: Issues with RSS feed not displaying app info
+* Added: Additional error checking for Amazon.com responses
+* Fixed: Unchecking "Enable Lightbox" would not save preference [Thanks Jomasher]
+* Fixed: Elements not displaying [Thanks Jomasher]
+* Fixed: Issue with "&#65533;" character displaying in Amazon.com descriptions
+* Changed: Cleaned up text coming from Amazon.com feeds
+* Fixed: Issue with conflicting functions [Thanks JacobN]
+* Fixed: Issue displaying Rating Info if there were now ratings (zero stars)
+* Fixed: Issue with RSS feed not respecting settings for short description or icon
+* Fixed: Issue with Album of Software
+
+= 6.5.5 =
+* Private beta only
+
+= 6.5.4 =
+* Internal beta only
+
+= 6.5.3 =
+* Internal beta only
 
 = 6.5.2 =
 * Changed: Added transition to buttons
 * Changed: Replaced custom check for mobile browser with built-in WordPress function
 * Changed: New method to report ASA Version number
 * Added: New check box style for important options (iOS 7 style)
-* Fixed: Issue with iTunes items displayinh when missing item info
+* Fixed: Issue with iTunes items displaying when missing item info
 * Fixed: Issue with image cache not saving settings
 * Fixed: Issue with Amazon.com item data cacheing
 * Fixed: Apps without iPad or iPhone screenshots were generating an error

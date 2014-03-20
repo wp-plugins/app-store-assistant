@@ -164,13 +164,36 @@ function appStore_add_defaults() {
 		
 		"displayappdetailsasliststyle" => "bw",
 
-		"appicon_size_featured" => "256",
-		"appicon_size_ios" => "256",
-		"appicon_size_lists" => "128",
-		"appicon_size_widget" => "32",
-		"appicon_size_posts" => "128",
-		"appicon_size_element" => "200",
-		"appicon_size_rss" => "128",
+		"appicon_size_featured_h" => "256",
+		"appicon_size_featured_w" => "256",
+		"appicon_size_featured_c" => "0",
+		"appicon_size_ios_h" => "256",
+		"appicon_size_ios_w" => "256",
+		"appicon_size_ios_c" => "0",
+		"appicon_size_lists_h" => "128",
+		"appicon_size_lists_w" => "128",
+		"appicon_size_lists_c" => "0",
+		"appicon_size_widget_h" => "32",
+		"appicon_size_widget_w" => "32",
+		"appicon_size_widget_c" => "0",
+		"appicon_size_posts_h" => "128",
+		"appicon_size_posts_w" => "128",
+		"appicon_size_posts_c" => "0",
+		"appicon_size_element_h" => "200",
+		"appicon_size_element_w" => "200",
+		"appicon_size_element_c" => "0",
+		"appicon_size_rss_h" => "128",
+		"appicon_size_rss_w" => "128",
+		"appicon_size_rss_c" => "0",
+		"appicon_size_ipadss_h" => "1024",
+		"appicon_size_ipadss_w" => "1024",
+		"appicon_size_ipadss_c" => "0",
+		"appicon_size_iphoness_h" => "1024",
+		"appicon_size_iphoness_w" => "1024",
+		"appicon_size_iphoness_c" => "0",
+		"appicon_size_amazon_h" => "1024",
+		"appicon_size_amazon_w" => "1024",
+		"appicon_size_amazon_c" => "0",
 		
 		"appDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon,appStoreDetail_appIconBuyButton",
 		"appMPDetailsOrder" => "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appGCIcon,appStoreDetail_appIconBuyButton",
@@ -178,6 +201,7 @@ function appStore_add_defaults() {
 
 		"displayitunestitle" => "yes",
 		"displayitunestrackcount" => "yes",
+		"displayitunestracklisting" => "yes",
 		"displayitunesartistname" => "yes",
 		"displayitunesfromalbum" => "yes",
 		"displayitunesgenre" => "yes",
@@ -377,7 +401,7 @@ function appStore_displayAdminOptionsPage() {
 				//echo $postCounter.') ------------------------------<br />';
 				appStore_addFeaturedImage($MyResult);
 				$postCounter++;
-				if($postCounter >20) break; //DEBUG
+				if($postCounter >20) break; //SEALDEBUG
 			}
 		$options = get_option('appStore_options');
 		appStore_ShowMessage("We did it!",false);
@@ -462,7 +486,7 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		$tabs_array = array ('defaultTab' => 'Rebuild Featured Images','clearitem' => 'Clear an Item','clearcache' => 'Clear Cache','remove_featured' => 'Remove Featured','reset' => 'Reset Defaults');
 	  break;
 	  case 'appStore_sm_help' :
-		$tabs_array = array ('defaultTab' => 'Getting Started','shortcodes' => 'Shortcodes','editor' => 'Post Editor');
+		$tabs_array = array ('defaultTab' => 'Getting Started','shortcodes' => 'Shortcodes','editor' => 'Post Editor','amazon' => 'Amazon.com');
 	  break;
 	  case 'appStore_sm_affiliate' :
 		$tabs_start = array ('defaultTab' => 'Amazon.com');

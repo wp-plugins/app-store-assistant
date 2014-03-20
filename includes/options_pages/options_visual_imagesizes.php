@@ -1,28 +1,77 @@
-<p>The sizes below set the Maximum size for an image. Most iOS and Mac app icons will be exactly the sizes you set, but most iTunes images only come in smaller sizes. Product images from amazon.com vary in size.</p>
+<p>The sizes below set the Maximum size for an image. Most iOS and Mac app icons will be exactly the sizes you set, but most iTunes images only come in smaller sizes. Product images from amazon.com vary in size. You also have the option to <b>Crop</b> an image to fit your exact dimensions or to keep the <b>Aspect</b> ratio and fit <u>within</u> your dimensions.</p>
 
 <p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
 
-<table class="form-table">
+<table class="form-table" style="width:auto;">
+<tr><td></td><td>Height</td><td>Width</td><td>Aspect</td><td>Crop</td></tr>
 <tr valign="top">
 <th scope="row"><label>Image size for Featured Image</label></th>
-<td><input type="text" size="4" name="appStore_options[appicon_size_featured]" value="<?php echo $options['appicon_size_featured']; ?>" />px</td></tr>
+<td><input type="text" size="4" name="appStore_options[appicon_size_featured_h]" value="<?php echo $options['appicon_size_featured_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_featured_w]" value="<?php echo $options['appicon_size_featured_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_featured_c]" value="0" <?php if ($options['appicon_size_featured_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_featured_c]" value="1" <?php if ($options['appicon_size_featured_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
 <tr valign="top">
 <th scope="row"><label>Image size for iOS Browsers</label></th>
-<td><input type="text" size="4" name="appStore_options[appicon_size_ios]" value="<?php echo $options['appicon_size_ios']; ?>" />px</td></tr>
+<td><input type="text" size="4" name="appStore_options[appicon_size_ios_h]" value="<?php echo $options['appicon_size_ios_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_ios_w]" value="<?php echo $options['appicon_size_ios_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_ios_c]" value="0" <?php if ($options['appicon_size_ios_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_ios_c]" value="1" <?php if ($options['appicon_size_ios_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
 <tr valign="top">
 <th scope="row"><label>Image size for Lists</label></th>
-<td><input type="text" size="4" name="appStore_options[appicon_size_lists]" value="<?php echo $options['appicon_size_lists']; ?>" />px</td></tr>
+<td><input type="text" size="4" name="appStore_options[appicon_size_lists_h]" value="<?php echo $options['appicon_size_lists_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_lists_w]" value="<?php echo $options['appicon_size_lists_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_lists_c]" value="0" <?php if ($options['appicon_size_lists_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_lists_c]" value="1" <?php if ($options['appicon_size_lists_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
 <tr valign="top">
 <th scope="row"><label>Image size for Posts</label></th>
-<td><input type="text" size="4" name="appStore_options[appicon_size_posts]" value="<?php echo $options['appicon_size_posts']; ?>" />px</td></tr>
+<td><input type="text" size="4" name="appStore_options[appicon_size_posts_h]" value="<?php echo $options['appicon_size_posts_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_posts_w]" value="<?php echo $options['appicon_size_posts_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_posts_c]" value="0" <?php if ($options['appicon_size_posts_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_posts_c]" value="1" <?php if ($options['appicon_size_posts_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
 <tr valign="top">
 <th scope="row"><label>Image size for Elements</label></th>
-<td><input type="text" size="4" name="appStore_options[appicon_size_element]" value="<?php echo $options['appicon_size_element']; ?>" />px</td></tr>
+<td><input type="text" size="4" name="appStore_options[appicon_size_element_h]" value="<?php echo $options['appicon_size_element_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_element_w]" value="<?php echo $options['appicon_size_element_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_element_c]" value="0" <?php if ($options['appicon_size_element_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_element_c]" value="1" <?php if ($options['appicon_size_element_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
 <tr valign="top">
 <th scope="row"><label>Image size for Widgets</label></th>
-<td><input type="text" size="4" name="appStore_options[appicon_size_widget]" value="<?php echo $options['appicon_size_widget']; ?>" />px</td></tr>
+<td><input type="text" size="4" name="appStore_options[appicon_size_widget_h]" value="<?php echo $options['appicon_size_widget_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_widget_w]" value="<?php echo $options['appicon_size_widget_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_widget_c]" value="0" <?php if ($options['appicon_size_widget_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_widget_c]" value="1" <?php if ($options['appicon_size_widget_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
 <tr valign="top">
 <th scope="row"><label>Image size for RSS/ATOM feeds</label></th>
-<td><input type="text" size="4" name="appStore_options[appicon_size_rss]" value="<?php echo $options['appicon_size_rss']; ?>" />px</td></tr>
-
+<td><input type="text" size="4" name="appStore_options[appicon_size_rss_h]" value="<?php echo $options['appicon_size_rss_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_rss_w]" value="<?php echo $options['appicon_size_rss_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_rss_c]" value="0" <?php if ($options['appicon_size_rss_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_rss_c]" value="1" <?php if ($options['appicon_size_rss_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
+<tr valign="top">
+<th scope="row"><label>Image size for iPhone Screenshots</label></th>
+<td><input type="text" size="4" name="appStore_options[appicon_size_iphoness_h]" value="<?php echo $options['appicon_size_iphoness_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_iphoness_w]" value="<?php echo $options['appicon_size_iphoness_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_iphoness_c]" value="0" <?php if ($options['appicon_size_iphoness_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_iphoness_c]" value="1" <?php if ($options['appicon_size_iphoness_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
+<tr valign="top">
+<th scope="row"><label>Image size for iPad Screenshots</label></th>
+<td><input type="text" size="4" name="appStore_options[appicon_size_ipadss_h]" value="<?php echo $options['appicon_size_ipadss_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_ipadss_w]" value="<?php echo $options['appicon_size_ipadss_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_ipadss_c]" value="0" <?php if ($options['appicon_size_ipadss_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_ipadss_c]" value="1" <?php if ($options['appicon_size_ipadss_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
+<tr valign="top">
+<th scope="row"><label>Image size for Amazon.com Items</label></th>
+<td><input type="text" size="4" name="appStore_options[appicon_size_amazon_h]" value="<?php echo $options['appicon_size_amazon_h']; ?>" />px</td>
+<td><input type="text" size="4" name="appStore_options[appicon_size_amazon_w]" value="<?php echo $options['appicon_size_amazon_w']; ?>" />px</td>
+<td><input type="radio" name="appStore_options[appicon_size_amazon_c]" value="0" <?php if ($options['appicon_size_amazon_c'] == "0") echo 'checked'; ?> /></td>
+<td><input type="radio" name="appStore_options[appicon_size_amazon_c]" value="1" <?php if ($options['appicon_size_amazon_c'] == "1") echo 'checked'; ?> /></td>
+</tr>
 </table>

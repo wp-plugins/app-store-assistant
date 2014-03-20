@@ -1,4 +1,8 @@
 <p class="asa_admin_explain">Amazon.com requires you have your own AWS Public and Private Keys. You can get the keys by signing up at <a href="http://aws-portal.amazon.com/gp/aws/developer/account/index.html">http://aws-portal.amazon.com/gp/aws/developer/account/index.html</a>.</p>
+
+<p class="asa_admin_explain">For step by step instrunctions on where to find all these keys and IDs, click here:
+<b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_help&tab=amazon"; ?>">Amazon.com Help</a></b>
+</p>
 		
 <table class="form-table">
 <tr valign="top">

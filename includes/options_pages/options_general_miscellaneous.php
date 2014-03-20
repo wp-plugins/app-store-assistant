@@ -1,4 +1,4 @@
-<input type="hidden" name="appStore_options[checkboxedoptions]" value="cache_images_locally,open_links_externally,rss_showIcon,rss_showShortDescription" />
+<input type="hidden" name="appStore_options[checkboxedoptions]" value="open_links_externally,rss_showIcon,rss_showShortDescription,enable_lightbox" />
 
 
 

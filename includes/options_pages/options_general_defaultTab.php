@@ -1,5 +1,23 @@
 <input type="hidden" name="appStore_options[checkboxedoptions]" value="displayLinkToFooter,cache_images_locally" />
 
+<?php
+if (version_compare(phpversion(), '5.4', '<')) {
+    // php version isn't high enough
+?>
+<h2 class="asa_admin">Warning!</h2>
+	<div class="asa_admin">
+		<div class="asa_admin_element">
+			<p class="asa_admin_warning">Warning: Your PHP version of <?php echo phpversion(); ?> is below the required version 5.4.</p>
+			<p>Some features may not work correctly. It is recommended that you upgrade to a current version.</p>
+
+		</div>
+	</div>
+<?php
+}
+?>
+
+
+
 <h2 class="asa_admin">Setup</h2>
 	<div class="asa_admin">
 		<div class="asa_admin_element">
