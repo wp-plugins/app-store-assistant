@@ -51,7 +51,7 @@ function appStore_amazon_link_handler ($atts,$content=null, $code="") {
 		if($showprice=="yes") $itemLinkText .= " $itemPrice";
 
 		// Set Button Image
-		$itemButtonImage .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$asin.'" />';
+		$itemButtonImage = '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="'.$asin.'" />';
 
 		switch ($mode) {
 			case "text":
@@ -89,6 +89,9 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 	case "Book":
 		$amazonDisplayData = asa_displayAmazonBook($AmazonProductData);
 		break;
+	case "eBooks":
+		$amazonDisplayData = asa_displayAmazonBook($AmazonProductData);
+		break;
 	case "DVD":
 		$amazonDisplayData = asa_displayAmazonDisc($AmazonProductData);
 		break;
@@ -101,10 +104,11 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 	
 function appStore_get_amazonData($asin) {
 	//Check to see if we have a cached version of the Amazon Product Data.
-	$appStore_options = get_option('appStore_amazonData_' . $asin, '');		
-	
-	if($appStore_options == '' || $appStore_options['next_check'] < time()) {
+	$appStore_options = get_option('appStore_amazonData_' . $asin, 'NODATA');		
+	//$appStore_options = 'NODATA'; //SEALDEBUG - ALWAYS REFRESH
+	if($appStore_options == 'NODATA' || $appStore_options['next_check'] < time()) {
 		$appStore_options_data = appStore_page_get_amazonXML($asin);
+
 		if($appStore_options_data['Error']) {
 			$nextCheck = 10;
 		} else {
@@ -112,7 +116,8 @@ function appStore_get_amazonData($asin) {
 			if(appStore_setting('cache_images_locally') == '1') {
 				$appStore_options_data = appStore_save_amazonImages_locally($appStore_options_data);
 			}
-		}
+		}		
+		
 		$appStore_options = array('next_check' => $nextCheck, 'app_data' => $appStore_options_data);
 		update_option('appStore_amazonData_' . $asin, $appStore_options);
 		
@@ -150,6 +155,30 @@ function appStore_getBestAmazonImage($asin) {
 
 function appStore_save_amazonImages_locally($productData) {
 	$asin = $productData['ASIN'];	
+
+
+	//Save Non-Cached Images incase of problem
+	$productData['SmallImage_cached'] = $productData['SmallImage'];
+	$productData['MediumImage_cached'] = $productData['MediumImage'];
+	$productData['LargeImage_cached'] = $productData['LargeImage'];	
+	
+	if($productData['SmallImage']) $bestImage = $productData['SmallImage'];
+	if($productData['MediumImage']) $bestImage = $productData['MediumImage'];
+	if($productData['LargeImage']) $bestImage = $productData['LargeImage'];
+	$productData['imageFeatured'] = $bestImage;
+	$productData['imageFeatured_cached'] = $bestImage;
+	$productData['imageiOS'] = $bestImage;
+	$productData['imageiOS_cached'] = $bestImage;
+	$productData['imageWidget'] = $bestImage;
+	$productData['imageWidget_cached'] = $bestImage;
+	$productData['imageRSS'] = $bestImage;
+	$productData['imageRSS_cached'] = $bestImage;
+	$productData['imageLists'] = $bestImage;
+	$productData['imageLists_cached'] = $bestImage;
+	$productData['imagePosts'] = $bestImage;
+	$productData['imagePosts_cached'] = $bestImage;
+	$productData['imageElements'] = $bestImage;
+	$productData['imageElements_cached'] = $bestImage;
 
 	if(!is_writeable(CACHE_DIRECTORY)) {
 		//Uploads dir isn't writeable. bummer.
@@ -190,60 +219,76 @@ function appStore_save_amazonImages_locally($productData) {
 		$bestFileExt = $bestFilePathParts['extension'];		
 		$editor = wp_get_image_editor( $bestFilePath );
  		$size = $editor->get_size();
+ 		$filePrefix = "asaArtwork_";
+		$filePath_Start = CACHE_DIRECTORY."Amazon/". $asin . '/'.$filePrefix;
+		$fileURL_Start = CACHE_DIRECTORY_URL."Amazon/". $asin . '/'.$filePrefix;
 
- 		if(appStore_setting('appicon_size_featured') < $size['width']) {
- 			$newSize = appStore_setting('appicon_size_featured');
-			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'featured', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
-			$new_image_info = $editor->save($filename);
-			$productData['imageFeatured'] = "Amazon/$asin/".$bestFileName."-featured.".$bestFileExt;
-		} else {
-			$productData['imageFeatured'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+ 		if(appStore_setting('appicon_size_featured_w') < $size['width'] || appStore_setting('appicon_size_featured_h') < $size['height']) {
+ 			$newSize_w = appStore_setting('appicon_size_featured_w');
+ 			$newSize_h = appStore_setting('appicon_size_featured_h');
+ 			$newSize_c = (appStore_setting('appicon_size_featured_c') ? true : false);
+			$editor->resize( $newSize_w, $newSize_h, $newSize_c  );
 		}
+		$filename = $filePath_Start."featured.".$bestFileExt;
+		$new_image_info = $editor->save($filename);
+		$productData['imageFeatured_cached'] = $fileURL_Start."featured.".$bestFileExt;
+		$productData['imageFeatured_path'] = $filePath_Start."featured.".$bestFileExt;
 
- 		if(appStore_setting('appicon_size_ios') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
- 			$newSize = appStore_setting('appicon_size_ios');
-			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'ios', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$productData['imageiOS'] = "Amazon/$asin/".$bestFileName."-ios.".$bestFileExt;
-		} else {
-			$productData['imageiOS'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		$editor = wp_get_image_editor( $bestFilePath );
+ 		if(appStore_setting('appicon_size_ios_w') < $size['width'] || appStore_setting('appicon_size_ios_h') < $size['height']) {
+ 			$newSize_w = appStore_setting('appicon_size_ios_w');
+ 			$newSize_h = appStore_setting('appicon_size_ios_h');
+ 			$newSize_c = (appStore_setting('appicon_size_ios_c') ? true : false);
+			$editor->resize( $newSize_w, $newSize_h, $newSize_c  );
 		}
+		$filename = $filePath_Start."ios.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$productData['imageiOS_cached'] = $fileURL_Start."featured.".$bestFileExt;
 
- 		if(appStore_setting('appicon_size_lists') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
- 			$newSize = appStore_setting('appicon_size_lists');
-			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'list', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$productData['imageLists'] = "Amazon/$asin/".$bestFileName."-list.".$bestFileExt;
-		} else {
-			$productData['imageLists'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		$editor = wp_get_image_editor( $bestFilePath );
+ 		if(appStore_setting('appicon_size_rss_w') < $size['width'] || appStore_setting('appicon_size_rss_h') < $size['height']) {
+ 			$newSize_w = appStore_setting('appicon_size_rss_w');
+ 			$newSize_h = appStore_setting('appicon_size_rss_h');
+ 			$newSize_c = (appStore_setting('appicon_size_rss_c') ? true : false);
+			$editor->resize( $newSize_w, $newSize_h, $newSize_c  );
 		}
+		$filename = $filePath_Start."rss.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$productData['imageRSS_cached'] = $fileURL_Start."featured.".$bestFileExt;
+			
+		$editor = wp_get_image_editor( $bestFilePath );
+ 		if(appStore_setting('appicon_size_lists_w') < $size['width'] || appStore_setting('appicon_size_lists_h') < $size['height']) {
+ 			$newSize_w = appStore_setting('appicon_size_lists_w');
+ 			$newSize_h = appStore_setting('appicon_size_lists_h');
+ 			$newSize_c = (appStore_setting('appicon_size_lists_c') ? true : false);
+			$editor->resize( $newSize_w, $newSize_h, $newSize_c  );
+		}
+		$filename = $filePath_Start."list.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$productData['imageLists_cached'] = $fileURL_Start."featured.".$bestFileExt;
 
- 		if(appStore_setting('appicon_size_posts') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
- 			$newSize = appStore_setting('appicon_size_posts');
-			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'post', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$productData['imagePosts'] = "Amazon/$asin/".$bestFileName."-post.".$bestFileExt;
-		} else {
-			$productData['imagePosts'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		$editor = wp_get_image_editor( $bestFilePath );
+ 		if(appStore_setting('appicon_size_posts_w') < $size['width'] || appStore_setting('appicon_size_posts_h') < $size['height']) {
+ 			$newSize_w = appStore_setting('appicon_size_posts_w');
+ 			$newSize_h = appStore_setting('appicon_size_posts_h');
+ 			$newSize_c = (appStore_setting('appicon_size_posts_c') ? true : false);
+			$editor->resize( $newSize_w, $newSize_h, $newSize_c  );
 		}
+		$filename = $filePath_Start."post.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$productData['imagePosts_cached'] = $fileURL_Start."featured.".$bestFileExt;
 
- 		if(appStore_setting('appicon_size_element') < $size['width']) {
-			$editor = wp_get_image_editor( $bestFilePath );
- 			$newSize = appStore_setting('appicon_size_element');
-			$editor->resize( $newSize, $newSize, true );
-			$filename = $editor->generate_filename( 'element', CACHE_DIRECTORY ."Amazon/". $asin . '/', NULL );
-			$new_image_info = $editor->save($filename);		
-			$productData['imageElements'] = "Amazon/$asin/".$bestFileName."-element.".$bestFileExt;
-		} else {
-			$productData['imageElements'] = "Amazon/$asin/$bestFileName.$bestFileExt";
+		$editor = wp_get_image_editor( $bestFilePath );
+ 		if(appStore_setting('appicon_size_element_w') < $size['width'] || appStore_setting('appicon_size_element_h') < $size['height']) {
+ 			$newSize_w = appStore_setting('appicon_size_element_w');
+ 			$newSize_h = appStore_setting('appicon_size_element_h');
+ 			$newSize_c = (appStore_setting('appicon_size_element_c') ? true : false);
+			$editor->resize( $newSize_w, $newSize_h, $newSize_c  );
 		}
+		$filename = $filePath_Start."element.".$bestFileExt;
+		$new_image_info = $editor->save($filename);		
+		$productData['imageElements_cached'] = $fileURL_Start."featured.".$bestFileExt;
+
 	}
 	return $productData;
 }
@@ -281,7 +326,7 @@ function appStore_page_get_amazonXML($asin) {
 	$apaapi_id				= $asin;
 	
 	
-	$pxml = aws_signed_request($aws_partner_domain,
+	$pxml = asa_aws_signed_request($aws_partner_domain,
 		array("Operation"=>$apaapi_operation, 		
 			  "ItemId"=>$apaapi_id,
 			  "ResponseGroup" => $apaapi_responsegroup,
@@ -298,6 +343,15 @@ function appStore_page_get_amazonXML($asin) {
 	if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
 		$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
 	}
+	//Check for errors from Amazon.com
+	if($pxml['ItemLookupResponse']['Items']['Request']['IsValid'] == "False") {
+		echo "Error processing Amazon.com lookup:<br />";
+		echo $pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error']['Code']."<br />";
+		echo $pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error']['Message']."<br />";
+		exit;
+	}
+
+
 	
 	if($apaapi_errors=='exceeded'){
 		$AmazonProductData[0] = 'Requests Exceeded';
@@ -328,6 +382,7 @@ function appStore_page_get_amazonXML($asin) {
 		}
 		$AmazonProductData[1] = $hiddenerrors;
 	}else{
+
 		$AmazonProductData = cleanAWSresults($pxml);
 		//echo "<pre>";echo print_r($AmazonProductData, true);echo "</pre>";
 		//echo "<pre>";echo print_r($pxml, true);echo "</pre>";
@@ -342,7 +397,17 @@ function asa_displayAmazonDisc($Data){
 
 	$displayAmazonDisc .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonDisc .= '	<div id="amazonStore-icon-container">';
-	$displayAmazonDisc .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.CACHE_DIRECTORY_URL.$Data['imagePosts'].'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	
+	if(appStore_setting('cache_images_locally') == '1') {
+		$imageTag = $Data['imagePosts_cached'];
+	} else {
+		$imageTag = $Data['imagePosts'];
+	}	
+
+	
+	
+	
+	$displayAmazonDisc .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	$displayAmazonDisc .= '</div>';
 
 
@@ -357,24 +422,24 @@ function asa_displayAmazonDisc($Data){
 		$displayAmazonDisc .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Status']) {
-		$displayAmazonDisc .= '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+		$displayAmazonDisc .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		$displayAmazonDisc .= '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		$displayAmazonDisc .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
 		$displayAmazonDisc .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		$displayAmazonDisc .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		$displayAmazonDisc .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
 		$displayAmazonDisc .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
-	if ($Data->ItemAttributes->ReleaseDate) {
-		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
+	if (isset($Data->ItemAttributes->ReleaseDate)) {
+		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Disc Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
 	}
-	if ($Data->ItemAttributes->TheatricalReleaseDate) {
-		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Theatrical Release",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
+	if (isset($Data->ItemAttributes->TheatricalReleaseDate)) {
+		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Theatrical Release",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
 	}
 	if($Data['Studio']) {
-		$displayAmazonDisc .= '<span class="amazonStore-publisher">'.__("From",appStoreAssistant).': '. $Data['Studio'] .'</span><br />';
+		$displayAmazonDisc .= '<span class="amazonStore-publisher">'.__("From",'appStoreAssistant').': '. $Data['Studio'] .'</span><br />';
 	}
 
 	$displayAmazonDisc .= '<br /><div align="center">';
@@ -390,9 +455,16 @@ function asa_displayAmazonDisc($Data){
 function asa_displayAmazonBook($Data){
 	$displayAmazonBook = "<!-- Book Listing -->";
 
+//$displayAmazonBook .= '-------SEALDEBUG--------'.print_r($Data,true).'---------------';//Debug
+
 	$displayAmazonBook .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonBook .= '	<div id="amazonStore-icon-container">';
-	$displayAmazonBook .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.CACHE_DIRECTORY_URL.$Data['imagePosts'].'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	if(appStore_setting('cache_images_locally') == '1') {
+		$imageTag = $Data['imagePosts_cached'];
+	} else {
+		$imageTag = $Data['imagePosts'];
+	}		
+	$displayAmazonBook .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	$displayAmazonBook .= '</div>';
 
 	$displayAmazonBook .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
@@ -405,25 +477,25 @@ function asa_displayAmazonBook($Data){
 		$displayAmazonBook .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Publisher']) {
-		$displayAmazonBook .= '<span class="amazonStore-publisher">'.__("Publisher",appStoreAssistant).': '.$Data['Publisher'].'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-publisher">'.__("Publisher",'appStoreAssistant').': '.$Data['Publisher'].'</span><br />';
 	}
 	if ($Data['Status']) {
-		$displayAmazonBook .= '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		$displayAmazonBook .= '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		$displayAmazonBook .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
 		$displayAmazonBook .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		$displayAmazonBook .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		$displayAmazonBook .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
 		$displayAmazonBook .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
 	if ($Data['ReleaseDate']) {
-		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
 	}
 
 	if ($Data['PublishedDate']) {
-		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Published",appStoreAssistant).': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
+		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Published",'appStoreAssistant').': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
 	}
 	$displayAmazonBook .= '<br><div align="center">';
 	$displayAmazonBook .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
@@ -436,34 +508,47 @@ function asa_displayAmazonBook($Data){
 }
 
 function asa_displayAmazonDefault($Data){
-	$displayAmazonDefault = "<!-- Default Listing -->";
+	$displayAmazonDefault = "<!-- Default Listing -->";	
+	
+	
+
+	
+	
 	$displayAmazonDefault .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonDefault .= '	<div id="amazonStore-icon-container">';
-	$displayAmazonDefault .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.CACHE_DIRECTORY_URL.$Data['imagePosts'].'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	
+	if(appStore_setting('cache_images_locally') == '1') {
+		$imageTag = $Data['imagePosts_cached'];
+	} else {
+		$imageTag = $Data['imagePosts'];
+	}	
+	
+	
+	$displayAmazonDefault .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
 	$displayAmazonDefault .= '</div>';
 	$displayAmazonDefault .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
 	if ($Data['Description']) {
 		$displayAmazonDefault .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
 	if ($Data['Features']) {
-		$displayAmazonDefault .= '<span class="amazonStore-features-desc">'.__("Features",appStoreAssistant).':</span>'.$Data['Features'].'<br />';
+		$displayAmazonDefault .= '<span class="amazonStore-features-desc">'.__("Features",'appStoreAssistant').':</span>'.$Data['Features'].'<br />';
 	}
 	if ($Data['Manufacturer']) {
-		$displayAmazonDefault .= '<span class="amazonStore-publisher">'.__("Manufacturer",appStoreAssistant).': '.$Data['Manufacturer']."</span><br />";
+		$displayAmazonDefault .= '<span class="amazonStore-publisher">'.__("Manufacturer",'appStoreAssistant').': '.$Data['Manufacturer']."</span><br />";
 	}
 	if ($Data['Status']) {
-		$displayAmazonDefault .= '<span class="amazonStore-status">'.__("Status",appStoreAssistant).': '.$Data['Status'].'</span><br />';
+		$displayAmazonDefault .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		$displayAmazonDefault .= '<span class="amazonStore-listprice-desc">'.__("List Price",appStoreAssistant).': </span>';
+		$displayAmazonDefault .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
 		$displayAmazonDefault .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		$displayAmazonDefault .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",appStoreAssistant).': </span>';
+		$displayAmazonDefault .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
 		$displayAmazonDefault .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
-	if ($Data->ItemAttributes->ReleaseDate) {
-		$displayAmazonDefault .= '<span class="amazonStore-date">'.__("Disc Released",appStoreAssistant).': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
+	if (isset($Data->ItemAttributes->ReleaseDate)) {
+		$displayAmazonDefault .= '<span class="amazonStore-date">'.__("Disc Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
 	}
 	$displayAmazonDefault .= '<br><div align="center">';
 	$displayAmazonDefault .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
@@ -492,6 +577,7 @@ function cleanAWSresults($Result){
 	$BookDescription		= $Item["EditorialReviews"]["EditorialReview"]["0"]["Content"];
 	$Status 				= $Item['Offers']['Offer']['OfferListing']['Availability'];
 	$PriceData				= $Item['Offers']['Offer']['OfferListing']['Price'];
+	
   	
     if(isset($PriceData['FormattedPrice'])) {
     	$CurrencyCode = $PriceData['CurrencyCode'];
@@ -612,10 +698,20 @@ function cleanAWSresults($Result){
 
 function fixCharacters($stringToCheck) {
 	//Specific string replaces for ellipsis, etc that you dont want removed but replaced
-	$theBad = 	array("“","”","‘","’","…","—","–");
-	$theGood = array("\"","\"","'","'","...","-","-");
-	$cleanedString = str_replace($theBad,$theGood,$stringToCheck);
-	$cleanedString = htmlentities($cleanedString);
+	$theBad = 	array("“","”","‘","’","…","—","–","<div>","</div>");
+	$theGood = array("\"","\"","'","'","...","-","-","","");
+	$cleanedString = str_ireplace($theBad,$theGood,$stringToCheck);
+	
+
+	
+	$cleanedString = htmlentities($cleanedString,ENT_QUOTES);
+	if (version_compare(phpversion(), '5.4', '<')) {
+		// php version isn't high enough
+		$cleanedString = str_replace('&Acirc;', '', $cleanedString);
+	} else {
+		$cleanedString = htmlentities($cleanedString,ENT_SUBSTITUTE);
+		$cleanedString = htmlentities($cleanedString,ENT_DISALLOWED);
+	}
 
 	/*
 	$trans[chr(130)] = '&sbquo;';    // Single Low-9 Quotation Mark
@@ -654,14 +750,17 @@ function fixCharacters($stringToCheck) {
 	
 	$theBad = 	array("&lt;","&gt;");
 	$theGood = array("<",">");
-	$cleanedString = str_replace($theBad,$theGood,$cleanedString);
+	$cleanedString = str_replace($theBad,$theGood,$cleanedString); // Put Back HTML commands
+	$cleanedString = preg_replace('@\x{FFFD}@u', '', $cleanedString); // Remove &#xFFFD; or &#65533; or 
+	//echo "------SEALDEBUG--OUT2-------\r\r\r".print_r($cleanedString,true)."\r\r\r---------------";//Debug
+	
 	return $cleanedString;
 }
 
 
-//GetXMLTree and GetChildren code from http://whoooop.co.uk/2005/03/20/xml-to-array/
-
-function GetXMLTree ($xmldata){
+//	 and asa_GetChildren code from http://whoooop.co.uk/2005/03/20/xml-to-array/
+//
+function asa_GetXMLTree ($xmldata){
 	if($xmldata==''){return False;}
 	// we want to know if an error occurs
 	ini_set ('track_errors', '1');
@@ -683,13 +782,13 @@ function GetXMLTree ($xmldata){
 			foreach (array_keys ($vals [$i]['attributes']) as $attkey)
 			$attributes [$attkey] = $vals [$i]['attributes'][$attkey];
 
-		$result [$vals [$i]['tag']] = array_merge ($attributes, GetChildren ($vals, $i, 'open'));
+		$result [$vals [$i]['tag']] = array_merge ($attributes, asa_GetChildren ($vals, $i, 'open'));
 	}
 	ini_set ('track_errors', '0');
 	return $result;
 }
 
-function GetChildren ($vals, &$i, $type){
+function asa_GetChildren ($vals, &$i, $type){
 	if ($type == 'complete') {
 		if (isset ($vals [$i]['value']))
 			return ($vals [$i]['value']);
@@ -718,9 +817,9 @@ function GetChildren ($vals, &$i, $type){
 				$children [$vals [$i]['tag']][0] = $a;
 			}
 
-			$children [$vals [$i]['tag']][] = GetChildren ($vals, $i, $type);
+			$children [$vals [$i]['tag']][] = asa_GetChildren ($vals, $i, $type);
 		} else
-			$children [$vals [$i]['tag']] = GetChildren ($vals, $i, $type);
+			$children [$vals [$i]['tag']] = asa_GetChildren ($vals, $i, $type);
 		// I don't think I need attributes but this is how I would do them:
 		if (isset ($vals [$i]['attributes'])) {
 			$attributes = array ();
@@ -760,7 +859,7 @@ function GetChildren ($vals, &$i, $type){
 	return $children;
 }
 
-function aws_hash_hmac($algo, $data, $key, $raw_output=False){
+function asa_aws_hash_hmac($algo, $data, $key, $raw_output=False){
   // RFC 2104 HMAC implementation for php.
   // Creates a sha256 HMAC.
   // Eliminates the need to install mhash to compute a HMAC
@@ -786,8 +885,8 @@ function aws_hash_hmac($algo, $data, $key, $raw_output=False){
   }
 } 
 
-//aws_signed_request code from http://mierendo.com/software/aws_signed_query/
-function aws_signed_request($region, $params, $public_key, $private_key){
+//asa_aws_signed_request code from http://mierendo.com/software/aws_signed_query/
+function asa_aws_signed_request($region, $params, $public_key, $private_key){
     /*
     Copyright (c) 2009 Ulrich Mierendorff
 
@@ -848,7 +947,7 @@ function aws_signed_request($region, $params, $public_key, $private_key){
     $string_to_sign = $method."\n".$host."\n".$uri."\n".$canonicalized_query;
    
     // calculate HMAC with SHA256 and base64-encoding
-    $signature = base64_encode(aws_hash_hmac("sha256", $string_to_sign, $private_key, True));
+    $signature = base64_encode(asa_aws_hash_hmac("sha256", $string_to_sign, $private_key, True));
     
     // encode the signature for the request
     $signature = str_replace("%7E", "~", rawurlencode($signature));
@@ -872,7 +971,7 @@ function aws_signed_request($region, $params, $public_key, $private_key){
 		
 		if (count($result) > 0){
 			if ($result[0]->Age <= 6001 && $result[0]->Body != ''){ //that would be 60 min 1 seconds on MYSQL value
-				$pxml = GetXMLTree($result[0]->Body);
+				$pxml = asa_GetXMLTree($result[0]->Body);
 				return $pxml;
 			}else{
 				if($apip_usefileget!='0'){
@@ -899,7 +998,7 @@ function aws_signed_request($region, $params, $public_key, $private_key){
 					if(strpos($xbody,'InvalidParameterValue') >= 1){return 'not valid';}
 					$updatesql ="INSERT IGNORE INTO ".$wpdb->prefix."amazoncache (URL, Body, Updated) VALUES ('$keyurl', '$xbody', NOW()) ON DUPLICATE KEY UPDATE Body='$xbody', Updated=NOW();";
 					$wpdb->query($updatesql);
-					$pxml = GetXMLTree($response);
+					$pxml = asa_GetXMLTree($response);
 					return $pxml;
 				}
 			}
@@ -925,7 +1024,7 @@ function aws_signed_request($region, $params, $public_key, $private_key){
 			if(strpos($xbody,'InvalidParameterValue') >= 1){return 'not valid';}
 			$updatesql ="INSERT IGNORE INTO ".$wpdb->prefix."amazoncache (URL, Body, Updated) VALUES ('$keyurl', '$xbody', NOW()) ON DUPLICATE KEY UPDATE Body='$xbody', Updated=NOW();";
 			$wpdb->query($updatesql);
-			$pxml = GetXMLTree($response);
+			$pxml = asa_GetXMLTree($response);
 			return $pxml;
 		}
 	return False;
