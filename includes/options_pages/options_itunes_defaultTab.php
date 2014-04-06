@@ -4,6 +4,7 @@
     	$iTunesStoreProperties = array(
     		array('ID' => "displayitunestitle", 'label' => "Music Title"),
     		array('ID' => "displayitunestrackcount", 'label' => "Track Count"),
+    		array('ID' => "displayitunestracklisting", 'label' => "Track Listing"),
     		array('ID' => "displayitunesartistname", 'label' => "Artist Name"),
     		array('ID' => "displayitunesfromalbum", 'label' => "From Album&hellip;"),
     		array('ID' => "displayitunesgenre", 'label' => "Genre"),

@@ -1,4 +1,4 @@
-<input type="hidden" name="appStore_options[checkboxedoptions]" value="hide_button_background,hide_button_background_hover,smaller_buy_button_iOS" />
+<input type="hidden" name="appStore_options[checkboxedoptions]" value="smaller_buy_button_iOS" />
 
 <table class="form-table">
 <tr valign="top">
@@ -31,13 +31,27 @@
 <tr valign="top">
 <th scope="row"><label>Button Background</label></th>
 <td><?php
-	echo '<input type="checkbox" name="appStore_options[hide_button_background]" value="yes"';
-	if ($options[hide_button_background] == "yes") echo ' checked';
-	echo ' /> Transparent Background'."\r";
-	echo "<br />\r";
-	echo '<input type="checkbox" name="appStore_options[hide_button_background_hover]" value="yes"';
-	if ($options[hide_button_background_hover] == "yes") echo ' checked';
-	echo ' /> Transparent Background (Hover)'."\r";
+
+	echo '<select name="appStore_options[hide_button_background]">';
+	echo '<option value="no" ';
+	if ($options['hide_button_background'] == "no") echo 'selected';
+	echo '>Solid Button Background</option>';
+	echo '<option value="yes" ';
+	if ($options['hide_button_background'] == "yes") echo 'selected';
+	echo '>Transparent Button Background</option>';
+	echo '</select>';
+?></td></tr>
+<th scope="row"><label>Button Background (Hover)</label></th>
+<td><?php
+
+	echo '<select name="appStore_options[hide_button_background_hover]">';
+	echo '<option value="no" ';
+	if ($options['hide_button_background_hover'] == "no") echo 'selected';
+	echo '>Solid Button Background</option>';
+	echo '<option value="yes" ';
+	if ($options['hide_button_background_hover'] == "yes") echo 'selected';
+	echo '>Transparent Button Background</option>';
+	echo "</select>\r";
 ?></td></tr>
 <tr valign="top">
 <th scope="row"><label>Button Border</label></th>
