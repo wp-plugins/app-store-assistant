@@ -1855,3 +1855,11 @@ button.ui-button::-moz-focus-inner
 .checkboxThree input[type="checkbox"] {
     visibility: hidden;
 }
+
+#appname-wrap #appname-prompt-text {
+    padding: 5px 8px;
+    font-size: 1.1em;
+}
+#appname-wrap label {
+    cursor: text;
+}

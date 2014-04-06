@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
 Tested up to: 3.8.1
-Stable tag: 6.6.0
+Stable tag: 6.6.1
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -99,7 +99,6 @@ Please let us know of any features you would like added or bugs that need squash
 == Feature Request List ==
 
 * Request: Have an ATOM feed auto create posts from app List
-* Request: I18n aka Localization is supported via POT file for admin area
 * Request: iTunes breakout of elements
 * Request: Bulk import of Apps [Thanks TesterGP]
 * Request: Change file type to png if tiff supplied by app store WP_Image_Editor
@@ -113,11 +112,23 @@ Please let us know of any features you would like added or bugs that need squash
 * Request: Option to search for Apps no longer available and change post to "Pending Review"
 * Added: ----------------Option to rebuild cache same method as FI Rebuild
 * Request: iBooks support [Thanks rnakoneshny]
-* Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleseDate, etc. [Thanks Jomasher]
-* Request: replace far-fetched PHP in get_excerpt_by_id() function with a simple WP function called wp_trim_words()
+* Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
 
 
 == Changelog ==
+
+= 6.6.1 =
+* Added: Dashboard widget "Search for apps"
+* Added: You can now search for an app by name or App ID [Thanks Aslan Guseinov]
+* Added: Featured Images now work if cache is disabled
+* Added: Add missing categories to ASA posts [Thanks Aslan Guseinov]
+* Fixed: Featured Image was set to a size of 1x1
+* Changed: Featured Image functions replaced
+* Changed: Cleaned up search form and results
+* Fixed: Links in WP Admin Bar
+* Fixed: ASA Excerpt Builder now processes shortcodes with link instead of id
+* Changed: Moved Rebuild Featured Images to Rebuild menu
+* Added: I18n aka Localization is supported via POT file for admin area
 
 = 6.6.0 =
 * Added: Added listing of Tracks for Albums [Thanks kittyj]
@@ -424,10 +435,10 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Lightbox for display of Screenshots
 * Added: Cacheing of Amazon Product data and images
 * Added: Sends Featured Image to Themes that request it (handy for related posts)
-* Added: option to show thumbnail as app icon or small product image in excerpt
+* Added: option to show Featured Image as app icon or small product image in excerpt
 * Added: option to show "Read More" link in excerpt
 * Updated: Amazon Product code to better handle foreign characters
-* Added: thumbnail support for iTunes products
+* Added: Featured Image support for iTunes products
 * Changed: Unified Cache directory with sub folders for each type of store
 * Changed: Optimized Cacheing system
 * Changed: Optimized image storing

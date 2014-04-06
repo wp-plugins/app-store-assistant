@@ -9,7 +9,7 @@
 </tr>
 <tr valign="top">
 <th scope="row"><label>Max Length</label></th>
-<td><input type="text" size="4" name="appStore_options[excerpt_max_chars]" value="<?php echo $options['excerpt_max_chars']; ?>" maxlength="4" /> characters</td>
+<td><input type="text" size="4" name="appStore_options[excerpt_max_chars]" value="<?php echo $options['excerpt_max_chars']; ?>" maxlength="4" /> words</td>
 </tr>
 <tr valign="top">
 <th scope="row"><label>Show</label></th>

@@ -106,6 +106,9 @@ function appStore_get_amazonData($asin) {
 	//Check to see if we have a cached version of the Amazon Product Data.
 	$appStore_options = get_option('appStore_amazonData_' . $asin, 'NODATA');		
 	//$appStore_options = 'NODATA'; //SEALDEBUG - ALWAYS REFRESH
+	
+
+	
 	if($appStore_options == 'NODATA' || $appStore_options['next_check'] < time()) {
 		$appStore_options_data = appStore_page_get_amazonXML($asin);
 
@@ -155,7 +158,6 @@ function appStore_getBestAmazonImage($asin) {
 
 function appStore_save_amazonImages_locally($productData) {
 	$asin = $productData['ASIN'];	
-
 
 	//Save Non-Cached Images incase of problem
 	$productData['SmallImage_cached'] = $productData['SmallImage'];
@@ -212,6 +214,9 @@ function appStore_save_amazonImages_locally($productData) {
 				return;
 			}
 		}
+		
+
+		
 		
 		$bestFilePath = appStore_getBestAmazonImage($asin);
 		$bestFilePathParts = pathinfo($bestFilePath);
@@ -343,6 +348,14 @@ function appStore_page_get_amazonXML($asin) {
 	if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
 		$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
 	}
+	
+	if(is_array($pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error'])) {
+		echo "Error processing Amazon.com lookup:<br />";
+		echo $pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error']['Code']."<br />";
+		echo $pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error']['Message']."<br />";
+		exit;
+	}
+	
 	//Check for errors from Amazon.com
 	if($pxml['ItemLookupResponse']['Items']['Request']['IsValid'] == "False") {
 		echo "Error processing Amazon.com lookup:<br />";
@@ -509,11 +522,6 @@ function asa_displayAmazonBook($Data){
 
 function asa_displayAmazonDefault($Data){
 	$displayAmazonDefault = "<!-- Default Listing -->";	
-	
-	
-
-	
-	
 	$displayAmazonDefault .= '<div class="appStore-wrapper"><hr>';
 	$displayAmazonDefault .= '	<div id="amazonStore-icon-container">';
 	

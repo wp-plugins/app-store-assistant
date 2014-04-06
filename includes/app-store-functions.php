@@ -46,14 +46,14 @@ function appStore_icon_in_rss($originalContent) {
 		if($id == "" || !is_numeric($id)) return;	
 		$app = appStore_get_data($id);
 		$appIcon_url = $app->imageRSS_cached;
-		$smallDescription = nl2br(appStore_shortenDescription($app->description,"rss"));
+		$smallDescription = appStore_shortenDescription($app->description,"rss");
 		$fullDescription = $app->description;
 	} elseif($firstShortcode == "amazon_item") {
 		$asin = $atts['asin'];	
 		if($asin == "")return;	
 		$amazonProduct = appStore_get_amazonData($asin);
 		$appIcon_url = $amazonProduct['imageRSS'];
-		$smallDescription = nl2br(appStore_shortenDescription($amazonProduct['Description'],"rss"));
+		$smallDescription = appStore_shortenDescription($amazonProduct['Description'],"rss");
 		$fullDescription = $amazonProduct['Description'];
 	}
 
@@ -89,17 +89,17 @@ function appStore_admin_bar_links() {
 	
 	// Links to add, in the form: 'Label' => 'URL'
 	$links = array(
-		'Search for App and create new Post' => 'admin.php?page=appStore_IDsearch',
-		'Clear the Cache' => "admin.php?page=appStore_sm_utilities&tab=clearcache",
-		'Clear the Cache for a single item' => 'admin.php?page=appStore_sm_utilities&tab=clearitem',
-		'Help with Shortcodes' => 'admin.php?page=appStore_sm_help&tab=shortcodes'
+		'Search for App and create new Post' => site_url().'/wp-admin/admin.php?page=appStore_IDsearch',
+		'Clear the Cache' => site_url()."/wp-admin/admin.php?page=appStore_sm_utilities&tab=clearcache",
+		'Clear the Cache for a single item' => site_url().'/wp-admin/admin.php?page=appStore_sm_utilities&tab=clearitem',
+		'Help with Shortcodes' => site_url().'/wp-admin/admin.php?page=appStore_sm_help&tab=shortcodes'
 	);
 	
 	// Add the Parent link.
 	$wp_admin_bar->add_menu( array(
 		'title' => '+ New App Post',
 		'id' => 'asa_newapppost',
-		'href' => 'admin.php?page=appStore_IDsearch',
+		'href' => site_url().'/wp-admin/admin.php?page=appStore_IDsearch',
 		'parent' => false
 	));
 	
@@ -184,6 +184,12 @@ function appStore_get_icon_desc($shortcodeData) {
 	switch ($shortcodeData['shortcode']) {
 	case "asa_item":
 		$id = $shortcodeData['atts']['id'];	
+		if(!empty($shortcodeData['atts']['link'])) {
+			$pattern = '(id[0-9]+)';
+			preg_match($pattern, $shortcodeData['atts']['link'], $matches, PREG_OFFSET_CAPTURE, 3);
+			$appIDs[] = substr($matches[0][0], 2);		
+			$id = $appIDs[0];
+		}
 		if($id == "" || !is_numeric($id))return;	
 		$app = appStore_get_data($id);
 		$appFullDescription = $app->description;
@@ -191,6 +197,12 @@ function appStore_get_icon_desc($shortcodeData) {
 		break;
 	case "ios_app":
 		$id = $shortcodeData['atts']['id'];	
+		if(!empty($shortcodeData['atts']['link'])) {
+			$pattern = '(id[0-9]+)';
+			preg_match($pattern, $shortcodeData['atts']['link'], $matches, PREG_OFFSET_CAPTURE, 3);
+			$appIDs[] = substr($matches[0][0], 2);		
+			$id = $appIDs[0];
+		}
 		if($id == "" || !is_numeric($id))return;	
 		$app = appStore_get_data($id);
 		$appFullDescription = $app->description;
@@ -205,6 +217,12 @@ function appStore_get_icon_desc($shortcodeData) {
 		break;
 	case "mac_app":
 		$id = $shortcodeData['atts']['id'];	
+		if(!empty($shortcodeData['atts']['link'])) {
+			$pattern = '(id[0-9]+)';
+			preg_match($pattern, $shortcodeData['atts']['link'], $matches, PREG_OFFSET_CAPTURE, 3);
+			$appIDs[] = substr($matches[0][0], 2);		
+			$id = $appIDs[0];
+		}
 		if($id == "" || !is_numeric($id))return;	
 		$app = appStore_get_data($id);
 		$appFullDescription = $app->description;
@@ -247,12 +265,7 @@ function appStore_excerpt_filter($text, $excerpt="") {
 
 	// Create More Info text
 	if (appStore_setting('displayexcerptreadmore')=="yes") {
-		$shortCodeMoreInfoText = $shortcodeData['atts']['more_info_text'];	
-		if(!$shortCodeMoreInfoText == "") {
-			$readMoreText = $shortCodeMoreInfoText;
-		} else {
-			$readMoreText = appStore_setting('excerpt_moreinfo_text');
-		}
+		$readMoreText = appStore_setting('excerpt_moreinfo_text');
 		$readMoreLink = ' <a href="'.esc_url( get_permalink() ).'">';
 		$readMoreLink .= $readMoreText;
 		$readMoreLink .= '</a>';
@@ -276,13 +289,13 @@ function appStore_excerpt_filter($text, $excerpt="") {
 		$displayIcon ="";
 	}
 
-	if(strlen($originalExcerpt) >20 ) {
+	if(strlen($originalExcerpt) > 20 ) {
 		$appShortDescription = $displayIcon.$originalExcerpt." ".$readMoreLink;
 	} else {	
 		//Get the App Data
 		$appShortDescription = $displayIcon;
-		$appShortDescription .= substr($appIconDesc['appFullDescription'],0, appStore_setting('excerpt_max_chars'));
-		$appShortDescription .= '&hellip;'.$readMoreLink;
+		$appShortDescription .= nl2br(wp_trim_words($appIconDesc['appFullDescription'],appStore_setting('excerpt_max_chars')));		
+		$appShortDescription .= $readMoreLink;
 	}
 	return $appShortDescription;
 }
@@ -1391,7 +1404,7 @@ function getDisplayCode ($DisplayElement,$cssClass,$displayMode, $SectionTitle="
 
 function displayAppStore_appDescription($app,$elementOnly=false) {
 	if(empty($app->description)) return '';
-	$smallDescription = nl2br(appStore_shortenDescription($app->description));
+	$smallDescription = appStore_shortenDescription($app->description);
 	$fullDescription = nl2br($app->description);
 	
 	$element = "";
@@ -2426,14 +2439,13 @@ function appStore_set_setting($name, $value) {
 	$appStore_settings[$name] = $value;
 }
 
-function appStore_shortenDescription($string,$mode="normal"){
+function appStore_shortenDescription($description,$mode="normal"){
 	if($mode == "rss") {
 		$maxLength = appStore_setting('max_description_rss');
 	} else {
 		$maxLength = appStore_setting('max_description');
 	}
-     $string = substr($string,0,$maxLength);
-     $string = substr($string,0,strrpos($string," "));
-     return $string;
+	$shortenedDescription = nl2br(wp_trim_words($description,$maxLength,"&hellip;"));
+	return $shortenedDescription;
 }
 ?>

@@ -11,7 +11,7 @@ function appStore_delete_plugin_options() {
 // ------------------------------------------------------------------------------
 // CALLBACK FUNCTION FOR: register_activation_hook(__FILE__, 'appStore_add_defaults')
 // ------------------------------------------------------------------------------
-// THIS FUNCTION RUNS WHEN THE PLUGIN IS ACTIVATED. IF THERE ARE NO THEME OPTIONS
+// THIS FUNCTION RUNS WHEN THE PLUGIN IS ACTIVATED. IF THERE ARE NO ASA OPTIONS
 // CURRENTLY SET, OR THE USER HAS SELECTED THE CHECKBOX TO RESET OPTIONS TO THEIR
 // DEFAULTS THEN THE OPTIONS ARE SET/RESET.
 //
@@ -245,7 +245,6 @@ function appStore_add_defaults() {
 	$PostedValues = $_REQUEST;
 	$appStore_options = $appStore_savedOptions;
 	
-	
 	// Changes values from form
 	if (isset($PostedValues['action'])) {
 		if($PostedValues['action'] == "update" && is_array($PostedValues['appStore_options'])) {
@@ -271,9 +270,6 @@ function appStore_add_defaults() {
 	$amazonCacheTable = $wpdb->prefix . 'amazoncache';
 	$createSQL = "CREATE TABLE IF NOT EXISTS $amazonCacheTable (`Cache_id` int(10) NOT NULL auto_increment, `URL` text NOT NULL, `updated` datetime default NULL, `body` longtext, PRIMARY KEY (`Cache_id`), UNIQUE KEY `URL` (`URL`(255)), KEY `Updated` (`updated`)) ENGINE=MyISAM;";
 	$wpdb->query($createSQL);
-
-
-
 }
 
 // Init plugin options to white list our options
@@ -315,11 +311,9 @@ function appStore_add_options_page() {
 	add_submenu_page( 'appStore_sm_general', 'iTunes Store Settings', 'iTunes Store', 'manage_options', 'appStore_sm_itunes', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', 'Amazon.com Settings', 'Amazon.com', 'manage_options', 'appStore_sm_amazon', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', 'Utilities', 'Utilities', 'manage_options', 'appStore_sm_utilities', 'appStore_displayAdminOptionsPage');
+	add_submenu_page( 'appStore_sm_general', 'Rebuild', 'Rebuild', 'manage_options', 'appStore_sm_rebuild', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', 'Affiliate', 'Affiliate Programs', 'manage_options', 'appStore_sm_affiliate', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', 'Help', 'Help', 'manage_options', 'appStore_sm_help', 'appStore_displayAdminOptionsPage');
-	
-	
-	
 
 	add_menu_page( 'New Apps', 'New App Post', 'edit_posts', "appStore_IDsearch", 'appStore_search_form', plugins_url( 'images/new-app-post.png', ASA_MAIN_FILE ) );
 }
@@ -366,6 +360,10 @@ function appStore_displayAdminOptionsPage() {
 			$appStoreOptionsTitle = __("Utilities",'appStoreAssistant');
 			$appStoreOptionsPage = "options_utils_$currentTab.php";
 			break;
+		case 'appStore_sm_rebuild' :
+			$appStoreOptionsTitle = __("Rebuild",'appStoreAssistant');
+			$appStoreOptionsPage = "options_rebuild_$currentTab.php";
+			break;
 		case 'appStore_sm_help' :
 			$appStoreOptionsTitle = __("Help Page",'appStoreAssistant');
 			$appStoreOptionsPage = "options_help_$currentTab.php";
@@ -399,7 +397,7 @@ function appStore_displayAdminOptionsPage() {
 			$postCounter = 1;
 			foreach($MyResults as $MyResult) {
 				//echo $postCounter.') ------------------------------<br />';
-				appStore_addFeaturedImage($MyResult);
+				appStore_addFeaturedImages($MyResult);
 				$postCounter++;
 				if($postCounter >20) break; //SEALDEBUG
 			}
@@ -463,6 +461,14 @@ function appStore_displayAdminOptionsPage() {
 	return;
 }
 
+function appStore_checkForSpecialTabs($page) {
+	if ($page == "appStore_sm_rebuild" || $page == "asa-rebuild-featuredimages" || $page == "asa-add-missingcats") {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliatepartnerid ) {
 	global $requestedPage;
 	switch ( $tabSet ){
@@ -483,7 +489,7 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 		$tabs_array = array ('defaultTab' => 'Text Link Defaults');
 	  break;
 	  case 'appStore_sm_utilities' :
-		$tabs_array = array ('defaultTab' => 'Rebuild Featured Images','clearitem' => 'Clear an Item','clearcache' => 'Clear Cache','remove_featured' => 'Remove Featured','reset' => 'Reset Defaults');
+		$tabs_array = array ('defaultTab' => 'Clear an Item','clearcache' => 'Clear Cache','remove_featured' => 'Remove Featured','reset' => 'Reset Defaults');
 	  break;
 	  case 'appStore_sm_help' :
 		$tabs_array = array ('defaultTab' => 'Getting Started','shortcodes' => 'Shortcodes','editor' => 'Post Editor','amazon' => 'Amazon.com');
@@ -501,27 +507,27 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 			$tabs_end = array ('phg' => 'PHG');
 		  break;
 		}
+		
 		$tabs_array = $tabs_start;
 		if(isset($tabs_end)){
 			if(is_array($tabs_end)) $tabs_array = array_merge($tabs_start, $tabs_end);
 		}
 	  break;
 	}
-
+		
+	if(appStore_checkForSpecialTabs($tabSet)) $tabs_array = array ('asa-rebuild-featuredimages' => 'Featured Images','asa-add-missingcats' => 'Categories');
 
 	echo '<h2 class="nav-tab-wrapper">';
 	foreach( $tabs_array as $tab => $name ){
-	   $class = ( $tab == $currentTab ) ? ' nav-tab-active' : '';
-	   if($requestedPage == "appStore_sm_utilities" && $tab == "defaultTab") {
-		   echo "<a class='nav-tab$class' href='?page=asa-rebuild-featuredimages'>$name</a>";
+	   if(appStore_checkForSpecialTabs($tabSet)) {
+		   $class = ( $tab == $tabSet ) ? ' nav-tab-active' : '';
+		   echo "<a class='nav-tab$class' href='?page=$tab'>$name</a>";
 	   } else {
+		   $class = ( $tab == $currentTab ) ? ' nav-tab-active' : '';
 		   echo "<a class='nav-tab$class' href='?page=$requestedPage&tab=$tab'>$name</a>";
 		}
 	}
 	echo '</h2>';
-
-
-
 }
 function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$appID) {
 	global $current_user;
@@ -533,7 +539,6 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 		$postStatus = appStore_setting('newPost_status');
 	}
 	
-	
 	$my_post = array(
 		'post_title' => $appTitle,
 		'post_content' => $appShortCode,
@@ -543,7 +548,7 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 	);
 	
 	$newPostID = wp_insert_post( $my_post );
-	_e("Creating Post...",'appStoreAssistant'); echo "<br />";
+	echo '<div id="message" class="updated fade"><p>'.__("Creating Post...",'appStoreAssistant').'</p></div>';
 	if(appStore_setting('newPost_addCategories')=="yes") {
 		$appCategories = explode(",",$appCategories);
 		foreach($appCategories as $appCategory) {
@@ -560,30 +565,30 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 		}
 		wp_set_post_terms( $newPostID, $postCategories, 'category',false);	
 	}
-	_e( "Caching App data...",'appStoreAssistant'); echo "<br />";
-
+	echo '<div id="message" class="updated fade"><p>'.__("Caching App data...",'appStoreAssistant').'</p></div>';
 	$appData = appStore_get_data( $appID );
-	_e( "Finding Default Featured Image...",'appStoreAssistant'); echo "<br />";
-
+	echo '<div id="message" class="updated fade"><p>'.__("Finding Default Featured Image...",'appStoreAssistant').'</p></div>';
+	
 	$filename = $appData->imageFeatured_path;
-	_e( "Saving Default Featured Image... $filename",'appStoreAssistant'); echo "<br />";
+	
+	if(appStore_setting('cache_images_locally')=="1") {
+		$urlToFeaturedImage = $appData->imageFeatured_cached;
+	} else {
+		$urlToFeaturedImage = $appData->imageFeatured;
+	}
+	
+	echo '<div id="message" class="updated fade"><p>'.__("Saving Default Featured Image...",'appStoreAssistant').'</p></div>';
 	$wp_filetype = wp_check_filetype(basename($filename), null ); 
 	$wp_upload_dir = wp_upload_dir();
 	if (!is_writable($wp_upload_dir['path'])) {
-		echo 'Error: <b>'.$wp_upload_dir['path'].'</b> must be writable!!!';
+		echo '<div id="message" class="error"><p>' .$wp_upload_dir['path'].'</b> must be writable!!!</p></div>';
 		return;
 	}
-	
-	$attachment = array(
-		'guid' => $wp_upload_dir['url'] . '/' . basename( $filename ), 
-		'post_mime_type' => $wp_filetype['type'],
-		'post_title' => 'Featured Image '.$newPostID,
-		'post_content' => '',
-		'post_status' => 'inherit'
-	);
-		
-	$attachment_id = wp_insert_attachment( $attachment, $filename, $newPostID );
-	update_post_meta($newPostID, '_thumbnail_id', $attachment_id);
+	if(appStore_addFeaturedImageToPost ($urlToFeaturedImage,$newPostID,$appID)){
+		echo '<div id="message" class="updated fade"><p>Featured Image saved to Post</p></div>';
+	} else {
+		echo '<div id="message" class="error"><p>Featured Image cound not be saved to Post</p></div>';
+	}
 	
 	echo '<div class="updated settings-error">';
 	if($newPostID) {
@@ -596,8 +601,15 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 		_e('Click here to edit the new post','appStoreAssistant');
 		echo '.</a><br><br>';
 		if(is_array($postCategoriesList)) {
-			_e( "In the following categories",'appStoreAssistant').":<br />";
-			foreach($postCategoriesList as $category) echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $category <br />";
+			if(count($postCategoriesList) > 1) {
+				_e( "In the following categories:",'appStoreAssistant');
+				echo "<br />";
+				foreach($postCategoriesList as $category) echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $category <br />";
+			} else {
+				_e( "In the following category:",'appStoreAssistant');
+				echo " ";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ".$postCategoriesList[0]." <br />";
+			}
 		}
 		
 		
@@ -605,6 +617,45 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 		_e( "There was an error creating your post for",'appStoreAssistant')." <b>$appTitle</b>!";
 	}
 	echo "<br /><br /></div>";
+}
+
+function appStore_addFeaturedImageToPost ($fi_url,$parent_post_id,$appID="App") {
+
+	if(empty($fi_url)) return false;
+	$desc = 'Featured Image '.$parent_post_id."-".$appID."-".date("U");
+	echo '<div id="message" class="updated fade"><p>Featured Image URL: '.$fi_url.'</p></div>';
+
+	$tmp = download_url( $fi_url );
+	preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
+	$file_array['name'] = "FI_".$appID."_".basename($fi_url);
+	$file_array['tmp_name'] = $tmp;
+	if ( is_wp_error( $tmp ) ) {
+		@unlink($file_array['tmp_name']);
+		$file_array['tmp_name'] = '';
+		$error_string = $tmp->get_error_message();
+		echo '<div id="message" class="error"><p>Featured Image File ' . $error_string . '</p></div>';
+		return false;
+	}
+	// do the validation and storage stuff
+	$thumbid = media_handle_sideload( $file_array, $parent_post_id, $desc );
+	// If error storing permanently, unlink
+	if ( is_wp_error($thumbid) ) {
+		@unlink($file_array['tmp_name']);
+		echo sprintf( __( '<span class="errormsg">Error: storing permanently, unlink <b>%s</b>.</span>', 'appStoreAssistant' ),$wp_upload_dir['path'] );
+		$error_string = $thumbid->get_error_message();
+		echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
+		return false;
+	}
+	$setPostFI = set_post_thumbnail( $parent_post_id, $thumbid );			
+	if ( is_wp_error($setPostFI) ) {
+		$error_string = $setPostFI->get_error_message();
+		echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
+		return false;
+	}
+	echo '<div id="message" class="updated fade"><p>Featured Image Set: '.$desc.'</p></div>';
+
+	return true;
+
 }
 
 function appStore_CreateListOfAppsUsedInPosts() {
@@ -625,7 +676,7 @@ function appStore_CreateListOfAppsUsedInPosts() {
 		if(isset($amazon_matches[1][0])) $arrayOfIDs['Amazon'][] = $amazon_matches[1][0];
 
 	
-		//appStore_addFeaturedImage($MyResult);
+		//appStore_addFeaturedImages($MyResult);
 		$postCounter++;
 	}
 	//echo "<hr>------RESULT-----[<pre>".print_r($arrayOfIDs,true)."</pre>]-------------<hr>";
@@ -686,7 +737,8 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$ty
 				if (in_array($appData->trackId, $listOfAlreadyAddediOSIDs)) {
 					$masterList[$i] .= '<br /><font color="red"><b>'.__("You have already added this app.").'</b></font>';
 				} else {
-					$masterList[$i] .= '<br /><button class="appStore-search-find" name="Create Post for this app" type="submit" value="Create Post for this app">Create Post for this app</button>';
+					$string = __('Create Post for this app','appStoreAssistant');
+					$masterList[$i] .= '<input id="appStore-search-find" class="button button-primary" type="submit" value="'.$string.'" name="'.$string.'"></input><br />';
 				}
 			}
 			$masterList[$i] .= "</p></form>";
@@ -718,7 +770,10 @@ function appStore_search_form() {
 	echo '<p>'.__('This will generate a shortcode that you can paste into your POST. You will also have the option to <b>auto-create a post</b> which will include a Featured Image, App Title, Shortcode and Categories. After creation, you will be given a link to edit the post.','appStoreAssistant').'</p>';
 	$mCK = "";$iCK="";$iPCK="";
 	if (!empty($_POST)) {
-		switch ($_POST['type']) {
+		$postType = $_POST['type'];
+		if(is_numeric($_POST['appname'])) $postType = "byID";
+	
+		switch ($postType) {
     	case "iPhone":
 			$Searchtype = __("iPhone/iPod Software",'appStoreAssistant');
 			$shortCodeStart = "[asa_item";
@@ -743,6 +798,12 @@ function appStore_search_form() {
 			$entity = "macSoftware";
 			$mCK = " checked";
 			break;
+    	case "byID":
+			$Searchtype = __("App by ID",'appStoreAssistant');
+			$shortCodeStart = "[asa_item";
+			$entity = "software";
+			$iOSCK = " checked";
+			break;
 		default:
 			$Searchtype = __("iPhone/iPod Software",'appStoreAssistant');
 			$iCK = " checked";
@@ -750,7 +811,6 @@ function appStore_search_form() {
 			$entity = "software";
 		}
 		$SearchTerm = $_POST['appname'];
-		
 		if(!empty($_POST['createPost'])) {
 			appStore_createPostFromAppID($_POST['shortcode'],$_POST['postTitle'],$_POST['postCategories'],$_POST['appID']);
 		}
@@ -758,26 +818,17 @@ function appStore_search_form() {
 		$SearchTerm = "";
 		$iOSCK = " checked";
 	}
-	echo '<div id="searchForm" class="searchForm">';
-		echo '<form action="admin.php?page=appStore_IDsearch" method="POST">';
-		echo '<b>'.__('App Name','appStoreAssistant').':</b> ';
-		
-		$string = __('Find Apps','appStoreAssistant');		
-		echo '<input type="search" name="appname" id="appname" value="'.$SearchTerm.'" size="30"> <button class="appStore-search-find" name="'.$string.'" type="submit" value="'.$string.'">'.$string.'</button><br />';
-			
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> '.__("All iOS",'appStoreAssistant').'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> '.__("Mac",'appStoreAssistant').'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> '.__("Just iPhone/iPod",'appStoreAssistant').'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> '.__("Just iPad",'appStoreAssistant').'';
-		//echo '&nbsp;&nbsp;&nbsp;<button class="appStore-search-find" name="Find Apps" type="submit" value="Find Apps">Find Apps</button>';
-		//echo '</button>';
-		echo '</form>';
-	echo '</div>';
+	
+	appStore_displaySearchForm($iOSCK,$mCK,$iCK,$iPCK);
+	
 	if (!empty($_POST)) {
-
-
 		$checkForDuplicates[] = "000000000"; //Setup array for later use
-		$listOfApps = appStore_getSearchResultsFromApple($entity);
+		if($postType == "byID") {
+			$listOfApps[0] = appStore_get_data( intval($_POST['appname']));
+		} else {			
+			$listOfApps = appStore_getSearchResultsFromApple($entity);
+		}
+		
 		appStore_buildListOfFoundApps($listOfApps,"1",$shortCodeStart,$_POST['type']);
 		if($_POST['type'] == "iOS") {
 			$biggerListOfApps = appStore_getSearchResultsFromApple("iPadSoftware");
@@ -830,7 +881,7 @@ function appStore_get_shortcode_posts() {
     return $posts;
 }
 
-function appStore_addFeaturedImage ($postData) {
+function appStore_addFeaturedImages ($postData) {
 
 	$newPostID = $postData->ID;
 	if(!$newPostID) {
@@ -936,7 +987,7 @@ function appStore_addFeaturedImage ($postData) {
 	}
 
 	if(!$filename) {
-		echo '<font color="red">Error</font>: '.__('No Thumbnails found for App ID','appStoreAssistant').' '.$appID.'<br /> - - '.__('Images may be missing or in the wrong format.','appStoreAssistant');
+		echo '<font color="red">Error</font>: '.__('No Featured Images found for App ID','appStoreAssistant').' '.$appID.'<br /> - - '.__('Images may be missing or in the wrong format.','appStoreAssistant');
 		return;
 	} else {
 		_e( "Featured Image Found",'appStoreAssistant');
@@ -1251,9 +1302,358 @@ function setting_radio_fn() {
 
 
 
+// Add Missing Categories to Posts
+class AddMissingCategories {
+	var $menu_id;
+
+	// Plugin initialization
+	function AddMissingCategories() {
+		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
+		add_action( 'wp_ajax_addmissingcategories', array( &$this, 'ajax_process_categories' ) );
+	}
+
+	// Register the admin page
+	function add_admin_menu() {
+		add_submenu_page( 'appStore_sm_rebuild', 'Add ASA Missing Categories', 'Add Missing Cats', 'manage_options', 'asa-add-missingcats', array(&$this, 'addmc_interface'));
+	}
+
+
+	function addmc_interface() {
+		global $wpdb,$requestedPage;
+
+		echo '<div id="message" class="updated fade" style="display:none"></div>';
+		echo '<div class="wrap regenthumbs">';
+		echo '<!-- Display Plugin Icon, Header, and Description -->';
+		echo '<div class="asa_admin_icon">';
+		echo "<h2>AppStore Assistant Add Missing Categories</h2></div>";
+		echo '<p>'.__('Below is a collection of controls you can use to customize the App Store Assistant plugin','appStoreAssistant').'.</p>';
+		//$requestedPage = 'appStore_sm_utilities';
+		appStore_displayAdminTabs('asa-add-missingcats','defaultTab','');
+
+		// If the button was clicked
+		if ( ! empty( $_POST['asa-add-missingcats'] ) || ! empty( $_REQUEST['ids'] ) ) {
+			// Form nonce check
+			check_admin_referer( 'asa-add-missingcats' );
+			
+			// GET LIST OF POSTS WITH ASA SHORT CODES
+
+			if ( ! empty( $_REQUEST['ids'] ) ) {
+				$postsWithASAshortcodes = array_map( 'intval', explode( ',', trim( $_REQUEST['ids'], ',' ) ) );
+				$ids = implode( ',', $postsWithASAshortcodes );
+			} else {
+				// Directly querying the database is normally frowned upon, but all
+				// of the API functions will return the full post objects which will
+				// suck up lots of memory. This is best, just not as future proof.
+				if ( ! $postsWithASAshortcodes = $wpdb->get_results( "SELECT ID FROM $wpdb->posts WHERE post_type = 'post' ORDER BY ID DESC" ) ) {
+					echo '	<p>' . sprintf( __( "Unable to find any posts. Are you sure <a href='%s'>some exist</a>?", 'appStoreAssistant' ), admin_url( 'upload.php?post_mime_type=image' ) ) . "</p></div>";
+					return;
+				}
+
+				// Generate the list of IDs
+				$ids = array();
+				foreach ( $postsWithASAshortcodes as $postWithASAshortcode )
+					$ids[] = $postWithASAshortcode->ID;
+					$ids = implode( ',', $ids );
+				}
+
+			echo '	<p>' . __( "Please be patient while the Missing Categories for ASA Posts are added. This can take a while, depending on the speed of this server or if you have lots of posts. Do not navigate away from this page until the process is complete.", 'appStoreAssistant' ) . '</p>';
+
+			$count = count( $postsWithASAshortcodes );
+
+			$text_goback = ( ! empty( $_GET['goback'] ) ) ? sprintf( __( 'To go back to the previous page, <a href="%s">click here</a>.', 'appStoreAssistant' ), 'javascript:history.go(-1)' ) : '<br><br>'.sprintf( __( 'To Start Over and try adding categories again <a href="%4$s">click here</a>. %5$s', 'appStoreAssistant' ), "' + rt_successes + '", "' + rt_totaltime + '", "' + rt_errors + '", esc_url( wp_nonce_url( admin_url( 'admin.php?page=asa-add-missingcats' ), 'asa-add-missingcats' ) ) . "' + rt_failedlist + '", $text_goback );;
+			$text_failures = sprintf( __( 'All done! %1$s Posts with missing categories were successfully corrected in %2$s seconds and there were %3$s posts that do not have ASA shortcodes. <br><br>If you think some of the posts that we did not find any ASA Shortcodes for really had them, then try rebuilding again by <a href="%4$s">clicking here</a>. This probably will not do anything, but you can try just incase of a network issue. %5$s', 'appStoreAssistant' ), "' + rt_successes + '", "' + rt_totaltime + '", "' + rt_errors + '", esc_url( wp_nonce_url( admin_url( 'admin.php?page=asa-add-missingcats' ), 'asa-add-missingcats' ) . '&ids=' ) . "' + rt_failedlist + '", $text_goback );
+			$text_nofailures = sprintf( __( 'All done! %1$s Posts with missing categories were corrected in %2$s seconds and there were 0 failures. %3$s', 'appStoreAssistant' ), "' + rt_successes + '", "' + rt_totaltime + '", $text_goback );
+?>
+	<noscript><p><em><?php _e( 'You must enable Javascript in order to proceed!', 'appStoreAssistant' ) ?></em></p></noscript>
+
+	<div id="addmc-bar" style="position:relative;height:25px;">
+		<div id="addmc-bar-percent" style="position:absolute;left:50%;top:50%;width:300px;margin-left:-150px;height:25px;margin-top:-9px;font-weight:bold;text-align:center;"></div>
+	</div>
+
+	<p><input type="button" class="button hide-if-no-js" name="addmc-stop" id="addmc-stop" value="<?php _e( 'Abort Adding Missing Categories', 'appStoreAssistant' ) ?>" /></p>
+
+	<h3 class="title"><?php _e( 'Debugging Information', 'appStoreAssistant' ) ?></h3>
+
+	<p>
+		<?php printf( __( 'Total Posts: %s', 'appStoreAssistant' ), $count ); ?><br />
+		<?php printf( __( 'Posts with ASA shortcodes: %s', 'appStoreAssistant' ), '<span id="addmc-debug-successcount">0</span>' ); ?><br />
+		<?php printf( __( 'Posts without ASA shortcodes: %s', 'appStoreAssistant' ), '<span id="addmc-debug-failurecount">0</span>' ); ?>
+	</p>
+
+	<ol id="addmc-debuglist">
+		<li style="display:none"></li>
+	</ol>
+
+	<script type="text/javascript">
+	// <![CDATA[
+		jQuery(document).ready(function($){
+			var i;
+			var rt_images = [<?php echo $ids; ?>];
+			var rt_total = rt_images.length;
+			var rt_count = 1;
+			var rt_percent = 0;
+			var rt_successes = 0;
+			var rt_errors = 0;
+			var rt_failedlist = '';
+			var rt_resulttext = '';
+			var rt_timestart = new Date().getTime();
+			var rt_timeend = 0;
+			var rt_totaltime = 0;
+			var rt_continue = true;
+
+			// Create the progress bar
+			$("#addmc-bar").progressbar();
+			$("#addmc-bar-percent").html( "0%" );
+
+			// Stop button
+			$("#addmc-stop").click(function() {
+				rt_continue = false;
+				$('#addmc-stop').val("<?php echo $this->esc_quotes( __( 'Stopping...', 'appStoreAssistant' ) ); ?>");
+			});
+
+			// Clear out the empty list element that's there for HTML validation purposes
+			$("#addmc-debuglist li").remove();
+
+			// Called after each resize. Updates debug information and the progress bar.
+			function AddMCUpdateStatus( id, success, response ) {
+				$("#addmc-bar").progressbar( "value", ( rt_count / rt_total ) * 100 );
+				$("#addmc-bar-percent").html( Math.round( ( rt_count / rt_total ) * 1000 ) / 10 + "%" );
+				rt_count = rt_count + 1;
+
+				if ( success ) {
+					rt_successes = rt_successes + 1;
+					$("#addmc-debug-successcount").html(rt_successes);
+					$("#addmc-debuglist").append("<li>" + response.success + "</li>");
+				}
+				else {
+					rt_errors = rt_errors + 1;
+					rt_failedlist = rt_failedlist + ',' + id;
+					$("#addmc-debug-failurecount").html(rt_errors);
+					$("#addmc-debuglist").append("<li>" + response.error + "</li>");
+				}
+			}
+
+			// Called when all images have been processed. Shows the results and cleans up.
+			function AddMCFinishUp() {
+				rt_timeend = new Date().getTime();
+				rt_totaltime = Math.round( ( rt_timeend - rt_timestart ) / 1000 );
+
+				$('#addmc-stop').hide();
+
+				if ( rt_errors > 0 ) {
+					rt_resulttext = '<?php echo $text_failures; ?>';
+				} else {
+					rt_resulttext = '<?php echo $text_nofailures; ?>';
+				}
+
+				$("#message").html("<p><strong>" + rt_resulttext + "</strong></p>");
+				$("#message").show();
+			}
+
+			// Regenerate a specified image via AJAX
+			function AddMC( id ) {
+				$.ajax({
+					type: 'POST',
+					url: ajaxurl,
+					data: { action: "addmissingcategories", id: id },
+					success: function( response ) {
+						if ( response !== Object( response ) || ( typeof response.success === "undefined" && typeof response.error === "undefined" ) ) {
+							response = new Object;
+							response.success = false;
+							response.error = "<?php printf( esc_js( __( 'The rebuild request was abnormally terminated (ID %s). This is likely due to the image exceeding available memory or some other type of fatal error.', 'appStoreAssistant' ) ), '" + id + "' ); ?>";
+						}
+
+						if ( response.success ) {
+							AddMCUpdateStatus( id, true, response );
+						}
+						else {
+							AddMCUpdateStatus( id, false, response );
+						}
+
+						if ( rt_images.length && rt_continue ) {
+							AddMC( rt_images.shift() );
+						}
+						else {
+							AddMCFinishUp();
+						}
+					},
+					error: function( response ) {
+						AddMCUpdateStatus( id, false, response );
+
+						if ( rt_images.length && rt_continue ) {
+							AddMC( rt_images.shift() );
+						}
+						else {
+							AddMCFinishUp();
+						}
+					}
+				});
+			}
+
+			AddMC( rt_images.shift() );
+		});
+	// ]]>
+	</script>
+<?php
 
 
 
+		} else {
+			// No button click? Display the form.
+
+?>
+	<form method="post" action="">
+<?php wp_nonce_field('asa-add-missingcats') ?>
+
+	<p><?php _e( "Use this utility to add missing categories to posts that have ASA Shortcodes. This is useful if you've manually added posts with ASA shortcodes.", 'appStoreAssistant' ); ?></p>
+
+	<p><?php _e( "Adding Missing Categories to posts is NOT reversible.", 'appStoreAssistant' ); ?></p>
+
+	<p>This feature will first check for any posts that use the <b>Mac App Store</b>, <b>iOS App Store</b> or <b>Amazon.com</b> shortcodes. It will then check for missing categories. I will then add any 	missing categories to the post.</p>
+	<p><?php _e( 'To begin, just press the button below.', 'appStoreAssistant '); ?></p>
+
+	<p><input type="submit" class="button hide-if-no-js" name="asa-add-missingcats" id="asa-add-missingcats" value="<?php _e( 'Add Missing Categories to Posts with ASA Shortcodes', 'appStoreAssistant' ) ?>" /></p>
+
+	<noscript><p><em><?php _e( 'You must enable Javascript in order to proceed!', 'appStoreAssistant' ) ?></em></p></noscript>
+
+	</form>
+<?php		
+		}
+	}
+
+	// Process a post ID (this is an AJAX handler)
+	function ajax_process_categories() {
+		@error_reporting( 0 ); // Don't break the JSON result
+
+		header( 'Content-type: application/json' );
+
+		$id = (int) $_REQUEST['id'];
+		$postData = get_post( $id );
+		//if ( ! current_user_can( $this->capability ) )
+			//$this->die_json_error_msg( $postData->ID, __( "Your user account doesn't have permission to process Featured Images.", 'appStoreAssistant' ) );		
+		
+		$postContent = $postData->post_content;
+		$thePostName = $postData->post_title;
+
+		//Adding Missing Category goes here
+		$asaIDs = array();
+		$amazonIDs = array();
+		if(preg_match('/asa_item\ id="/i', $postContent, $matches) || preg_match('/_app\ id="/i', $postContent, $matches) || preg_match('/_app_elements\ id="/i', $postContent, $matches)|| preg_match('/itunes_store\ id="/i', $postContent, $matches)) {
+			$pattern = '/id="([0-9]+)/i';
+			preg_match($pattern, $postContent, $matches, PREG_OFFSET_CAPTURE, 5);
+			$asaIDs[] = $matches[1][0];
+		}
+		if(preg_match('/amazon_item\ asin="/i', $postContent, $matches) || preg_match('/amazon_item_link\ asin="/i', $postContent, $matches) ) {
+			$pattern = '/asin="([a-zA-Z0-9]+)/i';
+			preg_match($pattern, $postContent, $matches, PREG_OFFSET_CAPTURE, 5);
+			$amazonIDs[] = $matches[1][0];
+		}
+		if(preg_match('/asa_item\ link="/i', $postContent, $matches) || preg_match('/_app\ link="/i', $postContent, $matches)) {
+			$pattern = '/id([0-9]+)/i';
+			preg_match($pattern, $postContent, $matches, PREG_OFFSET_CAPTURE, 3);
+			$asaIDs[] = $matches[1][0];
+		}
+		$idsFound = count($asaIDs) + count($amazonIDs);
+		if($idsFound < 1 ) die( json_encode( array( 'error' => sprintf( __( '<span class="passivemsg">Skipping: No App IDs or Amazon ASINs found for post %s. (<a href="post.php?post=%s&action=edit">%s</a>)</span>', 'appStoreAssistant' ), esc_html( $thePostName ),$id,$id ) ) ) );
+		@set_time_limit( 900 ); // 5 minutes per post should be PLENTY
+		if(!$thePostName) die( json_encode( array( 'error' => sprintf( __( '<span class="errormsg">Skipping: No Post Title found for post ID (<a href="post.php?post=%s&action=edit">%s</a>)</span>', 'appStoreAssistant' ),$id,$id ) ) ) );
+
+		if(count($asaIDs) > 0) { // Process asaIDs
+			$appID = $asaIDs[0];
+			$appData = appStore_get_data( $appID );
+			$categories = $appData->genres;
+			
+			$post_categories = wp_get_post_categories( $id );
+			$cats = array();
+			foreach($post_categories as $c){
+				$cat = get_category( $c );
+				$categories[] = $cat->name;
+			}
+			//$logEntry .= "----Filename:$thumb_url\r\r";
+			//$logEntry .= "----FileArray:".print_r($appData,true)."\r\r";
+			//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
+
+			$appCategories = array_unique($categories);
+			foreach($appCategories as $appCategory) {
+		
+				$term_id = term_exists( $appCategory, 'category' );
+				if(is_array($term_id)) {
+					$postCategories[] = $term_id['term_id'];
+					$postCategoriesList[] = $appCategory;
+				} elseif(appStore_setting('newPost_addCategories')=="yes") {				
+					$postCategoriesList[] = $appCategory.' <font color="red">(NEW)</font>';
+					$newCategoryID = wp_create_category($appCategory);
+					if($newCategoryID) $postCategories[] = $newCategoryID;
+				}
+			}
+			$postCategoriesList = implode(",",$postCategoriesList);
+		
+		$postUpdate = wp_set_post_terms( $id, $postCategories, 'category',false);	
+
+		if(is_array($postUpdate)) die( json_encode( array( 'success' => sprintf( __( '<span class="successmsg">Updated Apple App Store App "<b>%s</b>" (%s)  with categories: %s</span>', 'appStoreAssistant' ), esc_html( $thePostName ),$id,$postCategoriesList ) ) ) );
+		}
+
+		if(count($amazonIDs) > 0) { // Process amazonIDs
+			$amazonItem = appStore_get_amazonData($amazonIDs[0]);
+			// New code Starts here
+			$categories[] = $amazonItem['ProductGroup'];
+			$post_categories = wp_get_post_categories( $id );
+			$cats = array();
+			foreach($post_categories as $c){
+				$cat = get_category( $c );
+				$categories[] = $cat->name;
+			}
+
+			//$logEntry = "----FileArray:".print_r($amazonItem,true);
+			$appCategories = array_unique($categories);
+			foreach($appCategories as $appCategory) {
+		
+				$term_id = term_exists( $appCategory, 'category' );
+				if(is_array($term_id)) {
+					$postCategories[] = $term_id['term_id'];
+					$postCategoriesList[] = $appCategory;
+				} elseif(appStore_setting('newPost_addCategories')=="yes") {				
+					$postCategoriesList[] = $appCategory.' <font color="red">(NEW)</font>';
+					$newCategoryID = wp_create_category($appCategory);
+					if($newCategoryID) $postCategories[] = $newCategoryID;
+				}
+			}
+			$postCategoriesList = implode(",",$postCategoriesList);
+		
+		$postUpdate = wp_set_post_terms( $id, $postCategories, 'category',false);	
+		
+			die( json_encode( array( 'success' => sprintf( __( '<span class="successmsg">Updated Amazon Item "<b>%s</b>" (%s) with categories: %s</span>', 'appStoreAssistant' ), esc_html( $amazonItem['Title'] ),$id,$postCategoriesList ) ) ) );
+		
+		}
+
+
+
+
+
+		die( json_encode( array( 'success' => sprintf( __( '&quot;%1$s&quot; (ID %2$s) was successfully resized in %3$s seconds.', 'appStoreAssistant' ), esc_html( $thePostName ), $image->ID, timer_stop() ) ) ) );
+	}
+
+
+	// Helper to make a JSON error message
+	function die_json_error_msg( $id, $message ) {
+		die( json_encode( array( 'error' => sprintf( __( '&quot;%1$s&quot; (ID %2$s) failed to resize. The error message was: %3$s', 'appStoreAssistant' ), esc_html( get_the_title( $id ) ), $id, $message ) ) ) );
+	}
+
+
+	// Helper function to escape quotes in strings for use in Javascript
+	function esc_quotes( $string ) {
+		return str_replace( '"', '\"', $string );
+	}
+
+
+
+}  // END AddMissingCategories
+// Start up this Class
+add_action( 'init', 'AddMissingCategories' );
+function AddMissingCategories() {
+	global $AddMissingCategories;
+	$AddMissingCategories = new AddMissingCategories();
+}
 
 
 
@@ -1272,23 +1672,21 @@ class RebuildFeaturedImages {
 
 	// Register the admin page
 	function add_admin_menu() {
-		add_submenu_page( 'appStore_sm_utilities', 'Rebuild ASA Featured Images', 'Rebuild Featured', 'manage_options', 'asa-rebuild-featuredimages', array(&$this, 'rebuildfi_interface'));
+		add_submenu_page( 'appStore_sm_rebuild', 'Rebuild ASA Featured Images', 'Rebuild Featured', 'manage_options', 'asa-rebuild-featuredimages', array(&$this, 'rebuildfi_interface'));
 	}
-	// The user interface plus thumbnail regenerator
+	// The user interface plus Featured Image regenerator
 	function rebuildfi_interface() {
 		global $wpdb,$requestedPage;
-		?>
 
-		<div id="message" class="updated fade" style="display:none"></div>
-		<div class="wrap regenthumbs">
-		<?php
+		echo '<div id="message" class="updated fade" style="display:none"></div>';
+		echo '<div class="wrap regenthumbs">';
 		echo '<!-- Display Plugin Icon, Header, and Description -->';
 		echo '<div class="asa_admin_icon">';
 		echo "<h2>AppStore Assistant Rebuild Featured Images</h2></div>";
 		echo '<p>'.__('Below is a collection of controls you can use to customize the App Store Assistant plugin','appStoreAssistant').'.</p>';
-		$requestedPage = 'appStore_sm_utilities';
+		//$requestedPage = 'appStore_sm_utilities';
 
-		appStore_displayAdminTabs('appStore_sm_utilities','defaultTab','');
+		appStore_displayAdminTabs('asa-rebuild-featuredimages','defaultTab','');
 
 
 		// If the button was clicked
@@ -1313,8 +1711,8 @@ class RebuildFeaturedImages {
 				$ids = array();
 				foreach ( $images as $image )
 					$ids[] = $image->ID;
-				$ids = implode( ',', $ids );
-			}
+					$ids = implode( ',', $ids );
+				}
 
 			echo '	<p>' . __( "Please be patient while the Featured Images for ASA Posts are rebuilt. This can take a while, depending on the speed of this server or if you have lots of posts. Do not navigate away from this page until the process is complete.", 'appStoreAssistant' ) . '</p>';
 
@@ -1463,7 +1861,7 @@ class RebuildFeaturedImages {
 	<form method="post" action="">
 <?php wp_nonce_field('asa-rebuild-featuredimages') ?>
 
-	<p><?php printf( __( "Use this utility to rebuild Featured Images for posts that have ASA Shortcodes. This is useful if you've changed of the Featured Image dimensions on the <a href='%s'> settings page</a>. Old thumbnails will be kept to avoid any broken images due to hard-coded URLs.", 'appStoreAssistant' ), admin_url( 'admin.php?page=appStore_sm_visual&tab=imagesizes' ) ); ?></p>
+	<p><?php printf( __( "Use this utility to rebuild Featured Images for posts that have ASA Shortcodes. This is useful if you've changed of the Featured Image dimensions on the <a href='%s'> settings page</a>. Old Featured Images will be kept to avoid any broken images due to hard-coded URLs.", 'appStoreAssistant' ), admin_url( 'admin.php?page=appStore_sm_visual&tab=imagesizes' ) ); ?></p>
 
 	<p><?php _e( "Featured Image rebuilding is NOT reversible, but you can just change your Featured Image dimensions back to the old values and then re-run this utility.", 'appStoreAssistant' ); ?></p>
 
@@ -1651,14 +2049,17 @@ class RebuildFeaturedImages {
 	function esc_quotes( $string ) {
 		return str_replace( '"', '\"', $string );
 	}
-}
+} //END RebuildFeaturedImages
 
-// Start up this plugin
+// Start up this Class
 add_action( 'init', 'RebuildFeaturedImages' );
 function RebuildFeaturedImages() {
 	global $RebuildFeaturedImages;
 	$RebuildFeaturedImages = new RebuildFeaturedImages();
 }
+
+
+
 
 // Add Pointers
 add_action( 'admin_enqueue_scripts', 'custom_admin_pointers_header' );
@@ -1730,5 +2131,36 @@ function custom_admin_pointers() {
       ),
    );
 }
+
+function appStore_add_dashboard_widgets() {
+
+	wp_add_dashboard_widget(
+                 'appStore_dashboard_widget',         // Widget slug.
+                 'App Store Assistant: Search for App',         // Title.
+                 'appStore_displaySearchForm' // Display function.
+        );	
+}
+add_action( 'wp_dashboard_setup', 'appStore_add_dashboard_widgets' );
+
+/**
+ * Create the function to output the contents of our Dashboard Widget.
+ */
+function appStore_displaySearchForm($iOSCK = " checked",$mCK = "",$iCK="",$iPCK="") {
+	if(empty($iOSCK)) $iOSCK = " checked";
+	echo '<div id="searchForm" class="searchForm">';
+		echo '<form action="admin.php?page=appStore_IDsearch" method="POST">';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> '.__("All iOS",'appStoreAssistant').'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> '.__("Mac",'appStoreAssistant').'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> '.__("Just iPhone/iPod",'appStoreAssistant').'';
+		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> '.__("Just iPad",'appStoreAssistant').'';
+		echo '<br /><br />';
+		$string = __('Find Apps','appStoreAssistant');
+		echo __('App Name or ID','appStoreAssistant').":</br>";
+		echo '<label id="appname-prompt-text" class="screen-reader-text prompt" for="appname">'.__('App Name','appStoreAssistant').'</label>';
+		echo '<input type="text" name="appname" id="appname" value="'.$SearchTerm.'" autocomplete="off" />';
+		echo '<input id="search-for-appt" class="button button-primary" type="submit" value="'.$string.'" name="'.$string.'"></input>';
+		echo '</form>';
+	echo '</div>';
+} 
 
 ?>
