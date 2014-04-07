@@ -19,154 +19,114 @@ jQuery(function() {
 </script>
 <?PHP
 appStore_CreateListOfAppsUsedInPosts();
+
+
 ?>
 
 <h2 class="asa_admin">Show the following elements in the body of a Single Post</h2>
 <div class="asa_admin">
 		<?php
-    	$appStoreSections = array(
-     		array('ID' => "-----", 'label' => "Collapsible Elements"),
-    		array('ID' => "displayappdescription", 'label' => "App Description"),
-    		array('ID' => "displayappreleasenotes", 'label' => "App Release Notes"),
-    		array('ID' => "displayappdetailssection", 'label' => "Details Section"),
-      		array('ID' => "displayscreenshots", 'label' => "Screen Shots")
-    	);
-    	$appStoreDetails = array(
-    		array('ID' => "-----", 'label' => "Single Elements"),
-    		array('ID' => "displayapptitle", 'label' => "App Name"),
-    		array('ID' => "displayappicon", 'label' => "App Icon"),
-    		array('ID' => "displayappiconbuybutton", 'label' => "App Icon's buy button"),
-    		array('ID' => "displayappbadge", 'label' => "App Store Badge"),
-     		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon"),
-    		array('ID' => "displayappbuybutton", 'label' => "App Buy Button"),
-    		array('ID' => "displaystarrating", 'label' => "App Star Rating"),
-     		array('ID' => "-----", 'label' => "Details Elements"),
-  	 		array('ID' => "displayversion", 'label' => "App Version"),
-     		array('ID' => "displaydevelopername", 'label' => "Developer Name"),
-    		array('ID' => "displaysellername", 'label' => "Seller Name"),
-  			array('ID' => "displayreleasedate", 'label' => "Date Released"),
-     		array('ID' => "displayfilesize", 'label' => "File Size"),
-     		array('ID' => "displayuniversal", 'label' => "Universal App icon"),
- 			array('ID' => "displayadvisoryrating", 'label' => "Advisory Rating"),
- 			array('ID' => "displayappinapppurwarning", 'label' => "Offers In-App Purchases warning (When Available)"),
-   			array('ID' => "displaycategories", 'label' => "App Categories"),
+    	$appStoreElements = array(
+     		array('ID' => "-----", 'label' => "Single Elements"),
+     		array('ID' => "displayapptitle", 'label' => "App Name", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+    		array('ID' => "displayappicon", 'label' => "App Icon", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayappiconbuybutton", 'label' => "App Icon w/ buy button", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+			array('ID' => "displaystarrating", 'label' => "App Star Rating", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE"),
+			array('ID' => "displayappdescription", 'label' => "App Description", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
+    		array('ID' => "displayappreleasenotes", 'label' => "App Release Notes", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
+    		array('ID' => "displayappdetailssection", 'label' => "Details Section", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,CLOSED,OPEN"),
+      		array('ID' => "displayscreenshots", 'label' => "Screen Shots", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,CLOSED,OPEN"),
+      		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
+    		array('ID' => "displayappbadge", 'label' => "App Store Badge", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+     		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_NOTITLE"),
+    		array('ID' => "displayappbuybutton", 'label' => "App Buy Button", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+     		array('ID' => "-----", 'label' => "Details Elements", 'modes' => ""),
+  	 		array('ID' => "displayversion", 'label' => "App Version", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displaydevelopername", 'label' => "Developer Name", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+    		array('ID' => "displaysellername", 'label' => "Seller Name", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+  			array('ID' => "displayreleasedate", 'label' => "Date Released", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+  			array('ID' => "displayprice", 'label' => "Price", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayfilesize", 'label' => "File Size", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayuniversal", 'label' => "Universal App icon", 'modes' => "HIDE,INLINE_NOTITLE"),
+ 			array('ID' => "displayadvisoryrating", 'label' => "Advisory Rating", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+ 			array('ID' => "displayappinapppurwarning", 'label' => "Offers In-App Purchases*", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+   			array('ID' => "displaycategories", 'label' => "App Categories", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE")
     	);  	
  		echo '<div class="appStore_datagrid">';
-		echo '<table><thead><tr><th>Hide</th><th>Regular</th><th>No Title</th><th>Open</th><th>Closed</th><th>Element</th></tr></thead><tbody>';
-		foreach($appStoreSections as $appStoreProperty) {
-			if($appStoreProperty['ID'] == "-----") {
-				echo '<tr class="alt"><td colspan="6">';
-				echo "- ".$appStoreProperty['label']." -";
+		echo '<table><thead><tr><th>Element</th><th>Mode</th></tr></thead><tbody>';
+		foreach($appStoreElements as $appStoreElement) {
+			if($appStoreElement['ID'] == "-----") {
+				echo '<tr class="alt"><td colspan="2">';
+				echo "- ".$appStoreElement['label']." -";
 				echo '</tr>';
 			} else {
-				echo '<tr><td>';
-				echo '<input type="radio" name="appStore_options[';
-				echo $appStoreProperty['ID'];
-				echo ']" value="no"';
-				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
-				echo ' />';
-				echo '</td><td>';
-				echo '<input type="radio" name="appStore_options[';
-				echo $appStoreProperty['ID'];
-				echo ']" value="yes"';
-				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
-				echo ' />';
-				echo '</td><td>';
-				echo '<input type="radio" name="appStore_options[';
-				echo $appStoreProperty['ID'];
-				echo ']" value="notitle"';
-				if ($options[$appStoreProperty['ID']] == "notitle") echo ' checked';
-				echo ' />';
-				echo '</td><td>';
-				echo '<input type="radio" name="appStore_options[';
-				echo $appStoreProperty['ID'];
-				echo ']" value="open"';
-				if ($options[$appStoreProperty['ID']] == "open") echo ' checked';
-				echo ' />';
-				echo '</td><td>';
-				echo '<input type="radio" name="appStore_options[';
-				echo $appStoreProperty['ID'];
-				echo ']" value="closed"';
-				if ($options[$appStoreProperty['ID']] == "closed") echo ' checked';
-				echo ' />';
-				echo '</td><td class="alt">';
-				echo $appStoreProperty['label']."</td></tr>\r";
+				echo "<tr>\r";
+				echo '<td style="text-align:right"><b>'.$appStoreElement['label'].'</b></td>';
+				echo '<td style="text-align:right">';
+				echo '<select name="appStore_options[';
+				echo $appStoreElement['ID'];
+				echo ']">';
+				$AllowedModes = explode(",", $appStoreElement['modes']);
+				if(in_array("HIDE", $AllowedModes)) {
+					echo '<option value="HIDE" ';
+					if ($options[$appStoreElement['ID']] == "HIDE" || $options[$appStoreElement['ID']] == "no") echo 'selected';
+					echo '>Hide Element</option>';
+				}
+				if(in_array("NORM_TITLE", $AllowedModes)) {
+					echo '<option value="NORM_TITLE" ';
+					if ($options[$appStoreElement['ID']] == "NORM_TITLE" || $options[$appStoreElement['ID']] == "yes") echo 'selected';
+					echo '>Normal</option>';
+				}
+				if(in_array("NORM_NOTITLE", $AllowedModes)) {
+					echo '<option value="NORM_NOTITLE" ';
+					if ($options[$appStoreElement['ID']] == "NORM_NOTITLE" || $options[$appStoreElement['ID']] == "notitle" || $options[$appStoreElement['ID']] == "yes") echo 'selected';
+					echo '>Normal No Title</option>';
+				}
+				if(in_array("INLINE_TITLE", $AllowedModes)) {
+					echo '<option value="INLINE_TITLE" ';
+					if ($options[$appStoreElement['ID']] == "INLINE_TITLE") echo 'selected';
+					echo '>Inline</option>';
+				}
+				if(in_array("INLINE_NOTITLE", $AllowedModes)) {
+					echo '<option value="INLINE_NOTITLE" ';
+					if ($options[$appStoreElement['ID']] == "INLINE_NOTITLE") echo 'selected';
+					echo '>Inline No Title</option>';
+				}
+				if(in_array("CLOSED", $AllowedModes)) {
+					echo '<option value="CLOSED" ';
+					if ($options[$appStoreElement['ID']] == "CLOSED" || $options[$appStoreElement['ID']] == "closed") echo 'selected';
+					echo '>Accordion Closed</option>';
+				}
+				if(in_array("OPEN", $AllowedModes)) {
+					echo '<option value="OPEN" ';
+					if ($options[$appStoreElement['ID']] == "OPEN" || $options[$appStoreElement['ID']] == "open") echo 'selected';
+					echo '>Accordion Open</option>';
+				}
+				echo "</select></td></tr>\r";
 			}
 		}
 		
-		echo '<tr><td>';
-		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="no"';
-		if ($options['displaysupporteddevices'] == "no") echo ' checked';
-		echo ' />';
-		echo '</td><td>';
-		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="yes"';
-		if ($options['displaysupporteddevices'] == "yes") echo ' checked';
-		echo ' />';
-		echo '</td><td>';
-		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="notitle"';
-		if ($options['displaysupporteddevices'] == "notitle") echo ' checked';
-		echo ' />';
-		echo '</td><td>';
-		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="open"';
-		if ($options['displaysupporteddevices'] == "open") echo ' checked';
-		echo ' />';
-		echo '</td><td>';
-		echo '<input type="radio" name="appStore_options[displaysupporteddevices]" value="closed"';
-		if ($options['displaysupporteddevices'] == "closed") echo ' checked';
-		echo ' />';
-		echo '</td><td class="alt">Supported Devices: Mode: ';
-		echo '<select name="appStore_options[displaysupporteddevicesType]">';
-		echo '<option value="List" ';
-		if ($options['displaysupporteddevicesType'] == "List") echo 'selected';
-		echo '>Text List</option>';
-		echo '<option value="Minimal" ';
-		if ($options['displaysupporteddevicesType'] == "Minimal") echo 'selected';
-		echo '>Minimal Icons</option>';
-		echo '<option value="Normal" ';
-		if ($options['displaysupporteddevicesType'] == "Normal") echo 'selected';
-		echo '>Normal Icons</option>';
-		echo '</select>';
-		echo "</td></tr>\r";
 
-		foreach($appStoreDetails as $appStoreProperty) {
-			if($appStoreProperty['ID'] == "-----") {
-				echo '<tr class="alt"><td colspan="6">';
-				echo "- ".$appStoreProperty['label']." -";
-				echo '</tr>';
-			} else {
-				echo '<tr><td>';
-				echo '<input type="radio" name="appStore_options[';
-				echo $appStoreProperty['ID'];
-				echo ']" value="no"';
-				if ($options[$appStoreProperty['ID']] == "no") echo ' checked';
-				echo ' />';
-				echo '</td><td>';
-				echo '<input type="radio" name="appStore_options[';
-				echo $appStoreProperty['ID'];
-				echo ']" value="yes"';
-				if ($options[$appStoreProperty['ID']] == "yes") echo ' checked';
-				echo ' />';
-				echo '</td><td>';
-				echo '</td><td>';
-				echo '</td><td>';
-				echo '</td><td class="alt">';
-				echo $appStoreProperty['label']."</td></tr>\r";
-			}
-		}
 		echo '</tbody></table></div>';
 		
 		?>
-<b>Hide</b>: Do not show the element.<br />
-<b>Regular</b>: Show the element in regular text display.<br />
-<b>No Title</b>: Same as Regular except the title is omitted. (Handy for themes that remove formatting.)<br />
-<b>Open</b>: Show the element in an Accordion (starting off open).<br />
-<b>Closed</b>: Show the element in an Accordion (starting off closed).<br />
+		
+<b>Hide Element</b>: Do Not Display this element<br />
+<b>Normal</b>: Display Element Title in H3 tag and Separate Element<br />
+<b>Normal No Title</b>: Same as Normal except the title is omitted. (Handy for themes that remove formatting)<br />
+<b>Inline</b>: Displays Section Title: Description (No new line or Header tag)<br />
+<b>Inline No Title</b>: Same as Inline except the title is omitted<br />
+<b>Accordion Closed</b>: Show the element in an Accordion (starting off closed)<br />
+<b>Accordion Open</b>: Show the element in an Accordion (starting off open)<br />
+<hr>
+<b>*</b>: Displays this warning when available).<br />
 	
 </div>
 <?php
     	$appStoreProperties = array(
     		"appStoreDetail_appName" => "App Name",
     		"appStoreDetail_appIcon" => "App Icon",
+    		"appStoreDetail_appIconBuyButton" => "App Icon w/ Buy Button",
     		"appStoreDetail_appDescription" => "App Description",
     		"appStoreDetail_appReleaseNotes" => "App ReleaseNotes",
     		"appStoreDetail_appBadge" => "App Store Badge",
@@ -177,13 +137,14 @@ appStore_CreateListOfAppsUsedInPosts();
     		"appStoreDetail_appDeviceList" => "Supported Devices List",
    			"appStoreDetail_appBuyButton" => "App Buy Button"
    			);
+			echo "<!--RUNNING -----".print_r($appStoreProperties,true)."-- -->";
 
 		$appDetailsOrder = explode(",", appStore_setting('appDetailsOrder'));
 		$appDetailsOrder = array_filter($appDetailsOrder, 'strlen');
 		
-		if(count($appDetailsOrder) != 11) {
+		if(count($appDetailsOrder) != 12) {
 			//echo "-----".count($appDetailsOrder)."------[<pre>".print_r($appDetailsOrder,true)."</pre>]-------------";
-			$appElements_DefaultList = "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating";
+			$appElements_DefaultList = "appStoreDetail_appName,appStoreDetail_appIcon,appStoreDetail_appDescription,appStoreDetail_appReleaseNotes,appStoreDetail_appBadge,appStoreDetail_appDetails,appStoreDetail_appGCIcon,appStoreDetail_appScreenshots,appStoreDetail_appDeviceList,appStoreDetail_appBuyButton,appStoreDetail_appRating,appStoreDetail_appIconBuyButton";
 			$appDetailsOrder = explode(",",$appElements_DefaultList);
 			$appDetailsOrder = array_filter($appDetailsOrder, 'strlen');
 			//echo "-----".count($appDetailsOrder)."------[<pre>".print_r($appDetailsOrder,true)."</pre>]-------------";

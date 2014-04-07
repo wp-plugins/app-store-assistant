@@ -9,7 +9,7 @@
 			<input type="image" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal - The safer, easier way to pay online!" />
 			<img src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" alt="" width="1" height="1" border="0" />
 		</form>
-		<p>Or you could:</p>
+		<p>and you could:</p>
 		<ul>
 			<li><a href="http://wordpress.org/extend/plugins/app-store-assistant/">Rate the plugin 5★ on WordPress.org</a></li>
 		</ul>
