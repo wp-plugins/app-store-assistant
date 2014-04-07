@@ -1160,11 +1160,11 @@ function displayAppStore_appScreenshots($app,$elementOnly=false) {
 			if(is_single()) {
 				$displayMode = appStore_setting('displayscreenshots');
 			} else {
-				$displayMode = appStore_setting('displaympappdetailssection');
+				$displayMode = appStore_setting('displaympscreenshots');
 			}
 			break;
 		case "ListOfApps":
-				$displayMode = appStore_setting('displayATOMappdetailssection');
+				$displayMode = appStore_setting('displayATOMscreenshots');
 			break;
 	}
 	$valid_Screenshots_iPad = false;

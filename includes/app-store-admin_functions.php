@@ -661,16 +661,19 @@ function appStore_addFeaturedImageToPost ($fi_url,$parent_post_id,$appID="App") 
 function appStore_CreateListOfAppsUsedInPosts() {
 	$MyResults = appStore_get_shortcode_posts();
 	$postCounter = 1;
+	$arrayOfIDs['ASA'][] = "000000000";
 	$arrayOfIDs['iOS'][] = "000000000";
 	$arrayOfIDs['iTunes'][] = "000000000";
 	$arrayOfIDs['Amazon'][] = "000000000";
 
 	foreach($MyResults as $MyResult) {
-		$appIDs = preg_match_all('/_app\ id=\"([^\"]*?)\"/', $MyResult->post_content, $app_matches);
-		$iTunesIDs = preg_match_all('/itunes_store\ id=\"([^\"]*?)\"/', $MyResult->post_content, $iTunes_matches);
-		$amazonIDs = preg_match_all('/amazon_item\ asin=\"([^\"]*?)\"/', $MyResult->post_content, $amazon_matches);
+		preg_match_all('/asa_item\ id=\"([^\"]*?)\"/', $MyResult->post_content, $asa_matches);
+		preg_match_all('/_app\ id=\"([^\"]*?)\"/', $MyResult->post_content, $app_matches);
+		preg_match_all('/itunes_store\ id=\"([^\"]*?)\"/', $MyResult->post_content, $iTunes_matches);
+		preg_match_all('/amazon_item\ asin=\"([^\"]*?)\"/', $MyResult->post_content, $amazon_matches);
 
 
+		if(isset($asa_matches[1][0])) $arrayOfIDs['ASA'][] = $asa_matches[1][0];
 		if(isset($app_matches[1][0])) $arrayOfIDs['iOS'][] = $app_matches[1][0];
 		if(isset($iTunes_matches[1][0])) $arrayOfIDs['iTunes'][] = $iTunes_matches[1][0];
 		if(isset($amazon_matches[1][0])) $arrayOfIDs['Amazon'][] = $amazon_matches[1][0];
@@ -683,12 +686,11 @@ function appStore_CreateListOfAppsUsedInPosts() {
 	return $arrayOfIDs;
 }
 
-
 function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$type){
 	GLOBAL $masterList,$checkForDuplicates;
 	$i = $startKey;
 	$listOfAlreadyAddedIDs = appStore_CreateListOfAppsUsedInPosts();
-	$listOfAlreadyAddediOSIDs = $listOfAlreadyAddedIDs['iOS'];
+	$listOfAlreadyAddediOSIDs = array_merge($listOfAlreadyAddedIDs['ASA'],$listOfAlreadyAddedIDs['iOS']);
 	foreach ($listOfApps as $appData) {
 		$masterList[$i] = "";
 		$count = count(get_object_vars($appData));
@@ -871,7 +873,7 @@ function wpse49871_shortcode_query_filter( $where ){
 }
 function appStore_get_shortcode_posts() {
     add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
-    $posts = get_posts( array(	'posts_per_page'  => 550,
+    $posts = get_posts( array(	'posts_per_page'  => 1550,
     							'post_status' => 'any'
 
     ) );
@@ -1728,7 +1730,7 @@ class RebuildFeaturedImages {
 		<div id="rebuildfi-bar-percent" style="position:absolute;left:50%;top:50%;width:300px;margin-left:-150px;height:25px;margin-top:-9px;font-weight:bold;text-align:center;"></div>
 	</div>
 
-	<p><input type="button" class="button hide-if-no-js" name="rebuildfi-stop" id="rebuildfi-stop" value="<?php _e( 'Abort Resizing Images', 'appStoreAssistant' ) ?>" /></p>
+	<p><input type="button" class="button hide-if-no-js" name="rebuildfi-stop" id="rebuildfi-stop" value="<?php _e( 'Abort Rebuilding Featured Images', 'appStoreAssistant' ) ?>" /></p>
 
 	<h3 class="title"><?php _e( 'Debugging Information', 'appStoreAssistant' ) ?></h3>
 
@@ -1901,7 +1903,7 @@ class RebuildFeaturedImages {
 
 		if(has_post_thumbnail($id)) {
 			$featuredImageURL = wp_get_attachment_url(get_post_thumbnail_id( $id ));
-			if(preg_match('/appstoreassistant_cache|artworkOriginal|artworkUrl/',$featuredImageURL,$matches)) {
+			if(preg_match('/appstoreassistant_cache|artworkOriginal|artworkUrl|asaArtwork/',$featuredImageURL,$matches)) {
 				if(delete_post_meta($id, '_thumbnail_id')) {
 					//Featured Image Removed
 				} else {
@@ -1935,7 +1937,7 @@ class RebuildFeaturedImages {
 
 		if($idsFound < 1 ) die( json_encode( array( 'error' => sprintf( __( '<span class="passivemsg">Skipping: No App IDs or Amazon ASINs found for post %s. (<a href="post.php?post=%s&action=edit">%s</a>)</span>', 'appStoreAssistant' ), esc_html( $thePostName ),$id,$id ) ) ) );
 		@set_time_limit( 900 ); // 5 minutes per image should be PLENTY
-		//Resizing goes here
+		//Rebuilding goes here
 		
 		if(!$thePostName) die( json_encode( array( 'error' => sprintf( __( '<span class="errormsg">Skipping: No Post Title found for post ID (<a href="post.php?post=%s&action=edit">%s</a>)</span>', 'appStoreAssistant' ),$id,$id ) ) ) );
 		
@@ -1947,28 +1949,34 @@ class RebuildFeaturedImages {
 			$appID = $asaIDs[0];
 			$appData = appStore_get_data( $appID );
 			//$filename = $appData->imageFeatured_path;
-			// New code Starts here
-			$thumb_url = $appData->imageFeatured_cached;
+			// New code Starts here			
+			if(appStore_setting('cache_images_locally')=="1") {
+				$urlToFeaturedImage = $appData->imageFeatured_cached;
+			} else {
+				$urlToFeaturedImage = $appData->imageFeatured;
+			}
 			$desc = 'Featured Image '.$id."-".date("U");
 			//$logEntry .= "----Filename:$thumb_url\r\r";
 			//$logEntry .= "----FileArray:".print_r($appData,true)."\r\r";
 			//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
 			
-			if ( ! empty($thumb_url) ) {
-            	$tmp = download_url( $thumb_url );
-				preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
-				$file_array['name'] = "FI_".$appID."_".basename($thumb_url);
+			if ( ! empty($urlToFeaturedImage) ) {
+            	$tmp = download_url( $urlToFeaturedImage );
+				preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $urlToFeaturedImage, $matches);
+				$file_array['name'] = "FI_".$appID."_".basename($urlToFeaturedImage);
 				$file_array['tmp_name'] = $tmp;
 				if ( is_wp_error( $tmp ) ) {
 					@unlink($file_array['tmp_name']);
 					$file_array['tmp_name'] = '';
+					$error_string = $tmp->get_error_message();
+					die( json_encode( array( 'error' => sprintf( __( '<span class="errormsg">Error: Featured Image File ' . $error_string . '(%s)</span>', 'appStoreAssistant' ),$urlToFeaturedImage ) ) ) );
 				}
 				// do the validation and storage stuff
 				$thumbid = media_handle_sideload( $file_array, $id, $desc );
 				// If error storing permanently, unlink
 				if ( is_wp_error($thumbid) ) {
 					@unlink($file_array['tmp_name']);
-					die( json_encode( array( 'error' => sprintf( __( '<span class="errormsg">Error: storing permanently, unlink.</span>', 'appStoreAssistant' ),$wp_upload_dir['path'] ) ) ) );
+					die( json_encode( array( 'error' => sprintf( __( '<span class="errormsg">Error: storing permanently, unlink. (%s)</span>', 'appStoreAssistant' ),print_r($thumbid,true) ) ) ) );
 				}
 			}
         	set_post_thumbnail( $id, $thumbid );			

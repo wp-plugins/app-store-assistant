@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
 Tested up to: 3.8.1
-Stable tag: 6.6.1
+Stable tag: 6.6.2
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -116,6 +116,11 @@ Please let us know of any features you would like added or bugs that need squash
 
 
 == Changelog ==
+
+= 6.6.2 =
+* Fixed: Featured Image rebuild needed an clear cache
+* Fixed: Not finding posts with new shortcodes when doing app search [Thanks Aslan Guseinov]
+* Fixed: Screenshot settings now work on pages with Mutiple Posts  [Thanks Aslan Guseinov]
 
 = 6.6.1 =
 * Added: Dashboard widget "Search for apps"
