@@ -1860,6 +1860,7 @@ function displayAppStore_appIcon ($app,$elementOnly=false){
 				$imageTag = $app->imagePosts_cached;
 			} else {
 				$imageTag = $app->imagePosts;
+				$imgtag_sizeaddon = ' width="'.appStore_setting('appicon_size_posts_w').'" height="'.appStore_setting('appicon_size_posts_h').'"';
 			}		
 			break;
 		case "ListOfApps":
@@ -1868,6 +1869,7 @@ function displayAppStore_appIcon ($app,$elementOnly=false){
 				$imageTag = $app->imageLists_cached;
 			} else {
 				$imageTag = $app->imageLists;
+				$imgtag_sizeaddon = ' width="'.appStore_setting('appicon_size_lists_w').'" height="'.appStore_setting('appicon_size_lists_h').'"';
 			}		
 			break;
 	}
@@ -1878,16 +1880,20 @@ function displayAppStore_appIcon ($app,$elementOnly=false){
 			$imageTag = $app->imageElements_cached;
 		} else {
 			$imageTag = $app->imageElements;
+			$imgtag_sizeaddon = ' width="'.appStore_setting('appicon_size_element_w').'" height="'.appStore_setting('appicon_size_element_w').'"';
 		}		
 	}
 
 	if(appStore_setting('cache_images_locally') == '1') {
 		if(wp_is_mobile()) $imageTag = $app->imageiOS_cached;
 	} else {
-		if(wp_is_mobile()) $imageTag = $app->imageiOS;
+		if(wp_is_mobile()) {
+			$imageTag = $app->imageiOS;
+			$imgtag_sizeaddon = ' width="'.appStore_setting('appicon_size_ios_w').'" height="'.appStore_setting('appicon_size_ios_h').'"';
+		}
 	}
 	$element .= '<a href="'.$app->appURL.'" target="_blank">';
-	$element .= '<img class="appStore-icon" src="'.$imageTag.'" alt="'.$app->trackName.'" />';
+	$element .= '<img class="appStore-icon" src="'.$imageTag.'" alt="'.$app->trackName.'"'.$imgtag_sizeaddon.' />';
 	$element .= '</a>';
 
 	$element = getDisplayCode ($element,"appStore-icon",$displayMode,"App Icon");

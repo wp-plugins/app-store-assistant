@@ -757,8 +757,8 @@ function appStore_getSearchResultsFromApple($entity){
 	$url  = "https://itunes.apple.com/search?term=";
 	$url .= urlencode($_POST['appname'])."&country=us&entity=$entity";
 	//echo $url; //Debug
-	$contents = file_get_contents($url); 
-	$contents = utf8_encode($contents); 
+	$contents = file_get_contents($url);
+	//$contents = utf8_encode($contents); 
 	$foundApps = json_decode($contents);
 	$listOfApps = $foundApps->results;
 	return $listOfApps;
