@@ -1,4 +1,4 @@
-<input type="hidden" name="appStore_options[textboxoptions]" value="PrePositionNumber,PostPositionNumber" />
+<input type="hidden" name="appStore_options[textboxoptions]" value="PrePositionNumber,PostPositionNumber,displayATOMappPositionNumber" />
 
 
 <h2 class="asa_admin">Screenshots</h2>
@@ -14,6 +14,7 @@
 		<div class="asa_admin_element">Character(s) Before Position Number <input type="text" size="3" name="appStore_options[PrePositionNumber]" value="<?php if ($options['PrePositionNumber'] != "EMP") echo $options['PrePositionNumber']; ?>" maxlength="3" /></div>
 		<div class="asa_admin_element">Character(s) After Position Number <input type="text" size="3" name="appStore_options[PostPositionNumber]" value="<?php if ($options['PostPositionNumber'] != "EMP") echo $options['PostPositionNumber']; ?>" maxlength="3" /></div>
 
+	<div class="asa_admin_element">Display Position Number in lists <input type="checkbox" name="appStore_options[displayATOMappPositionNumber]" value="yes" <?php if ($options['displayATOMappPositionNumber'] == "yes") echo 'checked'; ?> /></div>
 
 	</div>
 

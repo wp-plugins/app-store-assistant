@@ -3,8 +3,8 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
-Tested up to: 3.6
-Stable tag: 6.3.2
+Tested up to: 3.8.1
+Stable tag: 6.6.3
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -15,7 +15,7 @@ The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps o
 
 Built-in search for automated Post creation.
 
-When upgrading to a new versin of the plug-in, it is recomment that you rebuild the cache. There is an option in the Utilities tab that will do this for you.
+When upgrading to a new version of the plug-in, it is recommend that you rebuild the cache. There is an option in the Utilities tab that will do this for you.
 
 **Features**
 
@@ -39,6 +39,7 @@ When upgrading to a new versin of the plug-in, it is recomment that you rebuild 
 		* Music Videos
 * Arrange the order of App elements via drag and drop
 * You can now display individual item elements via new shortcode
+* Display an item's icon and short description in RSS/ATOM feed
 * Multi-country support
 * I18n aka Localization is supported via POT file
 * Earn Money with Affiliate Programs
@@ -50,7 +51,7 @@ When upgrading to a new versin of the plug-in, it is recomment that you rebuild 
 	* Button colors and style
 	* Choose which detail elements to display and their order
 	* Adjust App Icon image size
-	* Elements can be displayed in an Accordian (show/hide)
+	* Elements can be displayed in an Accordion (show/hide)
 * Cache detail and images locally for quicker page load times
 * Remove the whole cache or individual items
 * Widget to show ATOM/RSS Feed of Apps
@@ -58,8 +59,6 @@ When upgrading to a new versin of the plug-in, it is recomment that you rebuild 
 * Tested with over 300 Themes
 * Screenshot Lightbox support
 * wp-o-matic plugin support
-
-*-----[Amazon.com functionality is a beta release. **Use this feature with caution!!!**]-----*
 
 There is now a built-in quick search function. It searches for iOS or Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST already titled with the appropriate shortcode already entered.
 
@@ -77,17 +76,13 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Available Shortcodes ==
 
-* [ios_app]: Displays a single iOS app
-* [mac_app]: Displays a single Mac app
-* [itunes_store]: Displays a single item from the iTunes Store
+* [asa_item]: Displays a single iOS app, Mac app or item from the iTunes Store
 * [amazon_item]: Displays a single item from Amazon.com
 * [asaf_atomfeed]: Displays the items from the ATOm feed in a formatted view with the modes iOS, Mac or iTunes
-* [ios_app_list]: Displays Several iOS apps on a single page or post with the modes iOS, Mac, Mixed or iTunes
-* [ios_app_link]: Displays a text only link to the iOS App
-* [ios_app_elements]: Displays any single element of the iOS Apps details
-* [mac_app_link]: Displays a text only link to the Mac App
-* [itunes_store_link]: Displays a text only link to the iTunes item
+* [asa_list]: Displays Several iOS apps, Mac apps or iTunes items on a single page or post
+* [asa_link]: Displays a text only link to the iOS App, Mac app or iTunes Item
 * [amazon_item_link]: Displays a button or text only link to the Amazon Item with the modes text,button or textPrice]. The mode "textPrice" displays "Available from Amazon.com for" ending with price or "View on Amazon.com" if there is no price."
+* [asa_elements] Displays one or more elements for an item
 
 *Full help for shortcodes is displayed in the settings area.*
 
@@ -103,25 +98,170 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Feature Request List ==
 
-* Added: Have an ATOM feed auto create posts from app List
-* Changed: I18n aka Localization is supported via POT file for admin area
-* Added: iTunes breakout of elements
-* Added: Bulk import of Apps [Thanks TesterGP]
-* Added: Change file type to png if tiff supplied by app store WP_Image_Editor
-* Added: Random Post generator (randomally picks an app that you don't already have a post for) [Thanks AslanDoma]
-* Added: Shortcode tags can now overide the Store/Language chosen [Thanks crisf86]
-* Changed: Sped up Reset of Featured Images (Using log system)
-* Changed: Accepted jpeg for images
-* Changed: All images now saved as png
+* Request: Have an ATOM feed auto create posts from app List
+* Request: iTunes breakout of elements
+* Request: Bulk import of Apps [Thanks TesterGP]
+* Request: Change file type to png if tiff supplied by app store WP_Image_Editor
+* Request: Random Post generator (randomly picks an app that you don't already have a post for) [Thanks AslanDoma]
+* Request: Shortcode tags can now override the Store/Language chosen [Thanks crisf86]
+* Request: Sped up Reset of Featured Images (Using log system)
+* Request: All images now saved as png
 		http://bhoover.com/wp_image_editor-wordpress-image-editing-tutorial/
-* Changed: Reset Featured Images now saves to log
-* Added: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
+* Request: Reset Featured Images now saves to log
+* Request: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
+* Request: Option to search for Apps no longer available and change post to "Pending Review"
+* Added: ----------------Option to rebuild cache same method as FI Rebuild
+* Request: iBooks support [Thanks rnakoneshny]
+* Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
+
 
 == Changelog ==
 
-= 6.3.2 =
+= 6.6.3 =
+* Changed: If caching is turned off, a width & height parameter is added to img tags for icons [Thanks tamansu]
+* Changed: Turned off UTF-8 Encoding of results from Apple Search API.
+
+= 6.6.2 =
+* Fixed: Featured Image rebuild needed an clear cache
+* Fixed: Not finding posts with new shortcodes when doing app search [Thanks Aslan Guseinov]
+* Fixed: Screenshot settings now work on pages with Multiple Posts  [Thanks Aslan Guseinov]
+
+= 6.6.1 =
+* Added: Dashboard widget "Search for apps"
+* Added: You can now search for an app by name or App ID [Thanks Aslan Guseinov]
+* Added: Featured Images now work if cache is disabled
+* Added: Add missing categories to ASA posts [Thanks Aslan Guseinov]
+* Fixed: Featured Image was set to a size of 1x1
+* Changed: Featured Image functions replaced
+* Changed: Cleaned up search form and results
+* Fixed: Links in WP Admin Bar
+* Fixed: ASA Excerpt Builder now processes shortcodes with link instead of id
+* Changed: Moved Rebuild Featured Images to Rebuild menu
+* Added: I18n aka Localization is supported via POT file for admin area
+
+= 6.6.0 =
+* Added: Added listing of Tracks for Albums [Thanks kittyj]
+* Added: Tracks names now link to Track preview
+* Added: Now checks for proper PHP version (5.4 or greater)
+* Added: Warning for older PHP versions
+* Added: You can now specify max width and max height for app icons or amazon.com items
+* Added: You can now specify to crop or keey aspect ratio for app icons or amazon.com items
+* Added: Documentation for Amazon.com affiliate program to help section
+* Added: You can now set the Max size for iPad & iPhone screenshots [Thanks tkrones]
+* Added: You can now set the Max size for Amazon.com items
+* Fixed: Amazon.com cached images not displaying after update
+* Added: ProductGroup eBooks for Amazon.com items
+* Fixed: Issues with RSS feed not displaying app info
+* Added: Additional error checking for Amazon.com responses
+* Fixed: Unchecking "Enable Lightbox" would not save preference [Thanks Jomasher]
+* Fixed: Elements not displaying [Thanks Jomasher]
+* Fixed: Issue with "&#65533;" character displaying in Amazon.com descriptions
+* Changed: Cleaned up text coming from Amazon.com feeds
+* Fixed: Issue with conflicting functions [Thanks JacobN]
+* Fixed: Issue displaying Rating Info if there were now ratings (zero stars)
+* Fixed: Issue with RSS feed not respecting settings for short description or icon
+* Fixed: Issue with Album of Software
+
+= 6.5.5 =
+* Private beta only
+
+= 6.5.4 =
+* Internal beta only
+
+= 6.5.3 =
+* Internal beta only
+
+= 6.5.2 =
+* Changed: Added transition to buttons
+* Changed: Replaced custom check for mobile browser with built-in WordPress function
+* Changed: New method to report ASA Version number
+* Added: New check box style for important options (iOS 7 style)
+* Fixed: Issue with iTunes items displaying when missing item info
+* Fixed: Issue with image cache not saving settings
+* Fixed: Issue with Amazon.com item data cacheing
+* Fixed: Apps without iPad or iPhone screenshots were generating an error
+* Updated: Localization of amazon.com items
+
+= 6.5.1 =
+* Fixed: Minor bugs fixed
+
+= 6.5.0 =
+* Changed: New simplified method of choosing which elements to display [IMPORTANT: CHECK YOUR SETTINGS]
+* Added: Description of the "Assisted By" link added to Main Page
+* Changed: The "Assisted By" link is off by default
+* Added: Italian Translation [Thanks to Angelo Furnò (giankikine for the web ;)]
+* Changed: Completely replaced and optimized code to Rebuild Featured Images
+* Added: Additional frequently used items to + New Post menu
+* Added: Omnisearch results, your visitors can now search for any app from the app store. (optional)
+* Updated: Lightbox 2.6 <http://lokeshdhakar.com/projects/lightbox2/>
+* Added: Ability to not include Lightbox (Enabled by default). May be included in other plugins.
+* Changed: Accepted jpeg (as opposed to jpg) for images (did not work with caching system)
+* Removed: References to discontinued Affiliate programs Linkshare & DGM
+* Fixed: Code to remove Featured Images from older versions
+* Added: Now removes all Featured Images set by this plugin
+* Changed: Nicer buttons with shadow
+* Fixed: iosUniversal not displaying properly
+* Fixed: Various PHP 5 strict errors
+* Fixed: Widget icon not showing
+* Fixed: Widget icon not respecting size set in preferences
+* Changed: Widget now uses same button colors & style as posts
+* Added: You can now change the number of apps displayed in widget
+* Fixed: Searching for Mac apps (Actually this was fixed by Apple)
+* Changed: Adjusted size of icon in search results to allow for new larger icons
+* Changed: Optimized code to cache images
+* Changed: Changed file names for cached images
+* Changed: Search/Add now uses new shortcode
+* Added: Check for writeable directory during featured image creation
+* Changed: Featured Images are saved in the cache folder sized to theme specs
+* Fixed: If original item image was too small, various sizes were not created
+* Added: Price now available in Details list
+* Added: Separate App Icon with Buy Button now available
+* Added: Inline elements as option for Single and Multiple posts
+
+
+= 6.4.2 =
+* Added: Ability to add an Item's icon to your RSS/ATOM feed
+* Added: Ability to add an Item's short description to your RSS/ATOM feed
+* Added: Choose the icon size for RSS/ATOM feed
+* Changed: Clarified some text on the settings panels
+
+= 6.4.1 =
+* Fixed: Issue with icon not displaying properly in some themes
+* Updated: Screenshots
+
+= 6.4.0 =
+* Added: New universal type shortcodes [asa_item,asa_list,asa_link,asa_elements]
+* Added: iOS 7 Style Dot Ratings
+* Changed: Updated Star Rating graphics
+* Added: Now supports half-star ratings
+* Removed: Deprecated the following shortcodes [ios_app,mac_app,itunes_store,ibooks_store,ios_app_elements]
+* Removed: Deprecated the following shortcodes [ios_app_list,ios_app_link,itunes_store_link,mac_app_link]
+* Note: Deprecated shortcodes are still functional in this version, but replacing them is suggested!!!
+* Changed: Optimized item output processing
+* Changed: Added support for future Item Types and Apple Stores
 * Added: Option to display a Position Number for the results from a ATOM feed [Thanks 2020media]
-* Added: You can specify the characters before and after the Position Number ie "# 5", "5)" etc.
+* Added: You can specify the characters before and after the Position Number i.e. "# 5", "5)" etc.
+* Changed: New iOS 7 Game Center icon with transparent background
+* Added: Text below Game Center icon
+* Added: Additional CSS elements for finer control
+* Fixed: Issue with SimplePie returning RSS feed sorted by date (Apps now show in order)
+* Changed: Optimized RSS processing for faster results
+* Fixed: Some terrible spelling errors in this readme file [Thanks Auto-correct]
+* Fixed: Issue with TV Episodes listing TV Season for chosen show
+* Removed: The mode tag in RSS shortcode has been deprecated and is handled automatically
+* Changed: Updated buttons in Editor with icons
+* Changed: Simplified shortcode documentation
+* Changed: Removed "View in iTunes..." from price buttons due to small iTunes icons. It looks better now.
+* Changed: Now uses new TradeDoubler link format [Thanks trondR]
+* Added: Now correct for RSS links that have erroneousness trailing slashes
+* Changed: Removed older, unused functions
+* Fixed: New App creation text
+* Added: Icons for iPhone 5c & iPhone 5s
+* Fixed: Issue with illformed results from Apple JSON data
+* Fixed: Rare instance when App does not list a Genre
+* Fixed: Issue with non-cached images not having correct URL [Thanks kieuphongeg]
+* Added: Links between Admin/Settings pages
+* Fixed: appDetails element not displaying properly [Thanks trondR]
 
 = 6.3.1 =
 * Changed: Requires WordPress 3.6 or higher (Older installations please use version 6.2.1)
@@ -304,10 +444,10 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: Lightbox for display of Screenshots
 * Added: Cacheing of Amazon Product data and images
 * Added: Sends Featured Image to Themes that request it (handy for related posts)
-* Added: option to show thumbnail as app icon or small product image in excerpt
+* Added: option to show Featured Image as app icon or small product image in excerpt
 * Added: option to show "Read More" link in excerpt
 * Updated: Amazon Product code to better handle foreign characters
-* Added: thumbnail support for iTunes products
+* Added: Featured Image support for iTunes products
 * Changed: Unified Cache directory with sub folders for each type of store
 * Changed: Optimized Cacheing system
 * Changed: Optimized image storing
@@ -555,6 +695,10 @@ In Version 5.6 the Cacheing system has been replaced. It is recommended that you
 In Version 6.0.6 the Image system has been replaced. It is recommended that you clear the caches AFTER upgrading.
 
 In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply). THIS VERSION REQUIRES WordPress 3.6 or later!!!!!
+
+In Version 6.4.0 Deprecated the following shortcodes [ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link]. Deprecated shortcodes are still functional in this version, but REPLACING THEM IS SUGGESTED!!!
+
+In Version 6.5.0 It is NECESSARY to reselect the elements to display.
 
 == Note ==
 
