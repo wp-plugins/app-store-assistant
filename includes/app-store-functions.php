@@ -338,12 +338,12 @@ function add_asa_mce_button() {
 }
 
 function register_asa_mce_button($buttons) {
-   array_push($buttons, "|", "asa_app", "itunes_store", "asaf_atomfeed");
+   array_push($buttons, "|", "asa_app", "itunes_store", "asaf_atomfeed","asa_amazon");
    return $buttons;
 }
 
 function add_asa_mce_tinymce_plugin($plugin_array) {
-   $plugin_array['asa_mce'] = plugins_url( 'js_functions/editor_plugin.js', ASA_MAIN_FILE );
+   $plugin_array['asa_mce'] = plugins_url( 'js_functions/mce.plugin.js', ASA_MAIN_FILE );
    return $plugin_array;
 }
 
@@ -1950,6 +1950,7 @@ function displayAppStore_appIconBuyButton ($app,$elementOnly=false){
 	$element .= '<br /><a type="button" href="'.$app->appURL.'" value="App Store Buy Button" class="appStore-Button BuyButton" target="_blank">';
 	$element .= ''.$app->TheAppPrice.'</a>';
 	$element .= '</div>';
+	$element .= '<div style="clear:both;">&nbsp;</div>';
 	$element = getDisplayCode ($element,"appStore-icon",$displayMode,"App Icon");
 
 	return $element;		

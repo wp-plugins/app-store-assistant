@@ -44,9 +44,10 @@ if (version_compare(phpversion(), '5.4', '<')) {
 			<option value="SEK" <?php if ($options['currency_format'] == "SEK") echo 'selected'; ?>>Sweden Krona (kr)</option>
 			<option value="JPY" <?php if ($options['currency_format'] == "JPY") echo 'selected'; ?>>Japan Yen &yen;</option>
 		</select></div>
-		<div class="asa_admin_element">Show results from this country's store: <select name='appStore_options[store_country]'>
+		<div class="asa_admin_element">
+			Show results from this country's store: <select name='appStore_options[store_country]'>
 				<?php
-					$storeCountries = array("US","AT","BE","CH","DE","DK","ES","FI","FR","GB","IE","IT","NL","NO","SE");
+					$storeCountries = array("US","AT","BE","CH","DE","DK","EE","ES","FI","FR","GB","IE","IT","NL","NO","SE");
 					foreach($storeCountries as $storeCountry) {
 						echo '<option value="'.$storeCountry.'" ';
 						if ($options['store_country'] == $storeCountry) echo 'selected'; 
@@ -55,8 +56,28 @@ if (version_compare(phpversion(), '5.4', '<')) {
 					}
 				?>
 				</select><br />
-				<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
+			Show results using this language: <select name='appStore_options[store_language]'>
+			<option value="us" <?php if ($options['store_language'] == "us") echo 'selected'; ?>>English</option>
+			<option value="CZ" <?php if ($options['store_language'] == "CZ") echo 'selected'; ?>>Čeština</option>
+			<option value="DE" <?php if ($options['store_language'] == "DE") echo 'selected'; ?>>Deutsch</option>
+			<option value="ES" <?php if ($options['store_language'] == "ES") echo 'selected'; ?>>Español</option>
+			<option value="ESLA_MX" <?php if ($options['store_language'] == "ESLA_MX") echo 'selected'; ?>>Español Latino</option>
+			<option value="FR" <?php if ($options['store_language'] == "FR") echo 'selected'; ?>>Français</option>
+			<option value="IT" <?php if ($options['store_language'] == "IT") echo 'selected'; ?>>Italiano</option>
+			<option value="NO" <?php if ($options['store_language'] == "NO") echo 'selected'; ?>>Norsk</option>
+			<option value="PL" <?php if ($options['store_language'] == "PL") echo 'selected'; ?>>Polski</option>
+			<option value="ru" <?php if ($options['store_language'] == "ru") echo 'selected'; ?>>Pусский</option>
+			<option value="FI" <?php if ($options['store_language'] == "FI") echo 'selected'; ?>>Suomi</option>
+			<option value="SE" <?php if ($options['store_language'] == "SE") echo 'selected'; ?>>Svenska</option>
+			<option value="FI" <?php if ($options['store_language'] == "FI") echo 'selected'; ?>>Tagalog</option>
+			<option value="AR" <?php if ($options['store_language'] == "AR") echo 'selected'; ?>>العربية</option>
+			<option value="KR" <?php if ($options['store_language'] == "KR") echo 'selected'; ?>>한국어</option>
+			<option value="JP" <?php if ($options['store_language'] == "JP") echo 'selected'; ?>>日本語</option>
+			<option value="CN" <?php if ($options['store_language'] == "CN") echo 'selected'; ?>>简体中文</option>
+			<option value="HK_TW" <?php if ($options['store_language'] == "HK_TW") echo 'selected'; ?>>繁體中文</option>
+				</select><br />
 		</div>
+				<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
 		<div class="asa_admin_element">iTunes/App Stores Badge Language: <select name='appStore_options[store_badge_language]'>
 			<option value="US-UK" <?php if ($options['store_badge_language'] == "US-UK") echo 'selected'; ?>>English</option>
 			<option value="CZ" <?php if ($options['store_badge_language'] == "CZ") echo 'selected'; ?>>Čeština</option>

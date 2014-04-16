@@ -46,6 +46,7 @@ function appStore_add_defaults() {
 		"qty_of_apps" => "10",
 		"ss_size" => "120",
 		"currency_format" => "USD",
+		"store_language" => "us",
 		"store_badge_language" => "US-UK",
 		"appStore_store_badge_type" => "available",
 		"iTunes_store_badge_type" => "available",

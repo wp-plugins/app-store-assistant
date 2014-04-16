@@ -3,8 +3,8 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
-Tested up to: 3.8.1
-Stable tag: 6.6.3
+Tested up to: 3.9
+Stable tag: 6.6.4
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -113,9 +113,15 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: ----------------Option to rebuild cache same method as FI Rebuild
 * Request: iBooks support [Thanks rnakoneshny]
 * Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
+* Request: Add Tags with App/item name to post [Thanks iOSAppLists]
 
 
 == Changelog ==
+
+= 6.6.4 =
+* Added: New Dialog boxes for full control of shortcodes in Editor
+* Changed: Updated for Wordpress 3.9 & Tiny MCE 4.0
+* Added: Amazon.com shortcode creator to Editor
 
 = 6.6.3 =
 * Changed: If caching is turned off, a width & height parameter is added to img tags for icons [Thanks tamansu]
