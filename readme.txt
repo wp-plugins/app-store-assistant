@@ -4,7 +4,7 @@ Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
 Tested up to: 3.9
-Stable tag: 6.6.4
+Stable tag: 6.7.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -118,10 +118,12 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Changelog ==
 
-= 6.6.4 =
+= 6.7.0 =
 * Added: New Dialog boxes for full control of shortcodes in Editor
 * Changed: Updated for Wordpress 3.9 & Tiny MCE 4.0
 * Added: Amazon.com shortcode creator to Editor
+* Added: Additional I18n aka Localization is supported via POT file for admin area
+* Fixed: Correct some display bugs caused by faulty data from Amazon.com
 
 = 6.6.3 =
 * Changed: If caching is turned off, a width & height parameter is added to img tags for icons [Thanks tamansu]

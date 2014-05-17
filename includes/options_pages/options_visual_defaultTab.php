@@ -2,7 +2,7 @@
     	$starColors = array("lt-blue","clear", "black", "blue","yellow","orange-yellow","gold","green","orange","pink","purple","red");
     	?>
 
-    	<h2 class="asa_admin">Full Star</h2>
+    	<h2 class="asa_admin"><?php _e('Full Star', 'appStoreAssistant' ); ?></h2>
 		<?php
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';
@@ -16,7 +16,7 @@
     		echo '&nbsp;&nbsp;&nbsp;';    	
 		}
 		?>
-		<h2 class="asa_admin">Empty Star</h2>
+		<h2 class="asa_admin"><?php _e('Empty Star', 'appStoreAssistant' ); ?></h2>
 		<?php
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';
@@ -32,7 +32,7 @@
 
     	?>
 
-    	<h2 class="asa_admin">Full Rating iOS 7 style</h2>
+    	<h2 class="asa_admin"><?php _e('Full Rating iOS 7 style', 'appStoreAssistant' ); ?></h2>
 		<?php
     	$starColors = array("dot-green","dot-orange","dot-blue", "dot-melon","dot-pink","dot-purple","dot-yellow");
     	foreach ($starColors as $starColor) {
@@ -47,7 +47,7 @@
     		echo '&nbsp;&nbsp;&nbsp;';    	
 		}
 		?>
-		<h2 class="asa_admin">Empty Rating iOS 7 style</h2>
+		<h2 class="asa_admin"><?php _e('Empty Rating iOS 7 style', 'appStoreAssistant' ); ?></h2>
 		<?php
     	foreach ($starColors as $starColor) {
     		echo '<input type="radio" ';

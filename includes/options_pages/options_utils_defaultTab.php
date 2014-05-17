@@ -1,7 +1,15 @@
-<p class="asa_admin_warning">(Cache MUST be ENABLED for this function to work!. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_general&tab=miscellaneous"; ?>">General -> Miscellaneous section</a></b>.)</p>
+<input type="hidden" name="appStore_options[checkboxedoptions]" value="RemoveCachedItem" />
+<p class="asa_admin_warning"><b><?php _e('If you are having trouble with a specific item such as the image not loading or it is showing the wrong price or info, then you can have the system refresh the data. Just enter the ASIN or App ID below.', 'appStoreAssistant' ); ?></b></p>
 
-<p class="asa_admin_warning">If you are sure the Cache is ENABLED, then click here: <b><a href="<?php echo admin_url()."admin.php?page=asa-rebuild-featuredimages"; ?>">Rebuild Featured Images</a></b>.)</p>
+<input type="checkbox" value="DoIt" name="appStore_options[RemoveCachedItem]" /> <?php _e('I want to remove the cached data for the item listed below', 'appStoreAssistant' ); ?>.<br /><br />
 
-<?php
-$showSaveChangesButton = false;
-?>
+<table class="form-table">
+<tr valign="top">
+<th scope="row"><label>App or iTunes ID</label></th>
+<td><input type="text" size="15" name="appStore_options[RemoveCachedItemID]" value="" /></td>
+</tr>
+<tr valign="top">
+<th scope="row"><label>Amazon.com ASIN</label></th>
+<td><input type="text" size="15" name="appStore_options[RemoveCachedItemASIN]" value="" /></td>
+</tr>
+</table>	

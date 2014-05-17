@@ -1,4 +1,4 @@
-<h2 class="asa_admin">Show in Post body</h2>
+<h2 class="asa_admin"><?php _e('Show in Post body', 'appStoreAssistant' ); ?></h2>
    	<div class="asa_admin">
   		<?php
     	$iTunesStoreProperties = array(

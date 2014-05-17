@@ -23,34 +23,34 @@ appStore_CreateListOfAppsUsedInPosts();
 
 ?>
 
-<h2 class="asa_admin">Show the following elements in the body of a Single Post</h2>
+<h2 class="asa_admin"><?php _e('Show the following elements in the body of a Single Post', 'appStoreAssistant' ); ?></h2>
 <div class="asa_admin">
 		<?php
     	$appStoreElements = array(
-     		array('ID' => "-----", 'label' => "Single Elements"),
-     		array('ID' => "displayapptitle", 'label' => "App Name", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
-    		array('ID' => "displayappicon", 'label' => "App Icon", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
-     		array('ID' => "displayappiconbuybutton", 'label' => "App Icon w/ buy button", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
-			array('ID' => "displaystarrating", 'label' => "App Star Rating", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE"),
-			array('ID' => "displayappdescription", 'label' => "App Description", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
-    		array('ID' => "displayappreleasenotes", 'label' => "App Release Notes", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
-    		array('ID' => "displayappdetailssection", 'label' => "Details Section", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,CLOSED,OPEN"),
-      		array('ID' => "displayscreenshots", 'label' => "Screen Shots", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,CLOSED,OPEN"),
-      		array('ID' => "displaysupporteddevices", 'label' => "Supported Devices", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
-    		array('ID' => "displayappbadge", 'label' => "App Store Badge", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
-     		array('ID' => "displaygamecenterenabled", 'label' => "Game Center Enabled icon", 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_NOTITLE"),
-    		array('ID' => "displayappbuybutton", 'label' => "App Buy Button", 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
-     		array('ID' => "-----", 'label' => "Details Elements", 'modes' => ""),
-  	 		array('ID' => "displayversion", 'label' => "App Version", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
-     		array('ID' => "displaydevelopername", 'label' => "Developer Name", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
-    		array('ID' => "displaysellername", 'label' => "Seller Name", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
-  			array('ID' => "displayreleasedate", 'label' => "Date Released", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
-  			array('ID' => "displayprice", 'label' => "Price", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
-     		array('ID' => "displayfilesize", 'label' => "File Size", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
-     		array('ID' => "displayuniversal", 'label' => "Universal App icon", 'modes' => "HIDE,INLINE_NOTITLE"),
- 			array('ID' => "displayadvisoryrating", 'label' => "Advisory Rating", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
- 			array('ID' => "displayappinapppurwarning", 'label' => "Offers In-App Purchases*", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
-   			array('ID' => "displaycategories", 'label' => "App Categories", 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE")
+     		array('ID' => "-----", 'label' => __('Single Elements', 'appStoreAssistant' )),
+     		array('ID' => "displayapptitle", 'label' => __("App Name", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+    		array('ID' => "displayappicon", 'label' => __("App Icon", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayappiconbuybutton", 'label' => __("App Icon w/ buy button", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+			array('ID' => "displaystarrating", 'label' => __("App Star Rating", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE"),
+			array('ID' => "displayappdescription", 'label' => __("App Description", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
+    		array('ID' => "displayappreleasenotes", 'label' => __("App Release Notes", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
+    		array('ID' => "displayappdetailssection", 'label' => __("Details Section", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,CLOSED,OPEN"),
+      		array('ID' => "displayscreenshots", 'label' => __("Screen Shots", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,CLOSED,OPEN"),
+      		array('ID' => "displaysupporteddevices", 'label' => __("Supported Devices", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_TITLE,INLINE_NOTITLE,CLOSED,OPEN"),
+    		array('ID' => "displayappbadge", 'label' => __("App Store Badge", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+     		array('ID' => "displaygamecenterenabled", 'label' => __("Game Center Enabled icon", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_TITLE,NORM_NOTITLE,INLINE_NOTITLE"),
+    		array('ID' => "displayappbuybutton", 'label' => __("App Buy Button", 'appStoreAssistant' ), 'modes' => "HIDE,NORM_NOTITLE,INLINE_NOTITLE"),
+     		array('ID' => "-----", 'label' => __("Details Elements", 'appStoreAssistant' ), 'modes' => ""),
+  	 		array('ID' => "displayversion", 'label' => __("App Version", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displaydevelopername", 'label' => __("Developer Name", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+    		array('ID' => "displaysellername", 'label' => __("Seller Name", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+  			array('ID' => "displayreleasedate", 'label' => __("Date Released", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+  			array('ID' => "displayprice", 'label' => __("Price", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayfilesize", 'label' => __("File Size", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayuniversal", 'label' => __("Universal App icon", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_NOTITLE"),
+ 			array('ID' => "displayadvisoryrating", 'label' => __("Advisory Rating", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+ 			array('ID' => "displayappinapppurwarning", 'label' => __("Offers In-App Purchases", 'appStoreAssistant' ).'*', 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+   			array('ID' => "displaycategories", 'label' => __("App Categories", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE")
     	);  	
  		echo '<div class="appStore_datagrid">';
 		echo '<table><thead><tr><th>Element</th><th>Mode</th></tr></thead><tbody>';
@@ -111,31 +111,31 @@ appStore_CreateListOfAppsUsedInPosts();
 		
 		?>
 		
-<b>Hide Element</b>: Do Not Display this element<br />
-<b>Normal</b>: Display Element Title in H3 tag and Separate Element<br />
-<b>Normal No Title</b>: Same as Normal except the title is omitted. (Handy for themes that remove formatting)<br />
-<b>Inline</b>: Displays Section Title: Description (No new line or Header tag)<br />
-<b>Inline No Title</b>: Same as Inline except the title is omitted<br />
-<b>Accordion Closed</b>: Show the element in an Accordion (starting off closed)<br />
-<b>Accordion Open</b>: Show the element in an Accordion (starting off open)<br />
+<b><?php _e('Hide Element', 'appStoreAssistant' ); ?></b>: <?php _e('Do Not Display this element', 'appStoreAssistant' ); ?><br />
+<b><?php _e('Normal', 'appStoreAssistant' ); ?></b>: <?php _e('Display Element Title in H3 tag and Separate Element', 'appStoreAssistant' ); ?><br />
+<b><?php _e('Normal No Title', 'appStoreAssistant' ); ?></b>: <?php _e('Same as Normal except the title is omitted. (Handy for themes that remove formatting)', 'appStoreAssistant' ); ?><br />
+<b><?php _e('Inline', 'appStoreAssistant' ); ?></b>: <?php _e('Displays Section Title: Description (No new line or Header tag)', 'appStoreAssistant' ); ?><br />
+<b><?php _e('Inline No Title', 'appStoreAssistant' ); ?></b>: <?php _e('Same as Inline except the title is omitted', 'appStoreAssistant' ); ?><br />
+<b><?php _e('Accordion Closed', 'appStoreAssistant' ); ?></b>: <?php _e('Show the element in an Accordion (starting off closed)', 'appStoreAssistant' ); ?><br />
+<b><?php _e('Accordion Open', 'appStoreAssistant' ); ?></b>: <?php _e('Show the element in an Accordion (starting off open)', 'appStoreAssistant' ); ?><br />
 <hr>
-<b>*</b>: Displays this warning when available).<br />
+<b>*</b>Displays this warning when available.<br />
 	
 </div>
 <?php
     	$appStoreProperties = array(
-    		"appStoreDetail_appName" => "App Name",
-    		"appStoreDetail_appIcon" => "App Icon",
-    		"appStoreDetail_appIconBuyButton" => "App Icon w/ Buy Button",
-    		"appStoreDetail_appDescription" => "App Description",
-    		"appStoreDetail_appReleaseNotes" => "App ReleaseNotes",
-    		"appStoreDetail_appBadge" => "App Store Badge",
-    		"appStoreDetail_appDetails" => "App Details",
-    		"appStoreDetail_appRating" => "App Star Rating",
-    		"appStoreDetail_appScreenshots" => "Screen Shots",
-    		"appStoreDetail_appGCIcon" => "Game Center Enabled icon",
-    		"appStoreDetail_appDeviceList" => "Supported Devices List",
-   			"appStoreDetail_appBuyButton" => "App Buy Button"
+    		"appStoreDetail_appName" => __("App Name", 'appStoreAssistant' ),
+    		"appStoreDetail_appIcon" => __("App Icon", 'appStoreAssistant' ),
+    		"appStoreDetail_appIconBuyButton" => __("App Icon w/ Buy Button", 'appStoreAssistant' ),
+    		"appStoreDetail_appDescription" => __("App Description", 'appStoreAssistant' ),
+    		"appStoreDetail_appReleaseNotes" => __("App ReleaseNotes", 'appStoreAssistant' ),
+    		"appStoreDetail_appBadge" => __("App Store Badge", 'appStoreAssistant' ),
+    		"appStoreDetail_appDetails" => __("App Details", 'appStoreAssistant' ),
+    		"appStoreDetail_appRating" => __("App Star Rating", 'appStoreAssistant' ),
+    		"appStoreDetail_appScreenshots" => __("Screen Shots", 'appStoreAssistant' ),
+    		"appStoreDetail_appGCIcon" => __("Game Center Enabled icon", 'appStoreAssistant' ),
+    		"appStoreDetail_appDeviceList" => __("Supported Devices List", 'appStoreAssistant' ),
+   			"appStoreDetail_appBuyButton" => __("App Buy Button", 'appStoreAssistant' )
    			);
 			echo "<!--RUNNING -----".print_r($appStoreProperties,true)."-- -->";
 
@@ -156,9 +156,9 @@ appStore_CreateListOfAppsUsedInPosts();
 ?>		
 		
 		
-<h2 class="asa_admin">Order of Elements</h2>
+<h2 class="asa_admin"><?php _e('Order of Elements', 'appStoreAssistant' ); ?></h2>
 	<div class="asa_admin">
-		Drag the elements into the order you would like them displayed<br />
+		<?php _e('Drag the elements into the order you would like them displayed', 'appStoreAssistant' ); ?><br />
 <ul id="sortable">
 <?php
 

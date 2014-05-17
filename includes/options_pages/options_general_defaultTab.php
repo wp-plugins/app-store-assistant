@@ -4,11 +4,11 @@
 if (version_compare(phpversion(), '5.4', '<')) {
     // php version isn't high enough
 ?>
-<h2 class="asa_admin">Warning!</h2>
+<h2 class="asa_admin"><?php _e('Warning!', 'appStoreAssistant' ); ?></h2>
 	<div class="asa_admin">
 		<div class="asa_admin_element">
 			<p class="asa_admin_warning">Warning: Your PHP version of <?php echo phpversion(); ?> is below the required version 5.4.</p>
-			<p>Some features may not work correctly. It is recommended that you upgrade to a current version.</p>
+			<p><?php _e('Some features may not work correctly. It is recommended that you upgrade to a current version of PHP.', 'appStoreAssistant' ); ?></p>
 
 		</div>
 	</div>
@@ -18,25 +18,25 @@ if (version_compare(phpversion(), '5.4', '<')) {
 
 
 
-<h2 class="asa_admin">Setup</h2>
+<h2 class="asa_admin"><?php _e('Setup', 'appStoreAssistant' ); ?></h2>
 	<div class="asa_admin">
 		<div class="asa_admin_element">
 		
 	<section>
-	  <h3>Show link to plugin site in footer</h3>
+	  <h3><?php _e('Show link to plugin site in footer', 'appStoreAssistant' ); ?></h3>
 	  	<div class="checkboxOne">
 	  		<input type="checkbox" value="yes" id="checkboxOneInput" name="appStore_options[displayLinkToFooter]" <?php if ($options['displayLinkToFooter'] == "yes") echo 'checked'; ?> />
 		  	<label for="checkboxOneInput"></label>
 	  	</div>
 	</section>
 		
-<p class="asa_admin_warning">By selecting the above box, a link will be placed at the bottom of your WordPress site giving credit to this plugin. This link will contain the page that it is displayed on and the version number of the plugin. When the link is clicked it will share this information with our server. The information will allow us to better understand how the plugin is being used and to make further improvements. This is completely optional, and the plug-in will work just fine even if you don't select this option. but we ask that you do select it. If you reset your settings it will be off by default.</p>
-		<p>An Example link for this site would be <?php echo 'http://theiphoneappslist.com/index.php?v='.urlencode(plugin_get_version())."&ac=".urlencode(appStore_setting('affiliatepartnerid')).'&link='.urlencode(site_url()); ?></p></div>
+<p class="asa_admin_warning"><?php _e("By selecting the above box, a link will be placed at the bottom of your WordPress site giving credit to this plugin. This link will contain the page that it is displayed on and the version number of the plugin. When the link is clicked it will share this information with our server. The information will allow us to better understand how the plugin is being used and to make further improvements. This is completely optional, and the plug-in will work just fine even if you don't select this option. but we ask that you do select it. If you reset your settings it will be off by default.", 'appStoreAssistant' ); ?></p>
+		<p><?php _e('An Example link for this site would be', 'appStoreAssistant' ); ?> <?php echo 'http://theiphoneappslist.com/index.php?v='.urlencode(plugin_get_version())."&ac=".urlencode(appStore_setting('affiliatepartnerid')).'&link='.urlencode(site_url()); ?></p></div>
 	</div>
 	
-<h2 class="asa_admin">Localization</h2>
+<h2 class="asa_admin"><?php _e('Localization', 'appStoreAssistant' ); ?></h2>
 	<div class="asa_admin">
-		<div class="asa_admin_element">Currency Type: <select name='appStore_options[currency_format]'>
+		<div class="asa_admin_element"><?php _e('Currency Type', 'appStoreAssistant' ); ?>: <select name='appStore_options[currency_format]'>
 			<option value="USD" <?php if ($options['currency_format'] == "USD") echo 'selected'; ?>>US ($ and &cent;)</option>
 			<option value="EUR" <?php if ($options['currency_format'] == "EUR") echo 'selected'; ?>>Euro (&euro;)</option>
 			<option value="GBP" <?php if ($options['currency_format'] == "GBP") echo 'selected'; ?>>United Kingdom Pound (&pound;)</option>
@@ -45,7 +45,7 @@ if (version_compare(phpversion(), '5.4', '<')) {
 			<option value="JPY" <?php if ($options['currency_format'] == "JPY") echo 'selected'; ?>>Japan Yen &yen;</option>
 		</select></div>
 		<div class="asa_admin_element">
-			Show results from this country's store: <select name='appStore_options[store_country]'>
+			<?php _e("Show results from this country's store", 'appStoreAssistant' ); ?>: <select name='appStore_options[store_country]'>
 				<?php
 					$storeCountries = array("US","AT","BE","CH","DE","DK","EE","ES","FI","FR","GB","IE","IT","NL","NO","SE");
 					foreach($storeCountries as $storeCountry) {
@@ -56,7 +56,7 @@ if (version_compare(phpversion(), '5.4', '<')) {
 					}
 				?>
 				</select><br />
-			Show results using this language: <select name='appStore_options[store_language]'>
+			<?php _e('Show results using this language', 'appStoreAssistant' ); ?>: <select name='appStore_options[store_language]'>
 			<option value="us" <?php if ($options['store_language'] == "us") echo 'selected'; ?>>English</option>
 			<option value="CZ" <?php if ($options['store_language'] == "CZ") echo 'selected'; ?>>Čeština</option>
 			<option value="DE" <?php if ($options['store_language'] == "DE") echo 'selected'; ?>>Deutsch</option>
@@ -77,7 +77,7 @@ if (version_compare(phpversion(), '5.4', '<')) {
 			<option value="HK_TW" <?php if ($options['store_language'] == "HK_TW") echo 'selected'; ?>>繁體中文</option>
 				</select><br />
 		</div>
-				<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
+				<p class="asa_admin_warning">(<?php _e('Cached app data must be cleared for change to take effect', 'appStoreAssistant' ); ?>. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>"><?php _e('Utilities', 'appStoreAssistant' ); ?> -> <?php _e('Clear Cache', 'appStoreAssistant' ); ?></a></b>.)</p>
 		<div class="asa_admin_element">iTunes/App Stores Badge Language: <select name='appStore_options[store_badge_language]'>
 			<option value="US-UK" <?php if ($options['store_badge_language'] == "US-UK") echo 'selected'; ?>>English</option>
 			<option value="CZ" <?php if ($options['store_badge_language'] == "CZ") echo 'selected'; ?>>Čeština</option>
@@ -100,21 +100,28 @@ if (version_compare(phpversion(), '5.4', '<')) {
 		</select></div>
 	</div>
 		
-<h2 class="asa_admin">Cache Settings</h2>
+<h2 class="asa_admin"><?php _e('Cache Settings', 'appStoreAssistant' ); ?></h2>
    	<div class="asa_admin">
 		<div class="asa_admin_element">
 			<section>
-			  <h3>Cache images locally</h3>
+			  <h3><?php _e('Cache images locally', 'appStoreAssistant' ); ?></h3>
 				<div class="checkboxTwo">
 					<input type="checkbox" value="1" id="checkboxTwoInput" name="appStore_options[cache_images_locally]" <?php if ($options['cache_images_locally'] == "1") echo 'checked'; ?> />
 					<label for="checkboxTwoInput"></label>
 				</div>
 			</section>
-			<p class="asa_admin_explain">This will load icons, screenshots, etc. from this server instead of using Apple's CDN server.<br />The <b><?php echo $upload_dir['basedir']; ?></b> directory MUST be writeable for this option to have any effect.</p>
-			<p class="asa_admin_warning">(Cached app data must be cleared for change to take effect. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>">Utilities -> Clear Cache</a></b>.)</p>
-
+			<p class="asa_admin_explain"><?php
+			echo __("This will load icons, screenshots, etc. from this server instead of using Apple's CDN server.", 'appStoreAssistant' );
+			echo '<br />';
+			echo sprintf( __( 'The %s directory MUST be writeable for this option to have any effect', 'appStoreAssistant' ), '<b>'.$upload_dir['basedir'].'</b>');
+			echo '</p>';
+			echo '<p class="asa_admin_warning">(';
+			_e('Cached app data must be cleared for change to take effect', 'appStoreAssistant' );
+			echo '. See <b><a href="'.admin_url().'admin.php?page=appStore_sm_utilities&tab=clearcache" >';
+			echo __('Utilities', 'appStoreAssistant' ).' -> '.__('Clear Cache', 'appStoreAssistant' ).'</a></b>.)</p>';
+			?>
 		</div>
-    	<div class="asa_admin_element">Data cache time: <select name='appStore_options[cache_time_select_box]'>
+    	<div class="asa_admin_element"><?php _e('Data cache time', 'appStoreAssistant' ); ?>: <select name='appStore_options[cache_time_select_box]'>
 			<?php $cache_intervals = array(
 										'Don\'t cache'=>0,
 										'1 minute'=>1*60,
@@ -133,6 +140,6 @@ if (version_compare(phpversion(), '5.4', '<')) {
 			foreach ($cache_intervals as $key => $value) {
 				echo '<option value="' . $value . '" ' . selected($value, $options['cache_time_select_box']) . '>' . $key . '</option>';
 			}?></select><br />
-		<p class="asa_admin_explain">This option determines how long before the plugin requests new data from Apple's servers. You can clear the cached app data via the Utilities section.</p>
+		<p class="asa_admin_explain"><?php _e("This option determines how long before the plugin requests new data from Apple's servers. You can clear the cached app data via the Utilities section.", 'appStoreAssistant' ); ?></p>
 		</div>
 	</div>
