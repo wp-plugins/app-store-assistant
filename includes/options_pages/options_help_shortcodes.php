@@ -1,126 +1,107 @@
-<h2>Shortcodes</h2>
+<h2>Item IDs</h2>
+<h3 class="asa_admin"><?php _e('iOS App ID', 'appStoreAssistant' ); ?>:</h3>
+<i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i><br />
+<?php _e('Works with iOS Apps or Apple TV Apps', 'appStoreAssistant' ); ?>
+<h3 class="asa_admin"><?php _e('iTunes Item', 'appStoreAssistant' ); ?>:</h3>
+<i>https://itunes.apple.com/us/album/aliens-original-motion-picture/id<b>62101268</b></i><br />
+<?php _e('Works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons, AudioBooks, eBooks and Music Videos', 'appStoreAssistant' ); ?>
+<h3 class="asa_admin"><?php _e('Mac App ID', 'appStoreAssistant' ); ?>:</h3>
+<i>https://itunes.apple.com/us/app/1password-password-manager/id<b>443987910</b>?mt=12</i><br />
+<?php _e('Works with Mac Apps', 'appStoreAssistant' ); ?>
+<h3 class="asa_admin">Amazon.com ASIN:</h3>
+The Amazon Standard Identification Number <?php _e('is a 10-character alphanumeric unique identifier assigned by Amazon.com<p>Found in the URL from', 'appStoreAssistant' ); ?> Amazon.com<br /><?php _e('For example', 'appStoreAssistant' ); ?>: <i>http://www.amazon.com/dp/<b>B001KNH8VU</b>/?tag=047-20</i></p>
 
-<h3 class="asa_admin">Display a single item:</h3>
+<hr>
+<h2><?php _e('Shortcodes', 'appStoreAssistant' ); ?></h2>
+
+<h3 class="asa_admin"><?php _e('Display a single item', 'appStoreAssistant' ); ?>:</h3>
 
 <div class="asa_help">
 <ul>
-<li>[ios_app id="568903335" more_info_text="More Info on this App..."]<p>Displays a single iOS app</p>
+<li>[asa_item id="568903335" more_info_text="More Info on this App..."]<p><?php _e('Displays a single Mac/iOS app or iTunes item', 'appStoreAssistant' ); ?></p>
 	<ul>
-	<li>id: The iOS app's App Store ID<p>This can be found in the copied link from the iTunes App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i></p></li>
-	<li>more_info_text: Excerpt "more info" link text (optional)</li>
+	<li>id: <?php _e('The Items Store ID', 'appStoreAssistant' ); ?></li>
+	<li>more_info_text: <?php _e('Excerpt "more info" link text (optional)', 'appStoreAssistant' ); ?></li>
 	</ul>
 </li>
-<li>[mac_app id="443987910" more_info_text="More Info on this Mac App..."]<p>Displays a single Mac app</p>
+<li>[amazon_item asin="B001KNH8VU" more_info_text="More Info on this item from Amazon.com..."]<p><?php _e('Displays a single item from', 'appStoreAssistant' ); ?> Amazon.com</p>
 	<ul>
-	<li>id: The Mac App Store ID<p>This can be found in the copied link from the App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password-password-manager/id<b>443987910</b>?mt=12</i></p></li>
-	<li>more_info_text: Excerpt "more info" link text (optional)</li>
+	<li>asin: The Amazon Standard Identification Number</li>
+	<li>more_info_text: <?php _e('Excerpt "more info" link text (optional)', 'appStoreAssistant' ); ?></li>
 	</ul>
 </li>
-<li>[itunes_store id="62101268" more_info_text="More Info on this iTunes item..."]<p>Displays a single item from the iTunes Store</p>
+<li>[asa_item link="https://itunes.apple.com/us/app/1password/id568903335?mt=8" more_info_text="More Info on this App..."]<p><?php _e('Displays a single Mac/iOS app or iTunes item using a link', 'appStoreAssistant' ); ?>*</p>
 	<ul>
-	<li>id: The iTunes Store ID<p>This can be found in the copied link from the iTunes Store.<br />For example: <i>https://itunes.apple.com/us/album/aliens-original-motion-picture/id<b>62101268</b></i><br />Works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos</p></li>
-	<li>more_info_text: Excerpt "more info" link text (optional)</li>
+	<li>link: <?php _e('The items full URL', 'appStoreAssistant' ); ?></li>
+	<li>more_info_text: <?php _e('Excerpt "more info" link text (optional)', 'appStoreAssistant' ); ?></li>
 	</ul>
 </li>
-<li>[amazon_item asin="B001KNH8VU" more_info_text="More Info on this item from Amazon.com..."]<p>Displays a single item from Amazon.com</p>
-	<ul>
-	<li>asin: The Amazon Standard Identification Number is a 10-character alphanumeric unique identifier assigned by Amazon.com<p>Found in the URL from Amazon.com<br />For example: <i>http://www.amazon.com/dp/<b>B001KNH8VU</b>/?tag=047-20</i></p></li>
-	<li>more_info_text: Excerpt "more info" link text (optional)</li>
-	</ul>
-</li>
-<li>[ios_app link="https://itunes.apple.com/us/app/1password/id568903335?mt=8" more_info_text="More Info on this App..."]<p>Displays a single iOS app using a link*</p>
-	<ul>
-	<li>link: The iOS app's App Store ID<p>This special shortcode was created for users of wp-o-matic.<br />For example: <i>https://itunes.apple.com/us/app/1password/id568903335?mt=8</i></p></li>
-	<li>more_info_text: Excerpt "more info" link text (optional)</li>
-	</ul>
-</li>
-<li>[mac_app link="https://itunes.apple.com/us/app/1password-password-manager/id443987910?mt=12" more_info_text="More Info on this Mac App..."]<p>Displays a single Mac app using a link*</p>
-	<ul>
-	<li>link: The Mac App Store ID<p>This special shortcode was created for users of wp-o-matic.<br />For example: <i>https://itunes.apple.com/us/app/1password-password-manager/id443987910?mt=12</i></p></li>
-	<li>more_info_text: Excerpt "more info" link text (optional)</li>
-	</ul>
-</li>
-*(You will still need to run the Add Featured Images Function, if you want the Featured Image.)<br /><br />
+*(<?php _e('You will still need to run the Add Featured Images Function, if you want the Featured Image.', 'appStoreAssistant' ); ?>)<br /><br />
 </ul>
 
 
-<h3 class="asa_admin">Display several items from a ATOM/RSS Feed:</h3>
+<h3 class="asa_admin"><?php _e('Display several items from a ATOM/RSS Feed', 'appStoreAssistant' ); ?>:</h3>
 	
 <ul>
-<li>[asaf_atomfeed atomurl="http://iTunes.apple.com/us/rss/toppaidmacapps/limit=25" mode="iOS" more_info_text="open in App Store..."]<p>Displays the items from the ATOM feed in a formatted view</p>
+<li>[asaf_atomfeed atomurl="http://iTunes.apple.com/us/rss/toppaidmacapps/limit=25" more_info_text="open in App Store..."]<p><?php _e('Displays the items from the ATOM feed in a formatted view', 'appStoreAssistant' ); ?></p>
 	<ul>
-	<li>atomurl: feed URL supplied by Apple RSS Generator<p>These feeds can be generated here: <i>https://rss.itunes.apple.com/</i>.</p></li>
-	<li>mode: [iOS, Mac or iTunes]</li>
-	<li>more_info_text: Excerpt "more info" link text (optional)</li>
+	<li>atomurl: feed URL supplied by Apple RSS Generator<p><?php _e('These feeds can be generated here', 'appStoreAssistant' ); ?>: <i>https://rss.itunes.apple.com/</i>.</p></li>
+	<li>more_info_text: <?php _e('Excerpt "more info" link text (optional)', 'appStoreAssistant' ); ?></li>
 	</ul>
 </li>
 </ul>
 
 
-<h3 class="asa_admin">Display several items from a list of IDs:</h3>
+<h3 class="asa_admin"><?php _e('Display several items from a list of IDs', 'appStoreAssistant' ); ?>:</h3>
 	
 <ul>
 
-<li>[ios_app_list ids="568903335,62101268,443987910,568903335" more_info_text="open in App Store..." mode="iOS"]<p>Displays Several iOS apps on a single page or post</p>
+<li>[asa_list ids="568903335,62101268,443987910,568903335" more_info_text="open in Store..."]<p><?php _e('Displays Several apps or iTunes items on a single page or post', 'appStoreAssistant' ); ?></p>
 	<ul>
-	<li>ids: Comma separated list iOS app's App Store IDs<p>These can be found in the copied link from the iTunes or Mac App Stores.<br />iOS App example: <i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i><br />iTunes example: <i>https://itunes.apple.com/us/album/aliens-original-motion-picture/id<b>62101268</b></i><br />Mac App example: <i>https://itunes.apple.com/us/app/1password-password-manager/id<b>443987910</b>?mt=12</i></p></li>
-	<li>mode: [iOS, Mac, Mixed or iTunes]<p>Mixed displays both iOS and Mac apps</p></li>
-	<li>more_info_text: Button text</li>
+	<li>ids: <?php _e("Comma separated list Mac App, iOS App's or iTunes IDs", 'appStoreAssistant' ); ?></li>
+	<li>more_info_text: <?php _e('Button text', 'appStoreAssistant' ); ?></li>
 	</ul>
 </li>
 </ul>
 
-<h3 class="asa_admin">Display just a html link to an item:</h3>
+<h3 class="asa_admin"><?php _e('Display just a html link to an item', 'appStoreAssistant' ); ?>:</h3>
 
 <ul>
-	<li>[ios_app_link id="568903335" text="App Name"]<p>Displays a text only link to the iOS App</p>
+	<li>[asa_link id="568903335" text="App Name"]<p><?php _e('Displays a text only link to the App or iTunes item', 'appStoreAssistant' ); ?></p>
 	<ul>
-	<li>id: The iOS app's App Store ID<p>This can be found in the copied link from the iTunes App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i></p></li>
-	<li>text: Link text (optional)<p>If no text is specified, the item name will be displayed.</p></li>
+	<li>id: <?php _e("The app or items's ID", 'appStoreAssistant' ); ?></li>
 	</ul>
 </li>
-<li>[mac_app_link id="443987910" text="App Name"]<p>Displays a text only link to the Mac App</p>
+<li>[amazon_item_link asin="B005F02DA0" linktext="Star Wars Ep. 7" textmode="linktext" mode="text" showprice="yes"]<p><?php _e('Displays the link as a button or text with the Link Text to the Amazon Item', 'appStoreAssistant' ); ?></p>
 	<ul>
-	<li>id: The Mac App Store ID<p>This can be found in the copied link from the App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password-password-manager/id<b>443987910</b>?mt=12</i></p></li>
-	<li>text: Link text (optional)<p>If no text is specified, the item name will be displayed.</p></li>
-	</ul>
-</li>
-<li>[itunes_store_link id="62101268" text="iTunes Item Name"]<p>Displays a text only link to the iTunes Item</p>
-	<ul>
-	<li>id: The iTunes Store ID<p>This can be found in the copied link from the iTunes Store.<br />For example: <i>https://itunes.apple.com/us/album/aliens-original-motion-picture/id<b>62101268</b></i><br />Works with Songs, Albums, Movies, Short Films, TV Episodes, Seasons and Music Videos</p></li>
-	<li>text: Link text (optional)<p>If no text is specified, the item name will be displayed.</p></li>
-	</ul>
-</li>
-<li>[amazon_item_link asin="B005F02DA0" linktext="Star Wars Ep. 7" textmode="linktext" mode="text" showprice="yes"]<p>Displays the link as a button or text with the Link Text to the Amazon Item</p>
-	<ul>
-	<li>asin: The Amazon Standard Identification Number is a 10-character alphanumeric unique identifier assigned by Amazon.com<p>Found in the URL from Amazon.com, for example: <i>http://www.amazon.com/dp/<b>B001KNH8VU</b>/?tag=047-20</i></p></li>
-	<li>linktext: Link text (optional)<p>This will be used for the link if textmode=linktext</p></li>
-	<li>showprice: (optional)<p>If this is set to yes, the price will be shown after the link text</p></li>
+	<li>asin: The Amazon Standard Identification Number</li>
+	<li>linktext: <?php _e('Link text (optional)', 'appStoreAssistant' ); ?><p><?php _e('This will be used for the link if', 'appStoreAssistant' ); ?> textmode=linktext</p></li>
+	<li>showprice: (optional)<p><?php _e('If this is set to yes, the price will be shown after the link text', 'appStoreAssistant' ); ?></p></li>
 	<li>textmode: [<b>linktext</b>, itemname, defaulttext]
 		<p>
-		<b>linktext</b> displays the text specified in linktext<br />
-		<b>defaulttext</b> displays the text specified in Amazon.com settings<br />
-		<b>itemname</b> displays the item name
+		<b>linktext</b> <?php _e('displays the text specified in', 'appStoreAssistant' ); ?> linktext<br />
+		<b>defaulttext</b> <?php _e('displays the text specified in', 'appStoreAssistant' ); ?> Amazon.com <?php _e('settings', 'appStoreAssistant' ); ?><br />
+		<b>itemname</b> <?php _e('displays the item name', 'appStoreAssistant' ); ?>
 		</p>
 	</li>
 	<li>mode: [<b>text</b>, button or both]
 		<p>
-		<b>text</b> displays a text link<br />
-		<b>button</b> displays graphical button for the link<br />
-		<b>both</b> displays both text and a button.<br />
+		<b>text</b> <?php _e('displays a text link', 'appStoreAssistant' ); ?><br />
+		<b>button</b> <?php _e('displays graphical button for the link', 'appStoreAssistant' ); ?><br />
+		<b>both</b> <?php _e('displays both text and a button', 'appStoreAssistant' ); ?>.<br />
 		</p>
 	</li>
 	</ul>
 </li>
 </ul>
 
-<h3 class="asa_admin">Display elements from an item:</h3>
+<h3 class="asa_admin"><?php _e('Display elements from an item', 'appStoreAssistant' ); ?>:</h3>
 
 <ul>
-	<li>[ios_app_elements id="568903335" elements="appName"]<p>Displays the element or elements for the iOS or Mac App</p>
+	<li>[asa_elements id="568903335" elements="appName"]<p><?php _e('Displays the element or elements for the iOS or Mac App', 'appStoreAssistant' ); ?></p>
 	<ul>
-	<li>id: The iOS or Mac app's App Store ID<p>This can be found in the copied link from the iTunes App Store.<br />For example: <i>https://itunes.apple.com/us/app/1password/id<b>568903335</b>?mt=8</i></p></li>
-	<li>elements: One or more of the following items:<br />
+	<li>id: <?php _e("The iOS,  Mac app or iTunes item's ID", 'appStoreAssistant' ); ?></li>
+	<li>elements: <?php _e('One or more of the following items', 'appStoreAssistant' ); ?>:<br />
 	
 <ul>
 <li>appName</li>
@@ -141,4 +122,6 @@
 	</ul>
 </li>
 </ul></div>
-
+<?php
+$showSaveChangesButton = false;
+?>

@@ -1,9 +1,10 @@
-<h2 class="asa_admin">Show in Post body</h2>
+<h2 class="asa_admin"><?php _e('Show in Post body', 'appStoreAssistant' ); ?></h2>
    	<div class="asa_admin">
   		<?php
     	$iTunesStoreProperties = array(
     		array('ID' => "displayitunestitle", 'label' => "Music Title"),
     		array('ID' => "displayitunestrackcount", 'label' => "Track Count"),
+    		array('ID' => "displayitunestracklisting", 'label' => "Track Listing"),
     		array('ID' => "displayitunesartistname", 'label' => "Artist Name"),
     		array('ID' => "displayitunesfromalbum", 'label' => "From Album&hellip;"),
     		array('ID' => "displayitunesgenre", 'label' => "Genre"),
