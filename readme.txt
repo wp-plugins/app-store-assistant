@@ -3,8 +3,8 @@ Contributors: sealsystems
 Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
 Requires at least: 3.6
-Tested up to: 3.9
-Stable tag: 6.7.0
+Tested up to: 3.9.1
+Stable tag: 6.8.0
 License: GPLv3 or later
 
 Lets you display the detail of an item or an RSS feed from Apple's App Store, iTunes Stores or Amazon.com. Affiliate ready.
@@ -115,15 +115,32 @@ Please let us know of any features you would like added or bugs that need squash
 * Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
 * Request: Add Tags with App/item name to post [Thanks iOSAppLists]
 
-
 == Changelog ==
+
+= 6.8.0 =
+* Note: It is NECESSARY to rebuild the cache with this version.
+* Note: It is RECOMMENDED to rebuild the Featured Images with this version.
+* Added: Now available with support for over 150 Countries with multiple languages
+* Added: Now supports larger (600x600) images for iTunes Album Artwork [Thanks Aslan Guseinov]
+* Added: Now supports larger (600x600) images for iTunes Movie Cover Artwork [Thanks Aslan Guseinov]
+* Changed: Added specific display information for various Amazon.com Product Groups
+* Fixed: Error handling with Amazon.com servers
+* Fixed: PHP error with Widgets
+* Fixed: New Amazon.com response format
+* Changed: Improved debugging of Amazon.com response format
+* Added: Additional I18n aka Localization is supported via POT file for Amazon.com items
+* Changed: Amazon.com feed is now process as UTF-8 rather than ISO-8859-1
+* Added: Now retrieves images for Apps
+* Changed: Amazon.com XMP parsing routines
+* Added: Now displays Track information for Single or Multiple Disc sets
+* Fixed: Minor PHP bugs
 
 = 6.7.0 =
 * Added: New Dialog boxes for full control of shortcodes in Editor
 * Changed: Updated for Wordpress 3.9 & Tiny MCE 4.0
 * Added: Amazon.com shortcode creator to Editor
 * Added: Additional I18n aka Localization is supported via POT file for admin area
-* Fixed: Correct some display bugs caused by faulty data from Amazon.com
+* Fixed: Corrected some display bugs caused by faulty data from Amazon.com
 
 = 6.6.3 =
 * Changed: If caching is turned off, a width & height parameter is added to img tags for icons [Thanks tamansu]
@@ -707,6 +724,8 @@ In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://af
 In Version 6.4.0 Deprecated the following shortcodes [ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link]. Deprecated shortcodes are still functional in this version, but REPLACING THEM IS SUGGESTED!!!
 
 In Version 6.5.0 It is NECESSARY to reselect the elements to display.
+
+In Version 6.8.0 It is NECESSARY to rebuild the cache.
 
 == Note ==
 

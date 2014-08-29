@@ -181,7 +181,8 @@ function appStore_post_thumbnail_html( $html) {
 
 function appStore_get_icon_desc($shortcodeData) {
 
-	switch ($shortcodeData['shortcode']) {
+	$shortcode = (isset($shortcodeData['shortcode']) ? $shortcodeData['shortcode'] : 'none');
+	switch ($shortcode) {
 	case "asa_item":
 		$id = $shortcodeData['atts']['id'];	
 		if(!empty($shortcodeData['atts']['link'])) {
@@ -192,7 +193,7 @@ function appStore_get_icon_desc($shortcodeData) {
 		}
 		if($id == "" || !is_numeric($id))return;	
 		$app = appStore_get_data($id);
-		$appFullDescription = $app->description;
+		$appFullDescription = (isset($app->description) ? $app->description : '');
 		$appIcon_url = $app->artworkUrl60;
 		break;
 	case "ios_app":
@@ -212,7 +213,7 @@ function appStore_get_icon_desc($shortcodeData) {
 		$asin = $shortcodeData['atts']['asin'];	
 		if($asin == "")return;	
 		$amazonProduct = appStore_get_amazonData($asin);
-		$appFullDescription = $amazonProduct['Description'];
+		$appFullDescription = (isset($amazonProduct['Description']) ? $amazonProduct['Description'] : '');
 		$appIcon_url = $amazonProduct['SmallImage'];
 		break;
 	case "mac_app":
@@ -247,6 +248,10 @@ function appStore_get_icon_desc($shortcodeData) {
 		$appFullDescription = __('A List of Apps','appStoreAssistant');
 		$appIcon_url = plugins_url( 'images/Apps.jpg', ASA_MAIN_FILE );
 		break;
+	case "none":
+		$appFullDescription = '';
+		$appIcon_url = plugins_url( 'images/Apps.jpg', ASA_MAIN_FILE );
+		break;
 	}
 
 	$appData['appFullDescription'] = $appFullDescription;
@@ -255,7 +260,7 @@ function appStore_get_icon_desc($shortcodeData) {
 }
 
 function appStore_excerpt_filter($text, $excerpt="") {
-	global $post;
+	global $post,$post_id;
 	$originalPost = $post;
 	$postContent = substr($post->post_content,1, 400);
 	$originalExcerpt = esc_attr( get_post_field( 'post_excerpt', $post_id ) );
@@ -302,6 +307,7 @@ function appStore_excerpt_filter($text, $excerpt="") {
 
 function getShortcodeDataFromPost(){
 	global $post;
+	$shortcodeData = '';
 	$postContent = substr($post->post_content,1, 400);
 	$shortcodes = array("asa_item","ios_app", "itunes_store","ibooks_store","mac_app","amazon_item");
 	foreach ($shortcodes as $shortcode) {
@@ -550,6 +556,26 @@ function appStore_format_price($unformattedPrice) {
 	}
 	if($unformattedPrice < 0) $thePrice = __("View Price",'appStoreAssistant');
 	return $thePrice;
+}
+
+function appStore_handler_apple_raw ( $atts,$content=null, $code="" ) {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array('id' => ''), $atts ) );
+
+	//Don't do anything if the ID is blank or non-numeric
+	if($id == "" || !is_numeric($id)) return;	
+
+	$appStore_options_data = appStore_get_data($id);
+	$output = '<div class="debug">';
+	$output .= "RAW DATA FOR $id <br />";
+	$link =  ASA_APPSTORE_URL . $id;
+	$output .= "Using Link $link <br />";
+	$output .= '<pre>';
+	$output .= print_r($appStore_options_data,true);
+	$output .= '</pre>';
+	$output .= '</div>';
+
+	return $output;
 }
 
 function appStore_handler_item ( $atts,$content=null, $code="" ) {
@@ -1848,7 +1874,8 @@ function displayAppStore_appRating($app,$elementOnly=false) {
 
 function displayAppStore_appIcon ($app,$elementOnly=false){
 	// App Artwork	
-	$element ="";
+	$element = '';
+	$imgtag_sizeaddon = '';
 	switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
@@ -2151,6 +2178,8 @@ function appStore_fopen_or_curl($url) {
 }
 function appStore_getBestIcon($appID) {
 	$filename = false;
+	$topChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_600.png";
+	$premiumChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_600.jpg";
 	$firstChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_512.png";
 	$secondChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_512.jpg";
 	$thirdChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_100.png";
@@ -2159,7 +2188,11 @@ function appStore_getBestIcon($appID) {
 	$sixthChoice = CACHE_DIRECTORY."AppStore/".$appID."/artworkOriginal_60.jpg";
 	$lastChoice = dirname( plugin_basename( __FILE__ ) )."/images/CautionIcon.png";
 
-	if (file_exists($firstChoice)) {
+	if (file_exists($topChoice)) {
+		$filename = $topChoice;
+	} elseif (file_exists($premiumChoice)) {
+		$filename = $premiumChoice;
+	} elseif(file_exists($firstChoice)) {
 		$filename = $firstChoice;
 	} elseif(file_exists($secondChoice)) {
 		$filename = $secondChoice;
@@ -2183,6 +2216,13 @@ function appStore_process_imagedata($app) {
 	if($app->wrapperType == "audiobook") $appID = $app->collectionId;
 	if($app->wrapperType == "collection") $appID = $app->collectionId;
 
+	//Get 600x600 artwork for Albums (Hack discovered by Aslan Guseinov)
+	if($app->collectionType == "Album" || $app->kind == "feature-movie") {
+		if(isset($app->artworkUrl100)) {
+			$app->artworkUrl600 = str_replace("100x100", "600x600", $app->artworkUrl100);
+		}	
+	}
+
 	//Save Non-Cached Images incase of problem
 	if(isset($app->screenshotUrls)) $app->screenshotUrls_cached = $app->screenshotUrls;
 	if(isset($app->ipadScreenshotUrls)) $app->ipadScreenshotUrls_cached = $app->ipadScreenshotUrls;
@@ -2199,10 +2239,17 @@ function appStore_process_imagedata($app) {
 		$app->artworkOriginal_100_cached = $app->artworkUrl100;
 		$bestImage = $app->artworkUrl100;
 	}
+	
 	if(isset($app->artworkUrl512)) {
 		$app->artworkOriginal_512_cached = $app->artworkUrl512;
 		$bestImage = $app->artworkUrl512;
 	}
+
+	if(isset($app->artworkUrl600)) {
+		$app->artworkOriginal_600_cached = $app->artworkUrl600;
+		$bestImage = $app->artworkUrl600;
+	}
+		
 	$app->imageFeatured = $bestImage;
 	$app->imageFeatured_cached = $bestImage;
 	$app->imageiOS = $bestImage;
@@ -2235,6 +2282,7 @@ function appStore_process_imagedata($app) {
 		if(isset($app->artworkUrl60)) $urls_to_cache['artworkOriginal_60'] = $app->artworkUrl60;
 		if(isset($app->artworkUrl100)) $urls_to_cache['artworkOriginal_100'] = $app->artworkUrl100;
 		if(isset($app->artworkUrl512)) $urls_to_cache['artworkOriginal_512'] = $app->artworkUrl512;
+		if(isset($app->artworkUrl600)) $urls_to_cache['artworkOriginal_600'] = $app->artworkUrl600;
 		
 		// Cache the original images with new name
 		foreach($urls_to_cache as $urlname=>$url) {

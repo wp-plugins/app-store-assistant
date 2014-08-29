@@ -72,6 +72,22 @@ function appStore_amazon_link_handler ($atts,$content=null, $code="") {
 	return $itemLink;
 }
 
+function appStore_handler_amazon_raw ( $atts,$content=null, $code="" ) {
+	// Get App ID and more_info_text from shortcode
+	extract( shortcode_atts( array('asin' => ''	), $atts ) );
+
+	//Don't do anything if the ASIN is blank or non-numeric
+	if ($asin=='') return;
+	$appStore_options_data = appStore_page_get_amazonXML($asin);
+	$output = '<div class="debug">';
+	$output .= "RAW DATA FOR $asin <br />";
+	$output .= '<pre>';
+	$output .= print_r($appStore_options_data,true);
+	$output .= '</pre>';
+	$output .= '</div>';
+	return $output;
+}
+
 function appStore_amazon_handler( $atts,$content=null, $code="") {
 	// Get App ID and more_info_text from shortcode
 	extract( shortcode_atts( array(
@@ -84,20 +100,7 @@ function appStore_amazon_handler( $atts,$content=null, $code="") {
 	
 	
 	$AmazonProductData = appStore_get_amazonData($asin);	
-
-	switch ($AmazonProductData['ProductGroup']) {
-	case "Book":
-		$amazonDisplayData = asa_displayAmazonBook($AmazonProductData);
-		break;
-	case "eBooks":
-		$amazonDisplayData = asa_displayAmazonBook($AmazonProductData);
-		break;
-	case "DVD":
-		$amazonDisplayData = asa_displayAmazonDisc($AmazonProductData);
-		break;
-	default:
-		$amazonDisplayData = asa_displayAmazonDefault($AmazonProductData);
-	}
+	$amazonDisplayData = appStore_displayAmazonItem($AmazonProductData);
 	return $amazonDisplayData;
 }	
 	
@@ -107,12 +110,11 @@ function appStore_get_amazonData($asin) {
 	$appStore_options = get_option('appStore_amazonData_' . $asin, 'NODATA');		
 	//$appStore_options = 'NODATA'; //SEALDEBUG - ALWAYS REFRESH
 	
-
-	
-	if($appStore_options == 'NODATA' || $appStore_options['next_check'] < time()) {
+	$nextCheck = (isset($appStore_options['next_check']) ? $appStore_options['next_check'] : '');
+	if($appStore_options == 'NODATA' || $nextCheck < time()) {
 		$appStore_options_data = appStore_page_get_amazonXML($asin);
 
-		if($appStore_options_data['Error']) {
+		if(isset($appStore_options_data['Error'])) {
 			$nextCheck = 10;
 		} else {
 			$nextCheck = time() + appStore_setting('cache_time_select_box');
@@ -214,14 +216,20 @@ function appStore_save_amazonImages_locally($productData) {
 				return;
 			}
 		}
-		
-
-		
-		
 		$bestFilePath = appStore_getBestAmazonImage($asin);
 		$bestFilePathParts = pathinfo($bestFilePath);
 		$bestFileName = $bestFilePathParts['filename'];
-		$bestFileExt = $bestFilePathParts['extension'];		
+		$bestFileExt = $bestFilePathParts['extension'];
+				
+		$productData['error'] = true;
+		$productData['errormessage'] = $bestFilePath;
+		return $productData;
+			
+		//Check to see if image exists
+		if (is_writable ( $bestFilePath )) {
+			$x = 1;	
+		}
+				
 		$editor = wp_get_image_editor( $bestFilePath );
  		$size = $editor->get_size();
  		$filePrefix = "asaArtwork_";
@@ -298,8 +306,6 @@ function appStore_save_amazonImages_locally($productData) {
 	return $productData;
 }
 
-
-
 function appStore_page_get_amazonXML($asin) {
 	//Check to see if AWS Info is filled out in Admin Section
 	if(appStore_setting('AWS_API_KEY') == "" || appStore_setting('AWS_API_SECRET_KEY') == "" || appStore_setting('AWS_PARTNER_DOMAIN') == "") {
@@ -348,8 +354,8 @@ function appStore_page_get_amazonXML($asin) {
 	if(isset($pxml["itemlookuperrorresponse"]["error"]["code"])){
 		$apaapi_errors = $pxml["itemlookuperrorresponse"]["error"]["code"]["message"];
 	}
-	
-	if(is_array($pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error'])) {
+		
+	if(isset($pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error'])) {
 		echo "Error processing Amazon.com lookup:<br />";
 		echo $pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error']['Code']."<br />";
 		echo $pxml['ItemLookupResponse']['Items']['Request']['Errors']['Error']['Message']."<br />";
@@ -365,6 +371,7 @@ function appStore_page_get_amazonXML($asin) {
 	}
 
 
+	//print_r($pxml);
 	
 	if($apaapi_errors=='exceeded'){
 		$AmazonProductData[0] = 'Requests Exceeded';
@@ -404,126 +411,14 @@ function appStore_page_get_amazonXML($asin) {
 
 }
 
+function appStore_displayAmazonItem($Data){
+	$displayAmazonItem = "<!-- Default Listing -->";	
 
-function asa_displayAmazonDisc($Data){
-	$displayAmazonDisc = "<!-- Disc Listing -->";
-
-	$displayAmazonDisc .= '<div class="appStore-wrapper"><hr>';
-	$displayAmazonDisc .= '	<div id="amazonStore-icon-container">';
+	//$displayAmazonItem .= '-------SEALDEBUG--------'.print_r($Data,true).'---------------';//Debug
+	$displayAmazonItem .= '<div class="appStore-wrapper"><hr>';
+	$displayAmazonItem .= '	<div id="amazonStore-icon-container">';
 	
-	if(appStore_setting('cache_images_locally') == '1') {
-		$imageTag = $Data['imagePosts_cached'];
-	} else {
-		$imageTag = $Data['imagePosts'];
-	}	
-
-	
-	
-	
-	$displayAmazonDisc .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
-	$displayAmazonDisc .= '</div>';
-
-
-	$displayAmazonDisc .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
-	if ($Data['Cast']) {
-		$displayAmazonDisc .= '<span class="amazonStore-cast">'.$Data['Cast']."</span><br />";
-	}
-	if ($Data['Director']) {
-		$displayAmazonDisc .= '<span class="amazonStore-cast">'.$Data['Director']."<br />";
-	}
-	if ($Data['Description']) {
-		$displayAmazonDisc .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
-	}
-	if ($Data['Status']) {
-		$displayAmazonDisc .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
-	}
-	if ($Data['ListPrice']) {
-		$displayAmazonDisc .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
-		$displayAmazonDisc .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
-	}
-	if ($Data['Amount']) {
-		$displayAmazonDisc .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
-		$displayAmazonDisc .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
-	}
-	if (isset($Data->ItemAttributes->ReleaseDate)) {
-		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Disc Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
-	}
-	if (isset($Data->ItemAttributes->TheatricalReleaseDate)) {
-		$displayAmazonDisc .= '<span class="amazonStore-date">'.__("Theatrical Release",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->TheatricalReleaseDate)).'</span><br />';
-	}
-	if($Data['Studio']) {
-		$displayAmazonDisc .= '<span class="amazonStore-publisher">'.__("From",'appStoreAssistant').': '. $Data['Studio'] .'</span><br />';
-	}
-
-	$displayAmazonDisc .= '<br /><div align="center">';
-	$displayAmazonDisc .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
-	$displayAmazonDisc .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
-	//$displayAmazonDisc .= '<h2>Click here to view this item at Amazon.com</h2>';
-	$displayAmazonDisc .= '</a></div>';
-	$displayAmazonDisc .= '	<div style="clear:left;">&nbsp;</div>';
-	$displayAmazonDisc .= '</div>';
-	return $displayAmazonDisc;
-
-}
-function asa_displayAmazonBook($Data){
-	$displayAmazonBook = "<!-- Book Listing -->";
-
-//$displayAmazonBook .= '-------SEALDEBUG--------'.print_r($Data,true).'---------------';//Debug
-
-	$displayAmazonBook .= '<div class="appStore-wrapper"><hr>';
-	$displayAmazonBook .= '	<div id="amazonStore-icon-container">';
-	if(appStore_setting('cache_images_locally') == '1') {
-		$imageTag = $Data['imagePosts_cached'];
-	} else {
-		$imageTag = $Data['imagePosts'];
-	}		
-	$displayAmazonBook .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
-	$displayAmazonBook .= '</div>';
-
-	$displayAmazonBook .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
-
-	if ($Data['Authors']) {
-		$displayAmazonBook .= '<span class="amazonStore-cast">'.$Data['Authors'].'</span><br />';
-	}
-
-	if ($Data['Description']) {
-		$displayAmazonBook .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
-	}
-	if ($Data['Publisher']) {
-		$displayAmazonBook .= '<span class="amazonStore-publisher">'.__("Publisher",'appStoreAssistant').': '.$Data['Publisher'].'</span><br />';
-	}
-	if ($Data['Status']) {
-		$displayAmazonBook .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
-	}
-	if ($Data['ListPrice']) {
-		$displayAmazonBook .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
-		$displayAmazonBook .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
-	}
-	if ($Data['Amount']) {
-		$displayAmazonBook .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
-		$displayAmazonBook .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
-	}
-	if ($Data['ReleaseDate']) {
-		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data['ReleaseDate'])).'</span><br />';
-	}
-
-	if ($Data['PublishedDate']) {
-		$displayAmazonBook .= '<span class="amazonStore-date">'.__("Published",'appStoreAssistant').': '.date("F j, Y",strtotime($Data['PublishedDate'])).'</span><br />';
-	}
-	$displayAmazonBook .= '<br><div align="center">';
-	$displayAmazonBook .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
-	$displayAmazonBook .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
-	//$displayAmazonBook .= '<h2>Click here to view this item at Amazon.com</h2>';
-	$displayAmazonBook .= '</a></div>';
-	$displayAmazonBook .= '	<div style="clear:left;">&nbsp;</div>';
-	$displayAmazonBook .= '</div>';
-	return $displayAmazonBook;
-}
-
-function asa_displayAmazonDefault($Data){
-	$displayAmazonDefault = "<!-- Default Listing -->";	
-	$displayAmazonDefault .= '<div class="appStore-wrapper"><hr>';
-	$displayAmazonDefault .= '	<div id="amazonStore-icon-container">';
+	//$displayAmazonItem .= $Data['Debug'];
 	
 	if(appStore_setting('cache_images_locally') == '1') {
 		$imageTag = $Data['imagePosts_cached'];
@@ -531,196 +426,314 @@ function asa_displayAmazonDefault($Data){
 		$imageTag = $Data['imagePosts'];
 	}	
 	
-	
-	$displayAmazonDefault .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
-	$displayAmazonDefault .= '</div>';
-	$displayAmazonDefault .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
-	if ($Data['Description']) {
-		$displayAmazonDefault .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
+	$displayAmazonItem .= '    <a href="'.$Data['URL'].'" target="_blank"><img src="'.$imageTag.'" alt="'.$Data['Title'].'" border="0" style="float: right; margin: 10px;" /></a>';
+	$displayAmazonItem .= '</div>';
+	$displayAmazonItem .= '<span class="amazonStore-title">'.$Data['Title']."</span><br />";
+	if (isset($Data['Description'])) {
+		$displayAmazonItem .= '<div class="amazonStore-description">'.$Data['Description'].'</div><br />';
 	}
-	if ($Data['Features']) {
-		$displayAmazonDefault .= '<span class="amazonStore-features-desc">'.__("Features",'appStoreAssistant').':</span>'.$Data['Features'].'<br />';
+	$Feature_s = (isset($Data['Features']) ? $Data['Features'] : '');
+	
+	if (is_array($Feature_s)) {
+		$displayAmazonItem .= '<span class="amazonStore-features-desc">'.__("Details",'appStoreAssistant').':</span><br />';
+		
+		$displayAmazonItem .= "<ul>";
+		foreach ($Feature_s as $Feature) {
+			if (is_array($Feature)) {
+				foreach ($Feature as $Feature_Item) {
+					$displayAmazonItem .= '<li>'.$Feature_Item.'</li>';
+				}
+			} else {
+				$displayAmazonItem .= '<li>'.$Feature.'</li>';
+			}
+		}
+		$displayAmazonItem .= "</ul>";
 	}
 	if ($Data['Manufacturer']) {
-		$displayAmazonDefault .= '<span class="amazonStore-publisher">'.__("Manufacturer",'appStoreAssistant').': '.$Data['Manufacturer']."</span><br />";
+		$displayAmazonItem .= '<span class="amazonStore-publisher">'.__("Manufacturer",'appStoreAssistant').': '.$Data['Manufacturer']."</span><br />";
 	}
 	if ($Data['Status']) {
-		$displayAmazonDefault .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
+		$displayAmazonItem .= '<span class="amazonStore-status">'.__("Status",'appStoreAssistant').': '.$Data['Status'].'</span><br />';
 	}
 	if ($Data['ListPrice']) {
-		$displayAmazonDefault .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
-		$displayAmazonDefault .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
+		$displayAmazonItem .= '<span class="amazonStore-listprice-desc">'.__("List Price",'appStoreAssistant').': </span>';
+		$displayAmazonItem .= '<span class="amazonStore-listprice">'. $Data['ListPrice'] .'</span><br />';
 	}
 	if ($Data['Amount']) {
-		$displayAmazonDefault .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
-		$displayAmazonDefault .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
+		$displayAmazonItem .= '<span class="amazonStore-amazonprice-desc">'.__("Amazon Price",'appStoreAssistant').': </span>';
+		$displayAmazonItem .= '<span class="amazonStore-amazonprice">'. $Data['Amount'] .'</span><br />';
 	}
 	if (isset($Data->ItemAttributes->ReleaseDate)) {
-		$displayAmazonDefault .= '<span class="amazonStore-date">'.__("Disc Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
+		$displayAmazonItem .= '<span class="amazonStore-date">'.__("Disc Released",'appStoreAssistant').': '.date("F j, Y",strtotime($Data->ItemAttributes->ReleaseDate)).'</span><br />';
 	}
-	$displayAmazonDefault .= '<br><div align="center">';
-	$displayAmazonDefault .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
-	$displayAmazonDefault .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
-	//$displayAmazonDefault .= '<h2>Click here to view this item at Amazon.com</h2>';
-	$displayAmazonDefault .= '</a></div>';
-	$displayAmazonDefault .= '	<div style="clear:left;">&nbsp;</div>';
-	$displayAmazonDefault .= '</div>';
-	return $displayAmazonDefault;
-} // end asa_displayAmazonDefault
+	$displayAmazonItem .= '<br><div align="center">';
+	$displayAmazonItem .= '<a href="'.$Data['URL'].'" TARGET="_blank">';
+	$displayAmazonItem .= '<img src="'.plugins_url( 'images/amazon-buynow-button.png' , ASA_MAIN_FILE ).'" width="220" height="37" alt="Buy Now at Amazon" />';
+	//$displayAmazonItem .= '<h2>Click here to view this item at Amazon.com</h2>';
+	$displayAmazonItem .= '</a></div>';
+	$displayAmazonItem .= '	<div style="clear:left;">&nbsp;</div>';
+	$displayAmazonItem .= '</div>';
+	return $displayAmazonItem;
+} // end appStore_displayAmazonItem
 
 function cleanAWSresults($Result){
+
+	$Errors = (isset($Result['itemlookuperrorresponse']['error']) ? $Result['itemlookuperrorresponse']['error'] : '');
+
+	//$formattedResults['Debug'] = '<pre>'.print_r($Result,true).'</pre>';
+	$formattedResults['Debug'] = '<!-- '.print_r($Result,true).'-->';
+	
+	$CurrencyCode = '';
     $Item 					= $Result['ItemLookupResponse']['Items']['Item'];
     $ItemAttr 				= $Item['ItemAttributes'];
-  	$ImageSM 				= $Item['SmallImage']['URL'];
-  	$ImageMD 				= $Item['MediumImage']['URL'];
-  	$ImageLG 				= $Item['LargeImage']['URL'];
-  	$lowestNewPrice 		= $Item["OfferSummary"]["LowestNewPrice"]["FormattedPrice"];
-  	$lowestUsedPrice 		= $Item["OfferSummary"]["LowestUsedPrice"]["FormattedPrice"];
-    $TotalNew 				= $Item["OfferSummary"]["TotalNew"];
-    $TotalUsed 				= $Item["OfferSummary"]["TotalUsed"];
-    $TotalCollectible 		= $Item["OfferSummary"]["TotalCollectible"];
-    $TotalRefurbished 		= $Item["OfferSummary"]["TotalRefurbished"];
-	$ProductDescription		= $Item["EditorialReviews"]["EditorialReview"]["Content"];
-	$Tracks					= $Item["Tracks"];
-	$BookDescription		= $Item["EditorialReviews"]["EditorialReview"]["0"]["Content"];
-	$Status 				= $Item['Offers']['Offer']['OfferListing']['Availability'];
-	$PriceData				= $Item['Offers']['Offer']['OfferListing']['Price'];
-	
-  	
+
+	$ProductGroup = $Item['ItemAttributes']['ProductGroup'];
+
+	$formattedResults['ASIN'] = $Item['ASIN'];
+	$formattedResults['ProductGroup'] = $ProductGroup;
+
+	// Universal Items
+    if (isset($Item['ImageSets']['ImageSet'][0]['SmallImage']['URL'])) $formattedResults['SmallImage'] = $Item['ImageSets']['ImageSet'][0]['SmallImage']['URL'];
+    if (isset($Item['ImageSets']['ImageSet']['SmallImage']['URL'])) $formattedResults['SmallImage'] = $Item['ImageSets']['ImageSet']['SmallImage']['URL'];	
+    if (isset($Item['ImageSets']['ImageSet'][0]['MediumImage']['URL'])) $formattedResults['MediumImage'] = $Item['ImageSets']['ImageSet'][0]['MediumImage']['URL'];
+    if (isset($Item['ImageSets']['ImageSet']['MediumImage']['URL'])) $formattedResults['MediumImage'] = $Item['ImageSets']['ImageSet']['MediumImage']['URL'];
+    if (isset($Item['ImageSets']['ImageSet'][0]['LargeImage']['URL'])) $formattedResults['LargeImage'] = $Item['ImageSets']['ImageSet'][0]['LargeImage']['URL'];
+    if (isset($Item['ImageSets']['ImageSet']['LargeImage']['URL'])) $formattedResults['LargeImage'] = $Item['ImageSets']['ImageSet']['LargeImage']['URL'];
+	$formattedResults['Title'] = $Item['ItemAttributes']['Title'];
+    $formattedResults['URL'] = $Item['DetailPageURL'];
+	$formattedResults['Manufacturer'] = (isset($ItemAttr['Manufacturer']) ? $ItemAttr['Manufacturer'] : '');
+    $formattedResults['Studio'] = (isset($ItemAttr['Studio']) ? $ItemAttr['Studio'] : '');
+    $formattedResults['Publisher'] = (isset($ItemAttr['Publisher']) ? $ItemAttr['Publisher'] : '');
+	$Binding_s = (isset($Item['ItemAttributes']['Binding']) ? $Item['ItemAttributes']['Binding'] : '');
+	$formattedResults['Binding'] = (is_array($Binding_s) ? implode(', ', $Binding_s) : $Binding_s);
+  	$formattedResults['ListPrice'] = (isset($Item['ItemAttributes']['ListPrice']['FormattedPrice']) ? $Item['ItemAttributes']['ListPrice']['FormattedPrice'].' '.$Item['ItemAttributes']['ListPrice']['CurrencyCode'] : '');
+	$formattedResults['ReleaseDate'] = (isset($Item['ItemAttributes']['ReleaseDate']) ? __('Released','appStoreAssistant').': '.$Item['ItemAttributes']['ReleaseDate'] : '');
+    if (isset($Item['EditorialReviews']['EditorialReview']['1']['Content'])) $formattedResults['Description'] = fixCharacters($Item['EditorialReviews']['EditorialReview']['1']['Content']);
+    if (isset($Item['EditorialReviews']['EditorialReview']['0']['Content'])) $formattedResults['Description'] = fixCharacters($Item['EditorialReviews']['EditorialReview']['0']['Content']);
+    if (isset($Item['EditorialReviews']['EditorialReview']['Content'])) $formattedResults['Description'] = fixCharacters($Item['EditorialReviews']['EditorialReview']['Content']);    
+	$formattedResults['Status'] = (isset($Item['Offers']['Offer']['OfferListing']['Availability']) ? $Item['Offers']['Offer']['OfferListing']['Availability'] : '');
+	$PriceData = (isset($Item['Offers']['Offer']['OfferListing']['Price']) ? $Item['Offers']['Offer']['OfferListing']['Price'] : '');
+  	$lowestNewPrice = (isset($Item['OfferSummary']['LowestNewPrice']['FormattedPrice']) ? $Item['OfferSummary']['LowestNewPrice']['FormattedPrice'] : '');
+  	$lowestUsedPrice = (isset($Item['OfferSummary']['LowestUsedPrice']['FormattedPrice']) ? $Item['OfferSummary']['LowestUsedPrice']['FormattedPrice'] : '');  	
     if(isset($PriceData['FormattedPrice'])) {
     	$CurrencyCode = $PriceData['CurrencyCode'];
-    	$Amount = $PriceData['FormattedPrice']." ".$CurrencyCode;
+    	$Amount = $PriceData['FormattedPrice'].' '.$CurrencyCode;
     }else{
-    	$Amount = "Not Listed";
+    	$Amount = 'Not Listed';
     }
   	if($lowestNewPrice=='Too low to display'){
-  		$Amount = "Too low to display";
+  		$Amount = 'Too low to display';
   	}
+	$formattedResults['Amount'] = $Amount;
+	$formattedResults['CurrencyCode'] = (isset($PriceData['CurrencyCode']) ? $PriceData['CurrencyCode'] : '');
 
-	if(isset($ItemAttr["ListPrice"]["FormattedPrice"])){
-		$ListPrice 		= $ItemAttr["ListPrice"]["FormattedPrice"] . ' ' . $ItemAttr["ListPrice"]["CurrencyCode"];
-	}else{
-		$ListPrice 		= '0';
-	}
-	$Author_s = $ItemAttr["Author"];
-    if(is_array($Author_s)){
-    	$Authors = 'Author';
-		if (count($Author_s) > 1) $Authors .= 's :';
-		$Authors .= implode(", ", $Author_s);
-	}else{
-    	$Authors = "Author: ".$Author_s;
-    }
-	    
-    if(is_array($ItemAttr["Binding"])){$Binding = implode(", ", $ItemAttr["Binding"]);}else{$Binding = $ItemAttr["Binding"];}
-    if(is_array($ItemAttr["Director"])){
-    	$Director = "Directors: ".implode(", ", $ItemAttr["Director"]);
-    }else{
-    	$Director = "Directed by: ".$ItemAttr["Director"];
-    }
-    if(is_array($ItemAttr["Actor"])){
-    	$Actors = "Actors: ".implode(", ", $ItemAttr["Actor"]);
-    }else{
-    	$Actors = "Actor: ". $ItemAttr["Actor"];
-    }
-    if(is_array($ItemAttr["Format"])){$Formats = implode(", ", $ItemAttr["Format"]);}else{$Formats = $ItemAttr["Format"];}
-    if(is_array($ItemAttr["Languages"]["Language"])){$Languages = implode(", ", $ItemAttr["Languages"]["Language"]);}else{$Languages = $ItemAttr["Languages"]["Language"];}
-    if(is_array($ItemAttr["AudienceRating"])){$Rating = implode(", ", $ItemAttr["AudienceRating"]);}else{$Rating = $ItemAttr["AudienceRating"];}
-    if(is_array($ItemAttr["RunningTime"])){$RunTime = $ItemAttr["RunningTime"]["value"].' '.$ItemAttr["RunningTime"]["Units"];}else{$RunTime = '';}
-   
-    $OfferListingId 		= $Item['Offers']['Offer']['OfferListing']['OfferListingId'];
-	$ReleaseDate 	= $ItemAttr["ReleaseDate"];
-	$PublishedDate 	= $ItemAttr["PublicationDate"];
-	
-	if(is_array($ItemAttr["Feature"])){
-		$Features = "<ul>";
-		foreach ($ItemAttr["Feature"] as $Feature) {
-			$Features .= "<li>$Feature</li>";
-		}
-		$Features .= "</ul>";
-	}else{
-		$Features = $ItemAttr["Feature"];
-	}
-	
-	switch ($AmazonProductData['ProductGroup']) {
-		case "Book":
-			$Description = "";
-			if ($ProductDescription) {
-				$Description = $ProductDescription;
-			} elseif($BookDescription) {
-				$Description = $BookDescription;
-			}
-			break;
+
+  	$Language_s = (isset($Item['ItemAttributes']['Languages']['Language']) ? $Item['ItemAttributes']['Languages']['Language'] : '');
+	//$formattedResults['Languages'] = (is_array($Language_s) ? __('Languages','appStoreAssistant').': '.implode(', ', $Language_s) : __('Language','appStoreAssistant').': '.$Language_s);
+	//$formattedResults['Languages'] = print_r($Language_s,true);
+
+
+	$formattedResults['OfferListingId'] = (isset($Item['Offers']['Offer']['OfferListing']['OfferListingId']) ? $Item['Offers']['Offer']['OfferListing']['OfferListingId'] : '');
+
+	$formattedResults['SalesNotes']['TotalNew'] = (isset($Item['OfferSummary']['TotalNew']) ? $Item['OfferSummary']['TotalNew'] : '');
+	$formattedResults['SalesNotes']['TotalUsed'] = (isset($Item['OfferSummary']['TotalUsed']) ? $Item['OfferSummary']['TotalUsed'] : '');
+	$formattedResults['SalesNotes']['TotalCollectible'] = (isset($Item['OfferSummary']['TotalCollectible']) ? $Item['OfferSummary']['TotalCollectible'] : '');
+	$formattedResults['SalesNotes']['TotalRefurbished'] = (isset($Item['OfferSummary']['TotalRefurbished']) ? $Item['OfferSummary']['TotalRefurbished'] : '');
+
+	// ProductGroup Specific Items
+	switch ($ProductGroup) {
+		//DVD Product Group
 		case "DVD":
-			$Description = "";
-			if ($ProductDescription) {
-				$Description = $ProductDescription;
-			} elseif($BookDescription) {
-				$Description = $BookDescription;
+			$Actor_s = (isset($Item['ItemAttributes']['Actor']) ? $Item['ItemAttributes']['Actor'] : '');
+			if(is_array($Actor_s)) {
+				$Actors = '<ul>';
+				foreach ($Actor_s as $Actor) {
+					$Actors .= '<li>'.fixCharacters($Actor).'</li>';
+				}
+				$Actors .= '</ul>';
+				$formattedResults['Features']['Cast'] = __('Cast','appStoreAssistant').': '.$Actors;
 			}
+			//$formattedResults['Features']['Cast'] = $Actor_s ;//fixCharacters($Cast);
+			if (isset($Item['ItemAttributes']['AspectRatio'])) $formattedResults['Features']['AspectRatio'] = __('Aspect Ratio','appStoreAssistant').': '.$Item['ItemAttributes']['AspectRatio'];
+			if (isset($Item['ItemAttributes']['AudienceRating'])) $formattedResults['Features']['Rating'] = __('Rating','appStoreAssistant').': '.$Item['ItemAttributes']['AudienceRating'];
+			$Creator_s = (isset($Item['ItemAttributes']['Creator']) ? $Item['ItemAttributes']['Creator'] : '');
+			if(is_array($Creator_s)) {
+				if (isset($Creator_s['Role']) && isset($Creator['value'])) {
+					$Creators = $Creator_s['Role'].': '.$Creator_s['value'];
+					$CreatorsCount = 1;
+				} else {
+					$Creators = null;
+					$CreatorsCount = 0;
+					foreach ($Creator_s as $Creator) {
+						if(isset($Creator['Role']) && isset($Creator['value'])) {
+							$Creators[] = $Creator['Role'].': '.$Creator['value'];
+						$CreatorsCount++;
+						}
+					}
+				}
+				if( $CreatorsCount> 0 ) $formattedResults['Features']['Creators'] = $Creators;
+			}
+			$Director_s = (isset($Item['ItemAttributes']['Director']) ? $Item['ItemAttributes']['Director'] : '');
+			$formattedResults['Features']['Director'] = (is_array($Director_s) ? __('Directors','appStoreAssistant').': '.implode(', ', $Director_s) : __('Directed by','appStoreAssistant').': '.$Director_s);
+			$formattedResults['Features']['Edition'] = (isset($Item['ItemAttributes']['Edition']) ? __('Edition','appStoreAssistant').': '.$Item['ItemAttributes']['Edition'] : '');
+			if (isset($Item['ItemAttributes']['Feature'])) $formattedResults['Features']['Features'] = $Item['ItemAttributes']['Feature'];
+			$Format_s = (isset($Item['ItemAttributes']['Format']) ? $Item['ItemAttributes']['Format'] : '');
+			if(is_array($Format_s)) {
+				$Formats = "Features:<ul>";
+				foreach ($Format_s as $Format) {
+					$Formats .= '<li>'.$Format.'</li>';
+				}
+				$Formats .= "</ul>";
+				$formattedResults['Features']['Formats'] = __('Formats','appStoreAssistant').': '.$Formats;
+			}
+			$formattedResults['Features']['Label'] = (isset($Item['ItemAttributes']['Label']) ? __('Released by','appStoreAssistant').': '.$Item['ItemAttributes']['Label'] : '');
+			$formattedResults['Features']['NumberOfDiscs'] = (isset($Item['ItemAttributes']['NumberOfDiscs']) ? __('Discs','appStoreAssistant').': '.$Item['ItemAttributes']['NumberOfDiscs'] : '');
+			$formattedResults['Features']['PictureFormat'] = (isset($Item['ItemAttributes']['PictureFormat']) ? __('Picture Format','appStoreAssistant').': '.$Item['ItemAttributes']['PictureFormat'] : '');
+			$RunTime_s = (isset($Item['ItemAttributes']['RunningTime']) ? $Item['ItemAttributes']['RunningTime'] : '');
+			$formattedResults['Features']['RunTime'] = (is_array($RunTime_s) ? __('Run Time','appStoreAssistant').': '.$RunTime_s['@value'].' '.$RunTime_s['@attributes']['Units'] : '');
+			$formattedResults['Features']['Studio'] = (isset($Item['ItemAttributes']['Studio']) ? __('Studio','appStoreAssistant').': '.$Item['ItemAttributes']['Studio'] : '');
 			break;
-		default:
-			$Description = "";
-			if ($ProductDescription) {
-				$Description = $ProductDescription;
-			} elseif($BookDescription) {
-				$Description = $BookDescription;
+		//Music Product Group
+		case "Music":
+			$Creator_s = (isset($Item['ItemAttributes']['Creator']) ? $Item['ItemAttributes']['Creator'] : '');
+			if(is_array($Creator_s)) {
+				$Creators = "";
+				if (isset($Creator_s['@attributes']['Role'])) {
+					$Creators = $Creator_s['@attributes']['Role'].': '.$Creator_s['@value'];
+				} else {
+					foreach ($Creator_s as $Creator) {
+						if(isset($Creator['@attributes']['Role']) && isset($Creator['@value'])) {
+							$Creators[] = $Creator['@attributes']['Role'].': '.$Creator['@value'];
+						}
+					}
+				}
+				$formattedResults['Features']['Creators'] = $Creators;
 			}
-	}
-	
-    $formattedResults = array('ASIN' => $Item['ASIN'],
-                    'ProductGroup' => $Item['ItemAttributes']['ProductGroup'],
-				    'SmallImage' => $ImageSM,
-				    'MediumImage' => $Item['MediumImage']['URL'],
-				    'LargeImage' => $ImageLG,
-                    'Title' => $Item['ItemAttributes']['Title'],
-                    'URL' => $Item['DetailPageURL'],
-                    'Manufacturer' => $ItemAttr['Manufacturer'],
-                    'Studio' => $ItemAttr['Studio'],
-                    'Publisher' => $ItemAttr['Publisher'],
-                    'Status' => $Status,
-                    'Features' => $Features,
-                    'Tracks' => $Tracks,
-                    'Description' => fixCharacters($Description),
-                    'ProductDescription' => fixCharacters($ProductDescription),
-                    'BookDescription' => fixCharacters($BookDescription),
-                    'Amount' => $Amount,
-                    'Currency' => $CurrencyCode,
-                    'ReleaseDate' => $ReleaseDate,
-                    'PublishedDate' => $PublishedDate,
-                    'ListPrice' => $ListPrice,
-                    'Binding' => $Binding,
-                    'Authors' => $Authors,
-                    
-				    'Director' => $Director,
-				    'Cast' => fixCharacters($Actors),
-				    'Rating' => $Rating,
-				    'Formats' => $Formats,
-				    'Languages' => $Languages,
-				    'OfferListingId' => $OfferListingId,
-				    'RunTime' => $RunTime,
-                    'Errors' => $Result['itemlookuperrorresponse']['error']
-                   );
-                                    
+			if (isset($Item['ItemAttributes']['Format'])) $Format_s = $Item['ItemAttributes']['Format'];
+			if (is_array($Format_s)) {
+				$Formats = "Features:<ul>";
+				foreach ($Format_s as $Format) {
+					$Formats .= '<li>'.$Format.'</li>';
+				}
+				$Formats .= "</ul>";
+				$formattedResults['Features']['Formats'] = $Formats;
+			}
+			if (isset($Item['ItemAttributes']['Label'])) $formattedResults['Features']['Label'] =  __('Released by','appStoreAssistant').': '.$Item['ItemAttributes']['Label'];
+			if (isset($Item['ItemAttributes']['NumberOfDiscs'])) $formattedResults['Features']['NumberOfDiscs'] =  __('Discs','appStoreAssistant').': '.$Item['ItemAttributes']['NumberOfDiscs'];
+			if (isset($Item['ItemAttributes']['Studio'])) $formattedResults['Features']['Studio'] =  __('Studio','appStoreAssistant').': '.$Item['ItemAttributes']['Studio'];
+			if (isset($Item['Tracks']['Disc'])) $formattedResults['Features']['Tracks'] = appStore_GetAmazonTracks($Item['Tracks']['Disc']);
+			if (isset($Item['ItemAttributes']['PublicationDate'])) $formattedResults['Features']['PublishedDate'] = $Item['ItemAttributes']['PublicationDate'];
+			
+			break;
+		//Books Product Group
+		case "Book":
+			$Author_s = (isset($Item['ItemAttributes']['Author']) ? $Item['ItemAttributes']['Author'] : '');
+			if(is_array($Author_s)){
+				$Authors = 'Author';
+				if (count($Author_s) > 1) $Authors .= 's :';
+				$Authors .= implode(', ', $Author_s);
+			}else{
+				$Authors = 'Author: '.$Author_s;
+			}
+			$formattedResults['Features']['Authors'] = $Authors;
+			$formattedResults['Features']['Edition'] = (isset($Item['ItemAttributes']['Edition']) ? __('Edition','appStoreAssistant').': '.$Item['ItemAttributes']['Edition'] : '');
+			$formattedResults['Features']['ISBN'] = (isset($Item['ItemAttributes']['ISBN']) ? 'ISBN: '.$Item['ItemAttributes']['ISBN'] : '');
+			$formattedResults['Features']['Label'] = (isset($Item['ItemAttributes']['Label']) ? __('Publisher','appStoreAssistant').': '.$Item['ItemAttributes']['Label'] : '');
+			$formattedResults['Features']['NumberOfPages'] = (isset($Item['ItemAttributes']['NumberOfPages']) ? __('Pages','appStoreAssistant').': '.$Item['ItemAttributes']['NumberOfPages'] : '');
+
+			break;
+		//eBooks Product Group
+		case "eBooks":
+			$Author_s = (isset($Item['ItemAttributes']['Author']) ? $Item['ItemAttributes']['Author'] : '');
+			if(is_array($Author_s)){
+				$Authors = 'Author';
+				if (count($Author_s) > 1) $Authors .= 's :';
+				$Authors .= implode(', ', $Author_s);
+			}else{
+				$Authors = 'Author: '.$Author_s;
+			}
+			$formattedResults['Features']['Authors'] = $Authors;
+			$Format_s = (isset($Item['ItemAttributes']['Format']) ? $Item['ItemAttributes']['Format'] : '');
+			if(is_array($Format_s)) {
+				$Formats = "<ul>";
+				foreach ($Format_s as $Format) {
+					$Formats .= '<li>'.$Format.'</li>';
+				}
+				$Formats .= "</ul>";
+				$formattedResults['Features']['Formats'] = __('Formats','appStoreAssistant').': '.$Formats;
+			}
+			$formattedResults['Features']['Label'] = (isset($Item['ItemAttributes']['Label']) ? __('Publisher','appStoreAssistant').': '.$Item['ItemAttributes']['Label'] : '');
+			$formattedResults['Features']['NumberOfPages'] = (isset($Item['ItemAttributes']['NumberOfPages']) ? __('Pages','appStoreAssistant').': '.$Item['ItemAttributes']['NumberOfPages'] : '');
+
+			break;
+		//Mobile Application Product Group
+		case "Mobile Application":
+			$Feature_s = (isset($Item['ItemAttributes']['Feature']) ? $Item['ItemAttributes']['Feature'] : '');
+			$formattedResults['Features']['Features'] = $Feature_s;
+			$formattedResults['Features']['HardwarePlatform'] = (isset($Item['ItemAttributes']['HardwarePlatform']) ? __('Hardware Platform','appStoreAssistant').': '.$Item['ItemAttributes']['HardwarePlatform'] : '');
+			$IsAdultProduct = (isset($Item['ItemAttributes']['IsAdultProduct']) ? $Item['ItemAttributes']['IsAdultProduct'] : 'NO');
+			if ($IsAdultProduct == 1) $formattedResults['Features']['IsAdultProduct'] = __('Adult Content','appStoreAssistant');
+			$formattedResults['Features']['OperatingSystem'] = (isset($Item['ItemAttributes']['OperatingSystem']) ? __('Operating System','appStoreAssistant').': '.$Item['ItemAttributes']['OperatingSystem'] : '');
+			break;
+		// Default Product Group
+		default:
+			if (isset($Item['ItemAttributes']['Color'])) $formattedResults['Features']['Color'] = __('Color','appStoreAssistant').': '.$Item['ItemAttributes']['Color'];
+			if (isset($Item['ItemAttributes']['Feature'])) $formattedResults['Features']['Features'] = $Item['ItemAttributes']['Feature'];
+			$IsAdultProduct = (isset($Item['ItemAttributes']['IsAdultProduct']) ? $Item['ItemAttributes']['IsAdultProduct'] : 'NO');
+			if ($IsAdultProduct == 1) $formattedResults['Features']['IsAdultProduct'] = __('Adult Content','appStoreAssistant');
+			$IsAutographed = (isset($Item['ItemAttributes']['IsAutographed']) ? $Item['ItemAttributes']['IsAutographed'] : 'NO');
+			if ($IsAutographed == 1) $formattedResults['Features']['IsAutographed'] = __('Autographed','appStoreAssistant');
+			$IsMemorabilia = (isset($Item['ItemAttributes']['IsMemorabilia']) ? $Item['ItemAttributes']['IsMemorabilia'] : 'NO');
+			if ($IsMemorabilia == 1) $formattedResults['Features']['IsMemorabilia'] = __('Memorabilia','appStoreAssistant');
+			if (isset($Item['ItemAttributes']['LegalDisclaimer'])) $formattedResults['Features']['LegalDisclaimer'] = $Item['ItemAttributes']['LegalDisclaimer'];
+			if (isset($Item['ItemAttributes']['Model'])) $formattedResults['Features']['Model'] = __('Model','appStoreAssistant').': '.$Item['ItemAttributes']['Model'];
+			if (isset($Item['ItemAttributes']['MPN'])) $formattedResults['Features']['MPN'] = __('MPN','appStoreAssistant').': '.$Item['ItemAttributes']['MPN'];
+			if (isset($Item['ItemAttributes']['Size'])) $formattedResults['Features']['Size'] = __('Size','appStoreAssistant').': '.$Item['ItemAttributes']['Size'];
+			if (isset($Item['ItemAttributes']['Warranty'])) $formattedResults['Features']['Warranty'] = __('Warranty','appStoreAssistant').': '.$Item['ItemAttributes']['Warranty'];
+			break;
+	}                                    
     return $formattedResults;  
-} 
+}
+
+function appStore_GetAmazonTracks($TracksArray) {
+	if (isset($TracksArray[0]['Track'])) {
+		$TracksDisplay = "Discs:<ul>";
+		foreach ($TracksArray as $Disc => $Tracks) {
+			$DiscNumber = $Disc + 1;
+			$TracksDisplay .= "<li>Disc $DiscNumber:<ol>";
+			foreach ($Tracks['Track'] as $Track) {
+				if(isset($Track['@value'])) $TracksDisplay .= '<li>'.$Track['@value'].'</li>';
+			}
+			$TracksDisplay .= "</ol>";
+		}
+		$TracksDisplay .= "</ul>";
+	} else {
+
+		$TracksDisplay = "Tracks:<ol>";
+		foreach ($TracksArray['Track'] as $Track) {
+			if(isset($Track['@value'])) $TracksDisplay .= '<li>'.$Track['@value'].'</li>';
+		}
+		$TracksDisplay .= "</ol>";
+	}
+
+	return $TracksDisplay;
+}
 
 function fixCharacters($stringToCheck) {
 	//Specific string replaces for ellipsis, etc that you dont want removed but replaced
 	$theBad = 	array("“","”","‘","’","…","—","–","<div>","</div>");
 	$theGood = array("\"","\"","'","'","...","-","-","","");
 	$cleanedString = str_ireplace($theBad,$theGood,$stringToCheck);
-	
 
-	
-	$cleanedString = htmlentities($cleanedString,ENT_QUOTES);
+	//$cleanedString = htmlentities($cleanedString,ENT_QUOTES);
 	if (version_compare(phpversion(), '5.4', '<')) {
 		// php version isn't high enough
 		$cleanedString = str_replace('&Acirc;', '', $cleanedString);
 	} else {
 		$cleanedString = htmlentities($cleanedString,ENT_SUBSTITUTE);
-		$cleanedString = htmlentities($cleanedString,ENT_DISALLOWED);
+		//$cleanedString = htmlentities($cleanedString,ENT_DISALLOWED);
 	}
-
+	
 	/*
 	$trans[chr(130)] = '&sbquo;';    // Single Low-9 Quotation Mark
     $trans[chr(131)] = '&fnof;';    // Latin Small Letter F With Hook
@@ -758,13 +771,12 @@ function fixCharacters($stringToCheck) {
 	
 	$theBad = 	array("&lt;","&gt;");
 	$theGood = array("<",">");
-	$cleanedString = str_replace($theBad,$theGood,$cleanedString); // Put Back HTML commands
+	$cleanedString = str_ireplace($theBad,$theGood,$cleanedString); // Put Back HTML commands
 	$cleanedString = preg_replace('@\x{FFFD}@u', '', $cleanedString); // Remove &#xFFFD; or &#65533; or 
 	//echo "------SEALDEBUG--OUT2-------\r\r\r".print_r($cleanedString,true)."\r\r\r---------------";//Debug
 	
 	return $cleanedString;
 }
-
 
 //	 and asa_GetChildren code from http://whoooop.co.uk/2005/03/20/xml-to-array/
 //
@@ -775,7 +787,7 @@ function asa_GetXMLTree ($xmldata){
 
 	$xmlreaderror = false;
 
-	$parser = xml_parser_create ('ISO-8859-1');
+	$parser = xml_parser_create ('');
 	xml_parser_set_option ($parser, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option ($parser, XML_OPTION_CASE_FOLDING, 0);
 	if (!xml_parse_into_struct ($parser, $xmldata, $vals, $index)) {
@@ -929,39 +941,42 @@ function asa_aws_signed_request($region, $params, $public_key, $private_key){
 	
     // some paramters
     $method = "GET";
-    //$host = "ecs.amazonaws.".$region; //old API
     $host = "webservices.amazon.".$region; //new API 12-2011
     $uri = "/onca/xml";
     
     // additional parameters
     $params["Service"] = "AWSECommerceService";
     $params["AWSAccessKeyId"] = $public_key;
-    $params["Timestamp"] = gmdate("Y-m-d\TH:i:s\Z");
+    // GMT timestamp
+    $params['Timestamp'] = gmdate('Y-m-d\TH:i:s\Z');
+    // API version
     $params["Version"] = "2011-08-01"; //"2009-03-31";
  	$keyurl = $params['AssociateTag'].$params['IdType'].$params['ItemId'].$params['Operation'];
    
     // sort the parameters
     ksort($params);
+    
     // create the canonicalized query
     $canonicalized_query = array();
-    foreach ($params as $param=>$value){
-        $param = str_replace("%7E", "~", rawurlencode($param));
-        $value = str_replace("%7E", "~", rawurlencode($value));
-        $canonicalized_query[] = $param."=".$value;
-   }
-    $canonicalized_query = implode("&", $canonicalized_query);
-  
+    foreach ($params as $param=>$value)
+    {
+        $param = str_replace('%7E', '~', rawurlencode($param));
+        $value = str_replace('%7E', '~', rawurlencode($value));
+        $canonicalized_query[] = $param.'='.$value;
+    }
+    $canonicalized_query = implode('&', $canonicalized_query);
+    
     // create the string to sign
     $string_to_sign = $method."\n".$host."\n".$uri."\n".$canonicalized_query;
-   
+    
     // calculate HMAC with SHA256 and base64-encoding
-    $signature = base64_encode(asa_aws_hash_hmac("sha256", $string_to_sign, $private_key, True));
+    $signature = base64_encode(hash_hmac('sha256', $string_to_sign, $private_key, TRUE));
     
     // encode the signature for the request
-    $signature = str_replace("%7E", "~", rawurlencode($signature));
-   
+    $signature = str_replace('%7E', '~', rawurlencode($signature));
+    
     // create request
-    $request = "https://".$host.$uri."?".$canonicalized_query."&Signature=".$signature;
+    $request = 'http://'.$host.$uri.'?'.$canonicalized_query.'&Signature='.$signature;
 
     if(DEBUG){
       echo('<br/><br/>');
@@ -979,7 +994,8 @@ function asa_aws_signed_request($region, $params, $public_key, $private_key){
 		
 		if (count($result) > 0){
 			if ($result[0]->Age <= 6001 && $result[0]->Body != ''){ //that would be 60 min 1 seconds on MYSQL value
-				$pxml = asa_GetXMLTree($result[0]->Body);
+				//$pxml = asa_GetXMLTree($result[0]->Body);
+				$pxml = XML2Array::createArray($result[0]->Body);
 				return $pxml;
 			}else{
 				if($apip_usefileget!='0'){
@@ -1006,7 +1022,8 @@ function asa_aws_signed_request($region, $params, $public_key, $private_key){
 					if(strpos($xbody,'InvalidParameterValue') >= 1){return 'not valid';}
 					$updatesql ="INSERT IGNORE INTO ".$wpdb->prefix."amazoncache (URL, Body, Updated) VALUES ('$keyurl', '$xbody', NOW()) ON DUPLICATE KEY UPDATE Body='$xbody', Updated=NOW();";
 					$wpdb->query($updatesql);
-					$pxml = asa_GetXMLTree($response);
+					//$pxml = asa_GetXMLTree($response);
+					$pxml = XML2Array::createArray($response);
 					return $pxml;
 				}
 			}
@@ -1032,10 +1049,152 @@ function asa_aws_signed_request($region, $params, $public_key, $private_key){
 			if(strpos($xbody,'InvalidParameterValue') >= 1){return 'not valid';}
 			$updatesql ="INSERT IGNORE INTO ".$wpdb->prefix."amazoncache (URL, Body, Updated) VALUES ('$keyurl', '$xbody', NOW()) ON DUPLICATE KEY UPDATE Body='$xbody', Updated=NOW();";
 			$wpdb->query($updatesql);
-			$pxml = asa_GetXMLTree($response);
+			//$pxml = asa_GetXMLTree($response);
+			$pxml = XML2Array::createArray($response);
 			return $pxml;
 		}
 	return False;
 }
+
+/**
+ * XML2Array: A class to convert XML to array in PHP
+ * It returns the array which can be converted back to XML using the Array2XML script
+ * It takes an XML string or a DOMDocument object as an input.
+ *
+ * See Array2XML: http://www.lalit.org/lab/convert-php-array-to-xml-with-attributes
+ *
+ * Author : Lalit Patel
+ * Website: http://www.lalit.org/lab/convert-xml-to-array-in-php-xml2array
+ * License: Apache License 2.0
+ *          http://www.apache.org/licenses/LICENSE-2.0
+ * Version: 0.1 (07 Dec 2011)
+ * Version: 0.2 (04 Mar 2012)
+ * 			Fixed typo 'DomDocument' to 'DOMDocument'
+ *
+ * Usage:
+ *       $array = XML2Array::createArray($xml);
+ */
+
+class XML2Array {
+
+    private static $xml = null;
+	private static $encoding = 'UTF-8';
+
+    /**
+     * Initialize the root XML node [optional]
+     * @param $version
+     * @param $encoding
+     * @param $format_output
+     */
+    public static function init($version = '1.0', $encoding = 'UTF-8', $format_output = true) {
+        self::$xml = new DOMDocument($version, $encoding);
+        self::$xml->formatOutput = $format_output;
+		self::$encoding = $encoding;
+    }
+
+    /**
+     * Convert an XML to Array
+     * @param string $node_name - name of the root node to be converted
+     * @param array $arr - aray to be converterd
+     * @return DOMDocument
+     */
+    public static function &createArray($input_xml) {
+        $xml = self::getXMLRoot();
+		if(is_string($input_xml)) {
+			$parsed = $xml->loadXML($input_xml);
+			if(!$parsed) {
+				throw new Exception('[XML2Array] Error parsing the XML string.');
+			}
+		} else {
+			if(get_class($input_xml) != 'DOMDocument') {
+				throw new Exception('[XML2Array] The input XML object should be of type: DOMDocument.');
+			}
+			$xml = self::$xml = $input_xml;
+		}
+		$array[$xml->documentElement->tagName] = self::convert($xml->documentElement);
+        self::$xml = null;    // clear the xml node in the class for 2nd time use.
+        return $array;
+    }
+
+    /**
+     * Convert an Array to XML
+     * @param mixed $node - XML as a string or as an object of DOMDocument
+     * @return mixed
+     */
+    private static function &convert($node) {
+		$output = array();
+
+		switch ($node->nodeType) {
+			case XML_CDATA_SECTION_NODE:
+				$output['@cdata'] = trim($node->textContent);
+				break;
+
+			case XML_TEXT_NODE:
+				$output = trim($node->textContent);
+				break;
+
+			case XML_ELEMENT_NODE:
+
+				// for each child node, call the covert function recursively
+				for ($i=0, $m=$node->childNodes->length; $i<$m; $i++) {
+					$child = $node->childNodes->item($i);
+					$v = self::convert($child);
+					if(isset($child->tagName)) {
+						$t = $child->tagName;
+
+						// assume more nodes of same kind are coming
+						if(!isset($output[$t])) {
+							$output[$t] = array();
+						}
+						$output[$t][] = $v;
+					} else {
+						//check if it is not an empty text node
+						if($v !== '') {
+							$output = $v;
+						}
+					}
+				}
+
+				if(is_array($output)) {
+					// if only one node of its kind, assign it directly instead if array($value);
+					foreach ($output as $t => $v) {
+						if(is_array($v) && count($v)==1) {
+							$output[$t] = $v[0];
+						}
+					}
+					if(empty($output)) {
+						//for empty nodes
+						$output = '';
+					}
+				}
+
+				// loop through the attributes and collect them
+				if($node->attributes->length) {
+					$a = array();
+					foreach($node->attributes as $attrName => $attrNode) {
+						$a[$attrName] = (string) $attrNode->value;
+					}
+					// if its an leaf node, store the value in @value instead of directly storing it.
+					if(!is_array($output)) {
+						$output = array('@value' => $output);
+					}
+					$output['@attributes'] = $a;
+				}
+				break;
+		}
+		return $output;
+    }
+
+    /*
+     * Get the root XML node, if there isn't one, create it.
+     */
+    private static function getXMLRoot(){
+        if(empty(self::$xml)) {
+            self::init();
+        }
+        return self::$xml;
+    }
+}
+
 
 ?>

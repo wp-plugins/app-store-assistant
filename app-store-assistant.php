@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.7.0
+Version: 6.8.0
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -89,6 +89,9 @@ add_shortcode("asa_list", "appStore_handler_list");
 add_shortcode('asa_link', 'appStore_handler_itemLink');
 add_shortcode('asa_elements', 'appStore_handler_app_element');
 
+add_shortcode('asa_apple_raw', 'appStore_handler_apple_raw');
+add_shortcode('asa_amazon_raw', 'appStore_handler_amazon_raw');
+
 add_shortcode('amazon_item', 'appStore_amazon_handler');
 add_shortcode('amazon_item_link', 'appStore_amazon_link_handler');
 
@@ -118,7 +121,12 @@ add_action('init', 'asa_load_translation_file');
 // ------------------------------------------------------------------------
 // DEFINE Apple App Store URL & CACHE directory
 // ------------------------------------------------------------------------
-define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup?country='.appStore_setting('store_country').'&id=');
+$AppleStoreURL = 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup';
+$AppleStoreURL .= '?country='.appStore_setting('store_country');
+if(appStore_setting('store_language') != "NATIVE") $AppleStoreURL .= '&lang='.appStore_setting('store_language');
+$AppleStoreURL .= '&id=';
+define('ASA_APPSTORE_URL', $AppleStoreURL);
+//define('ASA_APPSTORE_URL', 'http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsLookup?country='.appStore_setting('store_country').'&id=');
 //define('ASA_APPSTORE_URL', 'https://itunes.apple.com/lookup?country='.appStore_setting('store_country').'&lang='.appStore_setting('store_language').'&id=');
 $upload_dir = wp_upload_dir();
 define('CACHE_DIRECTORY',$upload_dir['basedir'] . '/appstoreassistant_cache/');

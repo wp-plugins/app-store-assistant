@@ -46,7 +46,8 @@ function appStore_add_defaults() {
 		"qty_of_apps" => "10",
 		"ss_size" => "120",
 		"currency_format" => "USD",
-		"store_language" => "us",
+		"store_language" => "en_US",
+		"store_continent" => "North America",
 		"store_badge_language" => "US-UK",
 		"appStore_store_badge_type" => "available",
 		"iTunes_store_badge_type" => "available",
@@ -247,7 +248,7 @@ function appStore_add_defaults() {
 	$appStore_options = $appStore_savedOptions;
 	
 	// Changes values from form
-	if (isset($PostedValues['action'])) {
+	if (isset($PostedValues['action']) && isset($PostedValues['appStore_options'])) {
 		if($PostedValues['action'] == "update" && is_array($PostedValues['appStore_options'])) {
 			foreach ($appStore_defaults as $defaultName => $defaultValue) {
 				if(isset($PostedValues['appStore_options'][$defaultName])) {
@@ -289,6 +290,7 @@ function appStore_add_admin_scripts() {
 	wp_enqueue_style( 'farbtastic');
 	wp_enqueue_script('farbtastic');
  	wp_enqueue_script('jquerymenusstart', plugins_url('js_functions/jquerymenusstart.js',ASA_MAIN_FILE), null, null, true);
+ 	wp_enqueue_script('jquerychained', plugins_url('js_functions/jquery.chained.js',ASA_MAIN_FILE), null, null, true);
 	wp_enqueue_script('jscolor', plugins_url('js_functions/jscolor/jscolor.js',ASA_MAIN_FILE), null, null, true);
 	//Used for Rebuilding Featured Images Progress Bar
 	wp_enqueue_script( 'jquery-ui-progressbar', plugins_url( 'js_functions/jquery-ui/jquery.ui.progressbar.min.1.7.2.js', ASA_MAIN_FILE ), array( 'jquery-ui-core' ), '1.7.2' );

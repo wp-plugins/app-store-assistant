@@ -1863,3 +1863,10 @@ button.ui-button::-moz-focus-inner
 #appname-wrap label {
     cursor: text;
 }
+
+.asa_settingslist
+{
+	list-style-type: square;
+	padding-left: 40px;
+	font-size: 1.1em;
+}
