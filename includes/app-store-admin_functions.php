@@ -242,7 +242,7 @@ function appStore_add_defaults() {
 		"RemoveCachedItemASIN" => "",
 		
 		"displayLinkToFooter" => "no",
-		"versionInstalled" => "6.5"
+		"versionInstalled" => "6.8"
 		);
 	$PostedValues = $_REQUEST;
 	$appStore_options = $appStore_savedOptions;
@@ -261,11 +261,22 @@ function appStore_add_defaults() {
 				$settingsValue = $appStore_savedOptions[$defaultName];
 				if($settingsValue == "") {
 					$appStore_options[$defaultName] = $defaultValue;
+					//echo "-----UPDATE------[$defaultName] = $defaultValue -------------";
 				}
 			}
 		}
 	}
+	//Check for empty settings
+	foreach ($appStore_defaults as $defaultName => $defaultValue) {
+		$settingsValue = $appStore_savedOptions[$defaultName];
+		if($settingsValue == "") {
+			$appStore_options[$defaultName] = $defaultValue;
+			//echo "-----UPDATE------[$defaultName] = $defaultValue -------------";
+		}
+	}
+	// Fix old language code from previous versions
 	
+	if($appStore_options['store_language'] == 'us') $appStore_options['store_language'] = 'en_US';
 	//echo "-----UPDATE------[<pre>".print_r($PostedValues,true)."</pre>]-------------";
 	update_option('appStore_options', $appStore_options);
 
@@ -626,7 +637,7 @@ function appStore_createPostFromAppID($appShortCode,$appTitle,$appCategories,$ap
 	if(appStore_addFeaturedImageToPost ($urlToFeaturedImage,$newPostID,$appID)){
 		echo '<div id="message" class="updated fade"><p>'.__('Featured Image saved to Post','appStoreAssistant').'</p></div>';
 	} else {
-		echo '<div id="message" class="error"><p>'.__('Featured Image cound not be saved to Post','appStoreAssistant').'</p></div>';
+		echo '<div id="message" class="error"><p>'.__('Featured Image cound not be saved to Post','appStoreAssistant').' ['.$urlToFeaturedImage.']</p></div>';
 	}
 	
 	echo '<div class="updated settings-error">';

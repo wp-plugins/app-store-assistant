@@ -120,6 +120,7 @@ Please let us know of any features you would like added or bugs that need squash
 = 6.8.0 =
 * Note: It is NECESSARY to rebuild the cache with this version.
 * Note: It is RECOMMENDED to rebuild the Featured Images with this version.
+* Note: Make sure you choose your Country and Language on the General Tab after update.
 * Added: Now available with support for over 150 Countries with multiple languages
 * Added: Now supports larger (600x600) images for iTunes Album Artwork [Thanks Aslan Guseinov]
 * Added: Now supports larger (600x600) images for iTunes Movie Cover Artwork [Thanks Aslan Guseinov]
@@ -134,6 +135,7 @@ Please let us know of any features you would like added or bugs that need squash
 * Changed: Amazon.com XMP parsing routines
 * Added: Now displays Track information for Single or Multiple Disc sets
 * Fixed: Minor PHP bugs
+* Changed: Language code from us to en_US
 
 = 6.7.0 =
 * Added: New Dialog boxes for full control of shortcodes in Editor
