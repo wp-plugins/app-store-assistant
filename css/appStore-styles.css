@@ -148,6 +148,13 @@ img.appStore-gamecentericon
 	margin-left: auto;
 	margin-right: auto;
 }
+
+div.appStore-gamecenter
+{
+	text-align: center;
+}
+
+
 #appStore-icon-container a img
 {
 	border: 0px;
@@ -201,8 +208,6 @@ div.asaf-entry img {
 	padding: 4px 8px;
 }
 
-
-
 .appStore-badge {
 	width: 100%;
 	margin: 5px auto 5px auto;
@@ -247,3 +252,24 @@ div.asaf-entry img {
 white-space: pre;
   font-family: monospace;
   display: block;}
+  
+  
+table.trackListing
+{
+	font-family: verdana,arial,sans-serif;
+	font-size: 11px;
+	color: #333333;
+	width: 100%;
+}
+table.trackListing th
+{
+	padding: 3px 8px 3px 8px;
+	background-color: #dedede;
+	font-weight: bold;
+}
+table.trackListing td
+{
+	border-width: 1px;
+	padding: 0px 8px 2px 8px;
+}
+table.trackListing td.right { text-align: right; }

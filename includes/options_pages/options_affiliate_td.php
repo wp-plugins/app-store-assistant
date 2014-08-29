@@ -1,4 +1,6 @@
-<p>TradeDoubler offers the iTunes and App Store Affiliate Program as separate programs in 14 different countries. You need to be accepted into at least one country to be able to link in Europe. If you need to link to several EU countries for which you don't yet have an affiliate account, you can enable this directly on the TradeDoubler portal (Settings -> Site Information -> My Countries).</p><p>To create an affiliate tracking link for TradeDoubler (Europe), you will need your program ID and website ID. These can be found on the TradeDoubler affiliate dashboard (Under "Settings" then "Site information").</p>
+<p><?php _e("TradeDoubler offers the iTunes and App Store Affiliate Program as separate programs in 14 different countries. You need to be accepted into at least one country to be able to link in Europe. If you need to link to several EU countries for which you don't yet have an affiliate account, you can enable this directly on the TradeDoubler portal", 'appStoreAssistant' ); ?> (<?php _e('Settings', 'appStoreAssistant' ); ?> -> <?php _e('Site Information', 'appStoreAssistant' ); ?> -> <?php _e('My Countries', 'appStoreAssistant' ); ?>).</p>
+
+<p><?php _e('To create an affiliate tracking link for TradeDoubler (Europe), you will need your program ID and website ID. These can be found on the TradeDoubler affiliate dashboard (Under "Settings" then "Site information")', 'appStoreAssistant' ); ?>.</p>
 
 TradeDoubler websiteID: <input type="text" size="20" name="appStore_options[tdwebsiteID]" value="<?php echo $options['tdwebsiteID']; ?>"/><br />
 
