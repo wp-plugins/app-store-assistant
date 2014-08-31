@@ -203,8 +203,10 @@ function appStore_save_amazonImages_locally($productData) {
 		foreach($urls_to_cache as $urlname=>$url) {
 			$content = appStore_fopen_or_curl($url);
 			$info = pathinfo(basename($url));
-			$Newpath = CACHE_DIRECTORY ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
-			$Newurl = CACHE_DIRECTORY_URL ."Amazon/". $asin . '/' . $urlname.".".$info['extension'];
+	 		$filePrefix = "asaArtwork_";
+
+			$Newpath = CACHE_DIRECTORY ."Amazon/".$filePrefix. $asin . '/' . $urlname.".".$info['extension'];
+			$Newurl = CACHE_DIRECTORY_URL ."Amazon/".$filePrefix. $asin . '/' . $urlname.".".$info['extension'];
 			
 			if($fp = fopen($Newpath, "w+")) {
 				fwrite($fp, $content);

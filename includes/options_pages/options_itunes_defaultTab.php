@@ -11,6 +11,7 @@
     		array('ID' => "displayitunesreleasedate", 'label' => "Release Date"),
     		array('ID' => "displayitunesdescription", 'label' => "Description"),
     		array('ID' => "displayitunesexplicitwarning", 'label' => "Explicit Lyrics Bagde"),
+    		array('ID' => "displayitunesradiolink", 'label' => "iTunes Radio Link")
     	);
 		$hiddenlist = array();
 

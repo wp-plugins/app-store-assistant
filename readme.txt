@@ -1,9 +1,9 @@
 === App Store Assistant ===
-Contributors: sealsystems 
+Contributors: SEALsystems 
 Donate link:http://theiphoneappslist.com/donate/
-Tags: iOS, App Store, iTunes, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS
+Tags: iOS, App Store, iTunes, iWatch, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS, Mac Extensions
 Requires at least: 3.6
-Tested up to: 3.9.1
+Tested up to: 3.9.2
 Stable tag: 6.8.0
 License: GPLv3 or later
 
@@ -19,13 +19,13 @@ When upgrading to a new version of the plug-in, it is recommend that you rebuild
 
 **Features**
 
-* Find an App ID fast with the "New App Post" button in the Admin area
+* Find an App or iTunes item fast with the "New ASA Post" button in the Admin area
 	* Auto-creates new POST or Shortcode
-	* Adds App Title
+	* Adds item Title
 	* Choose from Draft, Publish or Pending
-	* Auto creates Featured Image from app icon
-	* Adds App Categories to Post
-	* Can auto create Categories based on App Categories
+	* Auto creates Featured Image from app icon or item images
+	* Adds items Categories to Post
+	* Can auto create Categories based on App or items Categories
 * Displays detailed item information or links
 	* Apple App Store
 	* Mac App Store
@@ -33,6 +33,7 @@ When upgrading to a new version of the plug-in, it is recommend that you rebuild
 	* iTunes Store
 		* Songs
 		* Albums
+		* Podcasts
 		* Movies
 		* Short Films
 		* TV Episodes or Seasons
@@ -60,11 +61,13 @@ When upgrading to a new version of the plug-in, it is recommend that you rebuild
 * Screenshot Lightbox support
 * wp-o-matic plugin support
 
-There is now a built-in quick search function. It searches for iOS or Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST already titled with the appropriate shortcode already entered.
+There is now a built-in quick search function. It searches for iTunes items or iOS/Mac apps. Displays the shortcode already filled out, and with the click of a button, creates a new POST already titled with the appropriate shortcode already entered.
 
-You can also Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
+You can also Donate to fund the development of this plugin at [TheiPhoneAppsList Donate](http://theiphoneappslist.com/donate/)
 
-Please let us know of any features you would like added or bugs that need squashing in the Wordpress forums <http://wordpress.org/support/plugin/app-store-assistant>
+Please let us know of any features you would like added or bugs that need squashing in the [Wordpress forums](http://wordpress.org/support/plugin/app-store-assistant)
+
+REQUIRES PHP 5.4 or later
 
 == Installation ==
 
@@ -72,7 +75,7 @@ Please let us know of any features you would like added or bugs that need squash
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Change your preferences under Settings
 4. Add a shortcode to your page/post. It is recommended to only use one shortcode per page/post.
-5. Optional: Donate to fund the development of this plugin at <http://theiphoneappslist.com/donate/>
+5. Optional: Donate to fund the development of this plugin at [TheiPhoneAppsList Donate](http://theiphoneappslist.com/donate/)
 
 == Available Shortcodes ==
 
@@ -114,12 +117,36 @@ Please let us know of any features you would like added or bugs that need squash
 * Request: iBooks support [Thanks rnakoneshny]
 * Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
 * Request: Add Tags with App/item name to post [Thanks iOSAppLists]
-
+* Added: iWatch search
 == Changelog ==
 
+= 6.9.0 =
+* Changed: **REQUIRES PHP 5.4 or later**
+* Added: More Amazon.com details displayed (specific to each item type)
+* Added: Search term is retained after search
+* Added: You can now preset a default search type for your site
+* Added: You can now search for iTunes items (Music, Podcasts, TV, Movies, AudioBooks etc.)
+* Changed: Search button is now called ASA Search (was App Search)
+* Added: Now Supports iTunes track listings for multi-disc sets
+* Added: Support for displaying iTunes Radio button for individual tracks
+* Added: Displays error message during Featured Image rebuild if item is no longer available
+* Added: Support for iWatch apps and Mac Extensions
+
+= 6.8.1 =
+* Internal release
+* Fixed: Updated tags for HTML5
+* Fixed: Search form was loading results before a search term was specified
+* Fixed: Minor PHP bugs
+* Fixed: Widget was getting incorrect IDs
+* Fixed: Rebuilding Featured Images displayed incorrect error message when post had no title
+* Fixed: Display of error message "Skipping: Already has non ASA Featured Image"
+* Fixed: Link to clear single item cache in Top Admin Bar menu
+* Changed: Cleaned up Upgrade Notice
+* Changed: Corrected and cleaned this readme.txt file
+
 = 6.8.0 =
-* Note: It is NECESSARY to rebuild the cache with this version.
-* Note: It is RECOMMENDED to rebuild the Featured Images with this version.
+* Note: **It is NECESSARY to rebuild the cache with this version.**
+* Note: *It is RECOMMENDED to rebuild the Featured Images with this version.*
 * Note: Make sure you choose your Country and Language on the General Tab after update.
 * Added: Now available with support for over 150 Countries with multiple languages
 * Added: Now supports larger (600x600) images for iTunes Album Artwork [Thanks Aslan Guseinov]
@@ -213,6 +240,7 @@ Please let us know of any features you would like added or bugs that need squash
 * Fixed: Minor bugs fixed
 
 = 6.5.0 =
+* Note: **It is NECESSARY to reselect the elements to display.**
 * Changed: New simplified method of choosing which elements to display [IMPORTANT: CHECK YOUR SETTINGS]
 * Added: Description of the "Assisted By" link added to Main Page
 * Changed: The "Assisted By" link is off by default
@@ -261,9 +289,17 @@ Please let us know of any features you would like added or bugs that need squash
 * Added: iOS 7 Style Dot Ratings
 * Changed: Updated Star Rating graphics
 * Added: Now supports half-star ratings
-* Removed: Deprecated the following shortcodes [ios_app,mac_app,itunes_store,ibooks_store,ios_app_elements]
-* Removed: Deprecated the following shortcodes [ios_app_list,ios_app_link,itunes_store_link,mac_app_link]
-* Note: Deprecated shortcodes are still functional in this version, but replacing them is suggested!!!
+* Removed: Deprecated the following shortcodes
+	* ios_app
+	* mac_app
+	* itunes_store
+	* ibooks_store
+	* ios_app_elements
+	* ios_app_list
+	* ios_app_link
+	* itunes_store_link
+	* mac_app_link
+* Note: Deprecated shortcodes are still functional in this version, but **REPLACING THEM IS SUGGESTED!!!**
 * Changed: Optimized item output processing
 * Changed: Added support for future Item Types and Apple Stores
 * Added: Option to display a Position Number for the results from a ATOM feed [Thanks 2020media]
@@ -301,8 +337,9 @@ Please let us know of any features you would like added or bugs that need squash
 * Fixed: Cacheing of RSS Feed data
 
 = 6.3.0 =
-* Changed: Apple has changed from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply)
-* REMOVED: LinkShare/linksynergy & DGM Affiliate Programs
+* Note: **Apple has changed from LinkShare to PHG** (Apply Here: http://affiliate.itunes.apple.com/apply)
+* Note: **THIS VERSION REQUIRES WordPress 3.6 or later!!!!!**
+* Removed: LinkShare/linksynergy & DGM Affiliate Programs
 * Added: No Title element mode: Same as Regular except the title is omitted. (Handy for themes that remove formatting.)
 * Fixed: Screenshots not displaying because of a broken URL
 * Changed: Processing of elements order, there is now just SingleApp or ListOfApps
@@ -358,6 +395,8 @@ Please let us know of any features you would like added or bugs that need squash
 
 = 6.0.6 =
 * Fixed: Extraneous div tag, was throwing off some themes
+* Note: *The Image system has been replaced.*
+* Note: **It is recommended that you clear the caches AFTER upgrading.**
 
 = 6.0.5 =
 * Fixed: Was not displaying Minimal iDevice icons if the app was listing "all" as the supported devices [Thanks snurnberg]
@@ -479,6 +518,8 @@ Please let us know of any features you would like added or bugs that need squash
 * Changed: Optimized Cacheing system
 * Changed: Optimized image storing
 * Now Tested with over 300 Themes
+* Note: *The Image system has been replaced.*
+* Note: **It is recommended that you clear the caches AFTER upgrading.**
 
 = 5.5.2 =
 * Added: Many CSS tags for Amazon.com section
@@ -520,7 +561,10 @@ Please let us know of any features you would like added or bugs that need squash
 * Fixed: TinyMCE was being re-declared in some themes
 
 = 5.0 =
-* See Version 5.0.1
+* Note: See Version 5.0.1
+* Removed: The shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated.
+* Changed: The functionality of appStore_IDsearch has been moved to the Settings page.
+* Note: **You should change the shortcode from ios_asaf_atomfeed to asaf_atomfeed.**
 
 = 4.7.1 =
 * HTTPS is now supported for Search and Lookup requests to Apple via their updated Search API.
@@ -715,19 +759,7 @@ Please let us know of any features you would like added or bugs that need squash
 
 == Upgrade Notice ==
 
-In Version 5.0 the shortcodes appStore_IDsearch and ios_asaf_atomfeed have been deprecated. The functionality of appStore_IDsearch has been moved to the Settings page. You should change the shortcode from ios_asaf_atomfeed to *asaf_atomfeed*.
-
-In Version 5.6 the Cacheing system has been replaced. It is recommended that you clear the caches before upgrading.
-
-In Version 6.0.6 the Image system has been replaced. It is recommended that you clear the caches AFTER upgrading.
-
-In Version 6.3.0 Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply). THIS VERSION REQUIRES WordPress 3.6 or later!!!!!
-
-In Version 6.4.0 Deprecated the following shortcodes [ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link]. Deprecated shortcodes are still functional in this version, but REPLACING THEM IS SUGGESTED!!!
-
-In Version 6.5.0 It is NECESSARY to reselect the elements to display.
-
-In Version 6.8.0 It is NECESSARY to rebuild the cache.
+It is NECESSARY to rebuild the cache. It is RECOMMENDED to rebuild the Featured Images with this version. Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply).
 
 == Note ==
 
@@ -739,7 +771,7 @@ The App Store Assistant can cache the data from your application in the Wordpres
 Each shortcode is designed to be used just once on a page/post. If you want to have multiple items listed on one page, than I would suggest using the [ios_app_list] shortcode. You can have a comma separated list of items to be displayed.
 
 = I really like the plugin, can I donate to the project? =
-Why, thank you for asking, of course you can. Just click the [donate link](http://theiphoneappslist.com/donate/ "Donate"). <http://theiphoneappslist.com/donate/>
+Why, thank you for asking, of course you can. Just click the [donate link](http://theiphoneappslist.com/donate/ "Donate").
 
 == License ==
 

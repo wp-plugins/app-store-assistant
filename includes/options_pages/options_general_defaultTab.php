@@ -124,20 +124,6 @@ $languageCodes  = loadLanguages("byCode");
 	?>  
 </select>		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		</div>
 				<p class="asa_admin_warning">(<?php _e('Cached app data must be cleared for change to take effect', 'appStoreAssistant' ); ?>. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>"><?php _e('Utilities', 'appStoreAssistant' ); ?> -> <?php _e('Clear Cache', 'appStoreAssistant' ); ?></a></b>.)</p>
 		<div class="asa_admin_element"><?php _e('iTunes/App Stores Badge Language', 'appStoreAssistant' ); ?>: <select name='appStore_options[store_badge_language]'>

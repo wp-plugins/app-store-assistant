@@ -89,15 +89,15 @@ function appStore_admin_bar_links() {
 	
 	// Links to add, in the form: 'Label' => 'URL'
 	$links = array(
-		'Search for App and create new Post' => site_url().'/wp-admin/admin.php?page=appStore_IDsearch',
+		'Search iTunes & App Stores to create new Post' => site_url().'/wp-admin/admin.php?page=appStore_IDsearch',
 		'Clear the Cache' => site_url()."/wp-admin/admin.php?page=appStore_sm_utilities&tab=clearcache",
-		'Clear the Cache for a single item' => site_url().'/wp-admin/admin.php?page=appStore_sm_utilities&tab=clearitem',
+		'Clear the Cache for a single item' => site_url().'/wp-admin/admin.php?page=appStore_sm_utilities&tab=defaultTab',
 		'Help with Shortcodes' => site_url().'/wp-admin/admin.php?page=appStore_sm_help&tab=shortcodes'
 	);
 	
 	// Add the Parent link.
 	$wp_admin_bar->add_menu( array(
-		'title' => '+ New App Post',
+		'title' => '+ New ASA Post',
 		'id' => 'asa_newapppost',
 		'href' => site_url().'/wp-admin/admin.php?page=appStore_IDsearch',
 		'parent' => false
@@ -525,7 +525,7 @@ function appStore_css_hook() {
 <?php
 }
 
-function appStore_format_price($unformattedPrice) {
+function appStore_format_price($unformattedPrice,$noPrice = null) {
 	//Check to see if the app is free, or under a dollar
 	if($unformattedPrice == 0) {
 		$thePrice = __("Free!",'appStoreAssistant');
@@ -554,7 +554,7 @@ function appStore_format_price($unformattedPrice) {
 				break;
 		}
 	}
-	if($unformattedPrice < 0) $thePrice = __("View Price",'appStoreAssistant');
+	if($unformattedPrice < 0) $thePrice = (isset($noPrice) ? $noPrice : __("View Price",'appStoreAssistant'));
 	return $thePrice;
 }
 
@@ -807,7 +807,8 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 }
 
 function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode="SingleApp") {
-	$itemType = $itemInfo->wrapperType."_";
+	$itemType = '';
+	if (isset($itemInfo->wrapperType)) $itemType .= $itemInfo->wrapperType."_";
 	if (isset($itemInfo->kind)) $itemType .= $itemInfo->kind."_";
 	if (isset($itemInfo->collectionType)) $itemType .= $itemInfo->collectionType;
 	$trackListing = "";
@@ -861,6 +862,34 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$artistType = __("Artist",'appStoreAssistant');
 			$cavType = __("Explicit",'appStoreAssistant');
 			$trackType = __("Track Count",'appStoreAssistant');
+			break;
+    	case "ebook_":
+			$itemOutput = __("eBook",'appStoreAssistant');
+			$itemStore = "iTunes";
+			$itemTemplate = "iTunesMain";
+			$unformattedPrice = $itemInfo->price;
+			$iTunesID = $itemInfo->trackId;
+			$iTunesName = $itemInfo->trackName;
+			$iTunesKind = $itemInfo->kind;
+			$isExplicit = '';
+			$iTunesURL = $itemInfo->trackViewUrl;
+			$artistType = __("Author",'appStoreAssistant');
+			$cavType = __("Explicit",'appStoreAssistant');
+			$trackType = __("Track Count",'appStoreAssistant');
+ 			$description = $itemInfo->description;
+			break;
+    	case "_ebook_":
+			$itemOutput = __("eBook",'appStoreAssistant');
+			$itemStore = "iTunes";
+			$itemTemplate = "iTunesMain";
+			$unformattedPrice = $itemInfo->price;
+			$iTunesID = $itemInfo->trackId;
+			$iTunesName = $itemInfo->trackName;
+			$iTunesKind = $itemInfo->kind;
+			$isExplicit = '';
+			$iTunesURL = $itemInfo->trackViewUrl;
+			$artistType = __("Author",'appStoreAssistant');
+ 			$description = $itemInfo->description;
 			break;
     	case "collection_Album":
 			$itemOutput = __("Music Album",'appStoreAssistant');
@@ -932,17 +961,6 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$trackType = __("Track Count",'appStoreAssistant');
  			$description = $itemInfo->longDescription;
 			break;
-    	case "_ebook_":
-			$itemOutput = __("eBook",'appStoreAssistant');
-			$itemStore = "iTunes";
-			$itemTemplate = "iTunesMain";
-			$artistType = __("Author",'appStoreAssistant');
-			$iTunesName = $itemInfo->trackName;
-			$iTunesURL = $itemInfo->trackViewUrl;
-			$iTunesID = $itemInfo->trackId;
-			$unformattedPrice = $itemInfo->price;
- 			$description = $itemInfo->description;
-			break;
     	case "audiobook_":
 			$itemOutput = __("AudioBook",'appStoreAssistant');
 			$itemStore = "iTunes";
@@ -965,7 +983,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$iTunesName = $itemInfo->trackName;
 			$fromAlbum = $itemInfo->collectionName;
 			$isExplicit = $itemInfo->trackExplicitness;
-			$trackTime = $itemInfo->trackTimeMillis;
+			if(isset($itemInfo->trackTimeMillis)) $trackTime = $itemInfo->trackTimeMillis;
 			$iTunesKind = $itemInfo->kind;
 			$iTunesURL = $itemInfo->trackViewUrl;
 			$artistType = __("Produced by",'appStoreAssistant');
@@ -979,12 +997,16 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 	
 	switch ($itemStore) {
     	case "iTunes":
-			$iTunesCategory = $itemInfo->primaryGenreName;
+			if (isset($itemInfo->primaryGenreName)) {
+				$iTunesCategory = $itemInfo->primaryGenreName;
+			} else if (isset($itemInfo->genres)) {
+				$iTunesCategory = implode(", ", $itemInfo->genres);
+			}
 			$artistName = $itemInfo->artistName;
-			$releaseDate = date( 'F j, Y', strtotime($itemInfo->releaseDate));
+			if(isset($itemInfo->releaseDate)) $releaseDate = date( 'F j, Y', strtotime($itemInfo->releaseDate));
 			if(isset($itemInfo->contentAdvisoryRating)) $contentAdvisoryRating = $itemInfo->contentAdvisoryRating;
 			$itemOutput = "";
-			$itemOutput = "<!-- \r".print_r($itemInfo,true)."\r -->";
+			$itemOutput = "<!--  SEALDEBUG \r".print_r($itemInfo,true)."\r -->";
 			// iTunes Artwork
 			if(appStore_setting('cache_images_locally') == '1') {
 				$artwork_url = $itemInfo->imagePosts_cached;
@@ -1065,20 +1087,29 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 				$itemOutput .= '	<div class="iTunesStore-trackListing">';
 				
 				$itemOutput .= '<table class="trackListing">';
-				$itemOutput .= '<tr><th colspan="4">Track Listing</th></tr>';
+				foreach ($trackListing['tracks'] as $disc => $tracks) {				
+
+					$itemOutput .= '<tr><th colspan="';
+					$itemOutput .= (appStore_setting('displayitunesradiolink') == "yes" ? '5' : '4');
+					$itemOutput .= '">Track Listing';
+					if (intval($trackListing['discCount']) > 1) $itemOutput .=' (Disc '.$disc.' of '.$trackListing['discCount'].')';
+					$itemOutput .= '</th></tr>';
 				
-				foreach ($trackListing as $track) {				
-					$itemOutput .= "<tr>";
-					$itemOutput .= '<td class="right">';
-					if ($track['number'] < 10 ) $itemOutput .= ' ';
-					$itemOutput .= $track['number'].')</td>';
-					$itemOutput .= '<td><a href="'.getAffiliateURL($track['trackViewUrl']).'">';
-					$itemOutput .= $track['name'];
-					$itemOutput .= '</a></td>';
-					$itemOutput .= '<td class="right">'.$track['trackTime']."</td>";
-					$itemOutput .= '<td class="right"><a href="'.getAffiliateURL($track['trackViewUrl']).'">'.appStore_format_price($track['trackPrice'])."</a></td>";
-					$itemOutput .= "</tr>";
-				}			
+					foreach ($tracks as $track) {				
+						$itemOutput .= "<tr>";
+						$itemOutput .= '<td class="right">';
+						if ($track['number'] < 10 ) $itemOutput .= ' ';
+						$itemOutput .= $track['number'].')</td>';
+						$itemOutput .= '<td><a href="'.getAffiliateURL($track['trackViewUrl']).'">';
+						$itemOutput .= $track['name'];
+						$itemOutput .= '</a></td>';
+						$itemOutput .= '<td class="right">'.$track['trackTime']."</td>";
+						$itemOutput .= '<td class="right"><a href="'.getAffiliateURL($track['trackViewUrl']).'">'.appStore_format_price($track['trackPrice'],__('Album Only','appStoreAssistant'))."</a></td>";
+						if(appStore_setting('displayitunesradiolink') == "yes") $itemOutput .= '<td class="right"><a href="'.$track['radioStationUrl'].'">Radio</a></td>';
+
+						$itemOutput .= "</tr>";
+					}
+				}		
 				$itemOutput .= "</table>";
 				$itemOutput .= '<br /></div>';
 			}
@@ -2032,26 +2063,32 @@ function appStore_get_data( $id ) {
 		if( isset($appStore_options_data->collectionType)) {
 			if($appStore_options_data->collectionType == "Album") {
 				$trackList_JSON = appStore_page_get_json_tracksList($appStore_options_data->collectionId);
+		//echo '<!-- DEBUG1 '."\r".print_r($trackList_JSON,true)."\r END OF DEBUG 1 -->";//Debug
 				$trackList = $trackList_JSON->results;
 				foreach ($trackList as $track) {
 			
 					if ($track->wrapperType == "track") {
 						$trackID = $track->trackNumber;
-						$tracksList[$trackID]['name'] = $track->trackName;
-						$tracksList[$trackID]['number'] = $track->trackNumber;
-						$tracksList[$trackID]['name_censored'] = $track->trackCensoredName;
-						$tracksList[$trackID]['trackExplicitness'] = $track->trackExplicitness;
-						$tracksList[$trackID]['trackPrice'] = $track->trackPrice;
-						$tracksList[$trackID]['trackViewUrl'] = $track->trackViewUrl;
-						$tracksList[$trackID]['trackId'] = $track->trackId;
-						$tracksList[$trackID]['radioStationUrl'] = $track->radioStationUrl;
-						if($track->trackTimeMillis > 3600000) {
-							$tracksList[$trackID]['trackTime'] = strftime('%H:%M:%S', $track->trackTimeMillis/1000);
-						} else {
-							$tracksList[$trackID]['trackTime'] = strftime('%M:%S', $track->trackTimeMillis/1000);
+						$discNumber = $track->discNumber;
+						$tracksList['discCount'] = $track->discCount;
+						$tracksList['tracks'][$discNumber][$trackID]['name'] = $track->trackName;
+						$tracksList['tracks'][$discNumber][$trackID]['number'] = $track->trackNumber;
+						$tracksList['tracks'][$discNumber][$trackID]['name_censored'] = $track->trackCensoredName;
+						$tracksList['tracks'][$discNumber][$trackID]['trackExplicitness'] = $track->trackExplicitness;
+						$tracksList['tracks'][$discNumber][$trackID]['trackPrice'] = $track->trackPrice;
+						$tracksList['tracks'][$discNumber][$trackID]['trackViewUrl'] = $track->trackViewUrl;
+						$tracksList['tracks'][$discNumber][$trackID]['trackId'] = $track->trackId;
+						$tracksList['tracks'][$discNumber][$trackID]['radioStationUrl'] = $track->radioStationUrl;
+						if(isset($track->trackTimeMillis)){
+							if($track->trackTimeMillis > 3600000) {
+								$tracksList['tracks'][$discNumber][$trackID]['trackTime'] = strftime('%H:%M:%S', $track->trackTimeMillis/1000);
+							} else {
+								$tracksList['tracks'][$discNumber][$trackID]['trackTime'] = strftime('%M:%S', $track->trackTimeMillis/1000);
+							}
 						}
 					}
 				}
+		//echo '<!--  DEBUG2 '."\r".print_r($tracksList,true)."\r END OF DEBUG 2 -->";//Debug
 				$appStore_options_data->trackListing = $tracksList;
 			}
 		}
@@ -2213,15 +2250,18 @@ function appStore_getBestIcon($appID) {
 function appStore_process_imagedata($app) {
 	if(isset($app->trackId)) $appID = $app->trackId;
 
-	if($app->wrapperType == "audiobook") $appID = $app->collectionId;
-	if($app->wrapperType == "collection") $appID = $app->collectionId;
-
-	//Get 600x600 artwork for Albums (Hack discovered by Aslan Guseinov)
-	if($app->collectionType == "Album" || $app->kind == "feature-movie") {
-		if(isset($app->artworkUrl100)) {
-			$app->artworkUrl600 = str_replace("100x100", "600x600", $app->artworkUrl100);
-		}	
+	if (isset($app->wrapperType)) {
+		if($app->wrapperType == "audiobook") $appID = $app->collectionId;
+		if($app->wrapperType == "collection") $appID = $app->collectionId;
 	}
+	//Get 600x600 artwork for Albums (Hack discovered by Aslan Guseinov)
+	$get600 = false;
+	if (isset($app->collectionType)) if ($app->collectionType == 'Album' || $app->collectionType == 'TV Season') $get600 = true;
+	if (isset($app->kind)) if ($app->kind == "feature-movie" || $app->kind == "ebook") $get600 = true;
+	if (isset($app->wrapperType)) if ($app->wrapperType == "audiobook") $get600 = true;
+	if(isset($app->artworkUrl100) && $get600) {
+		$app->artworkUrl600 = str_replace("100x100", "600x600", $app->artworkUrl100);
+	}	
 
 	//Save Non-Cached Images incase of problem
 	if(isset($app->screenshotUrls)) $app->screenshotUrls_cached = $app->screenshotUrls;
@@ -2503,4 +2543,36 @@ function appStore_shortenDescription($description,$mode="normal"){
 	$shortenedDescription = nl2br(wp_trim_words($description,$maxLength,"&hellip;"));
 	return $shortenedDescription;
 }
+
+function wpb_find_shortcode($atts, $content=null) { 
+ob_start();
+extract( shortcode_atts( array(
+		'find' => '',
+	), $atts ) );
+
+$string = $atts['find'];
+
+$args = array(
+	's' => $string,
+	);
+
+$the_query = new WP_Query( $args );
+
+if ( $the_query->have_posts() ) {
+        echo '<ul>';
+	while ( $the_query->have_posts() ) {
+	$the_query->the_post(); ?>
+	<li><a href="<?php  the_permalink() ?>"><?php the_title(); ?></a></li>
+	<?php
+	}
+        echo '</ul>';
+} else {
+        echo "Sorry no posts found"; 
+}
+
+wp_reset_postdata();
+return ob_get_clean();
+}
+add_shortcode('shortcodefinder', 'wpb_find_shortcode'); 
+
 ?>

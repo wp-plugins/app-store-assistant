@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.8.0
+Version: 6.9.0
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -172,7 +172,10 @@ class ASA_Widget1 extends WP_Widget {
 			$appIDs = appStore_getIDs_from_feed($RSS_Feed);
 			update_option($appStore_option, $appIDs);
 		}		
-		array_splice($appIDs, $showamount);
+		$appIDs = array_slice($appIDs['appIDs'],0, intval($showamount));
+
+
+		//echo '<!-- SEALDEBUG2 '."/n[$showamount]".print_r($appIDs,true).'-->'; //Debug
 
 		echo '<div class="asaWidget1"><ul>';
 		foreach($appIDs as $appID) {	
@@ -188,7 +191,7 @@ class ASA_Widget1 extends WP_Widget {
 			if($app) {
 				echo "<li>";
 				echo '<a href="'.$appURL.'" target="_blank">';
-				echo '<img src="'.$imageTag.'" alt="'.$app->trackName.'" width="'.appStore_setting('appicon_size_widget_w').' height="'.appStore_setting('appicon_size_widget_h').'" align="left"/>';
+				echo '<img src="'.$imageTag.'" alt="'.$app->trackName.'" width="'.appStore_setting('appicon_size_widget_w').'" height="'.appStore_setting('appicon_size_widget_h').'" align="left" />';
 				echo '</a>';
 				echo '<h4><a href="'.$appURL.'" target="_blank">'.$app->trackName.'</a></h4>';
 				echo '<div style="position:relative;float:right;background-color:#'.appStore_setting('color_buttonStart').';min-width:6em;text-align:center;moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;-moz-box-shadow:inset 3px 3px 3px 3px #'.appStore_setting('color_buttonShadow').';	-webkit-box-shadow: 1px 1px 1px 1px #'.appStore_setting('color_buttonShadow').'; box-shadow: 1px 1px 1px 1px #'.appStore_setting('color_buttonShadow').';margin-right:10px;margin-top:5px;">';

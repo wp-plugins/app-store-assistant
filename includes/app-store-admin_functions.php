@@ -52,6 +52,7 @@ function appStore_add_defaults() {
 		"appStore_store_badge_type" => "available",
 		"iTunes_store_badge_type" => "available",
 		"store_country" => "US",
+		"appSearch_default" => "iOS",
 	
 		"PrePositionNumber" => "# ",
 		"PostPositionNumber" => ") ",
@@ -210,6 +211,7 @@ function appStore_add_defaults() {
 		"displayitunesreleasedate" => "yes",
 		"displayitunesdescription" => "yes",
 		"displayitunesexplicitwarning" => "yes",
+		"displayitunesradiolink" => "yes",
 
 		"AWS_PARTNER_DOMAIN" => "com",
 		"AWS_API_KEY" => "",
@@ -329,7 +331,7 @@ function appStore_add_options_page() {
 	add_submenu_page( 'appStore_sm_general', __('Affiliate Programs','appStoreAssistant'), __('Affiliate Programs','appStoreAssistant'), 'manage_options', 'appStore_sm_affiliate', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general',  __('Help','appStoreAssistant'),  __('Help','appStoreAssistant'), 'manage_options', 'appStore_sm_help', 'appStore_displayAdminOptionsPage');
 
-	add_menu_page( 'New Apps', 'New App Post', 'edit_posts', 'appStore_IDsearch', 'appStore_search_form', plugins_url( 'images/new-app-post.png', ASA_MAIN_FILE ) );
+	add_menu_page( 'New ASA Items', 'New ASA Post', 'edit_posts', 'appStore_IDsearch', 'appStore_search_form', plugins_url( 'images/new-app-post.png', ASA_MAIN_FILE ) );
 }
 
 function appStore_displayAdminOptionsPage() {
@@ -676,7 +678,7 @@ function appStore_addFeaturedImageToPost ($fi_url,$parent_post_id,$appID="App") 
 	echo '<div id="message" class="updated fade"><p>'.__('Featured Image URL','appStoreAssistant').': '.$fi_url.'</p></div>';
 
 	$tmp = download_url( $fi_url );
-	preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
+	//preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
 	$file_array['name'] = "FI_".$appID."_".basename($fi_url);
 	$file_array['tmp_name'] = $tmp;
 	if ( is_wp_error( $tmp ) ) {
@@ -742,20 +744,85 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$ty
 	$listOfAlreadyAddedIDs = appStore_CreateListOfAppsUsedInPosts();
 	$listOfAlreadyAddediOSIDs = array_merge($listOfAlreadyAddedIDs['ASA'],$listOfAlreadyAddedIDs['iOS']);
 	foreach ($listOfApps as $appData) {
-		$masterList[$i] = "";
+		$masterList[$i] = '';
+		$item_Price = '';
 		$count = count(get_object_vars($appData));
-		if (!array_search($appData->trackId, $checkForDuplicates) && $count > 10) {
-			$TheAppPrice = appStore_format_price($appData->price);
+		echo '<!-- DEBUG1 '."\r".print_r($appData,true)."\r END OF DEBUG 1 -->";//Debug
+		
+		// Get Data appropriate for item type
+		if(isset($appData->wrapperType )) {
+			switch ( $appData->wrapperType ){
+				case 'collection' :
+					$item_Name = $appData->collectionName;
+					$item_ID = $appData->collectionId;
+					$item_Categories = $appData->primaryGenreName;
+					$item_By = $appData->artistName;
+					if (isset ($appData->collectionPrice)) $item_Price = appStore_format_price($appData->collectionPrice);
+					$item_Version = '';
+					$item_TypeDescription = 'Album';
+					break;
+				case 'track' :
+					$item_Name = $appData->trackName;
+					$item_ID = $appData->trackId;
+					$item_Categories = $appData->primaryGenreName;
+					$item_By = $appData->artistName;
+					if (isset ($appData->trackPrice)) $item_Price = appStore_format_price($appData->trackPrice);
+					if (isset ($appData->trackHdPrice)) $item_Price .= '(HD: '.appStore_format_price($appData->trackHdPrice).')';
+					$item_Version = '';
+					$item_TypeDescription = 'Item';
+					break;
+				case 'audiobook' :
+					$item_Name = $appData->collectionName;
+					$item_ID = $appData->collectionId;
+					$item_Categories = $appData->primaryGenreName;
+					$item_By = $appData->artistName;
+					if (isset ($appData->collectionPrice)) $item_Price = appStore_format_price($appData->collectionPrice);
+					$item_Version = '';
+					$item_TypeDescription = 'Audiobook';
+					break;
+				case 'software' :
+					$item_Name = $appData->trackName;
+					$item_ID = $appData->trackId;
+					$item_Categories = $appData->genres;
+					$item_By = $appData->artistName."/".$appData->sellerName;
+					$item_Price = appStore_format_price($appData->price);
+					$item_Version = ' ('.$appData->version.')';
+					$item_TypeDescription = 'App';
+					break;
+			}
+		}
+		switch ( $appData->kind ){
+			case 'ebook' :
+				$item_Name = $appData->trackName;
+				$item_ID = $appData->trackId;
+				$item_Categories = $appData->genres;
+				$item_By = $appData->artistName;
+				if (isset ($appData->price)) $item_Price = appStore_format_price($appData->price);
+				$item_Version = '';
+				$item_TypeDescription = 'eBook';
+				break;
+		}
+		
+		
+		
+		
+		
+		if (!array_search($item_ID, $checkForDuplicates) && $count > 10) {
 			
-			if(is_array($appData->genres)) {
-				$Categories = implode(", ", $appData->genres);
-				$CategoriesNS = implode(",", $appData->genres);
+			if(is_array($item_Categories)) {
+				$Categories = implode(", ", $item_Categories);
+				$CategoriesNS = implode(",", $item_Categories);
 			} else {
-				$Categories = "Unknown";
-				$CategoriesNS = "Unknown";
+				if(isset($item_Categories)) {
+					$Categories = $item_Categories;
+					$CategoriesNS = $item_Categories;
+				} else {
+					$Categories = "Unknown";
+					$CategoriesNS = "Unknown";
+				}
 			}				
 			
-			$theShortCode = $shortCodeStart.' id=&quot;'.$appData->trackId.'&quot;';
+			$theShortCode = $shortCodeStart.' id=&quot;'.$item_ID.'&quot;';
 			if(appStore_setting('newPost_defaultTextShow') == "yes") $theShortCode .= ' more_info_text=&quot;'.appStore_setting('newPost_defaultText').'&quot;';
 			$theShortCode .= ']';
 			
@@ -764,40 +831,40 @@ function appStore_buildListOfFoundApps($listOfApps,$startKey,$shortCodeStart,$ty
 			$masterList[$i] .= "style='background-image:url(\"".$appData->artworkUrl60."\")'>";
 			$masterList[$i] .= '<form action="admin.php?page=appStore_IDsearch" method="POST"><p>';
 			$masterList[$i] .= "<span class='appStore-search-title'>";
-			$masterList[$i] .= $appData->trackName;
+			$masterList[$i] .= $item_Name;
 			$masterList[$i] .= "</span>";
-			$masterList[$i] .= " (".$appData->version.")<br />";
+			$masterList[$i] .= $item_Version."<br />";
 			
-			$masterList[$i] .= " by ".$appData->artistName."/".$appData->sellerName."<br />";
-			$masterList[$i] .= " [".$TheAppPrice."] ";
+			$masterList[$i] .= " by ".$item_By."<br />";
+			$masterList[$i] .= " [".$item_Price."] ";
 			$masterList[$i] .= "<b> [".$Categories."]</b> ";
 			if($startKey == "2") $masterList[$i] .= "<b> [".__('iPad only','appStoreAssistant')."]</b>";
 			$masterList[$i] .= "<br /><br />";
-			$masterList[$i] .= '<input id="id'.$appData->trackId.'" type="text" name="shortcode" size="48" value="';
+			$masterList[$i] .= '<input id="id'.$item_ID.'" type="text" name="shortcode" size="48" value="';
 			$masterList[$i] .= $theShortCode;
 
 			$masterList[$i] .= '">';
 			//$masterList[$i] .= '<input type="hidden" name="shortcode" value="';
 			//$masterList[$i] .= $theShortCode;
 			//$masterList[$i] .= '">';
-			$masterList[$i] .= '<input type="hidden" name="postTitle" value="'.$appData->trackName.'">';
-			$masterList[$i] .= '<input type="hidden" name="appID" value="'.$appData->trackId.'">';
+			$masterList[$i] .= '<input type="hidden" name="postTitle" value="'.$item_Name.'">';
+			$masterList[$i] .= '<input type="hidden" name="appID" value="'.$item_ID.'">';
 			$masterList[$i] .= '<input type="hidden" name="postCategories" value="'.$CategoriesNS.'">';
 			$masterList[$i] .= '<input type="hidden" name="type" value="'.$type.'">';
 			$masterList[$i] .= '<input type="hidden" name="createPost" value="true">';
 			if (is_array($listOfAlreadyAddediOSIDs)) {
-				if (in_array($appData->trackId, $listOfAlreadyAddediOSIDs)) {
-					$masterList[$i] .= '<br /><font color="red"><b>'.__('You have already added this app.','appStoreAssistant').'</b></font>';
+				if (in_array($item_ID, $listOfAlreadyAddediOSIDs)) {
+					$masterList[$i] .= '<br /><font color="red"><b>'.__('You have already added this item.','appStoreAssistant').'</b></font>';
 				} else {
-					$string = __('Create Post for this app','appStoreAssistant');
-					$masterList[$i] .= '<input id="appStore-search-find" class="button button-primary" type="submit" value="'.$string.'" name="'.$string.'"></input><br />';
+					$string = __('Create Post for this ','appStoreAssistant').$item_TypeDescription;
+					$masterList[$i] .= '<input id="appStore-search-find" class="button button-primary" type="submit" value="'.$string.'" name="'.$string.'" /><br />';
 				}
 			}
 			$masterList[$i] .= "</p></form>";
 			$masterList[$i] .= '</li>'."\r\n<!-- App -->\r\n";
 		}
 		
-		$checkForDuplicates[] = $appData->trackId;
+		$checkForDuplicates[] = $item_ID;
 		$i = $i + 2;
 	}
 }
@@ -818,68 +885,104 @@ function appStore_search_form() {
 	GLOBAL $masterList,$checkForDuplicates;
 	
 	echo '<div class="icon32" id="icon-tools"><br></div>';
-	echo '<h2>'.__('Find an App from the App Store or Mac App Store','appStoreAssistant').'</h2>';
-	echo '<p>'.__('This will generate a shortcode that you can paste into your POST. You will also have the option to <b>auto-create a post</b> which will include a Featured Image, App Title, Shortcode and Categories. After creation, you will be given a link to edit the post.','appStoreAssistant').'</p>';
-	$mCK = "";$iCK="";$iPCK="";
+	echo '<h2>'.__('Find an item from iTunes or an App from the App Store or Mac App Store','appStoreAssistant').'</h2>';
+	echo '<p>'.__('This will generate a shortcode that you can paste into your POST. You will also have the option to <b>auto-create a post</b> which will include a Featured Image, Item Title, Shortcode and Categories. After creation, you will be given a link to edit the post.','appStoreAssistant').'</p>';
+	$searchType = '';$SearchTerm='';
 	if (!empty($_POST)) {
 		$postType = $_POST['type'];
-		if(is_numeric($_POST['appname'])) $postType = "byID";
+		if(isset($_POST['appname'])) if(is_numeric($_POST['appname'])) $postType = "byID";
 	
 		switch ($postType) {
     	case "iPhone":
 			$Searchtype = __('iPhone/iPod Software','appStoreAssistant');
 			$shortCodeStart = "[asa_item";
-			$iCK = " checked";
 			$entity = "software";
+			$searchType = "iPhone";
 			break;
     	case "iOS":
 			$Searchtype = __('All iOS Software','appStoreAssistant');
 			$shortCodeStart = "[asa_item";
-			$iOSCK = " checked";
 			$entity = "software";
+			$searchType = "iOS";
 			break;
     	case "iPad":
 			$Searchtype = __('iPad Software','appStoreAssistant');
 			$shortCodeStart = "[asa_item";
-			$iPCK = " checked";
 			$entity = "iPadSoftware";
+			$searchType = "iPad";
 			break;
     	case "Mac":
 			$Searchtype = __('Macintosh Software','appStoreAssistant');
 			$shortCodeStart = "[asa_item";
 			$entity = "macSoftware";
-			$mCK = " checked";
+			$searchType = "Mac";
 			break;
-    	case "byID":
-			$Searchtype = __('App by ID','appStoreAssistant');
+    	case "iTunes-Album":
+			$Searchtype = __('iTunes Album','appStoreAssistant');
+			$shortCodeStart = "[asa_item";
+			$entity = "album";
+			$searchType = "iTunes-Album";
+			break;
+    	case "iTunes-TV":
+			$Searchtype = __('iTunes TV Show','appStoreAssistant');
+			$shortCodeStart = "[asa_item";
+			$entity = "tvSeason";
+			$searchType = "iTunes-TV";
+			break;
+    	case "iTunes-Movie":
+			$Searchtype = __('iTunes Movie','appStoreAssistant');
+			$shortCodeStart = "[asa_item";
+			$entity = "movie";
+			$searchType = "iTunes-Movie";
+			break;
+     	case "iTunes-Podcast":
+			$Searchtype = __('iTunes Podcast','appStoreAssistant');
+			$shortCodeStart = "[asa_item";
+			$entity = "podcast";
+			$searchType = "iTunes-Podcast";
+			break;
+     	case "iTunes-Audiobook":
+			$Searchtype = __('iTunes Audiobook','appStoreAssistant');
+			$shortCodeStart = "[asa_item";
+			$entity = "audiobook";
+			$searchType = "iTunes-Audiobook";
+			break;
+     	case "iTunes-eBook":
+			$Searchtype = __('iTunes eBook','appStoreAssistant');
+			$shortCodeStart = "[asa_item";
+			$entity = "ebook";
+			$searchType = "iTunes-eBook";
+			break;
+		case "byID":
+			$Searchtype = __('Item by ID','appStoreAssistant');
 			$shortCodeStart = "[asa_item";
 			$entity = "software";
-			$iOSCK = " checked";
 			break;
 		default:
 			$Searchtype = __('iPhone/iPod Software','appStoreAssistant');
-			$iCK = " checked";
 			$shortCodeStart = "[asa_item";		
 			$entity = "software";
 		}
-		$SearchTerm = $_POST['appname'];
+		if (isset($_POST['appname'])) $SearchTerm = $_POST['appname'];
 		if(!empty($_POST['createPost'])) {
 			appStore_createPostFromAppID($_POST['shortcode'],$_POST['postTitle'],$_POST['postCategories'],$_POST['appID']);
 		}
 	} else {
 		$SearchTerm = "";
-		$iOSCK = " checked";
 	}
 	
-	appStore_displaySearchForm($iOSCK,$mCK,$iCK,$iPCK);
+	appStore_displaySearchForm($searchType,$SearchTerm);
 	
-	if (!empty($_POST)) {
+	if (!empty($_POST['asaSearch'])) {
 		$checkForDuplicates[] = "000000000"; //Setup array for later use
 		if($postType == "byID") {
 			$listOfApps[0] = appStore_get_data( intval($_POST['appname']));
 		} else {			
 			$listOfApps = appStore_getSearchResultsFromApple($entity);
 		}
+		
+		//print_r($listOfApps); //Debug
+		
 		
 		appStore_buildListOfFoundApps($listOfApps,"1",$shortCodeStart,$_POST['type']);
 		if($_POST['type'] == "iOS") {
@@ -1603,9 +1706,9 @@ class AddMissingCategories {
 				$cat = get_category( $c );
 				$categories[] = $cat->name;
 			}
-			//$logEntry .= "----Filename:$thumb_url\r\r";
-			//$logEntry .= "----FileArray:".print_r($appData,true)."\r\r";
-			//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
+			//$logEntry .= "----Filename:$thumb_url\r\r"; //Debug
+			//$logEntry .= "----FileArray:".print_r($appData,true)."\r\r"; //Debug
+			//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX); //Debug
 
 			$appCategories = array_unique($categories);
 			foreach($appCategories as $appCategory) {
@@ -1645,7 +1748,7 @@ class AddMissingCategories {
 				$categories[] = $cat->name;
 			}
 
-			//$logEntry = "----FileArray:".print_r($amazonItem,true);
+			//$logEntry = "----FileArray:".print_r($amazonItem,true); //Debug
 			$appCategories = array_unique($categories);
 			foreach($appCategories as $appCategory) {
 		
@@ -1751,8 +1854,8 @@ class RebuildFeaturedImages {
 			echo '	<p>' . __('Please be patient while the Featured Images for ASA Posts are rebuilt. This can take a while, depending on the speed of this server or if you have lots of posts. Do not navigate away from this page until the process is complete.', 'appStoreAssistant' ) . '</p>';
 
 			$count = count( $images );
-
-			$text_goback = ( ! empty( $_GET['goback'] ) ) ? sprintf( __( 'To go back to the previous page, <a href="%s">click here</a>.', 'appStoreAssistant' ), 'javascript:history.go(-1)' ) : '<br><br>'.sprintf( __( 'To Start Over and try rebuilding again <a href="%4$s">click here</a>. %5$s', 'appStoreAssistant' ), "' + rt_successes + '", "' + rt_totaltime + '", "' + rt_errors + '", esc_url( wp_nonce_url( admin_url( 'admin.php?page=asa-rebuild-featuredimages' ), 'asa-rebuild-featuredimages' ) ) . "' + rt_failedlist + '", $text_goback );;
+			$text_goback = '';
+			$text_goback = ( ! empty( $_GET['goback'] ) ) ? sprintf( __( 'To go back to the previous page, <a href="%s">click here</a>.', 'appStoreAssistant' ), 'javascript:history.go(-1)' ) : '<br><br>'.sprintf( __( 'To Start Over and try rebuilding again <a href="%4$s">click here</a>. %5$s', 'appStoreAssistant' ), "' + rt_successes + '", "' + rt_totaltime + '", "' + rt_errors + '", esc_url( wp_nonce_url( admin_url( 'admin.php?page=asa-rebuild-featuredimages' ), 'asa-rebuild-featuredimages' ) ) . "' + rt_failedlist + '", $text_goback );
 			$text_failures = sprintf( __( 'All done! %1$s Featured Images were successfully created in %2$s seconds and there were %3$s posts that do not have ASA shortcodes. <br><br>If you think some of the posts that we did not find any ASA Shortcodes for really had them, then try rebuilding again by <a href="%4$s">clicking here</a>. This probably will not do anything, but you can try just incase of a network issue. %5$s', 'appStoreAssistant' ), "' + rt_successes + '", "' + rt_totaltime + '", "' + rt_errors + '", esc_url( wp_nonce_url( admin_url( 'admin.php?page=asa-rebuild-featuredimages' ), 'asa-rebuild-featuredimages' ) . '&ids=' ) . "' + rt_failedlist + '", $text_goback );
 			$text_nofailures = sprintf( __( 'All done! %1$s Featured Images were successfully rebuild in %2$s seconds and there were 0 failures. %3$s', 'appStoreAssistant' ), "' + rt_successes + '", "' + rt_totaltime + '", $text_goback );
 ?>
@@ -1806,7 +1909,7 @@ class RebuildFeaturedImages {
 			// Clear out the empty list element that's there for HTML validation purposes
 			$("#rebuildfi-debuglist li").remove();
 
-			// Called after each resize. Updates debug information and the progress bar.
+			// Called after each rebuild. Updates debug information and the progress bar.
 			function RebuildFIUpdateStatus( id, success, response ) {
 				$("#rebuildfi-bar").progressbar( "value", ( rt_count / rt_total ) * 100 );
 				$("#rebuildfi-bar-percent").html( Math.round( ( rt_count / rt_total ) * 1000 ) / 10 + "%" );
@@ -1932,6 +2035,8 @@ class RebuildFeaturedImages {
 
 		$id = (int) $_REQUEST['id'];
 		$postData = get_post( $id );
+		$logFile = CACHE_DIRECTORY."FI_Reset_Log.txt";
+
 		//if ( ! current_user_can( $this->capability ) )
 			//$this->die_json_error_msg( $postData->ID, __( "Your user account doesn't have permission to process Featured Images.", 'appStoreAssistant' ) );		
 		
@@ -1940,6 +2045,8 @@ class RebuildFeaturedImages {
 
 		if(has_post_thumbnail($id)) {
 			$featuredImageURL = wp_get_attachment_url(get_post_thumbnail_id( $id ));
+//$logEntry = "----Line 1989 ($id):".$featuredImageURL."\r\r"; //Debug
+//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX); //Debug
 			if(preg_match('/appstoreassistant_cache|artworkOriginal|artworkUrl|asaArtwork/',$featuredImageURL,$matches)) {
 				if(delete_post_meta($id, '_thumbnail_id')) {
 					//Featured Image Removed
@@ -1954,12 +2061,15 @@ class RebuildFeaturedImages {
 					);
 				}
 			} else {
+//$logEntry = "----Line 2006 ($id):".$thePostName."\r\r"; //Debug
+//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX); //Debug
+
 				die(
 					json_encode(
 						array( 'error' => '<span class="passivemsg">'
-							.sprintf( __( 'Skipping: Already has non ASA Featured Image for <b>"%s"</b>', 'appStoreAssistant' ),'<b>'.$thePostName.'</b>')
+							.sprintf( __( 'Skipping: Already has non ASA Featured Image for "%s"', 'appStoreAssistant' ),'<b>'.$thePostName.'</b>')
+							.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 						)
-						.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 					)
 				);
 			}
@@ -1973,11 +2083,13 @@ class RebuildFeaturedImages {
 			$pattern = '/id="([0-9]+)/i';
 			preg_match($pattern, $postContent, $matches, PREG_OFFSET_CAPTURE, 5);
 			$asaIDs[] = $matches[1][0];
+
 		}
 		if(preg_match('/amazon_item\ asin="/i', $postContent, $matches) || preg_match('/amazon_item_link\ asin="/i', $postContent, $matches) ) {
 			$pattern = '/asin="([a-zA-Z0-9]+)/i';
 			preg_match($pattern, $postContent, $matches, PREG_OFFSET_CAPTURE, 5);
 			$amazonIDs[] = $matches[1][0];
+			
 		}
 		if(preg_match('/asa_item\ link="/i', $postContent, $matches) || preg_match('/_app\ link="/i', $postContent, $matches)) {
 			$pattern = '/id([0-9]+)/i';
@@ -1985,11 +2097,11 @@ class RebuildFeaturedImages {
 			$asaIDs[] = $matches[1][0];
 		}
 		$idsFound = count($asaIDs) + count($amazonIDs);
-
+		
 		if($idsFound < 1 )	die(
 								json_encode(
 									array( 'error' => '<span class="passivemsg">'
-										.sprintf( __( 'Skipping: No App IDs or Amazon ASINs found for post %s.', 'appStoreAssistant' ), esc_html( $thePostName ))
+										.sprintf( __( 'Skipping: No ASA IDs or Amazon ASINs found for post %s.', 'appStoreAssistant' ), esc_html( $thePostName ))
 										.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 									)
 								)
@@ -2007,12 +2119,25 @@ class RebuildFeaturedImages {
 							);
 		
 		//////DELETE OLD FEATURED IMAGES
-		$logFile = CACHE_DIRECTORY."FI_Reset_Log.txt";
 	
 		
 		if(count($asaIDs) > 0) { // Process asaIDs
 			$appID = $asaIDs[0];
-			$appData = appStore_get_data( $appID );
+			if($appData = appStore_get_data( $appID )) {
+				//$logEntry = "----Got ID $id:$appID\r\r";
+			} else {
+				die(
+					json_encode(
+						array( 'error' => '<span class="errormsg">'
+							.sprintf( __( 'Skipping: The app or item is no longer available.', 'appStoreAssistant' ))
+							.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
+						)
+					)
+				);
+			}
+
+			
+			
 			//$filename = $appData->imageFeatured_path;
 			// New code Starts here			
 			if(appStore_setting('cache_images_locally')=="1") {
@@ -2021,9 +2146,11 @@ class RebuildFeaturedImages {
 				$urlToFeaturedImage = $appData->imageFeatured;
 			}
 			$desc = 'Featured Image '.$id."-".date("U");
-			//$logEntry .= "----Filename:$thumb_url\r\r";
+			//$logEntry = "----$desc:$appID\r\r";
+			//$logEntry = "----Filename:$thumb_url\r\r";
 			//$logEntry .= "----FileArray:".print_r($appData,true)."\r\r";
-			//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
+			//$logEntry = "----Filename:$appID\r\r";
+			//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX); //Debug
 			
 			if ( ! empty($urlToFeaturedImage) ) {
             	$tmp = download_url( $urlToFeaturedImage );
@@ -2076,9 +2203,9 @@ class RebuildFeaturedImages {
 			// New code Starts here
 			$thumb_url = $amazonItem['imageFeatured_cached'];
 			$desc = 'Featured Image '.$id."-".date("U");
-			$logEntry .= "----Filename:$thumb_url\r\r";
-			$logEntry .= "----FileArray:".print_r($amazonItem,true)."\r\r";
-			file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
+			//$logEntry .= "----Filename:$thumb_url\r\r"; //Debug
+			//$logEntry .= "----FileArray:".print_r($amazonItem,true)."\r\r"; //Debug
+			//file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX); //Debug
 			if ( ! empty($thumb_url) ) {
             	$tmp = download_url( $thumb_url );
 				preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
@@ -2223,8 +2350,8 @@ function custom_admin_pointers() {
    $dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
    $version = str_replace(".", "_", ASA_PLUGIN_VERSION); // replace all periods in version with an underscore
    $prefix = 'custom_admin_pointers' . $version . '_';
-   $new_pointer_content = '<h3>' . __( 'Find and Add New App', 'appStoreAssistant' ) . '</h3>';
-   $new_pointer_content .= '<p>' . __( 'Use this button to search for and easily create a new post with the shortcode and Featured Image for an app.', 'appStoreAssistant' ) . '</p>';
+   $new_pointer_content = '<h3>' . __( 'Find and add an item from the iTunes or App Stores', 'appStoreAssistant' ) . '</h3>';
+   $new_pointer_content .= '<p>' . __( 'Use this button to search for and easily create a new post with the shortcode and Featured Image for an App or iTunes item.', 'appStoreAssistant' ) . '</p>';
 
    return array(
       $prefix . 'new_items' => array(
@@ -2250,20 +2377,41 @@ add_action( 'wp_dashboard_setup', 'appStore_add_dashboard_widgets' );
 /**
  * Create the function to output the contents of our Dashboard Widget.
  */
-function appStore_displaySearchForm($iOSCK = " checked",$mCK = "",$iCK="",$iPCK="") {
-	if(empty($iOSCK)) $iOSCK = " checked";
+function appStore_displaySearchForm($searchType,$SearchTerm) {
+	//echo 'Posted SearchType: ['.$searchType.']<br>'; //Debug
+	if ($searchType == '') $searchType = appStore_setting('appSearch_default');
+	//echo 'Adjusted SearchType: ['.$searchType.']<br>'; //Debug
+	$searchTypes = array (
+	    "iOS" => __('All iOS Apps','appStoreAssistant'),
+	    "Mac" => __('Mac Apps','appStoreAssistant'),
+	    "iPhone" => __('Just iPhone/iPod Apps','appStoreAssistant'),
+	    "iPad" => __('Just iPad Apps','appStoreAssistant'),
+	    "iTunes-Album" => __('iTunes Albums','appStoreAssistant'),
+	    "iTunes-Audiobook" => __('iTunes Audiobook','appStoreAssistant'),
+	    "iTunes-eBook" => __('iTunes eBook','appStoreAssistant'),
+	    "iTunes-Movie" => __('iTunes Movie','appStoreAssistant'),
+	    "iTunes-Podcast" => __('iTunes Podcast','appStoreAssistant'),
+	    "iTunes-TV" => __('iTunes TV Show','appStoreAssistant')
+	    );
+
 	echo '<div id="searchForm" class="searchForm">';
-		echo '<form action="admin.php?page=appStore_IDsearch" method="POST">';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iOS"'.$iOSCK.'> '.__("All iOS",'appStoreAssistant').'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="Mac"'.$mCK.'> '.__("Mac",'appStoreAssistant').'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPhone"'.$iCK.'> '.__("Just iPhone/iPod",'appStoreAssistant').'';
-		echo '&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="iPad"'.$iPCK.'> '.__("Just iPad",'appStoreAssistant').'';
+		echo '<form action="admin.php?page=appStore_IDsearch" method="POST">';	
+
+		echo 'Search for <select id="searchType" name="type">'."\n";
+		foreach ($searchTypes as $searchTypeCode => $typeDescription) {
+			echo '<option value="'.$searchTypeCode.'"';
+			if ($searchType == $searchTypeCode) echo ' selected';
+			echo '>'.$typeDescription.'</option>'."\n";
+		}
+		echo '</select>';		
+
 		echo '<br /><br />';
-		$string = __('Find Apps','appStoreAssistant');
-		echo __('App Name or ID','appStoreAssistant').":</br>";
-		echo '<label id="appname-prompt-text" class="screen-reader-text prompt" for="appname">'.__('App Name','appStoreAssistant').'</label>';
+		$string = __('Find Items','appStoreAssistant');
+		echo __('App Name, Artist, Title or ID','appStoreAssistant').":<br />";
+		echo '<label id="appname-prompt-text" class="screen-reader-text prompt" for="appname">'.__('App Name','appStoreAssistant').'</label>';		
+		echo '<input type="hidden" name="asaSearch" value="true">';
 		echo '<input type="text" name="appname" id="appname" value="'.$SearchTerm.'" autocomplete="off" />';
-		echo '<input id="search-for-appt" class="button button-primary" type="submit" value="'.$string.'" name="'.$string.'"></input>';
+		echo '<input id="search-for-appt" class="button button-primary" type="submit" value="'.$string.'" name="'.$string.'" />';
 		echo '</form>';
 	echo '</div>';
 } 
