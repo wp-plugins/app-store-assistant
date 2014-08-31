@@ -759,6 +759,7 @@ REQUIRES PHP 5.4 or later
 
 == Upgrade Notice ==
 
+= 6.8.0 =
 It is NECESSARY to rebuild the cache. It is RECOMMENDED to rebuild the Featured Images with this version. Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply).
 
 == Note ==
