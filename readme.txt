@@ -2,8 +2,8 @@
 Contributors: SEALsystems 
 Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes, iWatch, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS, Mac Extensions
-Requires at least: 3.6
-Tested up to: 3.9.2
+Requires at least: 3.9.2
+Tested up to: 4.0
 Stable tag: 6.8.0
 License: GPLv3 or later
 
