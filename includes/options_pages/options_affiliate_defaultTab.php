@@ -6,7 +6,7 @@
  <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_help&tab=amazon"; ?>">Amazon.com Help</a></b>
 </p>
 		
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label><?php _e('Access Key ID', 'appStoreAssistant' ); ?></label></th>
 <td><input type="text" size="50" name="appStore_options[AWS_API_KEY]" value="<?php echo $options['AWS_API_KEY']; ?>"/></td>

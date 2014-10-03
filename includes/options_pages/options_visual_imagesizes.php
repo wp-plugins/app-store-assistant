@@ -2,7 +2,7 @@
 
 <p class="asa_admin_warning">(<?php _e('Cached app data must be cleared for change to take effect', 'appStoreAssistant' ); ?>. See <b><a href="<?php echo admin_url()."admin.php?page=appStore_sm_utilities&tab=clearcache"; ?>"><?php _e('Utilities', 'appStoreAssistant' ); ?> -> <?php _e('Clear Cache', 'appStoreAssistant' ); ?></a></b>.)</p>
 
-<table class="form-table" style="width:auto;">
+<table class="asa_form-table" style="width:auto;">
 <tr><td></td><td><?php _e('Height', 'appStoreAssistant' ); ?></td><td><?php _e('Width', 'appStoreAssistant' ); ?></td><td><?php _e('Aspect', 'appStoreAssistant' ); ?></td><td><?php _e('Crop', 'appStoreAssistant' ); ?></td></tr>
 <tr valign="top">
 <th scope="row"><label><?php _e('Image size for Featured Image', 'appStoreAssistant' ); ?></label></th>

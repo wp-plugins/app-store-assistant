@@ -1,6 +1,6 @@
 <input type="hidden" name="appStore_options[checkboxedoptions]" value="displayexcerptthumbnail,displayexcerptreadmore" />
 
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label><?php _e('Excerpt Generator', 'appStoreAssistant' ); ?></label></th>
 <td><input type="radio" name="appStore_options[excerpt_generator]" value="wordpress" <?php if ($options['excerpt_generator'] == "wordpress") echo 'checked'; ?> /> WordPress<br />

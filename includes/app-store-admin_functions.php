@@ -693,7 +693,7 @@ function appStore_addFeaturedImageToPost ($fi_url,$parent_post_id,$appID="App") 
 	// If error storing permanently, unlink
 	if ( is_wp_error($thumbid) ) {
 		@unlink($file_array['tmp_name']);
-		echo '<span class="errormsg">'.sprintf( __( 'Error: storing permanently, unlink %s.', 'appStoreAssistant' ),'<b>'.$wp_upload_dir['path'].'</b>' ).'</span>';
+		echo '<span class="asa_errormsg">'.sprintf( __( 'Error: storing permanently, unlink %s.', 'appStoreAssistant' ),'<b>'.$wp_upload_dir['path'].'</b>' ).'</span>';
 		$error_string = $thumbid->get_error_message();
 		echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
 		return false;
@@ -1010,20 +1010,7 @@ function appStore_search_form() {
 }
 
 //------------------------------TEST-----------------------------------------------
-function wpse49871_shortcode_query_filter( $where ){
-    global $wpdb;
 
-    // Lets be on the safe side, escape and such.
-    $new_where = $wpdb->prepare( 
-         "%s AND %s LIKE %s"
-        ,$where
-        ,"{$wpdb->posts}.post_content"
-        // If you know the exact ID, then just insert it in here.
-        ,like_escape( '%_zzz%' )
-    );
-
-    return $new_where;
-}
 function appStore_get_shortcode_posts() {
     add_filter( 'posts_where', 'appStore_shortcode_query_filter' );
     $posts = get_posts( array(	'posts_per_page'  => 1550,
@@ -1679,7 +1666,7 @@ class AddMissingCategories {
 		$idsFound = count($asaIDs) + count($amazonIDs);
 		if($idsFound < 1 ) die(
 								json_encode(
-									array( 'error' => '<span class="passivemsg">'
+									array( 'error' => '<span class="asa_passivemsg">'
 										.sprintf( __( 'Skipping: No App IDs or Amazon ASINs found for post %s.', 'appStoreAssistant' ), esc_html( $thePostName ))
 										.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 									)
@@ -1688,7 +1675,7 @@ class AddMissingCategories {
 		@set_time_limit( 900 ); // 5 minutes per post should be PLENTY
 		if(!$thePostName) die(
 							json_encode(
-								array( 'error' => '<span class="errormsg">'
+								array( 'error' => '<span class="asa_errormsg">'
 									.__( 'Skipping: No Post Title found for post ID', 'appStoreAssistant' )
 									.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 								)
@@ -1729,7 +1716,7 @@ class AddMissingCategories {
 
 		if(is_array($postUpdate)) die(
 									json_encode(
-										array( 'success' => '<span class="successmsg">'
+										array( 'success' => '<span class="asa_successmsg">'
 											.sprintf( __( 'Updated Apple App Store App "%s" (%s) with categories: %s', 'appStoreAssistant' ), '<b>'.esc_html( $thePostName ).'</b>',$id,$postCategoriesList )
 											.'</span>'
 										)
@@ -1768,7 +1755,7 @@ class AddMissingCategories {
 		
 			die(
 				json_encode(
-					array( 'success' => '<span class="successmsg">'
+					array( 'success' => '<span class="asa_successmsg">'
 						.sprintf( __( 'Updated Amazon Item "%s" (%s) with categories: %s', 'appStoreAssistant' ), '<b>'.esc_html( $amazonItem['Title'] ).'</b>',$id,$postCategoriesList )
 						.'</span>'
 					)
@@ -2053,7 +2040,7 @@ class RebuildFeaturedImages {
 				} else {
 					die(
 						json_encode(
-							array( 'error' => '<span class="errormsg">'
+							array( 'error' => '<span class="asa_errormsg">'
 								.sprintf( __( 'Error: Cannot remove old Featured Image for "%s" (%s)', 'appStoreAssistant' ),'<b>'.$featuredImageURL.'</b>',$id )
 								.'</span>'
 							)
@@ -2066,7 +2053,7 @@ class RebuildFeaturedImages {
 
 				die(
 					json_encode(
-						array( 'error' => '<span class="passivemsg">'
+						array( 'error' => '<span class="asa_passivemsg">'
 							.sprintf( __( 'Skipping: Already has non ASA Featured Image for "%s"', 'appStoreAssistant' ),'<b>'.$thePostName.'</b>')
 							.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 						)
@@ -2100,7 +2087,7 @@ class RebuildFeaturedImages {
 		
 		if($idsFound < 1 )	die(
 								json_encode(
-									array( 'error' => '<span class="passivemsg">'
+									array( 'error' => '<span class="asa_passivemsg">'
 										.sprintf( __( 'Skipping: No ASA IDs or Amazon ASINs found for post %s.', 'appStoreAssistant' ), esc_html( $thePostName ))
 										.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 									)
@@ -2111,7 +2098,7 @@ class RebuildFeaturedImages {
 		
 		if(!$thePostName)	die(
 								json_encode(
-									array( 'error' => '<span class="errormsg">'
+									array( 'error' => '<span class="asa_errormsg">'
 										.sprintf( __( 'Skipping: No Post Title found for post ID', 'appStoreAssistant' ))
 										.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 									)
@@ -2128,7 +2115,7 @@ class RebuildFeaturedImages {
 			} else {
 				die(
 					json_encode(
-						array( 'error' => '<span class="errormsg">'
+						array( 'error' => '<span class="asa_errormsg">'
 							.sprintf( __( 'Skipping: The app or item is no longer available.', 'appStoreAssistant' ))
 							.' (<a href="post.php?post='.$id.'&action=edit">'.$id.'</a>)</span>'
 						)
@@ -2163,7 +2150,7 @@ class RebuildFeaturedImages {
 					$error_string = $tmp->get_error_message();
 					die(
 						json_encode(
-							array( 'error' => '<span class="errormsg">'
+							array( 'error' => '<span class="asa_errormsg">'
 								.sprintf( __( 'Error: Featured Image File ' . $error_string . '(%s)', 'appStoreAssistant' ),$urlToFeaturedImage )
 								.'</span>'
 							)
@@ -2177,7 +2164,7 @@ class RebuildFeaturedImages {
 					@unlink($file_array['tmp_name']);
 					die(
 						json_encode(
-							array( 'error' => '<span class="errormsg">'
+							array( 'error' => '<span class="asa_errormsg">'
 								.sprintf( __( 'Error: storing permanently, unlink. (%s)', 'appStoreAssistant' ),print_r($thumbid,true))
 								.'</span>'
 							)
@@ -2188,7 +2175,7 @@ class RebuildFeaturedImages {
         	set_post_thumbnail( $id, $thumbid );			
 			die(
 				json_encode(
-					array( 'success' => '<span class="successmsg">'
+					array( 'success' => '<span class="asa_successmsg">'
 						.sprintf( __( 'Updated Apple Featured Image for: "%s" (%s)', 'appStoreAssistant' ), '<b>'.esc_html( $thePostName ).'</b>',$id )
 						.'</span>'
 					)
@@ -2222,7 +2209,7 @@ class RebuildFeaturedImages {
 					@unlink($file_array['tmp_name']);
 					die(
 						json_encode(
-							array( 'error' => '<span class="errormsg">'
+							array( 'error' => '<span class="asa_errormsg">'
 								.sprintf( __( 'Error: storing permanently, unlink.', 'appStoreAssistant' ),$wp_upload_dir['path'] )
 								.'</span>'
 							)
@@ -2234,7 +2221,7 @@ class RebuildFeaturedImages {
 		
 			die(
 				json_encode(
-					array( 'success' => '<span class="successmsg">'
+					array( 'success' => '<span class="asa_successmsg">'
 						.sprintf( __( 'Updated Amazon Featured Image for: "%s" (%s)', 'appStoreAssistant' ), '<b>'.esc_html( $amazonItem['Title'] ).'</b>',$id )
 						.'</span>'
 					)

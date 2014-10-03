@@ -3,7 +3,7 @@
 
 <input type="checkbox" value="DoIt" name="appStore_options[RemoveCachedItem]" /> <?php _e('I want to remove the cached data for the item listed below', 'appStoreAssistant' ); ?>.<br /><br />
 
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label>App or iTunes ID</label></th>
 <td><input type="text" size="15" name="appStore_options[RemoveCachedItemID]" value="" /></td>

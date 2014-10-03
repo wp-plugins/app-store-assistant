@@ -118,6 +118,7 @@ REQUIRES PHP 5.4 or later
 * Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
 * Request: Add Tags with App/item name to post [Thanks iOSAppLists]
 * Added: iWatch search
+
 == Changelog ==
 
 = 6.9.0 =
@@ -131,6 +132,8 @@ REQUIRES PHP 5.4 or later
 * Added: Support for displaying iTunes Radio button for individual tracks
 * Added: Displays error message during Featured Image rebuild if item is no longer available
 * Added: Support for iWatch apps and Mac Extensions
+* Fixed: Shortcode for App Ratings not displaying rating [Thanks TRY01]
+* Fixed: CSS namespace in admin settings [Thanks John Turner]
 
 = 6.8.1 =
 * Internal release
@@ -143,6 +146,8 @@ REQUIRES PHP 5.4 or later
 * Fixed: Link to clear single item cache in Top Admin Bar menu
 * Changed: Cleaned up Upgrade Notice
 * Changed: Corrected and cleaned this readme.txt file
+* Added: New 4.0 style Plug-in icon
+* Removed: Unused function that had old pre 4.0 like_escape().
 
 = 6.8.0 =
 * Note: **It is NECESSARY to rebuild the cache with this version.**
@@ -759,7 +764,6 @@ REQUIRES PHP 5.4 or later
 
 == Upgrade Notice ==
 
-= 6.8.0 =
 It is NECESSARY to rebuild the cache. It is RECOMMENDED to rebuild the Featured Images with this version. Apple has switched from LinkShare to PHG (Apply Here: http://affiliate.itunes.apple.com/apply).
 
 == Note ==

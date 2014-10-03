@@ -1,5 +1,5 @@
 <h2 class="asa_admin"><?php _e('iTunes Store Badge', 'appStoreAssistant' ); ?></h2>
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label><?php _e('iTunes Store Badge Verbage', 'appStoreAssistant' ); ?></label></th>
 <td><select name='appStore_options[iTunes_store_badge_type]'>

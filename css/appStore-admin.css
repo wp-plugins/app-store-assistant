@@ -6,13 +6,13 @@
 /* Basic Admin Panel layout
 ----------------------------------*/
 
-span.errormsg
+span.asa_errormsg
 {
 	color: #F00;
 	font-variant: small-caps;
 }
 
-span.successmsg
+span.asa_successmsg
 {
 	color: #008000;
 	font-variant: small-caps;
@@ -344,7 +344,7 @@ span.appStore-search-title
 	background-color: #00557F;
 }
 
-table.form-table th
+table.asa_form-table th
 {
 	white-space: nowrap;
 	vertical-align: top;

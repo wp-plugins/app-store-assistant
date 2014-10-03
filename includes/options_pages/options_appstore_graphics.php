@@ -1,4 +1,4 @@
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label><?php _e('App Stores Badge Verbage', 'appStoreAssistant' ); ?></label></th>
 <td><select name='appStore_options[appStore_store_badge_type]'>

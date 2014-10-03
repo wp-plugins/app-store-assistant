@@ -651,7 +651,7 @@ function appStore_handler_itemLink( $atts,$content=null, $code="") {
 }
 
 function appStore_handler_app_element($atts,$content=null, $code="",$platform="ios_app") {
-	$mode = "";
+	$mode = "SingleApp";
 	// Get App ID and more_info_text from shortcode
 	extract( shortcode_atts( array(
 		'id' => '',

@@ -1,6 +1,6 @@
 <input type="hidden" name="appStore_options[checkboxedoptions]" value="smaller_buy_button_iOS" />
 
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label><?php _e('Button Colors', 'appStoreAssistant' ); ?></label></th>
 <td><?php

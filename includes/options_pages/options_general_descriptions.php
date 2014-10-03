@@ -1,7 +1,7 @@
 <input type="hidden" name="appStore_options[checkboxedoptions]" value="use_shortDesc_on_single,use_shortDesc_on_multiple" />
 <h2 class="asa_admin"><?php _e('Short Description', 'appStoreAssistant' ); ?></h2>
 		
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label><?php _e('Size for Posts', 'appStoreAssistant' ); ?></label></th>
 <td><input type="text" size="4" name="appStore_options[max_description]" value="<?php echo $options['max_description']; ?>" maxlength="4" />  <?php _e('Max characters', 'appStoreAssistant' ); ?><br />

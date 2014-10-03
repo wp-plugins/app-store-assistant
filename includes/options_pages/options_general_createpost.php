@@ -14,7 +14,7 @@
 ?><input type="hidden" name="appStore_options[checkboxedoptions]" value="newPost_addCategories,newPost_defaultTextShow,newPost_createCategories" />
 <p><?php _e('These are the setting for the New ASA Post button. They are used when you search for and create a Post', 'appStoreAssistant' ); ?>.</p>
 
-<table class="form-table">
+<table class="asa_form-table">
 <tr valign="top">
 <th scope="row"><label><?php _e('Create New posts as', 'appStoreAssistant' ); ?></label></th>
 <td><input type="radio" name="appStore_options[newPost_status]" value="draft" <?php if ($options['newPost_status'] == "draft") echo 'checked'; ?> /> Draft<br />
