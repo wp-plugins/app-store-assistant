@@ -116,6 +116,7 @@ The Amazon Standard Identification Number <?php _e('is a 10-character alphanumer
 <li>appBuyButton</li>
 <li>appRating</li>
 <li>appPrice</li>
+<li>appVersion</li>
 </ul>
 	
 	</p></li>

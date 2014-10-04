@@ -1,7 +1,7 @@
 === App Store Assistant ===
 Contributors: SEALsystems 
 Donate link:http://theiphoneappslist.com/donate/
-Tags: iOS, App Store, iTunes, iWatch, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS, Mac Extensions
+Tags: iOS, App Store, iTunes,Apple Watch, iWatch, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS, Mac Extensions
 Requires at least: 3.9.2
 Tested up to: 4.0
 Stable tag: 6.8.0
@@ -11,7 +11,7 @@ Lets you display the detail of an item or an RSS feed from Apple's App Store, iT
 
 == Description ==
 
-The App Store Assistant Wordpress plugin displays a list of iOS Apps, Mac apps or iTunes content from an RSS feed (https://rss.itunes.apple.com/us/) or the detail for iPhone/iPod Apps, Mac Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. optionally it will also converts the items's link to use your affiliate program. It now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
+The App Store Assistant Wordpress plugin has a powerful "search & create post" feature that takes all the work out of creating a post with the item details for iOS Apps, Mac Apps, Apple Watch Apps or iTunes content. You can also create posts from an RSS feed (https://rss.itunes.apple.com/us/) or the detail for iPhone/iPod Apps, Mac Apps, Apple Watch Apps, iPad Apps, Songs, Albums, Movies, Short Films, TV Episodes, or Seasons and Music Videos via the item's ID. Optionally it will also converts the items's link to use your affiliate program. App Store Assistant now also allows items from Amazon.com to be displayed. Demo at http://TheiPhoneAppsList.com or http://TheMacAppsList.com
 
 Built-in search for automated Post creation.
 
@@ -117,7 +117,8 @@ REQUIRES PHP 5.4 or later
 * Request: iBooks support [Thanks rnakoneshny]
 * Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
 * Request: Add Tags with App/item name to post [Thanks iOSAppLists]
-* Added: iWatch search
+* Pending: iWatch search
+* Pending: App Bundles
 
 == Changelog ==
 
@@ -127,6 +128,7 @@ REQUIRES PHP 5.4 or later
 * Added: Search term is retained after search
 * Added: You can now preset a default search type for your site
 * Added: You can now search for iTunes items (Music, Podcasts, TV, Movies, AudioBooks etc.)
+* Added: appVersion to Elements tag [Thanks alfajr2006]
 * Changed: Search button is now called ASA Search (was App Search)
 * Added: Now Supports iTunes track listings for multi-disc sets
 * Added: Support for displaying iTunes Radio button for individual tracks

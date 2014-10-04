@@ -675,7 +675,7 @@ function appStore_handler_app_element($atts,$content=null, $code="",$platform="i
 	if($app->kind == 'mac-software') $platform = 'mac_app';
 	$app->platform = $platform;
 	$element = "";
-	$appElements_available = explode(",","appName,appIcon,appDescription,appBadge,appDetails,appGCIcon,appScreenshots,appDeviceList,appBuyButton,appRating,appPrice,appBadgeSm,appReleaseNotes");
+	$appElements_available = explode(",","appName,appIcon,appDescription,appBadge,appDetails,appGCIcon,appScreenshots,appDeviceList,appBuyButton,appRating,appPrice,appBadgeSm,appReleaseNotes,appVersion");
 	if($app) {
 			$appElements = explode(",", $elements);
 			$appElements = array_filter($appElements, 'strlen');
@@ -1569,6 +1569,11 @@ function displayAppStore_appBuyButton($app,$elementOnly=false) {
 
 function displayAppStore_appPrice($app,$elementOnly=false) {
 		$element = $app->TheAppPrice;
+		return $element;
+}
+
+function displayAppStore_appVersion($app,$elementOnly=false) {
+		$element = $app->version;
 		return $element;
 }
 
