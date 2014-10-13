@@ -294,6 +294,26 @@ function appStore_init(){
 	register_setting( 'appStore_plugin_options', 'appStore_options', 'appStore_validate_options' );
 }
 
+// Add JQuery Functionality
+add_action( 'wp_ajax_test', 'asa_ajax_callback' );
+add_action( 'wp_ajax_no_ppriv_test', 'asa_ajax_callback' );
+function asa_ajax_callback() {
+	check_ajax_referer( "asaAJAX-nonce" );
+	echo 'Hello World2!';
+	die('More Info');
+
+	/*
+	if ( check_ajax_referer( 'asaAJAX', 'nonce' ) ) {
+
+    	//wp_die( 'Hello World' );
+	}
+	else{
+		wp_die( 'Nonce error' );
+	}
+	*/
+}
+
+
 function appStore_add_admin_scripts() {
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('jquery-ui-core');//enables UI
@@ -308,6 +328,13 @@ function appStore_add_admin_scripts() {
 	//Used for Rebuilding Featured Images Progress Bar
 	wp_enqueue_script( 'jquery-ui-progressbar', plugins_url( 'js_functions/jquery-ui/jquery.ui.progressbar.min.1.7.2.js', ASA_MAIN_FILE ), array( 'jquery-ui-core' ), '1.7.2' );
 	wp_enqueue_style( 'jquery-ui-appStore', plugins_url( 'js_functions/jquery-ui/redmond/jquery-ui-1.7.2.custom.css', ASA_MAIN_FILE ), array(), '1.7.2' );
+
+   wp_enqueue_script( 'asa-ajax', plugins_url('js_functions/asa-ajax.min.js',ASA_MAIN_FILE), array ( 'jquery' ), false, true );
+   $asaAJAX = array(
+	   'nextNonce' => wp_create_nonce( 'asaAJAX-nonce' ),
+	   'ajaxURL' => admin_url( 'admin-ajax.php' )
+   ); 
+   wp_localize_script( 'asa-ajax', 'asaAJAX', $asaAJAX ); 
 	
 	
 }
@@ -530,7 +557,8 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 			'defaultTab' => __('Clear an Item','appStoreAssistant'),
 			'clearcache' => __('Clear Cache','appStoreAssistant'),
 			'remove_featured' => __('Remove Featured','appStoreAssistant'),
-			'reset' => __('Reset Defaults','appStoreAssistant')
+			'reset' => __('Reset Defaults','appStoreAssistant'),
+			'beta' => __('Beta Utilities','appStoreAssistant')
 			);
 	  break;
 	  case 'appStore_sm_help' :
