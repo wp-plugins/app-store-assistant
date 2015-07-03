@@ -273,3 +273,36 @@ table.trackListing td
 	padding: 0px 8px 2px 8px;
 }
 table.trackListing td.right { text-align: right; }
+
+
+	.asatooltip{
+   			display: inline;
+    		position: relative;
+		}
+		
+		.asatooltip:hover:after
+		{
+			background: rgba(0,0,0,.8);
+			border-radius: 5px;
+			bottom: 26px;
+			color: #fff;
+			content: attr(title);
+			left: 20%;
+			padding: 5px;
+			position: absolute;
+			z-index: 98;
+		}
+		
+		.asatooltip:hover:before
+		{
+			bottom: 20px;
+			content: "";
+			left: 50%;
+			position: absolute;
+			z-index: 99;
+			border-top: 6px #F00 solid;
+			border-right: 6px transparent solid;
+			border-bottom: 0 #333 solid;
+			border-left: 6px transparent solid;
+		}
+

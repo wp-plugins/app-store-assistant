@@ -49,8 +49,10 @@ function appStore_add_defaults() {
 		"store_language" => "en_US",
 		"store_continent" => "North America",
 		"store_badge_language" => "US-UK",
-		"appStore_store_badge_type" => "available",
-		"iTunes_store_badge_type" => "available",
+		"appStore_store_badge_type" => "download",
+		"appStore_store_badge_size" => "1",
+		"iTunes_store_badge_type" => "getit",
+		"iTunes_store_badge_size" => "1",
 		"store_country" => "US",
 		"appSearch_default" => "iOS",
 	
@@ -99,7 +101,9 @@ function appStore_add_defaults() {
 		"displayreleasedate" => "HIDE",
 		"displayfilesize" => "HIDE",
 		"displayprice" => "HIDE",
+		"displayminimumOsVersion" => "INLINE",
 		"displayuniversal" => "INLINE",
+		"displaylanguages" => "INLINE",
 		"displayadvisoryrating" => "INLINE",
 		"displayappinapppurwarning" => "INLINE",
 		"displaycategories" => "INLINE",
@@ -126,7 +130,9 @@ function appStore_add_defaults() {
 		"displaympreleasedate" => "HIDE",
 		"displaympfilesize" => "HIDE",
 		"displaympprice" => "HIDE",
+		"displaympminimumOsVersion" => "INLINE",
 		"displaympuniversal" => "INLINE",
+		"displaymplanguages" => "INLINE",
 		"displaympadvisoryrating" => "INLINE",
 		"displaympappinapppurwarning" => "INLINE",
 		"displaympcategories" => "INLINE",
@@ -153,7 +159,9 @@ function appStore_add_defaults() {
 		"displayATOMreleasedate" => "HIDE",
 		"displayATOMfilesize" => "HIDE",
 		"displayATOMprice" => "HIDE",
+		"displayATOMminimumOsVersion" => "INLINE",
 		"displayATOMuniversal" => "INLINE",
+		"displayATOMlanguages" => "INLINE",
 		"displayATOMadvisoryrating" => "INLINE",
 		"displayATOMappinapppurwarning" => "INLINE",
 		"displayATOMcategories" => "INLINE",
@@ -166,6 +174,7 @@ function appStore_add_defaults() {
 		"displayappdetailsaslist" => "yes",
 		
 		"displayappdetailsasliststyle" => "bw",
+		"displayappdetailsaslistssort" => "releasedate",
 
 		"appicon_size_featured_h" => "256",
 		"appicon_size_featured_w" => "256",
@@ -2365,8 +2374,8 @@ function custom_admin_pointers() {
    $dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
    $version = str_replace(".", "_", ASA_PLUGIN_VERSION); // replace all periods in version with an underscore
    $prefix = 'custom_admin_pointers' . $version . '_';
-   $new_pointer_content = '<h3>' . __( 'Find and add an item from the iTunes or App Stores', 'appStoreAssistant' ) . '</h3>';
-   $new_pointer_content .= '<p>' . __( 'Use this button to search for and easily create a new post with the shortcode and Featured Image for an App or iTunes item.', 'appStoreAssistant' ) . '</p>';
+   $new_pointer_content = '<h3>' . __( 'Important Changes!!', 'appStoreAssistant' ) . '</h3>';
+   $new_pointer_content .= '<p>' . __( 'The following shortcodes Deprecated:<br />ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link<br />Note: Deprecated shortcodes are still functional in this version, but will be REPLACED IN THE NEXT UPDATE!!!**<br /><br />Please see the Change Log (readme.txt) for Important Changes to this version!', 'appStoreAssistant' ) . '</p>';
 
    return array(
       $prefix . 'new_items' => array(

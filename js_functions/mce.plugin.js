@@ -71,7 +71,7 @@
 					onsubmit: function(e) {
 						// Insert content when the window form is submitted
 						feedPattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-						var m = feedPattern.exec(e.data.iTunesID);
+						var m = feedPattern.exec(e.data.atomfeed);
 						moreinfotextPattern = /([0-9a-zA-Z ]+)/;
 						var mit = 'open in Store...';
 						var mitProcessed = moreinfotextPattern.exec(e.data.moreinfotextEntered);
@@ -86,7 +86,7 @@
 	function addAmazonButton(ed, url){
 		ed.addButton('asa_amazon', {
 			title : 'ASA: Amazon.com shortcode',
-			image : url+'/images/aicon.png',
+			image : url+'/images/Amazon_Button.png',
 			onclick : function() {
 			
 				ed.windowManager.open({

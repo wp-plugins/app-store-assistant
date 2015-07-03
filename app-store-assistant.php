@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: App Store Assistant
-Version: 6.9.0.20141009
+Version: 7.0.0.20150704
 Text Domain: appStoreAssistant
 Plugin URI: http://TheiPhoneAppsList.com/
 Description: Adds shortcodes to display ATOM feed or individual item information from Apple's App Stores or iTunes. Now works with Amazon.com Affiliate Program.
@@ -10,12 +10,12 @@ Author URI: http://SEALsystems.net/
 */
 
 /**
-Copyright 2014 Scott Immerman
+Copyright 2015 Scott Immerman
 
 */
-//ini_set('display_errors', 'On'); //Debug
-//error_reporting(E_ALL | E_STRICT); // Debug
-//error_reporting(E_ERROR | E_WARNING | E_PARSE); // Debug
+ini_set('display_errors', 'On'); //Debug
+error_reporting(E_ALL | E_STRICT); // Debug
+error_reporting(E_ERROR | E_WARNING | E_PARSE); // Debug
 function plugin_get_version() {
 	if ( ! function_exists( 'get_plugins' ) ) require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	$plugin_folder = get_plugins( '/' . plugin_basename( dirname( ASA_MAIN_FILE ) ) );

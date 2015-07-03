@@ -47,7 +47,9 @@ appStore_CreateListOfAppsUsedInPosts();
   			array('ID' => "displayreleasedate", 'label' => __("Date Released", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
   			array('ID' => "displayprice", 'label' => __("Price", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
      		array('ID' => "displayfilesize", 'label' => __("File Size", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayminimumOsVersion", 'label' => __("Minimum OS Version", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
      		array('ID' => "displayuniversal", 'label' => __("Universal App icon", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_NOTITLE"),
+     		array('ID' => "displaylanguages", 'label' => __("Languages", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
  			array('ID' => "displayadvisoryrating", 'label' => __("Advisory Rating", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
  			array('ID' => "displayappinapppurwarning", 'label' => __("Offers In-App Purchases", 'appStoreAssistant' ).'*', 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
    			array('ID' => "displaycategories", 'label' => __("App Categories", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE")

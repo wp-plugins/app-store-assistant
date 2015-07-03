@@ -41,7 +41,9 @@ jQuery(function() {
   			array('ID' => "displayATOMreleasedate", 'label' => __("Date Released", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
   			array('ID' => "displayATOMprice", 'label' => __("Price", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
      		array('ID' => "displayATOMfilesize", 'label' => __("File Size", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displayATOMminimumOsVersion", 'label' => __("Minimum OS Version", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
      		array('ID' => "displayATOMuniversal", 'label' => __("Universal App icon", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_NOTITLE"),
+     		array('ID' => "displayATOMlanguages", 'label' => __("Languages", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
  			array('ID' => "displayATOMadvisoryrating", 'label' => __("Advisory Rating", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
  			array('ID' => "displayATOMappinapppurwarning", 'label' => __("Offers In-App Purchases", 'appStoreAssistant' ).'*', 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
    			array('ID' => "displayATOMcategories", 'label' => __("App Categories", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE")

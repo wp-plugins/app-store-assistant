@@ -41,7 +41,9 @@ jQuery(function() {
   			array('ID' => "displaympreleasedate", 'label' => __("Date Released", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
   			array('ID' => "displaympprice", 'label' => __("Price", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
      		array('ID' => "displaympfilesize", 'label' => __("File Size", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
+     		array('ID' => "displaympminimumOsVersion", 'label' => __("Minimum OS Version", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
      		array('ID' => "displaympuniversal", 'label' => __("Universal App icon", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_NOTITLE"),
+     		array('ID' => "displaymplanguages", 'label' => __("Languages", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
  			array('ID' => "displaympadvisoryrating", 'label' => __("Advisory Rating", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
  			array('ID' => "displaympappinapppurwarning", 'label' => __("Offers In-App Purchases", 'appStoreAssistant' ).'*', 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE"),
    			array('ID' => "displaympcategories", 'label' => __("App Categories", 'appStoreAssistant' ), 'modes' => "HIDE,INLINE_TITLE,INLINE_NOTITLE")

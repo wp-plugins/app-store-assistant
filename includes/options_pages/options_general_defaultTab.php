@@ -131,7 +131,6 @@ $languageCodes  = loadLanguages("byCode");
 			<option value="CZ" <?php if ($options['store_badge_language'] == "CZ") echo 'selected'; ?>>Čeština</option>
 			<option value="DE" <?php if ($options['store_badge_language'] == "DE") echo 'selected'; ?>>Deutsch</option>
 			<option value="ES" <?php if ($options['store_badge_language'] == "ES") echo 'selected'; ?>>Español</option>
-			<option value="ESLA_MX" <?php if ($options['store_badge_language'] == "ESLA_MX") echo 'selected'; ?>>Español Latino</option>
 			<option value="FR" <?php if ($options['store_badge_language'] == "FR") echo 'selected'; ?>>Français</option>
 			<option value="IT" <?php if ($options['store_badge_language'] == "IT") echo 'selected'; ?>>Italiano</option>
 			<option value="NO" <?php if ($options['store_badge_language'] == "NO") echo 'selected'; ?>>Norsk</option>
@@ -139,12 +138,34 @@ $languageCodes  = loadLanguages("byCode");
 			<option value="RU" <?php if ($options['store_badge_language'] == "RU") echo 'selected'; ?>>Pусский</option>
 			<option value="FI" <?php if ($options['store_badge_language'] == "FI") echo 'selected'; ?>>Suomi</option>
 			<option value="SE" <?php if ($options['store_badge_language'] == "SE") echo 'selected'; ?>>Svenska</option>
-			<option value="FI" <?php if ($options['store_badge_language'] == "FI") echo 'selected'; ?>>Tagalog</option>
+			<option value="PH" <?php if ($options['store_badge_language'] == "PH") echo 'selected'; ?>>Tagalog</option>
 			<option value="AR" <?php if ($options['store_badge_language'] == "AR") echo 'selected'; ?>>العربية</option>
+			<option value="AZ" <?php if ($options['store_badge_language'] == "AZ") echo 'selected'; ?>>Azərbaycan dili</option>
 			<option value="KR" <?php if ($options['store_badge_language'] == "KR") echo 'selected'; ?>>한국어</option>
 			<option value="JP" <?php if ($options['store_badge_language'] == "JP") echo 'selected'; ?>>日本語</option>
 			<option value="CN" <?php if ($options['store_badge_language'] == "CN") echo 'selected'; ?>>简体中文</option>
 			<option value="HK_TW" <?php if ($options['store_badge_language'] == "HK_TW") echo 'selected'; ?>>繁體中文</option>
+
+			<option value="ID" <?php if ($options['store_badge_language'] == "ID") echo 'selected'; ?>>Bahasa Indonesia</option>
+			<option value="MY" <?php if ($options['store_badge_language'] == "MY") echo 'selected'; ?>>Bahasa Melayu</option>
+			<option value="DK" <?php if ($options['store_badge_language'] == "DK") echo 'selected'; ?>>Dansk</option>
+			<option value="HU" <?php if ($options['store_badge_language'] == "HU") echo 'selected'; ?>>Magyar</option>
+			<option value="MT" <?php if ($options['store_badge_language'] == "MT") echo 'selected'; ?>>Malti</option>
+			<option value="NL" <?php if ($options['store_badge_language'] == "NL") echo 'selected'; ?>>Nederlands</option>
+			<option value="EE" <?php if ($options['store_badge_language'] == "EE") echo 'selected'; ?>>Eesti keel</option>
+			<option value="LV" <?php if ($options['store_badge_language'] == "LV") echo 'selected'; ?>>Latviski</option>
+			<option value="LT" <?php if ($options['store_badge_language'] == "LT") echo 'selected'; ?>>Lietuviškai</option>
+			<option value="PT" <?php if ($options['store_badge_language'] == "PT") echo 'selected'; ?>>Português</option>
+			<option value="PTBR" <?php if ($options['store_badge_language'] == "PTBR") echo 'selected'; ?>>Português Brasil</option>
+			<option value="RO" <?php if ($options['store_badge_language'] == "RO") echo 'selected'; ?>>Românã</option>
+			<option value="SK" <?php if ($options['store_badge_language'] == "SK") echo 'selected'; ?>>Slovenčina</option>
+			<option value="SI" <?php if ($options['store_badge_language'] == "SI") echo 'selected'; ?>>Slovenščina</option>
+			<option value="VN" <?php if ($options['store_badge_language'] == "VN") echo 'selected'; ?>>Tiếng Việt</option>
+			<option value="TR" <?php if ($options['store_badge_language'] == "TR") echo 'selected'; ?>>Türkçe</option>
+			<option value="GR" <?php if ($options['store_badge_language'] == "GR") echo 'selected'; ?>>Ελληνικά</option>
+			<option value="BG" <?php if ($options['store_badge_language'] == "BG") echo 'selected'; ?>>български</option>
+			<option value="HB" <?php if ($options['store_badge_language'] == "HB") echo 'selected'; ?>>עברית</option>
+			<option value="TH" <?php if ($options['store_badge_language'] == "TH") echo 'selected'; ?>>ภาษาไทย</option>
 		</select></div>
 	</div>
 		
