@@ -49,8 +49,10 @@ function appStore_add_defaults() {
 		"store_language" => "en_US",
 		"store_continent" => "North America",
 		"store_badge_language" => "US-UK",
-		"appStore_store_badge_type" => "available",
-		"iTunes_store_badge_type" => "available",
+		"appStore_store_badge_type" => "download",
+		"appStore_store_badge_size" => "1",
+		"iTunes_store_badge_type" => "getit",
+		"iTunes_store_badge_size" => "1",
 		"store_country" => "US",
 		"appSearch_default" => "iOS",
 	
@@ -99,7 +101,9 @@ function appStore_add_defaults() {
 		"displayreleasedate" => "HIDE",
 		"displayfilesize" => "HIDE",
 		"displayprice" => "HIDE",
+		"displayminimumOsVersion" => "INLINE",
 		"displayuniversal" => "INLINE",
+		"displaylanguages" => "INLINE",
 		"displayadvisoryrating" => "INLINE",
 		"displayappinapppurwarning" => "INLINE",
 		"displaycategories" => "INLINE",
@@ -126,7 +130,9 @@ function appStore_add_defaults() {
 		"displaympreleasedate" => "HIDE",
 		"displaympfilesize" => "HIDE",
 		"displaympprice" => "HIDE",
+		"displaympminimumOsVersion" => "INLINE",
 		"displaympuniversal" => "INLINE",
+		"displaymplanguages" => "INLINE",
 		"displaympadvisoryrating" => "INLINE",
 		"displaympappinapppurwarning" => "INLINE",
 		"displaympcategories" => "INLINE",
@@ -153,7 +159,9 @@ function appStore_add_defaults() {
 		"displayATOMreleasedate" => "HIDE",
 		"displayATOMfilesize" => "HIDE",
 		"displayATOMprice" => "HIDE",
+		"displayATOMminimumOsVersion" => "INLINE",
 		"displayATOMuniversal" => "INLINE",
+		"displayATOMlanguages" => "INLINE",
 		"displayATOMadvisoryrating" => "INLINE",
 		"displayATOMappinapppurwarning" => "INLINE",
 		"displayATOMcategories" => "INLINE",
@@ -166,6 +174,7 @@ function appStore_add_defaults() {
 		"displayappdetailsaslist" => "yes",
 		
 		"displayappdetailsasliststyle" => "bw",
+		"displayappdetailsaslistssort" => "releasedate",
 
 		"appicon_size_featured_h" => "256",
 		"appicon_size_featured_w" => "256",
@@ -294,6 +303,26 @@ function appStore_init(){
 	register_setting( 'appStore_plugin_options', 'appStore_options', 'appStore_validate_options' );
 }
 
+// Add JQuery Functionality
+add_action( 'wp_ajax_test', 'asa_ajax_callback' );
+add_action( 'wp_ajax_no_ppriv_test', 'asa_ajax_callback' );
+function asa_ajax_callback() {
+	check_ajax_referer( "asaAJAX-nonce" );
+	echo 'Hello World2!';
+	die('More Info');
+
+	/*
+	if ( check_ajax_referer( 'asaAJAX', 'nonce' ) ) {
+
+    	//wp_die( 'Hello World' );
+	}
+	else{
+		wp_die( 'Nonce error' );
+	}
+	*/
+}
+
+
 function appStore_add_admin_scripts() {
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('jquery-ui-core');//enables UI
@@ -308,6 +337,13 @@ function appStore_add_admin_scripts() {
 	//Used for Rebuilding Featured Images Progress Bar
 	wp_enqueue_script( 'jquery-ui-progressbar', plugins_url( 'js_functions/jquery-ui/jquery.ui.progressbar.min.1.7.2.js', ASA_MAIN_FILE ), array( 'jquery-ui-core' ), '1.7.2' );
 	wp_enqueue_style( 'jquery-ui-appStore', plugins_url( 'js_functions/jquery-ui/redmond/jquery-ui-1.7.2.custom.css', ASA_MAIN_FILE ), array(), '1.7.2' );
+
+   wp_enqueue_script( 'asa-ajax', plugins_url('js_functions/asa-ajax.min.js',ASA_MAIN_FILE), array ( 'jquery' ), false, true );
+   $asaAJAX = array(
+	   'nextNonce' => wp_create_nonce( 'asaAJAX-nonce' ),
+	   'ajaxURL' => admin_url( 'admin-ajax.php' )
+   ); 
+   wp_localize_script( 'asa-ajax', 'asaAJAX', $asaAJAX ); 
 	
 	
 }
@@ -530,7 +566,8 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 			'defaultTab' => __('Clear an Item','appStoreAssistant'),
 			'clearcache' => __('Clear Cache','appStoreAssistant'),
 			'remove_featured' => __('Remove Featured','appStoreAssistant'),
-			'reset' => __('Reset Defaults','appStoreAssistant')
+			'reset' => __('Reset Defaults','appStoreAssistant'),
+			'beta' => __('Beta Utilities','appStoreAssistant')
 			);
 	  break;
 	  case 'appStore_sm_help' :
@@ -2337,8 +2374,8 @@ function custom_admin_pointers() {
    $dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
    $version = str_replace(".", "_", ASA_PLUGIN_VERSION); // replace all periods in version with an underscore
    $prefix = 'custom_admin_pointers' . $version . '_';
-   $new_pointer_content = '<h3>' . __( 'Find and add an item from the iTunes or App Stores', 'appStoreAssistant' ) . '</h3>';
-   $new_pointer_content .= '<p>' . __( 'Use this button to search for and easily create a new post with the shortcode and Featured Image for an App or iTunes item.', 'appStoreAssistant' ) . '</p>';
+   $new_pointer_content = '<h3>' . __( 'Important Changes!!', 'appStoreAssistant' ) . '</h3>';
+   $new_pointer_content .= '<p>' . __( 'The following shortcodes Deprecated:<br />ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link<br />Note: Deprecated shortcodes are still functional in this version, but will be REPLACED IN THE NEXT UPDATE!!!**<br /><br />Please see the Change Log (readme.txt) for Important Changes to this version!', 'appStoreAssistant' ) . '</p>';
 
    return array(
       $prefix . 'new_items' => array(
