@@ -52,6 +52,11 @@ img.appStore_ThumbIcon
 	font-size: x-large;
 	font-weight: bold;
 }
+.iBooksStore-title
+{
+	font-size: x-large;
+	font-weight: bold;
+}
 .amazonStore-title
 {
 	font-size: large;
@@ -95,6 +100,9 @@ img.appStore_ThumbIcon
 }
 
 .iTunesStore-icon {
+	float: right;
+}
+.iBooksStore-icon {
 	float: right;
 }
 
@@ -176,6 +184,16 @@ div.appStore-gamecenter
 	overflow: hidden;
 	background-color: Transparent;
 }
+#iBooksStore-icon-container {
+	float: right;
+}
+
+#iBooksStore-icon-container img {
+	border: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: Transparent;
+}
 
 
 th.prefTableHeader {
@@ -188,6 +206,10 @@ div.asaf-entry img {
 }
 
 .iTunesStore-Button:active {
+	position:relative;
+	top:1px;
+}
+.iBookStore-Button:active {
 	position:relative;
 	top:1px;
 }
@@ -273,3 +295,36 @@ table.trackListing td
 	padding: 0px 8px 2px 8px;
 }
 table.trackListing td.right { text-align: right; }
+
+
+	.asatooltip{
+   			display: inline;
+    		position: relative;
+		}
+		
+		.asatooltip:hover:after
+		{
+			background: rgba(0,0,0,.8);
+			border-radius: 5px;
+			bottom: 26px;
+			color: #fff;
+			content: attr(title);
+			left: 20%;
+			padding: 5px;
+			position: absolute;
+			z-index: 98;
+		}
+		
+		.asatooltip:hover:before
+		{
+			bottom: 20px;
+			content: "";
+			left: 50%;
+			position: absolute;
+			z-index: 99;
+			border-top: 6px #F00 solid;
+			border-right: 6px transparent solid;
+			border-bottom: 0 #333 solid;
+			border-left: 6px transparent solid;
+		}
+

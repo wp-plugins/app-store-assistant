@@ -2,8 +2,8 @@
 Contributors: SEALsystems 
 Donate link:http://theiphoneappslist.com/donate/
 Tags: iOS, App Store, iTunes,Apple Watch, iWatch, apps, appstore, iPhone, iPad, mac, PHG, LinkShare, linksynergy, TradeDoubler, DGM, music, amazon, ATOM, RSS, Mac Extensions
-Requires at least: 3.9.2
-Tested up to: 4.0
+Requires at least: 4.2
+Tested up to: 4.3
 Stable tag: 6.8.0
 License: GPLv3 or later
 
@@ -15,7 +15,7 @@ The App Store Assistant Wordpress plugin has a powerful "search & create post" f
 
 Built-in search for automated Post creation.
 
-When upgrading to a new version of the plug-in, it is recommend that you rebuild the cache. There is an option in the Utilities tab that will do this for you.
+When upgrading to a new version of the plug-in, it is recommend that you rebuild the cache. There is an option in the Utilities tab that will do this for you. YOU SHOULD ALWAYS VIEW THE CHANGE LOG FOR IMPORTANT INFORMATION AND CHANGES!
 
 **Features**
 
@@ -106,24 +106,65 @@ REQUIRES PHP 5.4 or later
 * Request: Bulk import of Apps [Thanks TesterGP]
 * Request: Change file type to png if tiff supplied by app store WP_Image_Editor
 * Request: Random Post generator (randomly picks an app that you don't already have a post for) [Thanks AslanDoma]
-* Request: Shortcode tags can now override the Store/Language chosen [Thanks crisf86]
-* Request: Sped up Reset of Featured Images (Using log system)
+* Request: Shortcode tags can override the Store/Language chosen [Thanks crisf86]
+* Request: Sped up Reset of Featured Images and saves to log (Using log system)
 * Request: All images now saved as png
 		http://bhoover.com/wp_image_editor-wordpress-image-editing-tutorial/
-* Request: Reset Featured Images now saves to log
 * Request: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 * Request: Option to search for Apps no longer available and change post to "Pending Review"
-* Added: ----------------Option to rebuild cache same method as FI Rebuild
-* Request: iBooks support [Thanks rnakoneshny]
+* Added: Option to rebuild cache same method as FI Rebuild
 * Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
 * Request: Add Tags with App/item name to post [Thanks iOSAppLists]
 * Pending: iWatch search
 * Pending: App Bundles
 
 == Changelog ==
-
-= 6.9.0 =
+= 7.0.0 =
 * Changed: **REQUIRES PHP 5.4 or later**
+* Note: **It is NECESSARY to rebuild the Cache and the Featured Images with this version.**
+* Note: *It is RECOMMENDED to rebuild the Featured Images with this version.*
+* Removed: **The following shortcodes have been replaced with simplified versions.** (See <https://interconnectit.com/products/search-and-replace-for-wordpress-databases/> for help replacing shortcodes)
+	* ios_app --> asa_item
+	* mac_app --> asa_item
+	* itunes_store --> asa_item
+	* ibooks_store --> asa_item
+	* ios_app_elements --> asa_elements
+	* ios_app_list --> asa_list
+	* ios_app_link --> asa_link
+	* itunes_store_link --> asa_link
+	* mac_app_link --> asa_link
+* Added: iBooks support [Thanks rnakoneshny]
+* Changed: iTunes badges now say "Get it on iTunes" as per Apple's design guidelines
+* Changed: iBooks badges now say "Get it on iBooks" as per Apple's design guidelines
+* Changed: App Store badges now say "Download on the App Store" as per Apple's design guidelines
+* Note: Old badges have been removed. Saving your preference on both the iTunes & App Store Graphics tab will update to new badges
+* Added: Graphics and details for iPhone 6, iPhone 6 Plus and Apple Watch
+* Changed: New Badges are in SVG format "Get it on iTunes", "Get it on iBooks", "Download on the App Store" & "Get it on Amazon.com"
+* Added: You can now specify the size of the new Badges
+* Fixed: Badge for Tagalog (Filipino) now displays correct image
+* Added: Badges for Azərbaycan dili (Azerbaijani)
+* Added: Badges for Bahasa Indonesia (Indonesian)
+* Added: Badges for Bahasa Melayu (Malay)
+* Added: Badges for Dansk (Danish)
+* Added: Badges for Eesti keel (Estonian)
+* Added: Badges for Magyar (Hungarian)
+* Added: Badges for tlhIngan Hol (Klingon)
+* Added: Badges for Latviski (Latvian)
+* Added: Badges for Lietuviškai (Lithuanian)
+* Added: Badges for Malti (Maltese)
+* Added: Badges for Nederlands (Dutch)
+* Added: Badges for Português (Portuguese)
+* Added: Badges for Português Brasil (Portuguese Brazil)
+* Added: Badges for Românã (Romanian)
+* Added: Badges for Slovenčina (Slovak)
+* Added: Badges for Slovenščina (Slovene)
+* Added: Badges for Tiếng Việt (Vietnamese)
+* Added: Badges for Türkçe (Turkish)
+* Added: Badges for Ελληνικά (Greek)
+* Added: Badges for български (Bulgarian)
+* Added: Badges for עברית (Hebrew)
+* Added: Badges for ภาษาไทย (Thai)
+* Added: You can now sort the "Supported Devices" (Alphabetically or by Release Date)
 * Added: More Amazon.com details displayed (specific to each item type)
 * Added: Search term is retained after search
 * Added: You can now preset a default search type for your site
@@ -136,6 +177,19 @@ REQUIRES PHP 5.4 or later
 * Added: Support for iWatch apps and Mac Extensions
 * Fixed: Shortcode for App Ratings not displaying rating [Thanks TRY01]
 * Fixed: CSS namespace in admin settings [Thanks John Turner]
+* Fixed: Supported Devices now display a generic icon for nee iDevices
+* Changed: B&W iDevice icons are now greyscale
+* Added: Popover description for color iDevice icons
+* Fixed: ASA: Apple ATOM Feed shortcode button in Post Editor
+* Changed: New App Store button in Post Editor
+* Changed: New iTunes Store button in Post Editor
+* Changed: New Amazon.com button in Post Editor
+* Added: Now displays minimum OS version in details
+* Added: Now displays available languages in details
+* Added: Now displays Rating Advisories in details
+
+= 6.9.0 =
+* Beta release for Testers only
 
 = 6.8.1 =
 * Internal release

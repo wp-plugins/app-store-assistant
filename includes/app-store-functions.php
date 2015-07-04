@@ -309,7 +309,7 @@ function getShortcodeDataFromPost(){
 	global $post;
 	$shortcodeData = '';
 	$postContent = substr($post->post_content,1, 400);
-	$shortcodes = array("asa_item","ios_app", "itunes_store","ibooks_store","mac_app","amazon_item");
+	$shortcodes = array("asa_item","amazon_item","ios_app", "itunes_store","ibooks_store","mac_app");
 	foreach ($shortcodes as $shortcode) {
 		if (stristr($postContent, $shortcode) !== FALSE) {
 			$shortcodeData['shortcode'] = $shortcode;
@@ -806,6 +806,57 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 	return $appListDisplay; 
 }
 
+function appStore_getBadge ($store) {
+	// Create Badge img Tag
+	$addCountryCode = false;
+	if(appStore_setting('store_badge_language')) {
+		$countryCode = appStore_setting('store_badge_language');
+	} else {
+		$countryCode = "US-UK";
+	}
+	$SizeMultiplier = appStore_setting('appStore_store_badge_size');
+	$badgeImage = 'images/Badges/';
+	switch ($store) {
+		case "iTunes":
+			$SizeMultiplier = appStore_setting('iTunes_store_badge_size');
+			$badgeImage .= "Get_it_on_iTunes_Badge_";
+			$badgeImage .= $countryCode;
+			$badgeImage .= ".svg";
+			$BadgeWidth = intval(110 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+			break;
+		case "iBooks":
+			$SizeMultiplier = appStore_setting('iBooks_store_badge_size');
+			$badgeImage .= "Get_it_on_iBooks_Badge_";
+			$badgeImage .= $countryCode;
+			$badgeImage .= ".svg";
+			$BadgeWidth = intval(110 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+			break;
+		case "App Store":
+			$SizeMultiplier = appStore_setting('appStore_store_badge_size');
+			$badgeImage .= "Download_on_the_App_Store_Badge_";
+			$badgeImage .= $countryCode;
+			$badgeImage .= "_135x40.svg";
+			$BadgeWidth = intval(135 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+			break;
+		case "Amazon":
+			$SizeMultiplier = appStore_setting('amazon_badge_size');
+			$badgeImage .= "Get_it_on-Amazon.svg";
+			$BadgeWidth = intval(215 * $SizeMultiplier);
+			$BadgeHeight = intval(74 * $SizeMultiplier);
+			break;
+		default:
+			$badgeImage .= "Missing_Badge.svg";
+			$BadgeWidth = intval(135 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+	}
+	$BadgeSize = 'width = "'.$BadgeWidth.' height="'.$BadgeHeight.'"';
+	$badgeImgTag = '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="'.$store.'" style="border: 0;" '.$BadgeSize.' />';
+	return $badgeImgTag;
+}
+
 function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode="SingleApp") {
 	$itemType = '';
 	if (isset($itemInfo->wrapperType)) $itemType .= $itemInfo->wrapperType."_";
@@ -865,14 +916,14 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			break;
     	case "ebook_":
 			$itemOutput = __("eBook",'appStoreAssistant');
-			$itemStore = "iTunes";
-			$itemTemplate = "iTunesMain";
+			$itemStore = "iBooks";
+			$itemTemplate = "iBooksMain";
 			$unformattedPrice = $itemInfo->price;
 			$iTunesID = $itemInfo->trackId;
-			$iTunesName = $itemInfo->trackName;
+			$iBooksName = $itemInfo->trackName;
 			$iTunesKind = $itemInfo->kind;
 			$isExplicit = '';
-			$iTunesURL = $itemInfo->trackViewUrl;
+			$iBooksURL = $itemInfo->trackViewUrl;
 			$artistType = __("Author",'appStoreAssistant');
 			$cavType = __("Explicit",'appStoreAssistant');
 			$trackType = __("Track Count",'appStoreAssistant');
@@ -880,14 +931,14 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			break;
     	case "_ebook_":
 			$itemOutput = __("eBook",'appStoreAssistant');
-			$itemStore = "iTunes";
-			$itemTemplate = "iTunesMain";
+			$itemStore = "iBooks";
+			$itemTemplate = "iBooksMain";
 			$unformattedPrice = $itemInfo->price;
 			$iTunesID = $itemInfo->trackId;
 			$iTunesName = $itemInfo->trackName;
 			$iTunesKind = $itemInfo->kind;
 			$isExplicit = '';
-			$iTunesURL = $itemInfo->trackViewUrl;
+			$iBooksURL = $itemInfo->trackViewUrl;
 			$artistType = __("Author",'appStoreAssistant');
  			$description = $itemInfo->description;
 			break;
@@ -1116,19 +1167,91 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$itemOutput .= '<br />';
 
 			$itemOutput .= '<div class="appStore-badge"><a href="'.$iTunesURL.'" >';
-			$badgeImage = 'images/Badges/';
-			if(appStore_setting('iTunes_store_badge_type') == "download") {
-				$badgeImage .= "Download_on_iTunes_Badge_";
-			} else {
-				$badgeImage .= "Available_on_iTunes_Badge_";
+			$itemOutput .= appStore_getBadge ($itemStore);
+			$itemOutput .= '</a>';
+			$itemOutput .= '</div>';
+			$itemOutput .= '<div style="clear:left;">&nbsp;</div>';
+			$itemOutput .= '</div>';
+			break;
+    	case "iBooks":
+			if (isset($itemInfo->primaryGenreName)) {
+				$iBooksCategory = $itemInfo->primaryGenreName;
+			} else if (isset($itemInfo->genres)) {
+				$iBooksCategory = implode(", ", $itemInfo->genres);
 			}
-			if(appStore_setting('store_badge_language')) {
-				$badgeImage .= appStore_setting('store_badge_language');
+			$authorName = $itemInfo->artistName;
+			if(isset($itemInfo->releaseDate)) $releaseDate = date( 'F j, Y', strtotime($itemInfo->releaseDate));
+			if(isset($itemInfo->contentAdvisoryRating)) $contentAdvisoryRating = $itemInfo->contentAdvisoryRating;
+			$itemOutput = "";
+			$itemOutput = "<!--  SEALDEBUG iBooks \r".print_r($itemInfo,true)."\r -->";
+			// iTunes Artwork
+			if(appStore_setting('cache_images_locally') == '1') {
+				$artwork_url = $itemInfo->imagePosts_cached;
+				if(wp_is_mobile()) $artwork_url = $itemInfo->imageiOS_cached;
 			} else {
-				$badgeImage .= "US-UK";
+				$artwork_url = $itemInfo->imagePosts;
+				if(wp_is_mobile()) $artwork_url = $itemInfo->imageiOS;
 			}
-			$badgeImage .= "_110x40.png";
-			$itemOutput .= '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;" /></a>';
+
+			$iBooksURL = getAffiliateURL($iBooksURL);
+	
+			if(appStore_setting('smaller_buy_button_iOS') == "yes" && wp_is_mobile()) {
+				$buttonText = appStore_format_price($unformattedPrice)." ";
+			} else {
+				$buttonText = appStore_format_price($unformattedPrice);
+			}
+			$itemOutput .= '<div class="appStore-wrapper">';
+			$itemOutput .= '<div id="iBooksStore-icon-container">';
+			$itemOutput .= '<a href="'.$iBooksURL.'" >';
+			$itemOutput .= '<img class="iBooksStore-icon" src="'.$artwork_url.'" /></a>';
+			$itemOutput .= '<div class="iBooksStore-purchase">';
+			$itemOutput .= '<a type="button" href="'.$iBooksURL.'" value="iBooks Buy Button" class="appStore-Button BuyButton">';
+			$itemOutput .= $buttonText.'</a><br />';
+			$itemOutput .= '</div>';
+			$itemOutput .= '</div>';
+
+
+			if ((appStore_setting('displayiBookstitle') == "yes" AND !empty($iBooksName)) OR $mode != "internal") {
+				$itemOutput .= '<span class="iBooksStore-title">';
+				$PositionNumber = 0;
+				if(isset($itemInfo->PositionNumber)) $PositionNumber = $itemInfo->PositionNumber;
+				if ($mode == "ListOfApps" && appStore_setting('displayATOMappPositionNumber') == "yes" && $PositionNumber > 0) {
+					if(appStore_setting('PrePositionNumber') != "EMP") $itemOutput .= appStore_setting('PrePositionNumber');
+					$itemOutput .= $itemInfo->PositionNumber;
+					if(appStore_setting('PostPositionNumber') != "EMP") $itemOutput .= appStore_setting('PostPositionNumber');
+					$itemOutput .= $iBooksName;
+				} else {
+					$itemOutput .= $iBooksName;
+				}
+				$itemOutput .= '</span><br /><br />';
+			}
+			if (appStore_setting('displayiBooksauthorname') == "yes" AND !empty($artistName)) {
+				$itemOutput .= '<span class="iBooksStore-authorname">'.$artistType.': '.$artistName.'</span><br />';
+			}
+			if (appStore_setting('displayiBooksgenre') == "yes" AND !empty($iBooksCategory)) {
+				$itemOutput .= '<span class="iBooksStore-genre">'.__("Genre",'appStoreAssistant').': '.$iBooksCategory.'</span><br />';
+			}
+			if (appStore_setting('displayadvisoryrating') == "yes" AND !empty($contentAdvisoryRating)) {
+				$itemOutput .= '<span class="iBooksStore-advisoryrating">'.$cavType.': '.$contentAdvisoryRating.'</span><br />';
+			}	
+			if (appStore_setting('displayitunesreleasedate') == "yes" AND !empty($releaseDate)) {
+				$itemOutput .= '<span class="iBooksStore-releasedate">'.__("Published",'appStoreAssistant').': '.$releaseDate.'</span><br />';
+			}
+
+			if (appStore_setting('displayibooksexplicitwarning') == "yes" AND $isExplicit == "explicit") {
+				$itemOutput .= '<br /><span class="iBooksStore-explicitwarning"><img src="'.plugins_url( 'images/parental_advisory_explicit_content-big.gif' , ASA_MAIN_FILE ).'" width="112" height="67" alt="Explicit Lyrics" /></span><br />';// 450x268
+			}
+			if (appStore_setting('displayibooksdescription') == "yes" AND !empty($description)) {	
+				$itemOutput .= '	<div class="iBooksStore-description">';
+				$itemOutput .= nl2br($description);
+				$itemOutput .= '<br /></div>';
+			}
+
+			$itemOutput .= '<br />';
+
+			$itemOutput .= '<div class="appStore-badge"><a href="'.$iBooksURL.'" >';
+			$itemOutput .= appStore_getBadge ($itemStore);
+			$itemOutput .= '</a>';
 			$itemOutput .= '</div>';
 			$itemOutput .= '<div style="clear:left;">&nbsp;</div>';
 			$itemOutput .= '</div>';
@@ -1321,24 +1444,7 @@ function displayAppStore_appBadge($app,$elementOnly=false) {
 	if(appStore_setting('open_links_externally') == "yes") $appLink .= ' target="_blank"';
 	$appLink .= '>';
 
-	// Create Badge img Tag
-	$badgeImage = 'images/Badges/';
-	if(appStore_setting('appStore_store_badge_type') == "download") {
-		$badgeImage .= "Download_on_the_";
-	} else {
-		$badgeImage .= "Available_on_the_";
-	}
-	if($app->platform=="mac_app") $badgeImage .= "Mac_App_Store_Badge_";
-	if($app->platform=="ios_app") $badgeImage .= "App_Store_Badge_";
-
-	if(appStore_setting('store_badge_language')) {
-		$badgeImage .= appStore_setting('store_badge_language');
-	} else {
-		$badgeImage .= "US-UK";
-	}
-	if($app->platform=="mac_app") $badgeImage .= "_165x40.png";
-	if($app->platform=="ios_app") $badgeImage .= "_135x40.png";
-	$badgeImgTag = '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;" />';
+	$badgeImgTag = appStore_getBadge ('App Store');
 
 	$element = $appLink.$badgeImgTag.'</a>';
 	$element = getDisplayCode ($element,"appStore-badge",$displayMode,"AppStore Badge");
@@ -1594,27 +1700,28 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 	$displayType = appStore_setting('displaysupporteddevicesType');
 	
 	// List all iDevices here
-	$iDevices = array(	"all" => array ("name" => "All iOS Devices", "icon" => "all"),
-						"iPadWifi" => array ("name" => "iPad Wifi", "icon" => "iPadWifi"),
-						"iPad2Wifi" => array ("name" => "iPad 2 WiFi", "icon" => "iPad2Wifi"),
-						"iPad23G" => array ("name" => "iPad 2 3G", "icon" => "iPad23G"),
-						"iPadThirdGen" => array ("name" => "iPad 3", "icon" => "iPadThirdGen"),
-						"iPadThirdGen4G" => array ("name" => "iPad 3 4G", "icon" => "iPadThirdGen4G"),
-						"iPadFourthGen" => array ("name" => "iPad 4", "icon" => "iPadFourthGen"),
-						"iPadFourthGen4G" => array ("name" => "iPad 4 4G", "icon" => "iPadFourthGen4G"),
-						"iPadMini" => array ("name" => "iPad mini", "icon" => "iPadMini"),
-						"iPadMini4G" => array ("name" => "iPad mini 4G", "icon" => "iPadMini4G"),
-						"iPhone-3G" => array ("name" => "iPad 3G", "icon" => "iPhone-3G"),
-						"iPhone-3GS" => array ("name" => "iPad 3GS", "icon" => "iPhone-3GS"),
-						"iPhone4" => array ("name" => "iPhone 4", "icon" => "iPhone4"),
-						"iPhone4S" => array ("name" => "iPhone 4S", "icon" => "iPhone4S"),
-						"iPhone5" => array ("name" => "iPhone 5", "icon" => "iPhone5"),
-						"iPhone5s" => array ("name" => "iPhone 5s", "icon" => "iPhone5s"),
-						"iPhone5c" => array ("name" => "iPhone 5c", "icon" => "iPhone5c"),
-						"iPhone6" => array ("name" => "iPhone 5", "icon" => "NewDevice"),
-						"iPhone6S" => array ("name" => "iPhone 5S", "icon" => "NewDevice"),
-						"iPodTouchourthGen" => array ("name" => "iPod Touch 4th Gen", "icon" => "iPodTouchourthGen"),
-						"iPodTouchFifthGen" => array ("name" => "iPod Touch 5th Gen", "icon" => "iPodTouchFifthGen")
+	$iDevices = array(	"all" => array ("name" => "All iOS Devices", "icon" => "all", "releasedate" => "0"),
+						"iPadWifi" => array ("name" => "iPad Wifi", "icon" => "iPadWifi", "releasedate" => "201001"),
+						"iPad2Wifi" => array ("name" => "iPad 2 WiFi", "icon" => "iPad2Wifi", "releasedate" => "201103"),
+						"iPad23G" => array ("name" => "iPad 2 3G", "icon" => "iPad23G", "releasedate" => "201103"),
+						"iPadThirdGen" => array ("name" => "iPad 3", "icon" => "iPadThirdGen", "releasedate" => "201203"),
+						"iPadThirdGen4G" => array ("name" => "iPad 3 4G", "icon" => "iPadThirdGen4G", "releasedate" => "201203"),
+						"iPadFourthGen" => array ("name" => "iPad 4", "icon" => "iPadFourthGen", "releasedate" => "201210"),
+						"iPadFourthGen4G" => array ("name" => "iPad 4 4G", "icon" => "iPadFourthGen4G", "releasedate" => "201210"),
+						"iPadMini" => array ("name" => "iPad mini", "icon" => "iPadMini", "releasedate" => "201210"),
+						"iPadMini4G" => array ("name" => "iPad mini 4G", "icon" => "iPadMini4G", "releasedate" => "201210"),
+						"iPhone-3G" => array ("name" => "iPad 3G", "icon" => "iPhone-3G", "releasedate" => "200806"),
+						"iPhone-3GS" => array ("name" => "iPad 3GS", "icon" => "iPhone-3GS", "releasedate" => "200906"),
+						"iPhone4" => array ("name" => "iPhone 4", "icon" => "iPhone4", "releasedate" => "201006"),
+						"iPhone4S" => array ("name" => "iPhone 4S", "icon" => "iPhone4S", "releasedate" => "201110"),
+						"iPhone5" => array ("name" => "iPhone 5", "icon" => "iPhone5", "releasedate" => "201209"),
+						"iPhone5s" => array ("name" => "iPhone 5s", "icon" => "iPhone5s", "releasedate" => "201309"),
+						"iPhone5c" => array ("name" => "iPhone 5c", "icon" => "iPhone5c", "releasedate" => "201309"),
+						"iPhone6" => array ("name" => "iPhone 6", "icon" => "iPhone6", "releasedate" => "201409"),
+						"iPhone6Plus" => array ("name" => "iPhone 6 Plus", "icon" => "iPhone6Plus", "releasedate" => "201409"),
+						"AppleWatch" => array ("name" => "Apple Watch", "icon" => "AppleWatch", "releasedate" => "201506"),
+						"iPodTouchourthGen" => array ("name" => "iPod Touch 4th Gen", "icon" => "iPodTouchourthGen", "releasedate" => "201009"),
+						"iPodTouchFifthGen" => array ("name" => "iPod Touch 5th Gen", "icon" => "iPodTouchFifthGen", "releasedate" => "201209")
 						);
 	// print_r($iDevices);
 	
@@ -1622,34 +1729,57 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 		if (is_array($app->supportedDevices)) {
 			$SupportedDevices = $app->supportedDevices;
 			$allDevices = appStore_substr_in_array("all", $SupportedDevices);
-			foreach ($iDevices as $iDevice => $iDeviceDetail):
-				if(in_array($iDevice, $SupportedDevices)) {
-					$iDeviceList[] = $iDeviceDetail['name'];
-					$iDeviceListIcons[] = $iDeviceDetail['icon'];
+			foreach ($SupportedDevices as $iDevice):			
+				if(in_array($iDevice,array_keys($iDevices))) {
+					$iDeviceList[] = $iDevices[$iDevice];
+				} else {
+					$iDeviceList[] = ["name" => "$iDevice", "icon" => "NewDevice", "releasedate" => "999999"];
 				}
-			endforeach;
+			endforeach;	
 		} else {
 			$displayMode = "HIDE";
 		}
 	}
-	
+	switch (appStore_setting('displayappdetailsaslistssort')){
+		case 'releasedate' :
+			appStore_array_sort_by_column($iDeviceList,'releasedate',SORT_ASC);
+			break;
+		case 'releasedate_reversed' :
+			appStore_array_sort_by_column($iDeviceList,'releasedate',SORT_DESC);
+			break;
+		case 'alphabetically' :
+			appStore_array_sort_by_column($iDeviceList,'name',SORT_ASC);
+			break;
+		case 'alphabetically_reversed' :
+			appStore_array_sort_by_column($iDeviceList,'name',SORT_DESC);
+			break;
+		default:
+			appStore_array_sort_by_column($iDeviceList,'name',SORT_ASC);
+	}	
+		
 	$SupportedDevicesElement = "";
 	switch ($displayType){
 		case 'List' :
-			$SupportedDevicesElement =  implode(", ", $iDeviceList);
+			$SupportedDevicesElement =  implode(", ", $iDeviceList['name']);
+			$SupportedDevicesElement =  implode(', ', array_map(function ($entry) {
+  											return $entry['name'];
+										}, $iDeviceList));
 			break;
 		case 'Minimal' :
 			if (appStore_substr_in_array("iPad", $SupportedDevices) || $allDevices) {
-				$SupportedDevicesElement .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPad.png' , ASA_MAIN_FILE ).'" height="82" width="56" alt="iPad" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
+				$SupportedDevicesElement .= '&nbsp;&nbsp;&nbsp;<img src="'.plugins_url( 'images/iDevicesGeneric/iPad.png' , ASA_MAIN_FILE ).'" height="82" width="56" alt="iPad" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
 			}
 			if (appStore_substr_in_array("iPadMini", $SupportedDevices) || $allDevices) {
-				$SupportedDevicesElement .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPadmini.png' , ASA_MAIN_FILE ).'" height="82" width="39" alt="iPad mini" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
-			}
-			if (appStore_substr_in_array("iPhone", $SupportedDevices) || $allDevices) {
-				$SupportedDevicesElement .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPhone.png' , ASA_MAIN_FILE ).'" height="82" width="23" alt="iPhone" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
+				$SupportedDevicesElement .= '&nbsp;&nbsp;&nbsp;<img src="'.plugins_url( 'images/iDevicesGeneric/iPadmini.png' , ASA_MAIN_FILE ).'" height="82" width="39" alt="iPad mini" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
 			}
 			if (appStore_substr_in_array("iPodTouch", $SupportedDevices) || $allDevices) {
-				$SupportedDevicesElement .= '<img src="'.plugins_url( 'images/iDevicesGeneric/iPod.png' , ASA_MAIN_FILE ).'" height="82" width="23" alt="iPod" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
+				$SupportedDevicesElement .= '&nbsp;&nbsp;&nbsp;<img src="'.plugins_url( 'images/iDevicesGeneric/iPod.png' , ASA_MAIN_FILE ).'" height="82" width="23" alt="iPod" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
+			}
+			if (appStore_substr_in_array("iPhone", $SupportedDevices) || $allDevices) {
+				$SupportedDevicesElement .= '&nbsp;&nbsp;&nbsp;<img src="'.plugins_url( 'images/iDevicesGeneric/iPhone.png' , ASA_MAIN_FILE ).'" height="82" width="23" alt="iPhone" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
+			}
+			if (appStore_substr_in_array("AppleWatch", $SupportedDevices) || $allDevices) {
+				$SupportedDevicesElement .= '&nbsp;&nbsp;&nbsp;<img src="'.plugins_url( 'images/iDevicesGeneric/AppleWatch.png' , ASA_MAIN_FILE ).'" height="82" width="23" alt="AppleWatch" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';
 			}
 			break;
 		case 'Normal' :
@@ -1660,17 +1790,18 @@ function displayAppStore_appDeviceList($app,$elementOnly=false){
 				$list_icon_folder = "iDevicesBW";
 				$list_icon_height = "82";
 			}
-			if(isset($iDeviceListIcons)){
-				if(is_array($iDeviceListIcons)){
-					foreach ($iDeviceListIcons as $iDeviceIcon):
-						$SupportedDevicesElement .= '<img src="'.plugins_url( 'images/'.$list_icon_folder.'/'.$iDeviceIcon.'.png' , ASA_MAIN_FILE ).'" height="'.$list_icon_height.'" alt="'.$iDeviceIcon.'" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" />';					
+			if(isset($iDeviceList)){
+				if(is_array($iDeviceList)){
+					foreach ($iDeviceList as $iDevice):
+						$SupportedDevicesElement .= '<a href="#" title="'.$iDevice['name'].'" class="asatooltip"><img src="'.plugins_url( 'images/'.$list_icon_folder.'/'.$iDevice['icon'].'.png' , ASA_MAIN_FILE ).'" height="'.$list_icon_height.'" alt="'.$iDevice['name'].'" style="border: 0px; padding: 0px; background-color: Transparent;-webkit-box-shadow:none;box-shadow:none;-moz-box-shadow:none;" /></a>';					
 					endforeach;
 				}
 			}
 			break;
 	}
 	
-	$element = getDisplayCode($SupportedDevicesElement,"appStore-supportedDevices",$displayMode,__('Supported Devices','appStoreAssistant'));
+	$element = //getDisplayCode($SupportedDevicesElement."<pre>[".print_r($iDeviceList,true)."]-----[".print_r($tmp,true)."]</pre>","appStore-supportedDevices",$displayMode,__('Supported Devices','appStoreAssistant')); //SEALDebug
+getDisplayCode($SupportedDevicesElement,"appStore-supportedDevices",$displayMode,__('Supported Devices','appStoreAssistant'));
 	return $element;		
 }
 
@@ -1697,6 +1828,12 @@ function appStore_substr_in_array($needle,$haystack){
 }
 
 function displayAppStore_appDetails($app,$elementOnly=false) {
+
+	$languageCodesISO2A = ["AB" => "Abkhazian", "AA" => "Afar", "AF" => "Afrikaans", "SQ" => "Albanian", "AM" => "Amharic", "AR" => "Arabic", "HY" => "Armenian", "AS" => "Assamese", "AY" => "Aymara", "AZ" => "Azerbaijani", "BA" => "Bashkir", "EU" => "Basque", "BN" => "Bengali", "DZ" => "Bhutani", "BH" => "Bihari", "BI" => "Bislama", "BR" => "Breton", "BG" => "Bulgarian", "MY" => "Burmese", "BE" => "Byelorussian", "KM" => "Cambodian", "CA" => "Catalan", "ZH" => "Chinese", "CO" => "Corsican", "HR" => "Croatian", "CS" => "Czech", "DA" => "Danish", "NL" => "Dutch", "EN" => "English", "EO" => "Esperanto", "ET" => "Estonian", "FO" => "Faeroese", "FJ" => "Fiji", "FI" => "Finnish", "FR" => "French", "FY" => "Frisian", "GD" => "Gaelic (Scots Gaelic)", "GL" => "Galician", "KA" => "Georgian", "DE" => "German", "EL" => "Greek", "KL" => "Greenlandic", "GN" => "Guarani", "GU" => "Gujarati", "HA" => "Hausa", "IW" => "Hebrew", "HI" => "Hindi", "HU" => "Hungarian", "IS" => "Icelandic", "IN" => "Indonesian", "IA" => "Interlingua", "IE" => "Interlingue", "IK" => "Inupiak", "GA" => "Irish", "IT" => "Italian", "JA" => "Japanese", "JW" => "Javanese", "KN" => "Kannada", "KS" => "Kashmiri", "KK" => "Kazakh", "RW" => "Kinyarwanda", "KY" => "Kirghiz", "RN" => "Kirundi", "KO" => "Korean", "KU" => "Kurdish", "LO" => "Laothian", "LA" => "Latin", "LV" => "Latvian, Lettish", "LN" => "Lingala", "LT" => "Lithuanian", "MK" => "Macedonian", "MG" => "Malagasy", "MS" => "Malay", "ML" => "Malayalam", "MT" => "Maltese", "MI" => "Maori", "MR" => "Marathi", "MO" => "Moldavian", "MN" => "Mongolian", "NA" => "Nauru", "NE" => "Nepali", "NO" => "Norwegian", "OC" => "Occitan", "OR" => "Oriya", "OM" => "Oromo, Afan", "PS" => "Pashto, Pushto", "FA" => "Persian", "PL" => "Polish", "PT" => "Portuguese", "PA" => "Punjabi", "QU" => "Quechua", "RM" => "Rhaeto-Romance", "RO" => "Romanian", "RU" => "Russian", "SM" => "Samoan", "SG" => "Sangro", "SA" => "Sanskrit", "SR" => "Serbian", "SH" => "Serbo-Croatian", "ST" => "Sesotho", "TN" => "Setswana", "SN" => "Shona", "SD" => "Sindhi", "SI" => "Singhalese", "SS" => "Siswati", "SK" => "Slovak", "SL" => "Slovenian", "SO" => "Somali", "ES" => "Spanish", "SU" => "Sudanese", "SW" => "Swahili", "SV" => "Swedish", "TL" => "Tagalog", "TG" => "Tajik", "TA" => "Tamil", "TT" => "Tatar", "TE" => "Tegulu", "TH" => "Thai", "BO" => "Tibetan", "TI" => "Tigrinya", "TO" => "Tonga", "TS" => "Tsonga", "TR" => "Turkish", "TK" => "Turkmen", "TW" => "Twi", "UK" => "Ukrainian", "UR" => "Urdu", "UZ" => "Uzbek", "VI" => "Vietnamese", "VO" => "Volapuk", "CY" => "Welsh", "WO" => "Wolof", "XH" => "Xhosa", "JI" => "Yiddish", "YO" => "Yoruba", "ZU" => "Zulu","NB" => "Norwegian Bokmål","ID" => "Indonesian","HE" => "Hebrew"];
+
+
+
+
 		switch ($app->mode) {
 		case "SingleApp":
 			if(is_single()) {
@@ -1708,7 +1845,9 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 				$detailsList['date']['mode'] = appStore_setting('displayreleasedate');
 				$detailsList['size']['mode'] = appStore_setting('displayfilesize');
 				$detailsList['price']['mode'] = appStore_setting('displayprice');
+				$detailsList['minimumOsVersion']['mode'] = appStore_setting('displayminimumOsVersion');
 				$detailsList['universal']['mode'] = appStore_setting('displayuniversal');
+				$detailsList['languages']['mode'] = appStore_setting('displaylanguages');
 				$detailsList['rating']['mode'] = appStore_setting('displayadvisoryrating');
 				$detailsList['categories']['mode'] = appStore_setting('displaycategories');
 			} else {
@@ -1720,7 +1859,9 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 				$detailsList['date']['mode'] = appStore_setting('displaympreleasedate');
 				$detailsList['size']['mode'] = appStore_setting('displaympfilesize');
 				$detailsList['price']['mode'] = appStore_setting('displaympprice');
+				$detailsList['minimumOsVersion']['mode'] = appStore_setting('displaympminimumOsVersion');
 				$detailsList['universal']['mode'] = appStore_setting('displaympuniversal');
+				$detailsList['languages']['mode'] = appStore_setting('displaymplanguages');
 				$detailsList['rating']['mode'] = appStore_setting('displaympadvisoryrating');
 				$detailsList['categories']['mode'] = appStore_setting('displaympcategories');
 			}
@@ -1734,7 +1875,9 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 				$detailsList['date']['mode'] = appStore_setting('displayATOMreleasedate');
 				$detailsList['size']['mode'] = appStore_setting('displayATOMfilesize');
 				$detailsList['price']['mode'] = appStore_setting('displayATOMprice');
+				$detailsList['minimumOsVersion']['mode'] = appStore_setting('displayATOMminimumOsVersion');
 				$detailsList['universal']['mode'] = appStore_setting('displayATOMuniversal');
+				$detailsList['languages']['mode'] = appStore_setting('displayATOMlanguages');
 				$detailsList['rating']['mode'] = appStore_setting('displayATOMadvisoryrating');
 				$detailsList['categories']['mode'] = appStore_setting('displayATOMcategories');
 			break;
@@ -1747,6 +1890,8 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 		$detailsList['rating']['title'] = __("Age Rating:",'appStoreAssistant');
 		$detailsList['seller']['title'] = __("Sold by",'appStoreAssistant');
 		$detailsList['developer']['title'] = __("Created by",'appStoreAssistant');
+		$detailsList['languages']['title'] = __("Languages:",'appStoreAssistant');
+		$detailsList['minimumOsVersion']['title'] = __("Minimum OS:",'appStoreAssistant');
 		$detailsList['universal']['title'] = __("Universal Icon",'appStoreAssistant');
 	if (!empty($app->version)) {
 		$detailsList['version']['value'] = $app->version;
@@ -1758,6 +1903,13 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 	} else {
 		$detailsList['price']['mode'] = 'HIDE';
 	}
+
+	if (!empty($app->minimumOsVersion)) {
+		$detailsList['minimumOsVersion']['value'] = $app->minimumOsVersion;
+	} else {
+		$detailsList['minimumOsVersion']['mode'] = 'HIDE';
+	}
+	
 	if (($app->artistName == $app->sellerName) AND !empty($app->artistName)) {
 		$detailsList['developer']['title'] = __("Created & Sold by",'appStoreAssistant');
 		$detailsList['developer']['value'] = $app->artistName;
@@ -1795,9 +1947,28 @@ function displayAppStore_appDetails($app,$elementOnly=false) {
 	}
 	if (!empty($app->contentAdvisoryRating)) {
 		$detailsList['rating']['value'] = $app->contentAdvisoryRating;
+		if(is_array($app->advisories)) {
+			$detailsList['rating']['value'] .= " for the following:<ul>";
+			foreach ($app->advisories as $advisory):
+				$detailsList['rating']['value'] .= "<li>$advisory</li>";
+			endforeach;
+			$detailsList['rating']['value'] .= "</ul>";
+		}
 	} else {
 		$detailsList['rating']['mode'] = 'HIDE';
 	}
+	
+	if(is_array($app->languageCodesISO2A)) {
+		foreach ($app->languageCodesISO2A as $languageCode):
+			$languages[] = $languageCodesISO2A[$languageCode];
+		endforeach;
+		sort($languages);
+		$detailsList['languages']['value'] = implode(', ',$languages);
+	} else {
+		$detailsList['languages']['mode'] = 'HIDE';
+	}
+	
+	
 	$elementCategories = '';
 	$appCategory = $app->genres;
 	$appCategoryPrime = $app->primaryGenreName;
@@ -2547,6 +2718,13 @@ function appStore_shortenDescription($description,$mode="normal"){
 	}
 	$shortenedDescription = nl2br(wp_trim_words($description,$maxLength,"&hellip;"));
 	return $shortenedDescription;
+}
+function appStore_array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
+    $sort_col = array();
+    foreach ($arr as $key=> $row) {
+        $sort_col[$key] = $row[$col];
+    }
+    array_multisort($sort_col, $dir, $arr);
 }
 
 function wpb_find_shortcode($atts, $content=null) { 

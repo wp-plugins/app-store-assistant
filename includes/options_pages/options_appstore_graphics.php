@@ -2,17 +2,31 @@
 <tr valign="top">
 <th scope="row"><label><?php _e('App Stores Badge Verbage', 'appStoreAssistant' ); ?></label></th>
 <td><select name='appStore_options[appStore_store_badge_type]'>
-	<option value="available" <?php if ($options['appStore_store_badge_type'] == "available") echo 'selected'; ?>><?php _e('Available on the App Store', 'appStoreAssistant' ); ?></option>
 	<option value="download" <?php if ($options['appStore_store_badge_type'] == "download") echo 'selected'; ?>><?php _e('Download on the App Store', 'appStoreAssistant' ); ?></option>
+	
 </select></td>
 </tr>
+
 <tr valign="top">
-<th scope="row"><label><?php _e('iDevice List icon style', 'appStoreAssistant' ); ?></label></th>
+<th scope="row"><label><?php _e('App Stores Badge Size', 'appStoreAssistant' ); ?></label></th>
+<td><select name='appStore_options[appStore_store_badge_size]'>
+	<option value=".5" <?php if ($options['appStore_store_badge_size'] == ".5") echo 'selected'; ?>>Half</option>
+	<option value="1" <?php if ($options['appStore_store_badge_size'] == "1") echo 'selected'; ?>>Full Size</option>
+	<option value="1.5" <?php if ($options['appStore_store_badge_size'] == "1.5") echo 'selected'; ?>>1.5x</option>
+	<option value="2" <?php if ($options['appStore_store_badge_size'] == "2") echo 'selected'; ?>>2x</option>
+	<option value="2.5" <?php if ($options['appStore_store_badge_size'] == "2.5") echo 'selected'; ?>>2.5x</option>
+	
+</select> * Full Size is 135px x 40px</td>
+</tr>
+
+
+<tr valign="top">
+<th scope="row"><label><?php _e('iDevice "Supported Devices" icon style', 'appStoreAssistant' ); ?></label></th>
 <td><?php
 		echo '<select name="appStore_options[displayappdetailsasliststyle]">';
 		echo '<option value="bw" ';
 		if ($options['displayappdetailsasliststyle'] == "bw") echo 'selected';
-		echo '>'.__('B&W Icons', 'appStoreAssistant' ).'</option>';
+		echo '>'.__('Greyscale Icons', 'appStoreAssistant' ).'</option>';
 		echo '<option value="color" ';
 		if ($options['displayappdetailsasliststyle'] == "color") echo 'selected';
 		echo '>'.__('Color Icons', 'appStoreAssistant' ).'</option>';
@@ -20,6 +34,29 @@
 	?>
 </td>
 </tr>
+
+<tr valign="top">
+<th scope="row"><label><?php _e('iDevice "Supported Devices" sorting', 'appStoreAssistant' ); ?></label></th>
+<td><?php
+		echo '<select name="appStore_options[displayappdetailsaslistssort]">';
+		echo '<option value="releasedate" ';
+		if ($options['displayappdetailsaslistssort'] == "releasedate") echo 'selected';
+		echo '>'.__('iDevice Release Date (Old to New)', 'appStoreAssistant' ).'</option>';
+		echo '<option value="releasedate_reversed" ';
+		if ($options['displayappdetailsaslistssort'] == "releasedate_reversed") echo 'selected';
+		echo '>'.__('iDevice Release Date (New to Old)', 'appStoreAssistant' ).'</option>';
+		echo '<option value="alphabetically" ';
+		if ($options['displayappdetailsaslistssort'] == "alphabetically") echo 'selected';
+		echo '>'.__('Alphabetically', 'appStoreAssistant' ).'</option>';
+		echo '<option value="alphabetically_reversed" ';
+		if ($options['displayappdetailsaslistssort'] == "alphabetically_reversed") echo 'selected';
+		echo '>'.__('Reversed Alphabetically', 'appStoreAssistant' ).'</option>';
+		echo '</select>';
+	?>
+</td>
+</tr>
+
+
 
 <tr valign="top">
 <th scope="row" nobr><label><?php _e('Supported Devices Single Post', 'appStoreAssistant' ); ?></label></th>
