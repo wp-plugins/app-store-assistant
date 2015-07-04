@@ -52,6 +52,11 @@ img.appStore_ThumbIcon
 	font-size: x-large;
 	font-weight: bold;
 }
+.iBooksStore-title
+{
+	font-size: x-large;
+	font-weight: bold;
+}
 .amazonStore-title
 {
 	font-size: large;
@@ -95,6 +100,9 @@ img.appStore_ThumbIcon
 }
 
 .iTunesStore-icon {
+	float: right;
+}
+.iBooksStore-icon {
 	float: right;
 }
 
@@ -176,6 +184,16 @@ div.appStore-gamecenter
 	overflow: hidden;
 	background-color: Transparent;
 }
+#iBooksStore-icon-container {
+	float: right;
+}
+
+#iBooksStore-icon-container img {
+	border: 0px;
+	margin: 0px;
+	overflow: hidden;
+	background-color: Transparent;
+}
 
 
 th.prefTableHeader {
@@ -188,6 +206,10 @@ div.asaf-entry img {
 }
 
 .iTunesStore-Button:active {
+	position:relative;
+	top:1px;
+}
+.iBookStore-Button:active {
 	position:relative;
 	top:1px;
 }

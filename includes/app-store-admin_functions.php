@@ -53,6 +53,10 @@ function appStore_add_defaults() {
 		"appStore_store_badge_size" => "1",
 		"iTunes_store_badge_type" => "getit",
 		"iTunes_store_badge_size" => "1",
+		"iBooks_store_badge_type" => "getit",
+		"iBooks_store_badge_size" => "1",
+		"amazon_badge_type" => "getit",
+		"amazon_badge_size" => "1",
 		"store_country" => "US",
 		"appSearch_default" => "iOS",
 	
@@ -222,6 +226,13 @@ function appStore_add_defaults() {
 		"displayitunesexplicitwarning" => "yes",
 		"displayitunesradiolink" => "yes",
 
+		"displayibookstitle" => "yes",
+		"displayibooksauthorname" => "yes",
+		"displayibooksgenre" => "yes",
+		"displayibooksreleasedate" => "yes",
+		"displayibooksdescription" => "yes",
+		"displayibooksexplicitwarning" => "yes",
+
 		"AWS_PARTNER_DOMAIN" => "com",
 		"AWS_API_KEY" => "",
 		"AWS_API_SECRET_KEY" => "",
@@ -253,7 +264,7 @@ function appStore_add_defaults() {
 		"RemoveCachedItemASIN" => "",
 		
 		"displayLinkToFooter" => "no",
-		"versionInstalled" => "6.8"
+		"versionInstalled" => "7.0"
 		);
 	$PostedValues = $_REQUEST;
 	$appStore_options = $appStore_savedOptions;
@@ -361,6 +372,12 @@ function appStore_add_options_page() {
 	add_submenu_page( 'appStore_sm_general', __('Visual Settings','appStoreAssistant'), __('Visual','appStoreAssistant'), 'manage_options', 'appStore_sm_visual', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', __('iOS & Mac App Store Settings','appStoreAssistant'), __('App Store','appStoreAssistant'), 'manage_options', 'appStore_sm_appstore', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', __('iTunes Store Settings','appStoreAssistant'), __('iTunes Store','appStoreAssistant'), 'manage_options', 'appStore_sm_itunes', 'appStore_displayAdminOptionsPage');
+
+
+	add_submenu_page( 'appStore_sm_general', __('iBooks Store Settings','appStoreAssistant'), __('iBooks Store','appStoreAssistant'), 'manage_options', 'appStore_sm_ibooks', 'appStore_displayAdminOptionsPage');
+
+
+
 	add_submenu_page( 'appStore_sm_general', __('Amazon.com Settings','appStoreAssistant'), __('Amazon.com','appStoreAssistant'), 'manage_options', 'appStore_sm_amazon', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', __('Utilities','appStoreAssistant'), __('Utilities','appStoreAssistant'), 'manage_options', 'appStore_sm_utilities', 'appStore_displayAdminOptionsPage');
 	add_submenu_page( 'appStore_sm_general', __('Rebuild','appStoreAssistant'), __('Rebuild','appStoreAssistant'), 'manage_options', 'appStore_sm_rebuild', 'appStore_displayAdminOptionsPage');
@@ -403,6 +420,10 @@ function appStore_displayAdminOptionsPage() {
 		case 'appStore_sm_itunes' :
 			$appStoreOptionsTitle = __('iTunes Store Settings','appStoreAssistant');
 			$appStoreOptionsPage = "options_itunes_$currentTab.php";
+			break;
+		case 'appStore_sm_ibooks' :
+			$appStoreOptionsTitle = __('iBooks Store Settings','appStoreAssistant');
+			$appStoreOptionsPage = "options_ibooks_$currentTab.php";
 			break;
 		case 'appStore_sm_amazon' :
 			$appStoreOptionsTitle = __('Amazon.com Settings','appStoreAssistant');
@@ -556,9 +577,16 @@ function appStore_displayAdminTabs( $tabSet,$currentTab = 'defaultTab',$affiliat
 			'graphics' => __('iTunes Store Graphics','appStoreAssistant')
 			);
 	  break;
+	  case 'appStore_sm_ibooks' :
+		$tabs_array = array (
+			'defaultTab' => __('Single Post','appStoreAssistant'),
+			'graphics' => __('iBooks Store Graphics','appStoreAssistant')
+			);
+	  break;
 	  case 'appStore_sm_amazon' :
 		$tabs_array = array (
-			'defaultTab' => __('Text Link Defaults','appStoreAssistant')
+			'defaultTab' => __('Text Link Defaults','appStoreAssistant'),
+			'graphics' => __('Amazon.com Graphics','appStoreAssistant')
 			);
 	  break;
 	  case 'appStore_sm_utilities' :
@@ -2375,7 +2403,7 @@ function custom_admin_pointers() {
    $version = str_replace(".", "_", ASA_PLUGIN_VERSION); // replace all periods in version with an underscore
    $prefix = 'custom_admin_pointers' . $version . '_';
    $new_pointer_content = '<h3>' . __( 'Important Changes!!', 'appStoreAssistant' ) . '</h3>';
-   $new_pointer_content .= '<p>' . __( 'The following shortcodes Deprecated:<br />ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link<br />Note: Deprecated shortcodes are still functional in this version, but will be REPLACED IN THE NEXT UPDATE!!!**<br /><br />Please see the Change Log (readme.txt) for Important Changes to this version!', 'appStoreAssistant' ) . '</p>';
+   $new_pointer_content .= '<p>' . __( 'The following shortcodes <b>Removed</b>:<br />ios_app, mac_app, itunes_store, ibooks_store, ios_app_elements, ios_app_list, ios_app_link, itunes_store_link, mac_app_link<br /><br />See <https://interconnectit.com/products/search-and-replace-for-wordpress-databases/> for help replacing shortcodes<br /><br />Please see the Change Log (readme.txt) for Important Changes to this version!', 'appStoreAssistant' ) . '</p>';
 
    return array(
       $prefix . 'new_items' => array(

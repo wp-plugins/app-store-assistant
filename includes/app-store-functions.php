@@ -309,7 +309,7 @@ function getShortcodeDataFromPost(){
 	global $post;
 	$shortcodeData = '';
 	$postContent = substr($post->post_content,1, 400);
-	$shortcodes = array("asa_item","ios_app", "itunes_store","ibooks_store","mac_app","amazon_item");
+	$shortcodes = array("asa_item","amazon_item","ios_app", "itunes_store","ibooks_store","mac_app");
 	foreach ($shortcodes as $shortcode) {
 		if (stristr($postContent, $shortcode) !== FALSE) {
 			$shortcodeData['shortcode'] = $shortcode;
@@ -806,6 +806,57 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 	return $appListDisplay; 
 }
 
+function appStore_getBadge ($store) {
+	// Create Badge img Tag
+	$addCountryCode = false;
+	if(appStore_setting('store_badge_language')) {
+		$countryCode = appStore_setting('store_badge_language');
+	} else {
+		$countryCode = "US-UK";
+	}
+	$SizeMultiplier = appStore_setting('appStore_store_badge_size');
+	$badgeImage = 'images/Badges/';
+	switch ($store) {
+		case "iTunes":
+			$SizeMultiplier = appStore_setting('iTunes_store_badge_size');
+			$badgeImage .= "Get_it_on_iTunes_Badge_";
+			$badgeImage .= $countryCode;
+			$badgeImage .= ".svg";
+			$BadgeWidth = intval(110 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+			break;
+		case "iBooks":
+			$SizeMultiplier = appStore_setting('iBooks_store_badge_size');
+			$badgeImage .= "Get_it_on_iBooks_Badge_";
+			$badgeImage .= $countryCode;
+			$badgeImage .= ".svg";
+			$BadgeWidth = intval(110 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+			break;
+		case "App Store":
+			$SizeMultiplier = appStore_setting('appStore_store_badge_size');
+			$badgeImage .= "Download_on_the_App_Store_Badge_";
+			$badgeImage .= $countryCode;
+			$badgeImage .= "_135x40.svg";
+			$BadgeWidth = intval(135 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+			break;
+		case "Amazon":
+			$SizeMultiplier = appStore_setting('amazon_badge_size');
+			$badgeImage .= "Get_it_on-Amazon.svg";
+			$BadgeWidth = intval(215 * $SizeMultiplier);
+			$BadgeHeight = intval(74 * $SizeMultiplier);
+			break;
+		default:
+			$badgeImage .= "Missing_Badge.svg";
+			$BadgeWidth = intval(135 * $SizeMultiplier);
+			$BadgeHeight = intval(40 * $SizeMultiplier);
+	}
+	$BadgeSize = 'width = "'.$BadgeWidth.' height="'.$BadgeHeight.'"';
+	$badgeImgTag = '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="'.$store.'" style="border: 0;" '.$BadgeSize.' />';
+	return $badgeImgTag;
+}
+
 function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode="SingleApp") {
 	$itemType = '';
 	if (isset($itemInfo->wrapperType)) $itemType .= $itemInfo->wrapperType."_";
@@ -865,14 +916,14 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			break;
     	case "ebook_":
 			$itemOutput = __("eBook",'appStoreAssistant');
-			$itemStore = "iTunes";
-			$itemTemplate = "iTunesMain";
+			$itemStore = "iBooks";
+			$itemTemplate = "iBooksMain";
 			$unformattedPrice = $itemInfo->price;
 			$iTunesID = $itemInfo->trackId;
-			$iTunesName = $itemInfo->trackName;
+			$iBooksName = $itemInfo->trackName;
 			$iTunesKind = $itemInfo->kind;
 			$isExplicit = '';
-			$iTunesURL = $itemInfo->trackViewUrl;
+			$iBooksURL = $itemInfo->trackViewUrl;
 			$artistType = __("Author",'appStoreAssistant');
 			$cavType = __("Explicit",'appStoreAssistant');
 			$trackType = __("Track Count",'appStoreAssistant');
@@ -880,14 +931,14 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			break;
     	case "_ebook_":
 			$itemOutput = __("eBook",'appStoreAssistant');
-			$itemStore = "iTunes";
-			$itemTemplate = "iTunesMain";
+			$itemStore = "iBooks";
+			$itemTemplate = "iBooksMain";
 			$unformattedPrice = $itemInfo->price;
 			$iTunesID = $itemInfo->trackId;
 			$iTunesName = $itemInfo->trackName;
 			$iTunesKind = $itemInfo->kind;
 			$isExplicit = '';
-			$iTunesURL = $itemInfo->trackViewUrl;
+			$iBooksURL = $itemInfo->trackViewUrl;
 			$artistType = __("Author",'appStoreAssistant');
  			$description = $itemInfo->description;
 			break;
@@ -1116,19 +1167,91 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$itemOutput .= '<br />';
 
 			$itemOutput .= '<div class="appStore-badge"><a href="'.$iTunesURL.'" >';
-			$badgeImage = 'images/Badges/';
-			if(appStore_setting('iTunes_store_badge_type') == "download") {
-				$badgeImage .= "Download_on_iTunes_Badge_";
-			} else {
-				$badgeImage .= "Available_on_iTunes_Badge_";
+			$itemOutput .= appStore_getBadge ($itemStore);
+			$itemOutput .= '</a>';
+			$itemOutput .= '</div>';
+			$itemOutput .= '<div style="clear:left;">&nbsp;</div>';
+			$itemOutput .= '</div>';
+			break;
+    	case "iBooks":
+			if (isset($itemInfo->primaryGenreName)) {
+				$iBooksCategory = $itemInfo->primaryGenreName;
+			} else if (isset($itemInfo->genres)) {
+				$iBooksCategory = implode(", ", $itemInfo->genres);
 			}
-			if(appStore_setting('store_badge_language')) {
-				$badgeImage .= appStore_setting('store_badge_language');
+			$authorName = $itemInfo->artistName;
+			if(isset($itemInfo->releaseDate)) $releaseDate = date( 'F j, Y', strtotime($itemInfo->releaseDate));
+			if(isset($itemInfo->contentAdvisoryRating)) $contentAdvisoryRating = $itemInfo->contentAdvisoryRating;
+			$itemOutput = "";
+			$itemOutput = "<!--  SEALDEBUG iBooks \r".print_r($itemInfo,true)."\r -->";
+			// iTunes Artwork
+			if(appStore_setting('cache_images_locally') == '1') {
+				$artwork_url = $itemInfo->imagePosts_cached;
+				if(wp_is_mobile()) $artwork_url = $itemInfo->imageiOS_cached;
 			} else {
-				$badgeImage .= "US-UK";
+				$artwork_url = $itemInfo->imagePosts;
+				if(wp_is_mobile()) $artwork_url = $itemInfo->imageiOS;
 			}
-			$badgeImage .= "_110x40.png";
-			$itemOutput .= '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;" /></a>';
+
+			$iBooksURL = getAffiliateURL($iBooksURL);
+	
+			if(appStore_setting('smaller_buy_button_iOS') == "yes" && wp_is_mobile()) {
+				$buttonText = appStore_format_price($unformattedPrice)." ";
+			} else {
+				$buttonText = appStore_format_price($unformattedPrice);
+			}
+			$itemOutput .= '<div class="appStore-wrapper">';
+			$itemOutput .= '<div id="iBooksStore-icon-container">';
+			$itemOutput .= '<a href="'.$iBooksURL.'" >';
+			$itemOutput .= '<img class="iBooksStore-icon" src="'.$artwork_url.'" /></a>';
+			$itemOutput .= '<div class="iBooksStore-purchase">';
+			$itemOutput .= '<a type="button" href="'.$iBooksURL.'" value="iBooks Buy Button" class="appStore-Button BuyButton">';
+			$itemOutput .= $buttonText.'</a><br />';
+			$itemOutput .= '</div>';
+			$itemOutput .= '</div>';
+
+
+			if ((appStore_setting('displayiBookstitle') == "yes" AND !empty($iBooksName)) OR $mode != "internal") {
+				$itemOutput .= '<span class="iBooksStore-title">';
+				$PositionNumber = 0;
+				if(isset($itemInfo->PositionNumber)) $PositionNumber = $itemInfo->PositionNumber;
+				if ($mode == "ListOfApps" && appStore_setting('displayATOMappPositionNumber') == "yes" && $PositionNumber > 0) {
+					if(appStore_setting('PrePositionNumber') != "EMP") $itemOutput .= appStore_setting('PrePositionNumber');
+					$itemOutput .= $itemInfo->PositionNumber;
+					if(appStore_setting('PostPositionNumber') != "EMP") $itemOutput .= appStore_setting('PostPositionNumber');
+					$itemOutput .= $iBooksName;
+				} else {
+					$itemOutput .= $iBooksName;
+				}
+				$itemOutput .= '</span><br /><br />';
+			}
+			if (appStore_setting('displayiBooksauthorname') == "yes" AND !empty($artistName)) {
+				$itemOutput .= '<span class="iBooksStore-authorname">'.$artistType.': '.$artistName.'</span><br />';
+			}
+			if (appStore_setting('displayiBooksgenre') == "yes" AND !empty($iBooksCategory)) {
+				$itemOutput .= '<span class="iBooksStore-genre">'.__("Genre",'appStoreAssistant').': '.$iBooksCategory.'</span><br />';
+			}
+			if (appStore_setting('displayadvisoryrating') == "yes" AND !empty($contentAdvisoryRating)) {
+				$itemOutput .= '<span class="iBooksStore-advisoryrating">'.$cavType.': '.$contentAdvisoryRating.'</span><br />';
+			}	
+			if (appStore_setting('displayitunesreleasedate') == "yes" AND !empty($releaseDate)) {
+				$itemOutput .= '<span class="iBooksStore-releasedate">'.__("Published",'appStoreAssistant').': '.$releaseDate.'</span><br />';
+			}
+
+			if (appStore_setting('displayibooksexplicitwarning') == "yes" AND $isExplicit == "explicit") {
+				$itemOutput .= '<br /><span class="iBooksStore-explicitwarning"><img src="'.plugins_url( 'images/parental_advisory_explicit_content-big.gif' , ASA_MAIN_FILE ).'" width="112" height="67" alt="Explicit Lyrics" /></span><br />';// 450x268
+			}
+			if (appStore_setting('displayibooksdescription') == "yes" AND !empty($description)) {	
+				$itemOutput .= '	<div class="iBooksStore-description">';
+				$itemOutput .= nl2br($description);
+				$itemOutput .= '<br /></div>';
+			}
+
+			$itemOutput .= '<br />';
+
+			$itemOutput .= '<div class="appStore-badge"><a href="'.$iBooksURL.'" >';
+			$itemOutput .= appStore_getBadge ($itemStore);
+			$itemOutput .= '</a>';
 			$itemOutput .= '</div>';
 			$itemOutput .= '<div style="clear:left;">&nbsp;</div>';
 			$itemOutput .= '</div>';
@@ -1321,36 +1444,7 @@ function displayAppStore_appBadge($app,$elementOnly=false) {
 	if(appStore_setting('open_links_externally') == "yes") $appLink .= ' target="_blank"';
 	$appLink .= '>';
 
-	// Create Badge img Tag
-	$badgeImage = 'images/Badges/';
-	if(appStore_setting('appStore_store_badge_type') == "download") {
-		$badgeImage .= "Download_on_the_";
-	} else {
-		$badgeImage .= "Available_on_the_";
-	}
-
-
-	/*
-	if($app->platform=="mac_app") {
-		$badgeImage .= "Mac_App_Store_Badge_";
-		$BadgeSize = "";
-	}
-	*/
-	if($app->platform=="ios_app" || $app->platform=="mac_app") {
-		$SizeMultiplier = appStore_setting('appStore_store_badge_size');
-		$BadgeWidth = intval(135 * $SizeMultiplier);
-		$BadgeHeight = intval(40 * $SizeMultiplier);
-		$badgeImage .= "App_Store_Badge_";
-		$BadgeSize = "width = $BadgeWidth height=$BadgeHeight";
-	}
-	if(appStore_setting('store_badge_language')) {
-		$badgeImage .= appStore_setting('store_badge_language');
-	} else {
-		$badgeImage .= "US-UK";
-	}
-	//if($app->platform=="mac_app") $badgeImage .= "_165x40.png";
-	if($app->platform=="ios_app" || $app->platform=="mac_app") $badgeImage .= "_135x40.svg";
-	$badgeImgTag = '<img src="'.plugins_url( $badgeImage , ASA_MAIN_FILE ).'" alt="App Store" style="border: 0;" '.$BadgeSize.' />';
+	$badgeImgTag = appStore_getBadge ('App Store');
 
 	$element = $appLink.$badgeImgTag.'</a>';
 	$element = getDisplayCode ($element,"appStore-badge",$displayMode,"AppStore Badge");

@@ -106,15 +106,13 @@ REQUIRES PHP 5.4 or later
 * Request: Bulk import of Apps [Thanks TesterGP]
 * Request: Change file type to png if tiff supplied by app store WP_Image_Editor
 * Request: Random Post generator (randomly picks an app that you don't already have a post for) [Thanks AslanDoma]
-* Request: Shortcode tags can now override the Store/Language chosen [Thanks crisf86]
-* Request: Sped up Reset of Featured Images (Using log system)
+* Request: Shortcode tags can override the Store/Language chosen [Thanks crisf86]
+* Request: Sped up Reset of Featured Images and saves to log (Using log system)
 * Request: All images now saved as png
 		http://bhoover.com/wp_image_editor-wordpress-image-editing-tutorial/
-* Request: Reset Featured Images now saves to log
 * Request: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 * Request: Option to search for Apps no longer available and change post to "Pending Review"
-* Added: ----------------Option to rebuild cache same method as FI Rebuild
-* Request: iBooks support [Thanks rnakoneshny]
+* Added: Option to rebuild cache same method as FI Rebuild
 * Request: separate the elements of appDetails, ex. appVersion, appCreateBy, appReleaseDate, etc. [Thanks Jomasher]
 * Request: Add Tags with App/item name to post [Thanks iOSAppLists]
 * Pending: iWatch search
@@ -123,14 +121,25 @@ REQUIRES PHP 5.4 or later
 == Changelog ==
 = 7.0.0 =
 * Changed: **REQUIRES PHP 5.4 or later**
-* Note: **It is NECESSARY to rebuild the cache with this version.**
+* Note: **It is NECESSARY to rebuild the Cache and the Featured Images with this version.**
 * Note: *It is RECOMMENDED to rebuild the Featured Images with this version.*
+* Removed: **The following shortcodes have been replaced with simplified versions.** (See <https://interconnectit.com/products/search-and-replace-for-wordpress-databases/> for help replacing shortcodes)
+	* ios_app --> asa_item
+	* mac_app --> asa_item
+	* itunes_store --> asa_item
+	* ibooks_store --> asa_item
+	* ios_app_elements --> asa_elements
+	* ios_app_list --> asa_list
+	* ios_app_link --> asa_link
+	* itunes_store_link --> asa_link
+	* mac_app_link --> asa_link
+* Added: iBooks support [Thanks rnakoneshny]
 * Changed: iTunes badges now say "Get it on iTunes" as per Apple's design guidelines
 * Changed: iBooks badges now say "Get it on iBooks" as per Apple's design guidelines
 * Changed: App Store badges now say "Download on the App Store" as per Apple's design guidelines
 * Note: Old badges have been removed. Saving your preference on both the iTunes & App Store Graphics tab will update to new badges
 * Added: Graphics and details for iPhone 6, iPhone 6 Plus and Apple Watch
-* Changed: New Badges are in SVG format "Get it on iTunes", "Get it on iBooks" & "Download on the App Store"
+* Changed: New Badges are in SVG format "Get it on iTunes", "Get it on iBooks", "Download on the App Store" & "Get it on Amazon.com"
 * Added: You can now specify the size of the new Badges
 * Fixed: Badge for Tagalog (Filipino) now displays correct image
 * Added: Badges for Azərbaycan dili (Azerbaijani)
