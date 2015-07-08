@@ -806,7 +806,7 @@ function appStore_handler_feed($atts, $content = null, $code="") {
 	return $appListDisplay; 
 }
 
-function appStore_getBadge ($store) {
+function appStore_getBadge ($store,$style="Normal") {
 	// Create Badge img Tag
 	$addCountryCode = false;
 	if(appStore_setting('store_badge_language')) {
@@ -819,7 +819,11 @@ function appStore_getBadge ($store) {
 	switch ($store) {
 		case "iTunes":
 			$SizeMultiplier = appStore_setting('iTunes_store_badge_size');
-			$badgeImage .= "Get_it_on_iTunes_Badge_";
+			if($style == "Music") {
+				$badgeImage .= "Listen_on_Apple_Music_Badge_";
+			} else {
+				$badgeImage .= "Get_it_on_iTunes_Badge_";
+			}
 			$badgeImage .= $countryCode;
 			$badgeImage .= ".svg";
 			$BadgeWidth = intval(110 * $SizeMultiplier);
@@ -901,7 +905,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
     	case "track_song_":
 			$itemOutput = __("Song",'appStoreAssistant');
 			$itemStore = "iTunes";
-			$itemTemplate = "iTunesMain";
+			$itemTemplate = "iTunesMusic";
 			$unformattedPrice = $itemInfo->trackPrice;
 			$iTunesID = $itemInfo->trackId;
 			$iTunesName = $itemInfo->trackName;
@@ -945,7 +949,7 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
     	case "collection_Album":
 			$itemOutput = __("Music Album",'appStoreAssistant');
 			$itemStore = "iTunes";
-			$itemTemplate = "iTunesMain";
+			$itemTemplate = "iTunesMusic";
 			$unformattedPrice = $itemInfo->collectionPrice;
 			if(isset($itemInfo->collectionID)) $iTunesID = $itemInfo->collectionID;
 			if(isset($itemInfo->collectionId)) $iTunesID = $itemInfo->collectionId;
@@ -1167,7 +1171,11 @@ function appStore_renderItem($itemInfo,$more_info_text="View in Store...",$mode=
 			$itemOutput .= '<br />';
 
 			$itemOutput .= '<div class="appStore-badge"><a href="'.$iTunesURL.'" >';
-			$itemOutput .= appStore_getBadge ($itemStore);
+			if($itemTemplate == "iTunesMusic") {
+				$itemOutput .= appStore_getBadge ($itemStore,"Music");
+			} else {
+				$itemOutput .= appStore_getBadge ($itemStore);
+			}
 			$itemOutput .= '</a>';
 			$itemOutput .= '</div>';
 			$itemOutput .= '<div style="clear:left;">&nbsp;</div>';

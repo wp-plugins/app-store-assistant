@@ -104,11 +104,10 @@ REQUIRES PHP 5.4 or later
 * Request: Have an ATOM feed auto create posts from app List
 * Request: iTunes breakout of elements
 * Request: Bulk import of Apps [Thanks TesterGP]
-* Request: Change file type to png if tiff supplied by app store WP_Image_Editor
 * Request: Random Post generator (randomly picks an app that you don't already have a post for) [Thanks AslanDoma]
 * Request: Shortcode tags can override the Store/Language chosen [Thanks crisf86]
 * Request: Sped up Reset of Featured Images and saves to log (Using log system)
-* Request: All images now saved as png
+* Request: All images now saved as png (WP_Image_Editor) if tiff supplied by app store
 		http://bhoover.com/wp_image_editor-wordpress-image-editing-tutorial/
 * Request: Plugin checks the app in all stores for availability and then generates the box with flags. Each flag is a button and a link to the app. Of course links is set for affiliate programs. [Thanks Aslan Guseinov]
 * Request: Option to search for Apps no longer available and change post to "Pending Review"
@@ -134,6 +133,7 @@ REQUIRES PHP 5.4 or later
 	* itunes_store_link --> asa_link
 	* mac_app_link --> asa_link
 * Added: iBooks support [Thanks rnakoneshny]
+* Added: Listen on Apple Music badge for music
 * Changed: iTunes badges now say "Get it on iTunes" as per Apple's design guidelines
 * Changed: iBooks badges now say "Get it on iBooks" as per Apple's design guidelines
 * Changed: App Store badges now say "Download on the App Store" as per Apple's design guidelines
@@ -187,6 +187,9 @@ REQUIRES PHP 5.4 or later
 * Added: Now displays minimum OS version in details
 * Added: Now displays available languages in details
 * Added: Now displays Rating Advisories in details
+* Changed: New icons for inserting shortcodes
+* Changed: Post Editor help screen now displays the new icons for inserting shortcodes
+* Changed: Reduced the size (height) of the Widget buy buttons
 
 = 6.9.0 =
 * Beta release for Testers only

@@ -123,6 +123,9 @@ The Amazon Standard Identification Number <?php _e('is a 10-character alphanumer
 	</ul>
 </li>
 </ul></div>
+<hr>
+<h2>If you need help changing shortcodes, perhaps from an old version of this plugin, visit the link below:</h2>
+<a href="https://interconnectit.com/products/search-and-replace-for-wordpress-databases/">Database Search and Replace Script in PHP</a><br />
 <?php
 $showSaveChangesButton = false;
 ?>
